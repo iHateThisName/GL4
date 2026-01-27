@@ -5,8 +5,8 @@ public class FireplaceController : MonoBehaviour {
 
     [Header("Fuel Settings")]
     [SerializeField] private float currentFuel = 0f;
-    private float burnRate = 0.5f;
-    private const float MAX_FUEL = 100f;
+    private readonly float BURN_RATE = 0.5f;
+    private readonly float MAX_FUEL = 100f;
 
     public bool IsLit { get; private set; } = false;
 
@@ -16,10 +16,14 @@ public class FireplaceController : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Burns fuel over time at the specified burn rate. 
+    /// Automatically extinguishes the fire when fuel runs out.
+    /// </summary>
     private void BurnFuel() {
 
         // Burn fuel over time
-        this.currentFuel -= this.burnRate * Time.fixedDeltaTime;
+        this.currentFuel -= this.BURN_RATE * Time.fixedDeltaTime;
 
         // Check if fuel has run out
         if (this.currentFuel <= 0f) {
@@ -29,12 +33,21 @@ public class FireplaceController : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Debug method to add 10 fuel to the fireplace.
+    /// Accessible via Unity's context menu in the inspector.
+    /// </summary>
     [ContextMenu("Add Fuel (10)")]
     private void AddFuelDebug() {
         // For testing purposes
         AddFuel(10f);
     }
 
+    /// <summary>
+    /// Adds fuel to the fireplace, capped at MAX_FUEL.
+    /// Automatically lights the fire if it was extinguished and fuel is added.
+    /// </summary>
+    /// <param name="amount">The amount of fuel to add.</param>
     public void AddFuel(float amount) {
         // Only allow adding fuel if the fireplace is lit??
 
@@ -44,6 +57,6 @@ public class FireplaceController : MonoBehaviour {
         }
 
         // Allow adding fuel even if max is reached
-        this.currentFuel = Mathf.Min(currentFuel + amount, MAX_FUEL);
+        this.currentFuel = Mathf.Min(this.currentFuel + amount, this.MAX_FUEL);
     }
 }

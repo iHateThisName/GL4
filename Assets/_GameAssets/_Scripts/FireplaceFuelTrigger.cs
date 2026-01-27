@@ -25,6 +25,11 @@ public class FireplaceFuelTrigger : MonoBehaviour {
         //}
     }
 
+    /// <summary>
+    /// Adds fuel to the fireplace by consuming a firewood object.
+    /// The fuel value is randomized within 80%-120% of the firewood's base value for organic feel.
+    /// </summary>
+    /// <param name="wood">The firewood object to consume for fuel.</param>
     private void AddFuelToFireplace(Firewood wood) {
         // Add some randomness to the fuel value to make it feel more organic
         float randomizedFuelValue = Random.Range(wood.FuelValue * 0.8f, wood.FuelValue * 1.2f);
