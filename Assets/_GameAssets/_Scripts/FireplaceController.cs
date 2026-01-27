@@ -10,7 +10,7 @@ public class FireplaceController : MonoBehaviour {
 
     public bool IsLit { get; private set; } = false;
 
-    private void Update() {
+    private void FixedUpdate() {
         if (IsLit) {
             BurnFuel();
         }
@@ -19,7 +19,7 @@ public class FireplaceController : MonoBehaviour {
     private void BurnFuel() {
 
         // Burn fuel over time
-        this.currentFuel -= this.burnRate * Time.deltaTime;
+        this.currentFuel -= this.burnRate * Time.fixedDeltaTime;
 
         // Check if fuel has run out
         if (this.currentFuel <= 0f) {
@@ -27,6 +27,12 @@ public class FireplaceController : MonoBehaviour {
             this.currentFuel = 0f;
             this.IsLit = false;
         }
+    }
+
+    [ContextMenu("Add Fuel (10)")]
+    private void AddFuelDebug() {
+        // For testing purposes
+        AddFuel(10f);
     }
 
     public void AddFuel(float amount) {
