@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 public class FireplaceFuelTrigger : MonoBehaviour {
 
@@ -14,17 +13,17 @@ public class FireplaceFuelTrigger : MonoBehaviour {
 
         Debug.Log("Firewood detected in fireplace fuel trigger.");
 
-        // Check if the firewood is being held by the player
-        XRGrabInteractable grab = other.GetComponent<XRGrabInteractable>();
-        if (grab == null) return;
+        //// Check if the firewood is being held by the player
+        //XRGrabInteractable grab = other.GetComponent<XRGrabInteractable>();
+        //if (grab == null) return;
 
-        Debug.Log("Firewood is grabbable.");
+        //Debug.Log("Firewood is grabbable.");
 
-        // Only consume when player lets go of the firewood
-        if (!grab.isSelected) {
-            Debug.Log("Firewood released, adding fuel to fireplace.");
-            AddFuelToFireplace(wood);
-        }
+        //// Only consume when player lets go of the firewood
+        //if (!grab.isSelected) {
+        //Debug.Log("Firewood released, adding fuel to fireplace.");
+        AddFuelToFireplace(wood);
+        //}
     }
 
     private void AddFuelToFireplace(Firewood wood) {
