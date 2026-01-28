@@ -32,9 +32,20 @@ public class MonsterSpawner : MonoBehaviour
      * Unity Lifecycle
      * ======================= */
 
+    private void OnEnable() 
+    {
+        NightCycle.OnEventAvailable += SpawnMonster;
+    }
+
+    private void OnDisable() 
+    {
+        NightCycle.OnEventAvailable -= SpawnMonster;
+    }
+
+
     private void Start()
     {
-        StartCoroutine(SpawnLoop());
+        
     }
 
 
