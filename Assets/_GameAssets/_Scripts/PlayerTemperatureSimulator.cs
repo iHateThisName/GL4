@@ -1,10 +1,11 @@
+using Assets.Scripts.Singleton;
 using System;
 using UnityEngine;
 using static PlayerTemperatureSimulator;
 
-public class PlayerTemperatureSimulator : MonoBehaviour {
+public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> {
 
-    private float currentBodyTemperature = 37.0f; // Normal human body temperature in Celsius
+    [SerializeField] private float currentBodyTemperature = 37.0f; // Normal human body temperature in Celsius
     private readonly float MIN_COMFORTABLE_TEMPERATURE = 35.0f; // Hypothermia threshold,
                                                                 // 32 - 35 C is mild hypothermia (shivering, confusion),
                                                                 // 28 - 32 C is moderate (slurred speech, drowsiness),
@@ -19,8 +20,8 @@ public class PlayerTemperatureSimulator : MonoBehaviour {
     private readonly float NORMAL_RATE = -0.03f; // Rate of temperature change per second
     private readonly float WARM_RATE = 0.12f; // Rate of temperature change per second
 
-    private EnumLocationType currentLocationType = EnumLocationType.Normal;
-    private EnumBodyTemperatureState currentBodyTemperatureState = EnumBodyTemperatureState.Normal;
+    [SerializeField] private EnumLocationType currentLocationType = EnumLocationType.Normal;
+    [SerializeField] private EnumBodyTemperatureState currentBodyTemperatureState = EnumBodyTemperatureState.Normal;
 
     // Event triggered when body temperature state changes
     public static Action<BodyTemperatureStateChange> OnBodyTemperatureStateChanged;
