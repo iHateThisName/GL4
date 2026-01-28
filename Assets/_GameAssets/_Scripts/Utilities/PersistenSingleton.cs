@@ -31,7 +31,7 @@ namespace Assets.Scripts.Singleton {
                 }
                 return instance;
             }
-        }
+        } 
 
         protected virtual void Awake() { InitializeSingletion(); }
 
