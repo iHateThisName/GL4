@@ -8,14 +8,13 @@ public class NightCycle : MonoBehaviour
     [SerializeField] private float timePerNightMinutes;
     [Tooltip("Minimum seconds before next event")]
     [SerializeField] private float minEventTimeSeconds;
-    
-    
-    [Range(1,20)] [Tooltip("Maximum seconds before next event")] [SerializeField] private float maxEventTimeSeconds;
+    [Tooltip("Maximum seconds before next event")] 
+    [SerializeField] private float maxEventTimeSeconds;
 
     public static event Action OnEventAvailable = delegate {};
 
-    private float _nightTimeInSeconds;
-    private float _elapsedNightTime;
+    private float nightTimeInSeconds;
+    private float elapsedNightTime;
     private float eventTime;
 
     private void OnEnable()
@@ -30,17 +29,17 @@ public class NightCycle : MonoBehaviour
     
     private void Start()
     {
-        _elapsedNightTime = 0;
-        _nightTimeInSeconds = timePerNightMinutes * 60;
+        elapsedNightTime = 0;
+        nightTimeInSeconds = timePerNightMinutes * 60;
         ScheduleNewEventTime();
     }
 
     private void Update()
     {
-        if (_elapsedNightTime >= _nightTimeInSeconds) return;
+        if (elapsedNightTime >= nightTimeInSeconds) return;
 
-        _elapsedNightTime += Time.deltaTime;
-        if (_elapsedNightTime >= eventTime)
+        elapsedNightTime += Time.deltaTime;
+        if (elapsedNightTime >= eventTime)
         {
             OnEventAvailable.Invoke();
             ScheduleNewEventTime();
@@ -49,16 +48,16 @@ public class NightCycle : MonoBehaviour
 
     private void ScheduleNewEventTime()
     {
-        float remainingTime = _nightTimeInSeconds - _elapsedNightTime;
-        float min = _elapsedNightTime + minEventTimeSeconds;
-        float max = _elapsedNightTime + maxEventTimeSeconds;
+        float remainingTime = nightTimeInSeconds - elapsedNightTime;
+        float min = elapsedNightTime + minEventTimeSeconds;
+        float max = elapsedNightTime + maxEventTimeSeconds;
 
         float newEventTime = Random.Range(min, max);
-        eventTime = Mathf.Min(newEventTime, _nightTimeInSeconds + 5);
+        eventTime = Mathf.Min(newEventTime, nightTimeInSeconds + 5);
     }
 
     private void DebugEventTimeWorking()
     {
-        Debug.Log($"Event fired at night time: {_elapsedNightTime:F2}, next at: {eventTime:F2}");
+        Debug.Log($"Event fired at night time: {elapsedNightTime:F2}, next at: {eventTime:F2}");
     }
 }
