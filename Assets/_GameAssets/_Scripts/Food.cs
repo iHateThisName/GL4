@@ -1,15 +1,30 @@
+using System;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
-public class Food : XRGrabInteractable
+public class Food : MonoBehaviour
 {
     [SerializeField] private float foodValue;
-    
-    public override void ProcessInteractable(XRInteractionUpdateOrder.UpdatePhase updatePhase)
+    [SerializeField] private XRGrabInteractable grabInteractable;
+
+    private void OnEnable()
     {
-        base.ProcessInteractable(updatePhase);
+        if (this.grabInteractable == null) return;
+        this.grabInteractable.selectEntered.AddListener(HandleGrabbed);
     }
-    
+
+    private void OnDisable()
+    {
+        if (this.grabInteractable == null) return;
+        this.grabInteractable.selectEntered.RemoveListener(HandleGrabbed);
+    }
+
+    private void HandleGrabbed(SelectEnterEventArgs args)
+    {
+        Debug.Log("Grabbed food");
+    }
+
     public float GetFoodValue() => this.foodValue;
 }

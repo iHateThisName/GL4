@@ -29,17 +29,17 @@ public class NightCycle : MonoBehaviour
     
     private void Start()
     {
-        elapsedNightTime = 0;
-        nightTimeInSeconds = timePerNightMinutes * 60;
+        this.elapsedNightTime = 0;
+        this.nightTimeInSeconds = this.timePerNightMinutes * 60;
         ScheduleNewEventTime();
     }
 
     private void Update()
     {
-        if (elapsedNightTime >= nightTimeInSeconds) return;
+        if (this.elapsedNightTime >= this.nightTimeInSeconds) return;
 
-        elapsedNightTime += Time.deltaTime;
-        if (elapsedNightTime >= eventTime)
+        this.elapsedNightTime += Time.deltaTime;
+        if (this.elapsedNightTime >= this.eventTime)
         {
             OnEventAvailable.Invoke();
             ScheduleNewEventTime();
@@ -48,16 +48,16 @@ public class NightCycle : MonoBehaviour
 
     private void ScheduleNewEventTime()
     {
-        float remainingTime = nightTimeInSeconds - elapsedNightTime;
-        float min = elapsedNightTime + minEventTimeSeconds;
-        float max = elapsedNightTime + maxEventTimeSeconds;
+        float remainingTime = this.nightTimeInSeconds - this.elapsedNightTime;
+        float min = this.elapsedNightTime + this.minEventTimeSeconds;
+        float max = this.elapsedNightTime + this.maxEventTimeSeconds;
 
         float newEventTime = Random.Range(min, max);
-        eventTime = Mathf.Min(newEventTime, nightTimeInSeconds + 5);
+        this.eventTime = Mathf.Min(newEventTime, this.nightTimeInSeconds + 5);
     }
 
     private void DebugEventTimeWorking()
     {
-        Debug.Log($"Event fired at night time: {elapsedNightTime:F2}, next at: {eventTime:F2}");
+        Debug.Log($"Event fired at night time: {this.elapsedNightTime:F2}, next at: {this.eventTime:F2}");
     }
 }

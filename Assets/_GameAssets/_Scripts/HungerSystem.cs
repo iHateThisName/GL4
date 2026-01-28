@@ -16,21 +16,21 @@ public class HungerSystem : MonoBehaviour
 
     private void Start()
     {
-        hunger = maxHunger;
-        starving = false;
-        this.UpdateHungerText(hungerText,hunger.ToString("F2"));
+        this.hunger = this.maxHunger;
+        this.starving = false;
+        this.UpdateHungerText(this.hungerText,this.hunger.ToString("F2"));
     }
 
     private void OnEnable()
     {
-        if (mouthCollider == null) return;
-        mouthCollider.OnTriggerEntered += this.eatFood;
+        if (this.mouthCollider == null) return;
+        this.mouthCollider.OnTriggerEntered += this.eatFood;
     }
 
     private void OnDisable()
     {
-        if (mouthCollider == null) return;
-        mouthCollider.OnTriggerEntered -= this.eatFood;
+        if (this.mouthCollider == null) return;
+        this.mouthCollider.OnTriggerEntered -= this.eatFood;
     }
 
     private void eatFood(Collider other)
@@ -38,21 +38,21 @@ public class HungerSystem : MonoBehaviour
         Debug.Log("Trigger Enter with: " + other.name);
         if (!other.TryGetComponent<Food>(out var food)) return;
         
-        hunger = Mathf.Max(hunger + food.GetFoodValue(), 0);
+        this.hunger = Mathf.Max(this.hunger + food.GetFoodValue(), 0);
         Destroy(food.gameObject, 0.1f);
     }
 
     private void Update()
     {
-        elapsedTime += Time.deltaTime;
-        if (elapsedTime >= hungerDecayTick)
+        this.elapsedTime += Time.deltaTime;
+        if (this.elapsedTime >= this.hungerDecayTick)
         {
-            elapsedTime = 0;
-            hunger = Mathf.Clamp(hunger - hungerDecayRate, 0, 100);
-            this.UpdateHungerText(hungerText,hunger.ToString("F2"));
-            if (hunger <= hungerThreshold)
+            this.elapsedTime = 0;
+            this.hunger = Mathf.Clamp(this.hunger - this.hungerDecayRate, 0, 100);
+            this.UpdateHungerText(this.hungerText,this.hunger.ToString("F2"));
+            if (this.hunger <= this.hungerThreshold)
             {
-                starving = true;
+                this.starving = true;
             }
         }
     }
