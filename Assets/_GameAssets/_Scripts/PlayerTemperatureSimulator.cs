@@ -16,8 +16,8 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
                                                                 // 39 - 41 C is moderate (heat stroke risk),
                                                                 // above 41 C is severe (risk of organ failure)
 
-    private readonly float FREEZE_RATE = -0.15f; // Rate of temperature change per second
-    private readonly float NORMAL_RATE = -0.03f; // Rate of temperature change per second
+    private readonly float FREEZE_RATE = -0.15f; // Rate of temperature change per second outside in cold
+    private readonly float NORMAL_RATE = -0.03f; // Rate of temperature change per second inside
     private readonly float WARM_RATE = 0.12f; // Rate of temperature change per second
 
     [SerializeField] private EnumLocationType currentLocationType = EnumLocationType.Normal;
@@ -59,31 +59,31 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
     /// </summary>
     private void UpdateBodyTemperatureState() {
         EnumBodyTemperatureState previousState = this.currentBodyTemperatureState;
-
-        if (this.currentBodyTemperature < MIN_COMFORTABLE_TEMPERATURE) {
-            if (this.currentBodyTemperature >= 32.0f) {
-                this.currentBodyTemperatureState = EnumBodyTemperatureState.MildHypothermia;
-            } else if (this.currentBodyTemperature >= 28.0f) {
-                this.currentBodyTemperatureState = EnumBodyTemperatureState.ModerateHypothermia;
-            } else {
-                this.currentBodyTemperatureState = EnumBodyTemperatureState.Hypothermia;
-            }
-
-        } else if (this.currentBodyTemperature > MAX_COMFORTABLE_TEMPERATURE) {
-            if (this.currentBodyTemperature <= 39.0f) {
-                this.currentBodyTemperatureState = EnumBodyTemperatureState.MildHyperthermia;
-            } else if (this.currentBodyTemperature <= 41.0f) {
-                this.currentBodyTemperatureState = EnumBodyTemperatureState.ModerateHyperthermia;
-            } else {
-                this.currentBodyTemperatureState = EnumBodyTemperatureState.Hyperthermia;
-            }
-        } else {
-            this.currentBodyTemperatureState = EnumBodyTemperatureState.Normal;
-        }
+        this.currentBodyTemperatureState = GetStateFromTemperature(this.currentBodyTemperature);
 
         if (previousState != this.currentBodyTemperatureState) {
             NotifyBodyTempetureStateChange(previousState, this.currentBodyTemperatureState);
         }
+    }
+
+    /// <summary>
+    /// Determines the body temperature state based on the specified temperature value.
+    /// </summary>
+    /// <remarks>Temperature thresholds are based on typical clinical definitions for hypothermia and
+    /// hyperthermia. Use this method to classify body temperature readings into medically relevant states.</remarks>
+    /// <param name="temp">The body temperature, in degrees Celsius, to evaluate.</param>
+    /// <returns>A value of the EnumBodyTemperatureState enumeration that represents the state corresponding to the specified
+    /// temperature.</returns>
+    private EnumBodyTemperatureState GetStateFromTemperature(float temp) {
+        if (temp < 28f) return EnumBodyTemperatureState.Hypothermia;
+        if (temp < 32f) return EnumBodyTemperatureState.ModerateHypothermia;
+        if (temp < MIN_COMFORTABLE_TEMPERATURE) return EnumBodyTemperatureState.MildHypothermia;
+
+        if (temp > 41f) return EnumBodyTemperatureState.Hyperthermia;
+        if (temp > 39f) return EnumBodyTemperatureState.ModerateHyperthermia;
+        if (temp > MAX_COMFORTABLE_TEMPERATURE) return EnumBodyTemperatureState.MildHyperthermia;
+
+        return EnumBodyTemperatureState.Normal;
     }
 
     /// <summary>
