@@ -1,7 +1,6 @@
 using Assets.Scripts.Singleton;
 using System;
 using UnityEngine;
-using static PlayerTemperatureSimulator;
 
 public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> {
 
@@ -102,20 +101,53 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
     /// Applies the appropriate temperature change rate multiplied by the fixed delta time.
     /// </summary>
     private void SimulateTemperatureChange() {
-        float deltaTemperature = 0f;
-        switch (this.currentLocationType) {
-            case EnumLocationType.Normal:
-                deltaTemperature = this.NORMAL_RATE; // Normal locations cause slight cooling
-                break;
-            case EnumLocationType.Cold:
-                deltaTemperature = this.FREEZE_RATE; // Cold locations cause rapid cooling
-                break;
-            case EnumLocationType.Warm:
-                deltaTemperature = this.WARM_RATE; // Warm locations cause warming
-                break;
+        // Calculate next body temperature
+        float nextTemp = this.currentBodyTemperature + GetLocationRate(this.currentLocationType) * Time.fixedDeltaTime;
+
+        // Get location-specific min and max temperatures
+        float minTemp = GetLocationMinTemp(this.currentLocationType);
+        float maxTemp = GetLocationMaxTemp(this.currentLocationType);
+
+        // Clamp temperature to location-specific min/max (setting a max and min value for temp)
+        if (nextTemp < this.currentBodyTemperature && this.currentBodyTemperature <= minTemp) {
+            nextTemp = currentBodyTemperature; // stop cooling because we've reached min for this location
+
+        } else if (nextTemp > this.currentBodyTemperature && this.currentBodyTemperature >= maxTemp) {
+            nextTemp = currentBodyTemperature; // stop heating because we've reached max for this location
         }
-        // Update body temperature
-        this.currentBodyTemperature += deltaTemperature * Time.fixedDeltaTime;
+
+        // Update body temperature, will be no change if clamped
+        this.currentBodyTemperature = nextTemp;
+    }
+
+    private float GetLocationRate(EnumLocationType location) {
+        // The rate of temperature change in different environments
+        return location switch {
+            EnumLocationType.Cold => this.FREEZE_RATE, // Cold locations cause rapid cooling
+            EnumLocationType.Normal => this.NORMAL_RATE, // Normal locations cause slight cooling
+            EnumLocationType.Warm => this.WARM_RATE, // Warm locations cause warming
+            _ => this.NORMAL_RATE,
+        };
+    }
+
+    private float GetLocationMinTemp(EnumLocationType location) {
+        // The lowest allowed body temperature in different environments
+        return location switch {
+            EnumLocationType.Cold => 25f,
+            EnumLocationType.Normal => 34f,
+            EnumLocationType.Warm => 36f,
+            _ => 34f,
+        };
+    }
+
+    private float GetLocationMaxTemp(EnumLocationType location) {
+        // The highest allowed body temperature in different environments
+        return location switch {
+            EnumLocationType.Cold => 36f,
+            EnumLocationType.Normal => 38f,
+            EnumLocationType.Warm => 39f,
+            _ => 39f,
+        };
     }
 }
 
