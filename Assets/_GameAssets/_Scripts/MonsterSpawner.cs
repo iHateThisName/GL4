@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 
 public class MonsterSpawner : MonoBehaviour
@@ -8,67 +7,40 @@ public class MonsterSpawner : MonoBehaviour
      * ======================= */
 
     [Header("Spawn Settings")]
-    [Tooltip("Monster prefabs that can be spawned")]
-    [SerializeField] public GameObject[] MonsterPrefabs;
-
-    [Tooltip("Possible spawn locations")]
-    [SerializeField] public Transform[] SpawnPoints;
-
-    [Tooltip("Time in seconds between spawns")]
-    [SerializeField] public float SpawnInterval = 3f;
-
-    [Tooltip("Maximum number of monsters to spawn (0 = infinite)")]
-    [SerializeField] public int MaxMonsters = 10;
-
+    [SerializeField] private GameObject[] monsterPrefabs;
+    [SerializeField] private Transform[] spawnPoints;
+    [SerializeField] private float spawnInterval = 3f;
 
     /* =======================
      * Private Fields
      * ======================= */
 
-    private int currentMonsterCount;
-
+    private GameObject currentMonster;
 
     /* =======================
      * Unity Lifecycle
      * ======================= */
 
-    private void OnEnable() 
+    private void OnEnable()
     {
         NightCycle.OnEventAvailable += SpawnMonster;
     }
 
-    private void OnDisable() 
+    private void OnDisable()
     {
         NightCycle.OnEventAvailable -= SpawnMonster;
     }
-
-
-    private void Start()
-    {
-        
-    }
-
 
     /* =======================
      * Spawning Logic
      * ======================= */
 
-    private IEnumerator SpawnLoop()
-    {
-        while (CanSpawnMoreMonsters())
-        {
-            SpawnMonster();
-            yield return new WaitForSeconds(this.SpawnInterval);
-        }
-    }
-
-    private bool CanSpawnMoreMonsters()
-    {
-        return this.MaxMonsters == 0 || this.currentMonsterCount < this.MaxMonsters;
-    }
-
     private void SpawnMonster()
     {
+        // ✅ Only allow one monster at a time
+        if (currentMonster != null)
+            return;
+
         if (!IsSpawnerConfiguredCorrectly())
         {
             Debug.LogWarning("MonsterSpawner is missing prefabs or spawn points.");
@@ -78,15 +50,12 @@ public class MonsterSpawner : MonoBehaviour
         GameObject selectedPrefab = GetRandomMonsterPrefab();
         Transform selectedSpawnPoint = GetRandomSpawnPoint();
 
-        Instantiate(
+        currentMonster = Instantiate(
             selectedPrefab,
             selectedSpawnPoint.position,
             selectedSpawnPoint.rotation
         );
-
-        this.currentMonsterCount++;
     }
-
 
     /* =======================
      * Helpers
@@ -94,18 +63,16 @@ public class MonsterSpawner : MonoBehaviour
 
     private bool IsSpawnerConfiguredCorrectly()
     {
-        return this.MonsterPrefabs.Length > 0 && this.SpawnPoints.Length > 0;
+        return monsterPrefabs.Length > 0 && spawnPoints.Length > 0;
     }
 
     private GameObject GetRandomMonsterPrefab()
     {
-        int index = Random.Range(0, this.MonsterPrefabs.Length);
-        return this.MonsterPrefabs[index];
+        return monsterPrefabs[Random.Range(0, monsterPrefabs.Length)];
     }
 
     private Transform GetRandomSpawnPoint()
     {
-        int index = Random.Range(0, this.SpawnPoints.Length);
-        return this.SpawnPoints[index];
+        return spawnPoints[Random.Range(0, spawnPoints.Length)];
     }
 }
