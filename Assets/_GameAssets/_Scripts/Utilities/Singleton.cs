@@ -18,7 +18,7 @@ namespace Assets.Scripts.Singleton {
                         var go = new GameObject(typeof(T).Name + " Auto-Generated");
                         instance = go.AddComponent<T>();
                     }
-                }
+                } 
 
                 return instance;
             }
