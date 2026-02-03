@@ -3,21 +3,22 @@ using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 public class Choppable_Wood : MonoBehaviour
 {
-    [SerializeField] GameObject prefab1;
-    [SerializeField] GameObject prefab2;
+    [SerializeField] GameObject firewood1;
+    [SerializeField] GameObject firewood2;
+    [SerializeField] string tagInQuestion;
 
     private XRGrabInteractable grabInteractable;
 
     private void Awake()
     {
-        grabInteractable = GetComponent<XRGrabInteractable>();
+        //Automatically gets the grabInteractable component
+        this.grabInteractable = GetComponent<XRGrabInteractable>();
     }
 
-    // Use Trigger instead of Collision for instant detection while held
     private void OnTriggerEnter(Collider other)
     {
-        // 1. Check tag
-        if (other.CompareTag("Finish"))
+        // 1. Look for tagInQuestion
+        if (other.CompareTag(tagInQuestion))
         {
             // 2. Ensure it's in the socket
             if (IsSnappedToSocket())
@@ -30,9 +31,9 @@ public class Choppable_Wood : MonoBehaviour
     private bool IsSnappedToSocket()
     {
         // Check if the wood is currently being held by a socket
-        if (grabInteractable != null && grabInteractable.isSelected)
+        if (this.grabInteractable != null && this.grabInteractable.isSelected)
         {
-            var interactor = grabInteractable.firstInteractorSelecting;
+            var interactor = this.grabInteractable.firstInteractorSelecting;
             return interactor is UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor;
         }
         return false;
@@ -40,9 +41,10 @@ public class Choppable_Wood : MonoBehaviour
 
     private void SpawnPieces()
     {
-        Instantiate(prefab1, transform.position + new Vector3(-0.02f, 0f, 0f), transform.rotation);
-        Instantiate(prefab2, transform.position + new Vector3(0.02f, 0f, 0f), transform.rotation);
+        //Spawns the two "chopped" wood prefabs
+        Instantiate(this.firewood1, transform.position + new Vector3(-0.02f, 0f, 0f), transform.rotation);
+        Instantiate(this.firewood2, transform.position + new Vector3(0.02f, 0f, 0f), transform.rotation);
 
-        Destroy(gameObject);
+        Destroy(this.gameObject);
     }
 }

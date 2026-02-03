@@ -238,8 +238,6 @@ GameObject:
   - component: {fileID: 6700118785716224481}
   - component: {fileID: 1869973474914430832}
   - component: {fileID: 5152833613580442950}
-  - component: {fileID: 7386299177824375480}
-  - component: {fileID: 586811778746722952}
   m_Layer: 0
   m_Name: RadioDial
   m_TagString: Untagged
@@ -255,15 +253,15 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3381938621740248021}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.70710677, y: 0, z: 0, w: 0.70710677}
-  m_LocalPosition: {x: 0.00243, y: 0.215, z: 0.014}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.42548, y: 0.07110459, z: 0.42548022}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3187140623287457327}
   - {fileID: 4918456256752268134}
   m_Father: {fileID: 2473867385210188031}
-  m_LocalEulerAnglesHint: {x: 90, y: -90, z: -90}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &7641748070686290230
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -369,7 +367,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 1
-  m_Constraints: 0
+  m_Constraints: 94
   m_CollisionDetection: 1
 --- !u!114 &5152833613580442950
 MonoBehaviour:
@@ -459,11 +457,11 @@ MonoBehaviour:
   m_VelocityScale: 1
   m_AngularVelocityDamping: 1
   m_AngularVelocityScale: 1
-  m_TrackPosition: 0
+  m_TrackPosition: 1
   m_SmoothPosition: 0
   m_SmoothPositionAmount: 8
   m_TightenPosition: 0.1
-  m_TrackRotation: 0
+  m_TrackRotation: 1
   m_SmoothRotation: 0
   m_SmoothRotationAmount: 8
   m_TightenRotation: 0.1
@@ -500,61 +498,6 @@ MonoBehaviour:
   m_LimitAngularVelocity: 0
   m_MaxLinearVelocityDelta: 10
   m_MaxAngularVelocityDelta: 20
---- !u!114 &7386299177824375480
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3381938621740248021}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: edc99eb579ec04d059270751709161f5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RadioKnob
-  knobTransform: {fileID: 832506145650207909}
-  minAngle: -90
-  maxAngle: 90
-  totalChannels: 5
---- !u!59 &586811778746722952
-HingeJoint:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3381938621740248021}
-  serializedVersion: 3
-  m_ConnectedBody: {fileID: 0}
-  m_ConnectedArticulationBody: {fileID: 0}
-  m_Anchor: {x: 0, y: 0, z: 0}
-  m_Axis: {x: 1, y: 0, z: 0}
-  m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0, y: 0, z: 0}
-  m_UseSpring: 0
-  m_Spring:
-    spring: 0
-    damper: 0
-    targetPosition: 0
-  m_UseMotor: 0
-  m_Motor:
-    targetVelocity: 0
-    force: 0
-    freeSpin: 0
-  m_UseLimits: 0
-  m_ExtendedLimits: 0
-  m_UseAcceleration: 0
-  m_Limits:
-    min: -90
-    max: 90
-    bounciness: 0
-    bounceMinVelocity: 0.2
-    contactDistance: 0
-  m_BreakForce: Infinity
-  m_BreakTorque: Infinity
-  m_EnableCollision: 0
-  m_EnablePreprocessing: 1
-  m_MassScale: 1
-  m_ConnectedMassScale: 1
 --- !u!1 &3793936213752089834
 GameObject:
   m_ObjectHideFlags: 0
@@ -583,13 +526,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3793936213752089834}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.00243, y: 0.31497, z: 0.04804}
+  m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: 0.00243, y: 0.046, z: -0.201}
   m_LocalScale: {x: 0.5547741, y: 1.0252413, z: 0.0960813}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2473867385210188031}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!33 &4578303745461876152
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -719,8 +662,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4188991452946805470}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.00243, y: -0.31497, z: -0.04804}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -728,7 +671,7 @@ Transform:
   - {fileID: 832506145650207909}
   - {fileID: 7569385225080958746}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &9001630439592433538
 GameObject:
   m_ObjectHideFlags: 0
@@ -756,13 +699,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9001630439592433538}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.00243, y: 0.63397, z: 0.013039999}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0.00243, y: 0.002, z: -0.596}
   m_LocalScale: {x: 0.43072423, y: 0.16219924, z: 0.052426}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2473867385210188031}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!33 &1784134868143271336
 MeshFilter:
   m_ObjectHideFlags: 0

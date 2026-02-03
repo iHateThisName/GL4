@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class RadioKnob : MonoBehaviour
 {
@@ -9,10 +9,6 @@ public class RadioKnob : MonoBehaviour
 
     [Header("Knob Settings")]
     [SerializeField] private Transform knobTransform;
-    [SerializeField] private float minAngle = -90f;
-    [SerializeField] private float maxAngle = 90f;
-
-    [Header("Channel Settings")]
     [SerializeField] private int totalChannels = 5;
 
     /* =======================
@@ -20,7 +16,8 @@ public class RadioKnob : MonoBehaviour
      * ======================= */
 
     private UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable grabInteractable;
-    private float currentAngle;
+    private float accumulatedAngle;
+    private float lastInteractorAngle;
     private int currentChannel = -1;
 
     /* =======================
@@ -30,9 +27,11 @@ public class RadioKnob : MonoBehaviour
     private void Awake()
     {
         grabInteractable = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
-
-        // We handle rotation manually
         grabInteractable.trackRotation = false;
+        grabInteractable.trackPosition = false;
+
+        grabInteractable.selectEntered.AddListener(OnGrab);
+        grabInteractable.selectExited.AddListener(OnRelease);
     }
 
     private void Update()
@@ -48,19 +47,32 @@ public class RadioKnob : MonoBehaviour
      * Knob Logic
      * ======================= */
 
+    private void OnGrab(SelectEnterEventArgs args)
+    {
+        lastInteractorAngle = GetInteractorAngle(args.interactorObject.transform);
+    }
+
+    private void OnRelease(SelectExitEventArgs args)
+    {
+        lastInteractorAngle = 0f;
+    }
+
     private void UpdateKnobRotation()
     {
-        float rawAngle = grabInteractable.transform.localEulerAngles.z;
-        currentAngle = NormalizeAngle(rawAngle);
-        currentAngle = Mathf.Clamp(currentAngle, minAngle, maxAngle);
+        Transform interactor = grabInteractable.interactorsSelecting[0].transform;
 
-        knobTransform.localRotation = Quaternion.Euler(0f, 0f, currentAngle);
+        float currentInteractorAngle = GetInteractorAngle(interactor);
+        float delta = Mathf.DeltaAngle(lastInteractorAngle, currentInteractorAngle);
+
+        accumulatedAngle += delta;
+        lastInteractorAngle = currentInteractorAngle;
+
+        knobTransform.localRotation = Quaternion.Euler(0f, 0f, accumulatedAngle);
     }
 
     private void UpdateChannel()
     {
-        float t = Mathf.InverseLerp(minAngle, maxAngle, currentAngle);
-        int newChannel = Mathf.RoundToInt(t * (totalChannels - 1));
+        int newChannel = Mathf.FloorToInt(Mathf.Abs(accumulatedAngle) / 45f) % totalChannels;
 
         if (newChannel == currentChannel)
             return;
@@ -75,19 +87,16 @@ public class RadioKnob : MonoBehaviour
 
     private void OnChannelChanged(int channel)
     {
-        Debug.Log($"Radio channel changed to: {channel}");
-        // Hook radio audio / logic here
+        Debug.Log($"Radio channel: {channel}");
     }
 
     /* =======================
      * Helpers
      * ======================= */
 
-    private float NormalizeAngle(float angle)
+    private float GetInteractorAngle(Transform interactor)
     {
-        if (angle > 180f)
-            angle -= 360f;
-
-        return angle;
+        Vector3 localDir = transform.InverseTransformDirection(interactor.forward);
+        return Mathf.Atan2(localDir.y, localDir.x) * Mathf.Rad2Deg;
     }
 }
