@@ -1,10 +1,11 @@
+using System.Collections;
 using UnityEngine;
 
 public class FireplaceFuelTrigger : MonoBehaviour {
 
     [SerializeField] private FireplaceController fireplaceController;
 
-    private void OnTriggerStay(Collider other) {
+    private void OnTriggerEnter(Collider other) {
         // Check if the colliding object is firewood
         Firewood wood = other.GetComponentInParent<Firewood>();
 
@@ -31,11 +32,6 @@ public class FireplaceFuelTrigger : MonoBehaviour {
     /// </summary>
     /// <param name="wood">The firewood object to consume for fuel.</param>
     private void AddFuelToFireplace(Firewood wood) {
-        // Add some randomness to the fuel value to make it feel more organic
-        float randomizedFuelValue = Random.Range(wood.FuelValue * 0.8f, wood.FuelValue * 1.2f);
-        this.fireplaceController.AddFuel(randomizedFuelValue);
-
-        // Destroy the firewood after adding its fuel value
-        Destroy(wood.gameObject);
+        this.fireplaceController.AddFuel(wood);
     }
 }
