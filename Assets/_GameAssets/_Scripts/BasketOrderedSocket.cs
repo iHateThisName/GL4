@@ -8,14 +8,19 @@ public class BasketOrderedSocket : XRSocketInteractor
 {
     [Header("Basket Configuration")]
     [Tooltip("If true, it uses the child order in the hierarchy (top to bottom) as the fill order.")]
-    [SerializeField] bool useHierarchyOrder = true;
+    [SerializeField] private bool useHierarchyOrder = true;
 
     [Tooltip("The ordered list of slots. The basket fills index 0, then index 1, etc.")]
-    [SerializeField] List<Transform> orderedSlots = new List<Transform>();
+    [SerializeField] private List<Transform> orderedSlots = new List<Transform>();
 
-    readonly Dictionary<IXRInteractable, Transform> SELECTION_MAP = new Dictionary<IXRInteractable, Transform>();
-    readonly HashSet<Transform> OCCUPIED_SLOTS = new HashSet<Transform>();
+    [Header("Snap Settings")]
+    [Tooltip("How close (in meters) the object must be to the assigned slot to snap.")]
+    [SerializeField] private float snapDistance = 0.1f;
 
+    private readonly Dictionary<IXRInteractable, Transform> SELECTION_MAP = new Dictionary<IXRInteractable, Transform>();
+    private readonly HashSet<Transform> OCCUPIED_SLOTS = new HashSet<Transform>();
+
+    #region Unity Lifecycle
     protected override void Awake()
     {
         base.Awake();
@@ -29,18 +34,19 @@ public class BasketOrderedSocket : XRSocketInteractor
             }
         }
 
-        // Essential: Allow the hover mesh to show even if the "main" socket slot is technically occupied
         this.interactableCantHoverMeshMaterial = this.interactableHoverMeshMaterial;
     }
+    #endregion
 
+    #region XRI Overrides
     public override Transform GetAttachTransform(IXRInteractable interactable)
     {
-        // 1. If already snapped, stay in that slot
-        if (this.SELECTION_MAP.TryGetValue(interactable, out var assignedSlot))
+        if (this.SELECTION_MAP.TryGetValue(interactable, out Transform assignedSlot))
+        {
             return assignedSlot;
+        }
 
-        // 2. Ordered Logic: Always pick the FIRST empty slot in the list
-        foreach (var slot in this.orderedSlots)
+        foreach (Transform slot in this.orderedSlots)
         {
             if (!this.OCCUPIED_SLOTS.Contains(slot))
             {
@@ -48,32 +54,47 @@ public class BasketOrderedSocket : XRSocketInteractor
             }
         }
 
-        // Fallback to base if full
         return base.attachTransform;
     }
 
-    // --- Critical Overrides to make Multi-Snap work ---
-
     public override bool CanHover(IXRHoverInteractable interactable)
     {
-        // Check if there is any room left in the basket
-        return base.CanHover(interactable) && this.OCCUPIED_SLOTS.Count < this.orderedSlots.Count;
+        Transform target = this.GetAttachTransform(interactable);
+
+        if (target == null || target == this.attachTransform)
+        {
+            return false;
+        }
+
+        float distance = Vector3.Distance(interactable.GetAttachTransform(this).position, target.position);
+
+        return base.CanHover(interactable) &&
+               this.OCCUPIED_SLOTS.Count < this.orderedSlots.Count &&
+               distance <= this.snapDistance;
     }
 
     public override bool CanSelect(IXRSelectInteractable interactable)
     {
-        // This is the logic that bypasses the 1-object limit.
-        // It returns true if we are already selecting the object OR if the basket isn't full.
-        return IsSelecting(interactable) ||
-               (this.OCCUPIED_SLOTS.Count < this.orderedSlots.Count && !interactable.isSelected);
+        Transform target = this.GetAttachTransform(interactable);
+
+        if (target == null || target == this.attachTransform)
+        {
+            return false;
+        }
+
+        float distance = Vector3.Distance(interactable.GetAttachTransform(this).position, target.position);
+
+        return this.IsSelecting(interactable) ||
+               (this.OCCUPIED_SLOTS.Count < this.orderedSlots.Count &&
+                !interactable.isSelected &&
+                distance <= this.snapDistance);
     }
 
     protected override void OnSelectEntering(SelectEnterEventArgs args)
     {
-        // We find the target slot BEFORE calling base, because base triggers the snap
-        Transform target = GetAttachTransform(args.interactableObject);
+        Transform target = this.GetAttachTransform(args.interactableObject);
 
-        if (target != null && !this.OCCUPIED_SLOTS.Contains(target))
+        if (target != null && target != this.attachTransform && !this.OCCUPIED_SLOTS.Contains(target))
         {
             this.OCCUPIED_SLOTS.Add(target);
             this.SELECTION_MAP.Add(args.interactableObject, target);
@@ -84,28 +105,42 @@ public class BasketOrderedSocket : XRSocketInteractor
 
     protected override void OnSelectExiting(SelectExitEventArgs args)
     {
-        if (this.SELECTION_MAP.TryGetValue(args.interactableObject, out var target))
+        if (this.SELECTION_MAP.TryGetValue(args.interactableObject, out Transform target))
         {
             this.OCCUPIED_SLOTS.Remove(target);
             this.SELECTION_MAP.Remove(args.interactableObject);
         }
+
         base.OnSelectExiting(args);
     }
+    #endregion
 
+    #region Editor Visualization
     protected virtual void OnDrawGizmos()
     {
-        if (this.orderedSlots == null || this.orderedSlots.Count == 0) return;
+        if (this.orderedSlots == null || this.orderedSlots.Count == 0)
+        {
+            return;
+        }
 
         for (int i = 0; i < this.orderedSlots.Count; i++)
         {
-            if (this.orderedSlots[i] == null) continue;
+            Transform slot = this.orderedSlots[i];
+            if (slot == null) continue;
 
-            Gizmos.color = this.OCCUPIED_SLOTS.Contains(this.orderedSlots[i]) ? Color.red : Color.yellow;
-            Gizmos.DrawWireSphere(this.orderedSlots[i].position, 0.03f);
+            bool isOccupied = this.OCCUPIED_SLOTS.Contains(slot);
+
+            Gizmos.color = isOccupied ? new Color(1, 0, 0, 0.2f) : new Color(0, 1, 1, 0.3f);
+            Gizmos.DrawSphere(slot.position, this.snapDistance);
+
+            Gizmos.color = isOccupied ? Color.red : Color.cyan;
+            Gizmos.DrawRay(slot.position, slot.forward * 0.1f);
+            Gizmos.DrawWireSphere(slot.position, 0.01f);
 
 #if UNITY_EDITOR
-            UnityEditor.Handles.Label(this.orderedSlots[i].position + Vector3.up * 0.05f, "Order: " + i);
+            UnityEditor.Handles.Label(slot.position + Vector3.up * (this.snapDistance + 0.02f), $"Slot {i}");
 #endif
         }
     }
+    #endregion
 }
