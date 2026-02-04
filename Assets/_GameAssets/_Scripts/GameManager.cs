@@ -21,5 +21,11 @@ public class GameManager : PersistenSingleton<GameManager> {
         Debug.Log("Continuing Game...");
         // Add logic to continue the game from the game over scene
     }
+
+    public void OnHoverEntered() => Debug.Log("XR on Hover Entered");
+    public void OnHoverExited() => Debug.Log("XR on Hover Exited");
+    public void OnSelectEntered() => Debug.Log("XR on Select Entered");
+    public void OnSelectExited() => Debug.Log("XR on Select Exited");
+
 }
 
