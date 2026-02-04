@@ -8,11 +8,12 @@ public class FireplaceController : MonoBehaviour {
     private readonly float BURN_RATE = 0.5f;
     // private readonly float MAX_FUEL = 100f; There is not need to cap because it will be limited by amount of nodes.
 
-    private readonly Queue<Firewood> fuelQueue = new Queue<Firewood>();
+    private readonly Stack<Firewood> fuelQueue = new Stack<Firewood>();
     [field: SerializeField] public bool IsLit { get; private set; } = false;
     [field: SerializeField] public bool HasFuel { get; private set; } = false;
 
     [SerializeField] private Firewood currentBurningFuel;
+    private bool hasNewFuel = false;
 
     /// <summary>
     /// Total remaining fuel across all firewood currently in the fireplace
@@ -44,9 +45,9 @@ public class FireplaceController : MonoBehaviour {
         float burnAmount = this.BURN_RATE * Time.fixedDeltaTime;
 
         // Check for fuel
-        if (this.currentBurningFuel == null) {
-            this.currentBurningFuel = fuelQueue.Peek(); // Get the first piece of firewood
-
+        if (this.currentBurningFuel == null || this.hasNewFuel) {
+            this.currentBurningFuel = fuelQueue.Peek(); // Get the last piece of firewood added
+            this.hasNewFuel = false;
         }
 
         this.currentBurningFuel.RemainingFuel -= burnAmount; // Reduce its remaining fuel
@@ -58,7 +59,7 @@ public class FireplaceController : MonoBehaviour {
             // Destroy the fuel
             Destroy(this.currentBurningFuel.gameObject);
             this.currentBurningFuel = null;
-            fuelQueue.Dequeue();
+            fuelQueue.Pop();
 
             if (this.fuelQueue.Count == 0) {
                 // No more fuel left, extinguish fire
@@ -91,8 +92,9 @@ public class FireplaceController : MonoBehaviour {
         wood.IsBurning = true;
 
         // Enqueue the firewood
-        this.fuelQueue.Enqueue(wood);
-        IsLit = true; // Currently, adding fuel always lights the fire
+        this.fuelQueue.Push(wood);
+        this.hasNewFuel = true;
+        this.IsLit = true; // Currently, adding fuel always lights the fire
     }
 
     /// <summary>
@@ -108,7 +110,8 @@ public class FireplaceController : MonoBehaviour {
         wood.RemainingFuel = UnityEngine.Random.Range(wood.FuelValue * 0.8f, wood.FuelValue * 1.2f);
 
         // Enqueue the firewood
-        this.fuelQueue.Enqueue(wood);
-        IsLit = true; // Currently, adding fuel always lights the fire
+        this.fuelQueue.Push(wood);
+        this.hasNewFuel = true;
+        this.IsLit = true; // Currently, adding fuel always lights the fire
     }
 }
