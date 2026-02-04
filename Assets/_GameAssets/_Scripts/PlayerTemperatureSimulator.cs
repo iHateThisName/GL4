@@ -17,7 +17,7 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
 
     private readonly float FREEZE_RATE = -0.15f; // Rate of temperature change per second outside in cold
     private readonly float NORMAL_RATE = -0.03f; // Rate of temperature change per second inside
-    private readonly float WARM_RATE = 0.12f; // Rate of temperature change per second
+    private readonly float WARM_RATE = 0.12f; // Rate of temperature change per second while next to fireplace
 
     [SerializeField] private EnumLocationType currentLocationType = EnumLocationType.Normal;
     [SerializeField] private EnumBodyTemperatureState currentBodyTemperatureState = EnumBodyTemperatureState.Normal;

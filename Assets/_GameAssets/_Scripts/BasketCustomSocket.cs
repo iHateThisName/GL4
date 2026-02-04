@@ -4,7 +4,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
-public class BasketOrderedSocket : XRSocketInteractor
+public class BasketCustomSocket : XRSocketInteractor
 {
     [Header("Basket Configuration")]
     [SerializeField] private bool useHierarchyOrder = true;
