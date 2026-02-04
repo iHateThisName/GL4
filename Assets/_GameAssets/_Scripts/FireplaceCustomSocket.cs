@@ -99,6 +99,7 @@ public class FireplaceCustomSocket : XRSocketInteractor
 
     protected override void OnSelectExiting(SelectExitEventArgs args)
     {
+        return;
         if (this.SELECTION_MAP.TryGetValue(args.interactableObject, out var target))
         {
             this.OCCUPIED_SLOTS.Remove(target);
