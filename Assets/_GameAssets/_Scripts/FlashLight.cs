@@ -6,13 +6,15 @@ using UnityEngine.XR.Interaction.Toolkit.Interactables;
 public class FlashLight : MonoBehaviour
 {
     [SerializeField] private XRGrabInteractable handleInteractable;
-    [SerializeField] private XRGrabInteractable crankInteractable;
-    [SerializeField] private HingeJoint hinge;
+    [SerializeField] private RotatorInteractable crankInteractable;
     [SerializeField] private float[] triggerAngles;
     [SerializeField] private float lightPower;
     [SerializeField] private float maxCrank = 10;
     [SerializeField] private float crankDecayRate;
     [SerializeField] private float crankDecayTick;
+    
+    public float currentAngle { get; private set; }
+    public int fullRotations { get; private set; }
 
     private float crankedPower;
     private float elapsedTime;
@@ -24,14 +26,36 @@ public class FlashLight : MonoBehaviour
 
     private void OnEnable()
     {
-        crankInteractable.selectEntered.AddListener(OnGrab); 
-        crankInteractable.selectExited.AddListener(OnRelease);
+        //crankInteractable.selectEntered.AddListener(OnGrab); 
+        //crankInteractable.selectExited.AddListener(OnRelease);
+        if (crankInteractable != null)
+            crankInteractable.OnCrank += OnCrankRotated;
     }
 
     private void OnDisable()
     {
-        crankInteractable.selectEntered.RemoveListener(OnGrab); 
-        crankInteractable.selectExited.RemoveListener(OnRelease);
+        //crankInteractable.selectEntered.RemoveListener(OnGrab); 
+        //crankInteractable.selectExited.RemoveListener(OnRelease);
+        if (crankInteractable != null)
+            crankInteractable.OnCrank -= OnCrankRotated;
+    }
+    
+    void OnCrankRotated(float delta)
+    {
+        currentAngle += delta;
+
+        // Count full rotations
+        while (currentAngle >= 360f)
+        {
+            currentAngle -= 360f;
+            fullRotations++;
+        }
+
+        while (currentAngle <= -360f)
+        {
+            currentAngle += 360f;
+            fullRotations--;
+        }
     }
 
     private void OnGrab(SelectEnterEventArgs args)
@@ -50,7 +74,6 @@ public class FlashLight : MonoBehaviour
         this.lightPower = 0;
         this.hasPower = false;
         this.lowBattery = false;
-        if (hinge == null) hinge = GetComponent<HingeJoint>(); 
         triggered = new bool[triggerAngles.Length];
     }
 
@@ -67,13 +90,6 @@ public class FlashLight : MonoBehaviour
             {
                 this.crankedPower = Mathf.Max(this.crankedPower - this.crankDecayRate, 0);
             }
-        }
-        float angle = hinge.angle; for (int i = 0; i < triggerAngles.Length; i++) 
-        {
-            if (!triggered[i] && angle >= triggerAngles[i])
-            {
-                triggered[i] = true; OnCrankAngleTriggered?.Invoke(triggerAngles[i]);
-            } 
         }
     }
 
