@@ -6,6 +6,7 @@ public class FireplaceController : MonoBehaviour {
 
     [Header("Fuel Settings")]
     private readonly float BURN_RATE = 0.5f;
+    private readonly float MAX_FUEL_FOR_FULL_HEAT = 200f;
     private readonly Stack<Firewood> fuelQueue = new Stack<Firewood>(); // Stack to hold firewood fuel
     [field: SerializeField] public bool IsLit { get; private set; } = false; // Indicates if the fireplace is currently lit and will burn fuel.
     [field: SerializeField] public bool HasFuel { get; private set; } = false; // Indicates if there is any fuel left in the fireplace.
@@ -23,6 +24,15 @@ public class FireplaceController : MonoBehaviour {
                 total += Mathf.Max(wood.RemainingFuel, 0f);
             }
             return total;
+        }
+    }
+
+    /// <summary>
+    /// Gets the current fuel level as a percentage (0-1) relative to the maximum fuel required for full heat output. Normalized value.
+    /// </summary>
+    public float FuelPercentage {
+        get {
+            return Mathf.Clamp01(this.CurrentFuelAmount / this.MAX_FUEL_FOR_FULL_HEAT);
         }
     }
 

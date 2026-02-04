@@ -1,5 +1,90 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2195329894301582976
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2724869332681426103}
+  - component: {fileID: 7202717554708523644}
+  - component: {fileID: 7838491671837219563}
+  - component: {fileID: 5916281192760845069}
+  m_Layer: 0
+  m_Name: FireplaceHeatZone
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2724869332681426103
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2195329894301582976}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 841794543126174431}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7202717554708523644
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2195329894301582976}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47aed9c6b64c4e6498dc14d0119e769a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FireplaceHeatZone
+  fireplace: {fileID: 6478574032641028484}
+  heatCollider: {fileID: 0}
+  minRadius: 1.5
+  maxRadius: 6
+  resizeSpeed: 0.8
+--- !u!114 &7838491671837219563
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2195329894301582976}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4f69d10209fd5c4489de4844d4ab270, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TemperatureZoneTrigger
+  locationType: 2
+--- !u!135 &5916281192760845069
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2195329894301582976}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &3943602373114427134
 GameObject:
   m_ObjectHideFlags: 0
@@ -44,7 +129,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39e03d0feae33d648b0fa712edc576fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FireplaceController
-  currentFuel: 0
+  <IsLit>k__BackingField: 0
+  <HasFuel>k__BackingField: 0
+  currentBurningFuel: {fileID: 0}
 --- !u!1 &4165807487604043162
 GameObject:
   m_ObjectHideFlags: 0
@@ -235,6 +322,7 @@ Transform:
   - {fileID: 5989897804287410120}
   - {fileID: 749229689014063073}
   - {fileID: 2282543492358165526}
+  - {fileID: 2724869332681426103}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8621775811797803512
