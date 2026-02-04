@@ -6,14 +6,12 @@ public class FireplaceController : MonoBehaviour {
 
     [Header("Fuel Settings")]
     private readonly float BURN_RATE = 0.5f;
-    // private readonly float MAX_FUEL = 100f; There is not need to cap because it will be limited by amount of nodes.
+    private readonly Stack<Firewood> fuelQueue = new Stack<Firewood>(); // Stack to hold firewood fuel
+    [field: SerializeField] public bool IsLit { get; private set; } = false; // Indicates if the fireplace is currently lit and will burn fuel.
+    [field: SerializeField] public bool HasFuel { get; private set; } = false; // Indicates if there is any fuel left in the fireplace.
 
-    private readonly Stack<Firewood> fuelQueue = new Stack<Firewood>();
-    [field: SerializeField] public bool IsLit { get; private set; } = false;
-    [field: SerializeField] public bool HasFuel { get; private set; } = false;
-
-    [SerializeField] private Firewood currentBurningFuel;
-    private bool hasNewFuel = false;
+    [SerializeField] private Firewood currentBurningFuel; // The firewood currently being burned, null if none.
+    private bool hasNewFuel = false; // Flag to indicate if new fuel has been added since last burn. 
 
     /// <summary>
     /// Total remaining fuel across all firewood currently in the fireplace
@@ -83,7 +81,13 @@ public class FireplaceController : MonoBehaviour {
         ForceAddFuel(10f);
     }
 
-
+    /// <summary>
+    /// Adds the specified amount of fuel to the fire and forces it to become lit, regardless of its previous state.
+    /// </summary>
+    /// <remarks>This method is intended for debugging or testing scenarios where fuel needs to be added
+    /// directly, bypassing normal gameplay restrictions. Calling this method will always light the fire, even if it was
+    /// previously extinguished.</remarks>
+    /// <param name="amount">The amount of fuel to add to the fire, in fuel units. Must be a positive value.</param>
     public void ForceAddFuel(float amount) {
 
         // Create a dummy firewood object to represent the added fuel
@@ -91,14 +95,14 @@ public class FireplaceController : MonoBehaviour {
         wood.RemainingFuel = amount;
         wood.IsBurning = true;
 
-        // Enqueue the firewood
+        // Adding the fuel
         this.fuelQueue.Push(wood);
         this.hasNewFuel = true;
         this.IsLit = true; // Currently, adding fuel always lights the fire
     }
 
     /// <summary>
-    /// Adds fuel to the fireplace, capped at MAX_FUEL.
+    /// Adds fuel to the fireplace.
     /// Automatically lights the fire if it was extinguished and fuel is added.
     /// </summary>
     /// <param name="amount">The amount of fuel to add.</param>
@@ -106,10 +110,10 @@ public class FireplaceController : MonoBehaviour {
         // Ensure we dont add the same firewood multiple times
         if (wood.IsBurning) return;
 
-        wood.IsBurning = true;
-        wood.RemainingFuel = UnityEngine.Random.Range(wood.FuelValue * 0.8f, wood.FuelValue * 1.2f);
+        wood.IsBurning = true; // Mark the firewood as burning
+        wood.RemainingFuel = UnityEngine.Random.Range(wood.FuelValue * 0.8f, wood.FuelValue * 1.2f); // Randomize fuel value a bit for realism
 
-        // Enqueue the firewood
+        // Adding the fuel
         this.fuelQueue.Push(wood);
         this.hasNewFuel = true;
         this.IsLit = true; // Currently, adding fuel always lights the fire
