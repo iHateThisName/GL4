@@ -36,12 +36,14 @@ public class RotatorInteractable : XRBaseInteractable
 
     void StartGrab(SelectEnterEventArgs args)
     {
+        if (interactor != null) return; 
         interactor = args.interactorObject;
         lastLocalDir = GetProjectedLocalDirection();
     }
 
     void EndGrab(SelectExitEventArgs args)
     {
+        if (args.interactorObject != interactor) return;
         interactor = null;
     }
 
