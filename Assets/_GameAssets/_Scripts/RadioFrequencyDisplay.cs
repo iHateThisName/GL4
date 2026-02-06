@@ -1,5 +1,8 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.XR.Interaction.Toolkit;
+using Unity.VRTemplate;
+
 
 public class RadioFrequencyDisplayController : MonoBehaviour
 {
@@ -8,7 +11,7 @@ public class RadioFrequencyDisplayController : MonoBehaviour
      * ========================= */
 
     [Header("References")]
-    [SerializeField] private Transform KnobTransform;
+    [SerializeField] private XRKnob Knob;
     [SerializeField] private TMP_Text FrequencyText;
 
     [Header("Frequency Range")]
@@ -16,8 +19,8 @@ public class RadioFrequencyDisplayController : MonoBehaviour
     [SerializeField] private float MaxFrequency = 108.0f;
 
     [Header("Knob Settings")]
-    [Tooltip("Degrees of rotation required to sweep the full frequency range")]
-    [SerializeField] private float DegreesPerFullSweep = 360f;
+    [Tooltip("Number of full knob rotations required to sweep the full frequency range")]
+    [SerializeField] private float RotationsPerFullSweep = 1f;
 
     [Header("Display Settings")]
     [Range(0, 3)]
@@ -27,45 +30,46 @@ public class RadioFrequencyDisplayController : MonoBehaviour
      * Private Fields
      * ========================= */
 
-    private float accumulatedRotation;
-    private float lastKnobAngle;
+    private float accumulatedTurns;
+    private float lastKnobValue;
 
     /* =========================
      * Unity Lifecycle Methods
      * ========================= */
 
-    private void Start()
+    private void OnEnable()
     {
-        this.InitializeKnobRotation();
+        this.lastKnobValue = this.Knob.value;
+        this.Knob.onValueChange.AddListener(this.OnKnobValueChanged);
     }
 
-    private void Update()
+    private void OnDisable()
     {
-        this.TrackKnobRotation();
+        this.Knob.onValueChange.RemoveListener(this.OnKnobValueChanged);
+    }
+
+    /* =========================
+     * XR Knob Callback
+     * ========================= */
+
+    private void OnKnobValueChanged(float currentValue)
+    {
+        float delta = currentValue - this.lastKnobValue;
+
+        // Handle wraparound (0 → 1 or 1 → 0)
+        if (delta > 0.5f)
+        {
+            delta -= 1f;
+        }
+        else if (delta < -0.5f)
+        {
+            delta += 1f;
+        }
+
+        this.accumulatedTurns += delta;
+        this.lastKnobValue = currentValue;
+
         this.UpdateFrequencyDisplay();
-    }
-
-    /* =========================
-     * Initialization
-     * ========================= */
-
-    private void InitializeKnobRotation()
-    {
-        this.lastKnobAngle = this.KnobTransform.localEulerAngles.y;
-        this.accumulatedRotation = 0f;
-    }
-
-    /* =========================
-     * Knob Logic
-     * ========================= */
-
-    private void TrackKnobRotation()
-    {
-        float currentKnobAngle = this.KnobTransform.localEulerAngles.y;
-        float deltaRotation = Mathf.DeltaAngle(this.lastKnobAngle, currentKnobAngle);
-
-        this.accumulatedRotation += deltaRotation;
-        this.lastKnobAngle = currentKnobAngle;
     }
 
     /* =========================
@@ -75,7 +79,7 @@ public class RadioFrequencyDisplayController : MonoBehaviour
     private void UpdateFrequencyDisplay()
     {
         float normalizedValue = Mathf.Repeat(
-            this.accumulatedRotation / this.DegreesPerFullSweep,
+            this.accumulatedTurns / this.RotationsPerFullSweep,
             1f
         );
 
