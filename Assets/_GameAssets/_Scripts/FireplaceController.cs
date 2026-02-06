@@ -128,8 +128,9 @@ public class FireplaceController : MonoBehaviour {
         if (wood.IsBurning) return;
         
         wood.IsBurning = true; // Mark the firewood as burning
-        wood.RemainingFuel = UnityEngine.Random.Range(wood.FuelValue * 0.8f, wood.FuelValue * 1.2f); // Randomize fuel value a bit for realism
-
+        if (wood.RemainingFuel == 0) {
+            wood.RemainingFuel = UnityEngine.Random.Range(wood.FuelValue * 0.8f, wood.FuelValue * 1.2f); // Randomize fuel value a bit for realism
+        }
         // Adding the fuel
         this.fuelQueue.Push(wood);
         this.hasNewFuel = true;
