@@ -4596,8 +4596,9 @@ GameObject:
   - component: {fileID: 3728091476799878320}
   - component: {fileID: 3321518188138061481}
   - component: {fileID: 3253574740833547432}
+  - component: {fileID: 3728091476799878321}
   m_Layer: 0
-  m_Name: Crank decoupled
+  m_Name: CrankedFlashlight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4880,6 +4881,24 @@ Transform:
   - {fileID: 1488279938}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3728091476799878321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 300077214202741882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 002a9710b2557b2408ad449c11401bf0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FlashLight
+  handleInteractable: {fileID: 3253574740833547432}
+  crankInteractable: {fileID: 1488279940}
+  triggerAngles: []
+  lightPower: 50
+  lightDecayRate: 1
+  lightDecayTick: 1
 --- !u!4 &4410008094880064891
 Transform:
   m_ObjectHideFlags: 0

@@ -3,7 +3,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
-public class CrankRotationInteraction : MonoBehaviour
+public class CrankRotationInteractable : MonoBehaviour
 {
     [SerializeField] private XRSimpleInteractable interactable;
     
