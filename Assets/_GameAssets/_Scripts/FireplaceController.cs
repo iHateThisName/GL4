@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 public class FireplaceController : MonoBehaviour {
@@ -109,6 +110,12 @@ public class FireplaceController : MonoBehaviour {
         this.fuelQueue.Push(wood);
         this.hasNewFuel = true;
         this.IsLit = true; // Currently, adding fuel always lights the fire
+
+        XRGrabInteractable grabInteractable = wood.GetComponent<XRGrabInteractable>();
+        InteractionLayerMask mask = grabInteractable.interactionLayers;
+        mask &= ~InteractionLayerMask.GetMask("Default"); // Remove default layer
+        mask |= InteractionLayerMask.GetMask("Firewood"); // Making sure the Firewood mask is there
+        grabInteractable.interactionLayers = mask;
     }
 
     /// <summary>
@@ -130,11 +137,9 @@ public class FireplaceController : MonoBehaviour {
 
         // Making the firewood not interactable anymore since it's now part of the fire. All firewood should not be interactable when the fire is lit
         XRGrabInteractable grabInteractable = wood.GetComponent<XRGrabInteractable>();
-
-        if (grabInteractable == null) {
-            Debug.Log("Did not get component from GetComponent");
-            grabInteractable.GetComponentInParent<XRBaseInteractable>();
-        }
-        grabInteractable.interactionLayers = LayerMask.GetMask("NoneInteraction"); // Set to default layer to prevent interaction
+        InteractionLayerMask mask = grabInteractable.interactionLayers;
+        mask &= ~InteractionLayerMask.GetMask("Default"); // Remove default layer
+        mask |= InteractionLayerMask.GetMask("Firewood"); // Making sure the Firewood mask is there
+        grabInteractable.interactionLayers = mask; // Set the new interaction layers to the grab interactable.
     }
 }
