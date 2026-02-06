@@ -218,7 +218,7 @@ MonoBehaviour:
   m_ParentInteractableObject: {fileID: 0}
   m_AttachTransform: {fileID: 0}
   m_SecondaryAttachTransform: {fileID: 0}
-  m_UseDynamicAttach: 0
+  m_UseDynamicAttach: 1
   m_MatchAttachPosition: 1
   m_MatchAttachRotation: 1
   m_SnapToColliderVolume: 1
@@ -266,7 +266,7 @@ MonoBehaviour:
   m_StartingSingleGrabTransformers: []
   m_StartingMultipleGrabTransformers: []
   m_AddDefaultGrabTransformers: 1
-  m_FarAttachMode: 0
+  m_FarAttachMode: 1
   m_LimitLinearVelocity: 0
   m_LimitAngularVelocity: 0
   m_MaxLinearVelocityDelta: 10
@@ -286,3 +286,5 @@ MonoBehaviour:
   firewood1: {fileID: 4890623716885127271, guid: ff2ed4c54650f4441a2d296eca766bce, type: 3}
   firewood2: {fileID: 4890623716885127271, guid: ff2ed4c54650f4441a2d296eca766bce, type: 3}
   tagInQuestion: Finish
+  minChopVelocity: 2
+  splitWidth: 0.04

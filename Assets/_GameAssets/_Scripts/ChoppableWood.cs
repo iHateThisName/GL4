@@ -13,10 +13,13 @@ public class ChoppableWood : MonoBehaviour
     [Tooltip("The minimum speed (m/s) the axe must be moving to split the wood.")]
     [SerializeField] private float minChopVelocity = 2.0f;
 
+    [Tooltip("How far apart the two pieces should spawn relative to the axe blade.")]
+    [SerializeField] private float splitWidth = 0.04f;
+
     private XRGrabInteractable grabInteractable;
 
     #region Unity Lifecycle
-    // Gets the grabInteractable component reference
+    // Caches the interactable component
     private void Awake()
     {
         this.grabInteractable = this.GetComponent<XRGrabInteractable>();
@@ -31,7 +34,8 @@ public class ChoppableWood : MonoBehaviour
             {
                 if (this.IsSnappedToSocket())
                 {
-                    this.SpawnPieces();
+                    // Pass the axe collider to determine split orientation
+                    this.SpawnPieces(other.transform);
                 }
             }
         }
@@ -39,31 +43,25 @@ public class ChoppableWood : MonoBehaviour
     #endregion
 
     #region Logic Checks
-    // Checks the speed of the axe using its Rigidbody
+    // Measures speed of the strike via Rigidbody linearVelocity
     private bool IsMovingFastEnough(Collider axeCollider)
     {
-        // We look for the Rigidbody on the axe or its parent
         Rigidbody axeRigidbody = axeCollider.attachedRigidbody;
 
         if (axeRigidbody != null)
         {
-            // linearVelocity.magnitude provides the speed in meters per second.
-            // Note: This requires the Axe's Grab Interactable to be set to 'Velocity Tracking' movement type.
             float currentSpeed = axeRigidbody.linearVelocity.magnitude;
-
-            // Optional: Debug.Log("Axe Speed: " + currentSpeed);
             return currentSpeed >= this.minChopVelocity;
         }
 
         return false;
     }
 
-    // Verifies the wood is currently secured in a socket
+    // Verifies the log is currently in a socket
     private bool IsSnappedToSocket()
     {
         if (this.grabInteractable != null && this.grabInteractable.isSelected)
         {
-            // Check if the current interactor is a socket
             return this.grabInteractable.firstInteractorSelecting is XRSocketInteractor;
         }
         return false;
@@ -71,12 +69,25 @@ public class ChoppableWood : MonoBehaviour
     #endregion
 
     #region Actions
-    // Spawns pieces and removes the original log
-    private void SpawnPieces()
+    // Spawns pieces aligned with the axe's rotation
+    private void SpawnPieces(Transform axeTransform)
     {
-        Instantiate(this.firewood1, this.transform.position + new Vector3(-0.02f, 0f, 0f), this.transform.rotation);
-        Instantiate(this.firewood2, this.transform.position + new Vector3(0.02f, 0f, 0f), this.transform.rotation);
+        // 1. Calculate the 'split direction' (perpendicular to the axe blade)
+        // Usually, the 'right' vector of the axe blade represents the sideways push
+        Vector3 splitDirection = axeTransform.right;
 
+        // 2. Calculate positions: Move piece 1 left and piece 2 right relative to the axe
+        Vector3 spawnPos1 = this.transform.position + (splitDirection * (this.splitWidth * 0.5f));
+        Vector3 spawnPos2 = this.transform.position - (splitDirection * (this.splitWidth * 0.5f));
+
+        // 3. Spawn pieces rotated to match the axe's orientation for a 'clean' look
+        // We keep the log's original rotation but adjust it to the axe's Y rotation
+        Quaternion splitRotation = Quaternion.Euler(0, axeTransform.eulerAngles.y, 0);
+
+        Instantiate(this.firewood1, spawnPos1, splitRotation);
+        Instantiate(this.firewood2, spawnPos2, splitRotation);
+
+        // 4. Clean up original log
         Destroy(this.gameObject);
     }
     #endregion
