@@ -242,7 +242,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3381938621740248021}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0.9396927, z: 0, w: -0.34202006}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.42548, y: 0.07110459, z: 0.42548025}
   m_ConstrainProportionsScale: 0
@@ -787,8 +787,8 @@ MonoBehaviour:
   m_Handle: {fileID: 832506145650207909}
   m_Value: 0
   m_ClampedMotion: 0
-  m_MaxAngle: 90
-  m_MinAngle: -90
+  m_MaxAngle: 500
+  m_MinAngle: -500
   m_AngleIncrement: 10
   m_PositionTrackedRadius: 0.1
   m_TwistSensitivity: 1
@@ -809,8 +809,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RadioFrequencyDisplay
   Knob: {fileID: 3796615734635562449}
   FrequencyText: {fileID: 1550725641035457555}
-  MinFrequency: 1
-  MaxFrequency: 180
+  MinFrequency: -1000
+  MaxFrequency: 1000
   RotationsPerFullSweep: 0.5
   DecimalPlaces: 0
 --- !u!1 &8014263277319805531
