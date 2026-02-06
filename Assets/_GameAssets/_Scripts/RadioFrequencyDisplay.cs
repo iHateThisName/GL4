@@ -41,11 +41,13 @@ public class RadioFrequencyDisplayController : MonoBehaviour
     {
         this.lastKnobValue = this.Knob.value;
         this.Knob.onValueChange.AddListener(this.OnKnobValueChanged);
+        this.Knob.selectEntered.AddListener(this.OnKnobSelectEntered);
     }
 
     private void OnDisable()
     {
         this.Knob.onValueChange.RemoveListener(this.OnKnobValueChanged);
+        this.Knob.selectEntered.RemoveListener(this.OnKnobSelectEntered);
     }
 
     /* =========================
@@ -70,6 +72,12 @@ public class RadioFrequencyDisplayController : MonoBehaviour
         this.lastKnobValue = currentValue;
 
         this.UpdateFrequencyDisplay();
+    }
+
+    private void OnKnobSelectEntered(SelectEnterEventArgs args)
+    {
+        // Re-sync lastKnobValue when the knob is grabbed so the displayed frequency doesn't jump
+        this.lastKnobValue = this.Knob.value;
     }
 
     /* =========================
