@@ -113,7 +113,7 @@ public class FireplaceCustomSocket : XRSocketInteractor
     #endregion
 
     #region Editor Visualization
-    // Draws visual range spheres and slot labels in the Scene view
+    // Draws visual range spheres + raycast of rotation and slot labels in the Scene view
     protected virtual void OnDrawGizmos()
     {
         if (this.orderedSlots == null || this.orderedSlots.Count == 0) return;

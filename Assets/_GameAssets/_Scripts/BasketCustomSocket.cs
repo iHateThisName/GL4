@@ -7,7 +7,7 @@ using UnityEngine.XR.Interaction.Toolkit.Interactors;
 public class BasketCustomSocket : XRSocketInteractor
 {
     [Header("Basket Configuration")]
-    [SerializeField] private bool useHierarchyOrder = true;
+    [SerializeField] private bool useHierarchyOrder = true; //hierarchy of transfroms/sockets from the list
     [SerializeField] private List<Transform> orderedSlots = new List<Transform>();
 
     [Header("Snap Settings")]
@@ -101,7 +101,7 @@ public class BasketCustomSocket : XRSocketInteractor
     #endregion
 
     #region Editor Visualization
-    // Draws range bubbles and slot indexes in the Unity Editor scene view
+    // Draws range spheres and slot indexes in the Unity Editor scene view
     protected virtual void OnDrawGizmos()
     {
         if (this.orderedSlots == null || this.orderedSlots.Count == 0) return;
