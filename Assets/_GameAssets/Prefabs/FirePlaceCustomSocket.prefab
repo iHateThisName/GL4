@@ -196,10 +196,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9144888336273626566}
+  - component: {fileID: 1443850736142007227}
   - component: {fileID: 8288736073546329919}
   - component: {fileID: 2572852910938255426}
   - component: {fileID: 579041207634289856}
-  - component: {fileID: 1443850736142007227}
   m_Layer: 0
   m_Name: TriggerArea
   m_TagString: Untagged
@@ -223,6 +223,64 @@ Transform:
   - {fileID: 7038118790794721197}
   m_Father: {fileID: 3208870060254853081}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1443850736142007227
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6758371339702012405}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20c2b86d6096efb46965920e36387038, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FireplaceCustomSocket
+  m_InteractionManager: {fileID: 0}
+  m_InteractionLayers:
+    m_Bits: 3
+  m_Handedness: 0
+  m_AttachTransform: {fileID: 7038118790794721197}
+  m_KeepSelectedTargetValid: 1
+  m_DisableVisualsWhenBlockedInGroup: 1
+  m_StartingSelectedInteractable: {fileID: 0}
+  m_StartingTargetFilter: {fileID: 0}
+  m_AutoFindParentInteractableInHierarchy: 0
+  m_ParentInteractableObject: {fileID: 0}
+  m_HoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_HoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_SelectEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_SelectExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_StartingHoverFilters: []
+  m_StartingSelectFilters: []
+  m_ShowInteractableHoverMeshes: 1
+  m_InteractableHoverMeshMaterial: {fileID: 0}
+  m_InteractableCantHoverMeshMaterial: {fileID: 0}
+  m_SocketActive: 1
+  m_InteractableHoverScale: 1
+  m_RecycleDelayTime: 1
+  m_HoverSocketSnapping: 0
+  m_SocketSnappingRadius: 0.1
+  m_SocketScaleMode: 0
+  m_FixedScale: {x: 1, y: 1, z: 1}
+  m_TargetBoundsSize: {x: 1, y: 1, z: 1}
+  useHierarchyOrder: 1
+  orderedSlots:
+  - {fileID: 3325476086073312215}
+  - {fileID: 6162007532012098095}
+  - {fileID: 7999781099176658147}
+  - {fileID: 695498861558336844}
+  - {fileID: 222082639526737464}
+  - {fileID: 2452593412738079417}
+  snapDistance: 0.1
+  fireplaceController: {fileID: 0}
 --- !u!33 &8288736073546329919
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -301,63 +359,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &1443850736142007227
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6758371339702012405}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 20c2b86d6096efb46965920e36387038, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FireplaceCustomSocket
-  m_InteractionManager: {fileID: 0}
-  m_InteractionLayers:
-    m_Bits: 3
-  m_Handedness: 0
-  m_AttachTransform: {fileID: 7038118790794721197}
-  m_KeepSelectedTargetValid: 1
-  m_DisableVisualsWhenBlockedInGroup: 1
-  m_StartingSelectedInteractable: {fileID: 0}
-  m_StartingTargetFilter: {fileID: 0}
-  m_AutoFindParentInteractableInHierarchy: 0
-  m_ParentInteractableObject: {fileID: 0}
-  m_HoverEntered:
-    m_PersistentCalls:
-      m_Calls: []
-  m_HoverExited:
-    m_PersistentCalls:
-      m_Calls: []
-  m_SelectEntered:
-    m_PersistentCalls:
-      m_Calls: []
-  m_SelectExited:
-    m_PersistentCalls:
-      m_Calls: []
-  m_StartingHoverFilters: []
-  m_StartingSelectFilters: []
-  m_ShowInteractableHoverMeshes: 1
-  m_InteractableHoverMeshMaterial: {fileID: 0}
-  m_InteractableCantHoverMeshMaterial: {fileID: 0}
-  m_SocketActive: 1
-  m_InteractableHoverScale: 1
-  m_RecycleDelayTime: 1
-  m_HoverSocketSnapping: 0
-  m_SocketSnappingRadius: 0.1
-  m_SocketScaleMode: 0
-  m_FixedScale: {x: 1, y: 1, z: 1}
-  m_TargetBoundsSize: {x: 1, y: 1, z: 1}
-  useHierarchyOrder: 1
-  orderedSlots:
-  - {fileID: 3325476086073312215}
-  - {fileID: 6162007532012098095}
-  - {fileID: 7999781099176658147}
-  - {fileID: 695498861558336844}
-  - {fileID: 222082639526737464}
-  - {fileID: 2452593412738079417}
-  m_SnapDistance: 0.3
 --- !u!1 &9053754638759532978
 GameObject:
   m_ObjectHideFlags: 0
