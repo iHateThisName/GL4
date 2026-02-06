@@ -51,11 +51,9 @@ public class RotatorInteractable : XRBaseInteractable
     {
         base.ProcessInteractable(updatePhase);
 
-        if (updatePhase != XRInteractionUpdateOrder.UpdatePhase.Dynamic)
-            return;
+        if (updatePhase != XRInteractionUpdateOrder.UpdatePhase.Dynamic) return;
 
-        if (!isSelected || interactor == null)
-            return;
+        if (!isSelected || interactor == null) return;
 
         Vector3 currentDir = GetProjectedLocalDirection();
 

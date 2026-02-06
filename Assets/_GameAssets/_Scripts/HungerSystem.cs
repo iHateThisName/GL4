@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -7,6 +8,19 @@ using UnityEngine;
 /// </summary>
 public class HungerSystem : MonoBehaviour
 {
+    public enum EnumHungerState
+    {
+        Full,
+        Hungry,
+        Starving
+    }
+
+    public struct FHungerThreshold
+    {
+        public EnumHungerState state;
+        public float key;
+    }
+    
     [SerializeField] private float hunger; 
     // Current hunger value. Higher means the player is well-fed, lower means starving.
 
@@ -17,27 +31,32 @@ public class HungerSystem : MonoBehaviour
     [SerializeField] private float maxHunger = 100f; 
     // Maximum hunger value the player can have.
 
-    [SerializeField] private float hungerThreshold = 0.5f; 
-    // Threshold below which the player is considered starving.
+    [SerializeField] private FHungerThreshold[] hungerThresholds;
+    //Thresholds for different states of hunger editable in the editor
 
     [SerializeField] private float hungerDecayRate = 0.01f; 
-    // Amount of hunger lost each decay tick.
+    // Amount of hunger lost each hunger tick.
 
     [SerializeField] private float hungerDecayTick = 0.25f; 
     // Time interval (seconds) between hunger decay updates.
 
     [SerializeField] private TextMeshProUGUI hungerText; 
     // UI text element displaying the current hunger value.
+    
+    private Dictionary<EnumHungerState, float> thresholds;
+    // threshold lookup map for logic.
+    
+    private EnumHungerState hungerState;
+    // current state of hunger
+    
+    private float elapsedTime;
+    // Tracks time passed since the last hunger decay tick.
 
     // Event fired whenever the starvation state changes.
     // The bool parameter is true when starving, false when no longer starving.
-    public static System.Action<bool> OnStarvationStateChanged;
-
-    private float elapsedTime; 
-    // Tracks time passed since the last hunger decay tick.
-
-    private bool starving; 
-    // Indicates whether the player is currently starving.
+    public delegate void HungerStateChanged(EnumHungerState previous, EnumHungerState current);
+    // Event signature for HungerStateChanged
+    public static event HungerStateChanged HungerStateChangedEvent;
 
     /// <summary>
     /// Initializes the hunger system by setting hunger to maximum
@@ -45,8 +64,13 @@ public class HungerSystem : MonoBehaviour
     /// </summary>
     private void Start()
     {
+        this.thresholds = new Dictionary<EnumHungerState, float>();
+        foreach (var threshold in hungerThresholds)
+        {
+            this.thresholds.Add(threshold.state, threshold.key);
+        }
         this.hunger = this.maxHunger;
-        this.starving = false;
+        this.hungerState = EnumHungerState.Full;
         this.UpdateHungerText(this.hungerText, this.hunger.ToString("F2"));
     }
 
@@ -57,7 +81,7 @@ public class HungerSystem : MonoBehaviour
     private void OnEnable()
     {
         if (this.mouthCollider == null) return;
-        this.mouthCollider.OnTriggerEntered += this.eatFood;
+        this.mouthCollider.OnTriggerEntered += this.tryEatFood;
     }
 
     /// <summary>
@@ -67,7 +91,16 @@ public class HungerSystem : MonoBehaviour
     private void OnDisable()
     {
         if (this.mouthCollider == null) return;
-        this.mouthCollider.OnTriggerEntered -= this.eatFood;
+        this.mouthCollider.OnTriggerEntered -= this.tryEatFood;
+    }
+
+    private void tryEatFood(Collider other)
+    {
+        if (!other.TryGetComponent<Food>(out var food)) return;
+        
+        if (this.hunger.Equals(this.maxHunger)) return;
+        
+        eatFood(food);
     }
 
     /// <summary>
@@ -75,13 +108,10 @@ public class HungerSystem : MonoBehaviour
     /// If the object is a Food item, the player consumes it and gains hunger.
     /// </summary>
     /// <param name="other">The collider that entered the mouth trigger.</param>
-    private void eatFood(Collider other)
+    private bool eatFood(Food food)
     {
-        Debug.Log("Trigger Enter with: " + other.name);
-
-        // Check if the object is a Food item
-        if (!other.TryGetComponent<Food>(out var food)) return;
-
+        if (food == null) return false;
+        
         // Increase hunger by the food's value, clamped to avoid going below zero
         this.hunger = Mathf.Max(this.hunger + food.GetFoodValue(), 0);
 
@@ -89,13 +119,11 @@ public class HungerSystem : MonoBehaviour
         this.UpdateHungerText(this.hungerText, this.hunger.ToString("F2"));
 
         // If hunger has risen above the threshold, clear starvation state if needed
-        if (this.starving && this.hunger > this.hungerThreshold)
-        {
-            SetStarving(false);
-        }
+        CheckIfHungerThreshold();
 
         // Destroy the food object shortly after being eaten
         Destroy(food.gameObject, 0.1f);
+        return true;
     }
 
     /// <summary>
@@ -119,27 +147,29 @@ public class HungerSystem : MonoBehaviour
             this.UpdateHungerText(this.hungerText, this.hunger.ToString("F2"));
 
             // Check if hunger has fallen below or risen above the starvation threshold
-            if (!this.starving && this.hunger <= this.hungerThreshold)
-            {
-                SetStarving(true);
-            }
-            else if (this.starving && this.hunger > this.hungerThreshold)
-            {
-                SetStarving(false);
-            }
+            CheckIfHungerThreshold();
         }
     }
 
-    /// <summary>
-    /// Updates the starvation state and notifies listeners if it changed.
-    /// </summary>
-    /// <param name="isStarving">New starvation state.</param>
-    private void SetStarving(bool isStarving)
+    private bool CheckIfHungerThreshold()
     {
-        if (this.starving == isStarving) return;
-
-        this.starving = isStarving;
-        OnStarvationStateChanged?.Invoke(this.starving);
+        foreach (var hungerThresholds in this.thresholds)
+        {
+            if (this.hunger <= hungerThresholds.Value)
+            {
+                setHungerState(hungerThresholds.Key);
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    private void setHungerState(EnumHungerState newHungerState)
+    {
+        if (this.hungerState == newHungerState) return;
+        EnumHungerState previousState = this.hungerState;
+        this.hungerState = newHungerState;
+        HungerStateChangedEvent?.Invoke(previousState, this.hungerState);
     }
 
     /// <summary>
