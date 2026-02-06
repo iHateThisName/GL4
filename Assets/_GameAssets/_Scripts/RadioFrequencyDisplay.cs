@@ -80,9 +80,8 @@ public class RadioFrequencyDisplayController : MonoBehaviour
         // frequency doesn't jump. Preserve the nearest whole-number of full-sweeps to avoid
         // losing rotation history.
         float knobValue = this.Knob.value;
-        float rps = this.RotationsPerFullSweep <= 0f ? 1f : this.RotationsPerFullSweep;
-        float nearestFullSweeps = Mathf.Round(this.accumulatedTurns / rps);
-        this.accumulatedTurns = nearestFullSweeps * rps + knobValue * rps;
+        float nearestFullRotations = Mathf.Round(this.accumulatedTurns);
+        this.accumulatedTurns = nearestFullRotations + knobValue;
         this.lastKnobValue = knobValue;
     }
 
