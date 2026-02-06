@@ -20,9 +20,6 @@ public class FireplaceCustomSocket : XRSocketInteractor
     private readonly Dictionary<IXRInteractable, Transform> SELECTION_MAP = new Dictionary<IXRInteractable, Transform>();
     private readonly HashSet<Transform> OCCUPIED_SLOTS = new HashSet<Transform>();
 
-    [Header("Refrences")]
-    [SerializeField] private FireplaceController fireplaceController; // Reference to the fireplace controller. Direct refrence is allowed since it is part of the prefab.
-
     #region Unity Lifecycle
     // Sets up the slot list from children and prepares hover materials
     protected override void Awake()
@@ -37,12 +34,7 @@ public class FireplaceCustomSocket : XRSocketInteractor
                 this.orderedSlots.Add(child);
             }
         }
-
         this.interactableCantHoverMeshMaterial = this.interactableHoverMeshMaterial;
-
-        if (fireplaceController == null) {
-            Debug.LogError("FireplaceController reference is not set on FireplaceCustomSocket. Please assign it in the inspector.");
-        }
     }
     #endregion
 
@@ -69,10 +61,6 @@ public class FireplaceCustomSocket : XRSocketInteractor
     // Validates if an object is close enough to its assigned slot to show a preview
     public override bool CanHover(IXRHoverInteractable interactable)
     {
-        if (this.fireplaceController != null && this.fireplaceController.IsLit) {
-            return false; // Prevent hovering if the fireplace is already lit
-        }
-
         Transform target = this.GetAttachTransform(interactable);
         if (target == null || target == this.attachTransform) return false;
 
@@ -86,11 +74,6 @@ public class FireplaceCustomSocket : XRSocketInteractor
     // Logic for allowing the actual snap to occur based on distance and capacity
     public override bool CanSelect(IXRSelectInteractable interactable)
     {
-        // Prevent selection if the fireplace is already lit to not allow removing firewood.
-        if (this.fireplaceController != null && this.fireplaceController.IsLit && this.IsSelecting(interactable)) {
-            return false; // Prevent selection if the fireplace is already lit
-        }
-
         Transform target = this.GetAttachTransform(interactable);
         if (target == null || target == this.attachTransform) return false;
 

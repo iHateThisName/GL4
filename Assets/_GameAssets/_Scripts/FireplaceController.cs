@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 public class FireplaceController : MonoBehaviour {
 
@@ -118,7 +119,7 @@ public class FireplaceController : MonoBehaviour {
     public void AddFuel(Firewood wood) {
         // Ensure we dont add the same firewood multiple times
         if (wood.IsBurning) return;
-
+        
         wood.IsBurning = true; // Mark the firewood as burning
         wood.RemainingFuel = UnityEngine.Random.Range(wood.FuelValue * 0.8f, wood.FuelValue * 1.2f); // Randomize fuel value a bit for realism
 
@@ -126,5 +127,14 @@ public class FireplaceController : MonoBehaviour {
         this.fuelQueue.Push(wood);
         this.hasNewFuel = true;
         this.IsLit = true; // Currently, adding fuel always lights the fire
+
+        // Making the firewood not interactable anymore since it's now part of the fire. All firewood should not be interactable when the fire is lit
+        XRGrabInteractable grabInteractable = wood.GetComponent<XRGrabInteractable>();
+
+        if (grabInteractable == null) {
+            Debug.Log("Did not get component from GetComponent");
+            grabInteractable.GetComponentInParent<XRBaseInteractable>();
+        }
+        grabInteractable.interactionLayers = LayerMask.GetMask("NoneInteraction"); // Set to default layer to prevent interaction
     }
 }
