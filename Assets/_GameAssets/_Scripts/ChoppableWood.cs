@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
@@ -9,36 +10,60 @@ public class ChoppableWood : MonoBehaviour
     [SerializeField] private GameObject firewood2;
     [SerializeField] private string tagInQuestion;
 
+    [Tooltip("The minimum speed (m/s) the axe must be moving to split the wood.")]
+    [SerializeField] private float minChopVelocity = 2.0f;
+
     private XRGrabInteractable grabInteractable;
 
     #region Unity Lifecycle
-    // Automatically gets the grabInteractable component reference
+    // Gets the grabInteractable component reference
     private void Awake()
     {
-        this.grabInteractable = GetComponent<XRGrabInteractable>();
+        this.grabInteractable = this.GetComponent<XRGrabInteractable>();
     }
 
-    // Listens for collisions with the chopping tool
+    // Listens for tool collision and validates speed/socket state
     private void OnTriggerEnter(Collider other)
     {
-        // 1. Look for tagInQuestion
         if (other.CompareTag(this.tagInQuestion))
         {
-            // 2. Ensure it's in the socket
-            if (this.IsSnappedToSocket())
+            if (this.IsMovingFastEnough(other))
             {
-                this.SpawnPieces();
+                if (this.IsSnappedToSocket())
+                {
+                    this.SpawnPieces();
+                }
             }
         }
     }
     #endregion
 
     #region Logic Checks
-    // Checks if the wood is currently being held by a socket interactor
+    // Checks the speed of the axe using its Rigidbody
+    private bool IsMovingFastEnough(Collider axeCollider)
+    {
+        // We look for the Rigidbody on the axe or its parent
+        Rigidbody axeRigidbody = axeCollider.attachedRigidbody;
+
+        if (axeRigidbody != null)
+        {
+            // linearVelocity.magnitude provides the speed in meters per second.
+            // Note: This requires the Axe's Grab Interactable to be set to 'Velocity Tracking' movement type.
+            float currentSpeed = axeRigidbody.linearVelocity.magnitude;
+
+            // Optional: Debug.Log("Axe Speed: " + currentSpeed);
+            return currentSpeed >= this.minChopVelocity;
+        }
+
+        return false;
+    }
+
+    // Verifies the wood is currently secured in a socket
     private bool IsSnappedToSocket()
     {
         if (this.grabInteractable != null && this.grabInteractable.isSelected)
         {
+            // Check if the current interactor is a socket
             return this.grabInteractable.firstInteractorSelecting is XRSocketInteractor;
         }
         return false;
@@ -46,7 +71,7 @@ public class ChoppableWood : MonoBehaviour
     #endregion
 
     #region Actions
-    // Spawns the chopped firewood prefabs and removes the original log
+    // Spawns pieces and removes the original log
     private void SpawnPieces()
     {
         Instantiate(this.firewood1, this.transform.position + new Vector3(-0.02f, 0f, 0f), this.transform.rotation);
