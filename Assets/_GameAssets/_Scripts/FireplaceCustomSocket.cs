@@ -20,6 +20,9 @@ public class FireplaceCustomSocket : XRSocketInteractor
     private readonly Dictionary<IXRInteractable, Transform> SELECTION_MAP = new Dictionary<IXRInteractable, Transform>();
     private readonly HashSet<Transform> OCCUPIED_SLOTS = new HashSet<Transform>();
 
+    [Header("Refrences")]
+    [SerializeField] private FireplaceController fireplace; // Reference to the fireplace controller allowed since it is part of the same prefab.
+
     #region Unity Lifecycle
     // Sets up the slot list from children and prepares hover materials
     protected override void Awake()
@@ -35,6 +38,13 @@ public class FireplaceCustomSocket : XRSocketInteractor
             }
         }
         this.interactableCantHoverMeshMaterial = this.interactableHoverMeshMaterial;
+    }
+
+    protected override void Start() {
+        base.Start();
+        if (this.fireplace == null) {
+            Debug.LogError("FireplaceController reference is missing on FireplaceCustomSocket. Please assign it in the inspector.");
+        }
     }
     #endregion
 
@@ -94,6 +104,13 @@ public class FireplaceCustomSocket : XRSocketInteractor
         {
             this.OCCUPIED_SLOTS.Add(target);
             this.SELECTION_MAP.Add(args.interactableObject, target);
+
+            Firewood wood = args.interactableObject.transform.GetComponentInParent<Firewood>();
+
+            if (wood == null) Debug.LogWarning("The object being added to the fireplace does not have a Firewood component. Please ensure it is set up correctly.");
+            else wood = args.interactableObject.transform.GetComponent<Firewood>();
+
+            this.fireplace.AddFuel(args.interactableObject.transform.GetComponentInParent<Firewood>());
         }
 
         base.OnSelectEntering(args);
