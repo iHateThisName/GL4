@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -11,10 +10,12 @@ public class HungerSystem : MonoBehaviour
     public enum EnumHungerState
     {
         Full,
+        SlightlyHungry,
         Hungry,
         Starving
     }
 
+    [System.Serializable]
     public struct FHungerThreshold
     {
         public EnumHungerState state;
@@ -31,9 +32,6 @@ public class HungerSystem : MonoBehaviour
     [SerializeField] private float maxHunger = 100f; 
     // Maximum hunger value the player can have.
 
-    [SerializeField] private FHungerThreshold[] hungerThresholds;
-    //Thresholds for different states of hunger editable in the editor
-
     [SerializeField] private float hungerDecayRate = 0.01f; 
     // Amount of hunger lost each hunger tick.
 
@@ -42,8 +40,6 @@ public class HungerSystem : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI hungerText; 
     // UI text element displaying the current hunger value.
-    
-    private Dictionary<EnumHungerState, float> thresholds;
     // threshold lookup map for logic.
     
     private EnumHungerState hungerState;
@@ -51,6 +47,10 @@ public class HungerSystem : MonoBehaviour
     
     private float elapsedTime;
     // Tracks time passed since the last hunger decay tick.
+
+    private const float SLIGHTY_HUNGRY_THRESHOLD = 0.8f;
+    private const float HUNGER_THRESHOLD = .5f;
+    private const float STARVING_THRESHOLD = .25f;
 
     // Event fired whenever the starvation state changes.
     // The bool parameter is true when starving, false when no longer starving.
@@ -64,11 +64,6 @@ public class HungerSystem : MonoBehaviour
     /// </summary>
     private void Start()
     {
-        this.thresholds = new Dictionary<EnumHungerState, float>();
-        foreach (var threshold in hungerThresholds)
-        {
-            this.thresholds.Add(threshold.state, threshold.key);
-        }
         this.hunger = this.maxHunger;
         this.hungerState = EnumHungerState.Full;
         this.UpdateHungerText(this.hungerText, this.hunger.ToString("F2"));
@@ -119,7 +114,7 @@ public class HungerSystem : MonoBehaviour
         this.UpdateHungerText(this.hungerText, this.hunger.ToString("F2"));
 
         // If hunger has risen above the threshold, clear starvation state if needed
-        CheckIfHungerThreshold();
+        SetHungerState(GetHungerState(this.hunger));
 
         // Destroy the food object shortly after being eaten
         Destroy(food.gameObject, 0.1f);
@@ -147,24 +142,23 @@ public class HungerSystem : MonoBehaviour
             this.UpdateHungerText(this.hungerText, this.hunger.ToString("F2"));
 
             // Check if hunger has fallen below or risen above the starvation threshold
-            CheckIfHungerThreshold();
+            SetHungerState(GetHungerState(this.hunger));
         }
     }
 
-    private bool CheckIfHungerThreshold()
+    private EnumHungerState GetHungerState(float currentHunger)
     {
-        foreach (var hungerThresholds in this.thresholds)
-        {
-            if (this.hunger <= hungerThresholds.Value)
-            {
-                setHungerState(hungerThresholds.Key);
-                return true;
-            }
-        }
-        return false;
+        float slightHungryThreshold = SLIGHTY_HUNGRY_THRESHOLD * this.maxHunger;
+        float hungerThreshold = HUNGER_THRESHOLD * this.maxHunger;
+        float starvingThreshold = STARVING_THRESHOLD * this.maxHunger;
+        
+        if (currentHunger <= slightHungryThreshold && currentHunger > hungerThreshold) return EnumHungerState.SlightlyHungry;
+        else if (currentHunger <= hungerThreshold && currentHunger > starvingThreshold) return EnumHungerState.Hungry;
+        else if (currentHunger <= starvingThreshold && currentHunger > 0) return EnumHungerState.Starving;
+        else return EnumHungerState.Full;
     }
     
-    private void setHungerState(EnumHungerState newHungerState)
+    private void SetHungerState(EnumHungerState newHungerState)
     {
         if (this.hungerState == newHungerState) return;
         EnumHungerState previousState = this.hungerState;
