@@ -585,6 +585,20 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3904056440412102246, guid: 81b04886f44d59148b77701fbc6b1ac0, type: 3}
   m_PrefabInstance: {fileID: 4497873554625967452}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &823355460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: XRI Right Locomotion/Sprint
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: -944628639613478452, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  m_ActionId: a096580e-2658-4087-8b48-54f448cd06b0
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -1248,6 +1262,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1841293827632424211, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: sprintAction
+      value: 
+      objectReference: {fileID: 823355460}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
