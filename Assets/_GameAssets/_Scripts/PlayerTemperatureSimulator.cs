@@ -5,12 +5,12 @@ using UnityEngine;
 public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> {
 
     [SerializeField] private float currentBodyTemperature = 37.0f; // Normal human body temperature in Celsius
-    private readonly float MIN_COMFORTABLE_TEMPERATURE = 35.0f; // Hypothermia threshold,
+    private readonly float MIN_COMFORTABLE_TEMPERATURE = 35.2f; // Hypothermia threshold,
                                                                 // 32 - 35 C is mild hypothermia (shivering, confusion),
                                                                 // 28 - 32 C is moderate (slurred speech, drowsiness),
                                                                 // below 28 C is severe (unconsciousness, risk of death)
 
-    private readonly float MAX_COMFORTABLE_TEMPERATURE = 39.0f; // Hyperthermia threshold, 
+    private readonly float MAX_COMFORTABLE_TEMPERATURE = 38.8f; // Hyperthermia threshold, 
                                                                 // 38 - 39 C is mild hyperthermia (heat exhaustion),
                                                                 // 39 - 41 C is moderate (heat stroke risk),
                                                                 // above 41 C is severe (risk of organ failure)
@@ -181,8 +181,8 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
         // The highest allowed body temperature in different environments
         return location switch {
             EnumLocationType.Cold => 36f,
-            EnumLocationType.Normal => 38f,
-            EnumLocationType.Warm => 39f,
+            EnumLocationType.Normal => 37f,
+            EnumLocationType.Warm => 40.2f,
             _ => 39f,
         };
     }    
