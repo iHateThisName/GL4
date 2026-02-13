@@ -52,6 +52,6 @@ public class TemperatureZoneTrigger : MonoBehaviour {
                 break;
         }
 
-        PlayerTemperatureSimulator.Instance.SetLocationType(locationType);
+        PlayerTemperatureSimulator.Instance.SetLocationType(type);
     }
 }
