@@ -22,6 +22,7 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
     [SerializeField] private EnumLocationType currentLocationType = EnumLocationType.Normal;
     [SerializeField] private EnumBodyTemperatureState currentBodyTemperatureState = EnumBodyTemperatureState.Normal;
     public EnumBodyTemperatureState CurrentBodyTemperatureState => this.currentBodyTemperatureState;
+    public EnumLocationType CurrentLocationType => this.currentLocationType;
 
     // Event triggered when body temperature state changes
     public static Action<BodyTemperatureStateChange> OnBodyTemperatureStateChanged;

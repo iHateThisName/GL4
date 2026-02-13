@@ -7,15 +7,29 @@ public class TemperatureZoneTrigger : MonoBehaviour {
     [ContextMenu("Debug Trigger Zone")]
     public void DebugTrigger() {
         Debug.Log($"Debug Trigger Activated for {locationType} zone.");
-        UpdateTemperatureZone();
+        UpdateTemperatureZone(this.locationType);
     }
     private void OnTriggerEnter(Collider other) {
         if (!other.CompareTag("Player")) return;
-        UpdateTemperatureZone();
+
+        if (this.locationType == PlayerTemperatureSimulator.EnumLocationType.Warm && PlayerTemperatureSimulator.Instance.CurrentLocationType == PlayerTemperatureSimulator.EnumLocationType.Cold) {
+            return; // Prevent entering warm zone if currently in cold zone because heat zone can reach through walls
+        }
+
+        UpdateTemperatureZone(this.locationType);
     }
 
-    private void UpdateTemperatureZone() {
-        switch (locationType) {
+    private void OnTriggerExit(Collider other) {
+        if (!other.CompareTag("Player")) return;
+        if (this.locationType != PlayerTemperatureSimulator.EnumLocationType.Warm) return;
+
+        if (PlayerTemperatureSimulator.Instance.CurrentLocationType == PlayerTemperatureSimulator.EnumLocationType.Warm) {
+            UpdateTemperatureZone(PlayerTemperatureSimulator.EnumLocationType.Normal);
+        }
+    }
+
+    private void UpdateTemperatureZone(PlayerTemperatureSimulator.EnumLocationType type) {
+        switch (type) {
             case PlayerTemperatureSimulator.EnumLocationType.Cold:
                 Debug.Log("Player entered COLD temperature zone.");
 
