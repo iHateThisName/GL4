@@ -2,7 +2,12 @@ using TMPro;
 using UnityEngine;
 using static PlayerTemperatureSimulator;
 
+    /// <summary>
+    /// Manages the player's UI display
+    /// </summary>
 public class PlayerUI : MonoBehaviour {
+
+    [Header("Refrences")]
     [SerializeField] private TMP_Text temperatureText;
 
     private void Start() {
@@ -19,11 +24,19 @@ public class PlayerUI : MonoBehaviour {
         PlayerTemperatureSimulator.OnBodyTemperatureStateChanged -= HandleTemperatureChanged;
     }
 
+    /// <summary>
+    /// Handles body temperature state changes by updating the UI text and color.
+    /// </summary>
+    /// <param name="change">The body temperature state change data.</param>
     private void HandleTemperatureChanged(BodyTemperatureStateChange change) {
-        temperatureText.text = $"Temperature: {change.CurrentState}";
+        this.temperatureText.text = $"Temperature State: {change.CurrentState}, Location: {PlayerTemperatureSimulator.Instance.CurrentLocationType}";
         UpdateColor(change.CurrentState);
     }
 
+    /// <summary>
+    /// Updates the temperature text color based on the current body temperature state.
+    /// </summary>
+    /// <param name="state">The current body temperature state.</param>
     private void UpdateColor(EnumBodyTemperatureState state) {
         switch (state) {
             case EnumBodyTemperatureState.ModerateHypothermia:
