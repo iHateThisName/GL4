@@ -21,6 +21,7 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
 
     [SerializeField] private EnumLocationType currentLocationType = EnumLocationType.Normal;
     [SerializeField] private EnumBodyTemperatureState currentBodyTemperatureState = EnumBodyTemperatureState.Normal;
+    public EnumBodyTemperatureState CurrentBodyTemperatureState => this.currentBodyTemperatureState;
 
     // Event triggered when body temperature state changes
     public static Action<BodyTemperatureStateChange> OnBodyTemperatureStateChanged;
@@ -28,7 +29,42 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
     // Temperature change rate based on location type, Normal slowly decreases, Cold rapidly decreases, Warm increases
     public enum EnumLocationType { Normal, Cold, Warm }
     // Player temperature states based on current body temperature
-    public enum EnumBodyTemperatureState { Normal, MildHypothermia, ModerateHypothermia, Hypothermia, MildHyperthermia, ModerateHyperthermia, Hyperthermia }
+    public enum EnumBodyTemperatureState {
+        /// <summary>
+        /// Normal body temperature (35-39°C). Player feels comfortable.
+        /// </summary>
+        Normal,
+
+        /// <summary>
+        /// Mild hypothermia (32-35°C). Player feels cold and may experience shivering and confusion.
+        /// </summary>
+        MildHypothermia,
+
+        /// <summary>
+        /// Moderate hypothermia (28-32°C). Player feels very cold with slurred speech and drowsiness.
+        /// </summary>
+        ModerateHypothermia,
+
+        /// <summary>
+        /// Severe hypothermia (below 28°C). Player is frozen with risk of unconsciousness and death.
+        /// </summary>
+        Hypothermia,
+
+        /// <summary>
+        /// Mild hyperthermia (38-39°C). Player feels hot and may experience heat exhaustion.
+        /// </summary>
+        MildHyperthermia,
+
+        /// <summary>
+        /// Moderate hyperthermia (39-41°C). Player feels very hot with heat stroke risk.
+        /// </summary>
+        ModerateHyperthermia,
+
+        /// <summary>
+        /// Severe hyperthermia (above 41°C). Player is overheating with risk of organ failure.
+        /// </summary>
+        Hyperthermia
+    }
 
     /// <summary>
     /// Unity's FixedUpdate method called at fixed time intervals.
@@ -148,7 +184,7 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
             EnumLocationType.Warm => 39f,
             _ => 39f,
         };
-    }
+    }    
 }
 
 public struct BodyTemperatureStateChange {
