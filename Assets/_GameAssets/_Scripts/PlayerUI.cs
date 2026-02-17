@@ -10,18 +10,23 @@ public class PlayerUI : MonoBehaviour {
     [Header("Refrences")]
     [SerializeField] private TMP_Text temperatureText;
 
+    [SerializeField] private TextMeshProUGUI hungerText;
+
     private void Start() {
         HandleTemperatureChanged(new BodyTemperatureStateChange {
             CurrentState = PlayerTemperatureSimulator.Instance.CurrentBodyTemperatureState
         });
+        HandleHungerChanged(100);
     }
 
     private void OnEnable() {
         PlayerTemperatureSimulator.OnBodyTemperatureStateChanged += HandleTemperatureChanged;
+        HungerSystem.OnHungerChanged += HandleHungerChanged;
     }
 
     private void OnDisable() {
         PlayerTemperatureSimulator.OnBodyTemperatureStateChanged -= HandleTemperatureChanged;
+        HungerSystem.OnHungerChanged -= HandleHungerChanged;
     }
 
     /// <summary>
@@ -64,5 +69,9 @@ public class PlayerUI : MonoBehaviour {
                 this.temperatureText.color = Color.magenta; // Extreme conditions Dead.
                 break;
         }
+    }
+    
+    private void HandleHungerChanged(float hunger) {
+        this.hungerText.text = "Hunger: " + hunger.ToString("F2");
     }
 }

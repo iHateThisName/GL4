@@ -37,10 +37,6 @@ public class HungerSystem : MonoBehaviour
 
     [SerializeField] private float hungerDecayTick = 0.25f; 
     // Time interval (seconds) between hunger decay updates.
-
-    [SerializeField] private TextMeshProUGUI hungerText; 
-    // UI text element displaying the current hunger value.
-    // threshold lookup map for logic.
     
     private EnumHungerState hungerState;
     // current state of hunger
@@ -57,6 +53,8 @@ public class HungerSystem : MonoBehaviour
     public delegate void HungerStateChanged(EnumHungerState previous, EnumHungerState current);
     // Event signature for HungerStateChanged
     public static event HungerStateChanged HungerStateChangedEvent;
+    
+    public static System.Action<float> OnHungerChanged;
 
     /// <summary>
     /// Initializes the hunger system by setting hunger to maximum
@@ -66,7 +64,6 @@ public class HungerSystem : MonoBehaviour
     {
         this.hunger = this.maxHunger;
         this.hungerState = EnumHungerState.Full;
-        this.UpdateHungerText(this.hungerText, this.hunger.ToString("F2"));
     }
 
     /// <summary>
@@ -91,7 +88,11 @@ public class HungerSystem : MonoBehaviour
 
     private void tryEatFood(Collider other)
     {
-        if (!other.TryGetComponent<Food>(out var food)) return;
+        if (!other.transform.parent.TryGetComponent<Food>(out var food))
+        {
+            Debug.LogError("Food object entered mouth trigger but could not be cast to Food component.");
+            return;
+        }
         
         if (this.hunger.Equals(this.maxHunger)) return;
         
@@ -107,11 +108,8 @@ public class HungerSystem : MonoBehaviour
     {
         if (food == null) return false;
         
-        // Increase hunger by the food's value, clamped to avoid going below zero
-        this.hunger = Mathf.Max(this.hunger + food.GetFoodValue(), 0);
-
-        // Update UI after eating
-        this.UpdateHungerText(this.hungerText, this.hunger.ToString("F2"));
+        // Increase hunger by the food's value
+        ClampHunger( food.GetFoodValue());
 
         // If hunger has risen above the threshold, clear starvation state if needed
         SetHungerState(GetHungerState(this.hunger));
@@ -135,15 +133,19 @@ public class HungerSystem : MonoBehaviour
         {
             this.elapsedTime = 0;
 
-            // Reduce hunger and clamp between 0 and maxHunger
-            this.hunger = Mathf.Clamp(this.hunger - this.hungerDecayRate, 0, this.maxHunger);
-
-            // Update UI text
-            this.UpdateHungerText(this.hungerText, this.hunger.ToString("F2"));
+            // Reduce hunger
+            ClampHunger(-this.hungerDecayRate);
 
             // Check if hunger has fallen below or risen above the starvation threshold
             SetHungerState(GetHungerState(this.hunger));
         }
+    }
+
+    private void ClampHunger(float delta)
+    {
+        // clamp the new hunger plus delta between 0 and maxHunger
+        this.hunger = Mathf.Clamp(this.hunger + delta, 0, this.maxHunger);
+        OnHungerChanged?.Invoke(this.hunger); // Send event for listeners to update based on hunger
     }
 
     private EnumHungerState GetHungerState(float currentHunger)
@@ -166,6 +168,7 @@ public class HungerSystem : MonoBehaviour
         HungerStateChangedEvent?.Invoke(previousState, this.hungerState);
     }
 
+    #region DEPRECATED_HELPER
     /// <summary>
     /// Updates the hunger UI text field with a new value.
     /// </summary>
@@ -176,4 +179,5 @@ public class HungerSystem : MonoBehaviour
         if (textField == null) return;
         textField.text = newText;
     }
+    #endregion
 }
