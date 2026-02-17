@@ -94,7 +94,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 20201, guid: 0000000000000000f000000000000000, type: 0}
-  m_LightingSettings: {fileID: 4890085278179872738, guid: cb096a228b0898b45aad9bbd8da14a27, type: 2}
+  m_LightingSettings: {fileID: 4890085278179872738, guid: 561523a204609f244a7d4e589b912f66, type: 2}
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -1887,6 +1887,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Radio
       objectReference: {fileID: 0}
+    - target: {fileID: 4188991452946805470, guid: 4bbd58b68c718450997ee3a16e216430, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2670,7 +2674,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -4594,9 +4598,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3728091476799878320}
+  - component: {fileID: 3728091476799878321}
   - component: {fileID: 3321518188138061481}
   - component: {fileID: 3253574740833547432}
-  - component: {fileID: 3728091476799878321}
   m_Layer: 0
   m_Name: CrankedFlashlight
   m_TagString: Untagged
@@ -4872,7 +4876,7 @@ Transform:
   m_GameObject: {fileID: 300077214202741882}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.315, y: 0.71236, z: -3.349}
+  m_LocalPosition: {x: 1, y: 0.5, z: -3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4895,10 +4899,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FlashLight
   handleInteractable: {fileID: 3253574740833547432}
   crankInteractable: {fileID: 1488279940}
-  triggerAngles: []
-  lightPower: 50
-  lightDecayRate: 1
-  lightDecayTick: 1
+  light: {fileID: 8792570478752983271}
+  lightPower: 40
+  maxLightPower: 30
+  maxLightRange: 10
+  minLightRange: 10
+  lightDecayRate: 0
+  lightDecayTickMax: 5
+  lightDecayTickMin: 20
+  lowPowerThreshold: 2.5
+  maxRotations: 5
 --- !u!4 &4410008094880064891
 Transform:
   m_ObjectHideFlags: 0
@@ -5208,7 +5218,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1181505705176988374}
   m_Layer: 0
-  m_Name: Light
+  m_Name: Light_Transform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5225,10 +5235,10 @@ Light:
   serializedVersion: 12
   m_Type: 0
   m_Color: {r: 1, g: 0.83101684, b: 0.26981127, a: 1}
-  m_Intensity: 10
-  m_Range: 6
-  m_SpotAngle: 30
-  m_InnerSpotAngle: 18.877678
+  m_Intensity: 500
+  m_Range: 10
+  m_SpotAngle: 84.997696
+  m_InnerSpotAngle: 61.819244
   m_CookieSize2D: {x: 0.5, y: 0.5}
   m_Shadows:
     m_Type: 0
@@ -5303,13 +5313,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4476567814542488498}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: -1, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1181505705176988374}
-  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!23 &9111719273098517863
 MeshRenderer:
   m_ObjectHideFlags: 0
