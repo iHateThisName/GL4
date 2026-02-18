@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class TheMunch : MonoBehaviour
@@ -5,6 +6,10 @@ public class TheMunch : MonoBehaviour
     [Header("Animation")]
     [SerializeField] private Animator monsterAnimator;
     [SerializeField] private string munchTriggerName = "Munch";
+    [SerializeField] private string returnTriggerName = "Return";
+
+    [Tooltip("How long the hand stays at the 'End' position before returning")]
+    [SerializeField] private float holdDuration = 10.0f;
 
     [Header("Rejection Settings")]
     [Range(1, 20)]
@@ -13,14 +18,17 @@ public class TheMunch : MonoBehaviour
 
     public Vector3 ThrowDirection = new Vector3(0, 1, 1);
 
+    private bool isMunching = false;
+
     private void OnTriggerEnter(Collider other)
     {
-        // Using GetComponentInParent since the collider is a child of the food logic
+        if (this.isMunching) return;
+
         Food foodItem = other.GetComponentInParent<Food>();
 
         if (foodItem != null)
         {
-            this.AcceptFood(foodItem.gameObject);
+            StartCoroutine(this.MunchSequence(foodItem.gameObject));
         }
         else
         {
@@ -28,32 +36,46 @@ public class TheMunch : MonoBehaviour
         }
     }
 
-    private void AcceptFood(GameObject food)
+    private IEnumerator MunchSequence(GameObject food)
     {
+        this.isMunching = true;
+
+        // 1. Play the 'Grab' animation
         if (this.monsterAnimator != null)
         {
             this.monsterAnimator.SetTrigger(this.munchTriggerName);
         }
 
-        // Small delay to allow the animation to play before the object vanishes
+        // 2. Hide/Destroy the food once it's 'grabbed'
+        // You might want to parent the food to the hand here before destroying
         Destroy(food, 0.2f);
+
+        // 3. FREEZE: Wait at the end of the grab animation
+        yield return new WaitForSeconds(this.holdDuration);
+
+        // 4. Play the 'Return' animation
+        if (this.monsterAnimator != null)
+        {
+            this.monsterAnimator.SetTrigger(this.returnTriggerName);
+        }
+
+        // Wait for return animation to finish (optional) before allowing next munch
+        yield return new WaitForSeconds(1.0f);
+        this.isMunching = false;
     }
 
     private void RejectItem(GameObject item)
     {
-        // Look for Rigidbody on the parent
         Rigidbody rb = item.GetComponentInParent<Rigidbody>();
 
         if (rb != null)
         {
-            // Transform the local direction to world space relative to the hand
             Vector3 worldThrowDir = this.transform.TransformDirection(this.ThrowDirection);
-
             rb.AddForce(worldThrowDir * this.throwForce, ForceMode.Impulse);
         }
     }
 
-    // Getters / Setters per convention
-    public float GetThrowForce() => this.throwForce;
-    public void SetThrowForce(float newForce) => this.throwForce = newForce;
+    // Getters / Setters
+    public float GetHoldDuration() => this.holdDuration;
+    public void SetHoldDuration(float duration) => this.holdDuration = duration;
 }
