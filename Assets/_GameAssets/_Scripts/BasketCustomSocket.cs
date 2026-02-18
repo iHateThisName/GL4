@@ -7,17 +7,16 @@ using UnityEngine.XR.Interaction.Toolkit.Interactors;
 public class BasketCustomSocket : XRSocketInteractor
 {
     [Header("Basket Configuration")]
-    [Tooltip("If true, it uses the child order in the hierarchy (top to bottom) as the fill order.")]
+    [Tooltip("If true, it uses the child order in the hierarchy as the fill order.")]
     [SerializeField] private bool useHierarchyOrder = true;
 
-    [Tooltip("The ordered list of slots. The basket fills index 0, then index 1, etc.")]
+    [Tooltip("The ordered list of slots.")]
     [SerializeField] private List<Transform> orderedSlots = new List<Transform>();
 
-    private readonly Dictionary<IXRInteractable, Transform> SELECTION_MAP = new Dictionary<IXRInteractable, Transform>();
-    private readonly HashSet<Transform> OCCUPIED_SLOTS = new HashSet<Transform>();
+    private readonly Dictionary<IXRInteractable, Transform> selectionMap = new Dictionary<IXRInteractable, Transform>();
+    private readonly HashSet<Transform> occupiedSlots = new HashSet<Transform>();
 
     #region Unity Lifecycle
-    // Initializes the slot list from children and prepares hover visuals
     protected override void Awake()
     {
         base.Awake();
@@ -36,17 +35,16 @@ public class BasketCustomSocket : XRSocketInteractor
     #endregion
 
     #region XRI Overrides
-    // Identifies the correct slot transform for a specific object
     public override Transform GetAttachTransform(IXRInteractable interactable)
     {
-        if (this.SELECTION_MAP.TryGetValue(interactable, out Transform assignedSlot))
+        if (this.selectionMap.TryGetValue(interactable, out Transform assignedSlot))
         {
             return assignedSlot;
         }
 
         foreach (Transform slot in this.orderedSlots)
         {
-            if (!this.OCCUPIED_SLOTS.Contains(slot))
+            if (!this.occupiedSlots.Contains(slot))
             {
                 return slot;
             }
@@ -55,65 +53,88 @@ public class BasketCustomSocket : XRSocketInteractor
         return base.attachTransform;
     }
 
-    // Determines if an object can trigger a hover state based on capacity
     public override bool CanHover(IXRHoverInteractable interactable)
     {
-        return base.CanHover(interactable) && this.OCCUPIED_SLOTS.Count < this.orderedSlots.Count;
+        return base.CanHover(interactable) && this.occupiedSlots.Count < this.orderedSlots.Count;
     }
 
-    // Determines if an object can be selected/snapped based on capacity
     public override bool CanSelect(IXRSelectInteractable interactable)
     {
         return this.IsSelecting(interactable) ||
-               (this.OCCUPIED_SLOTS.Count < this.orderedSlots.Count && !interactable.isSelected);
+               (this.occupiedSlots.Count < this.orderedSlots.Count && !interactable.isSelected);
     }
 
-    // Logic for assigning an object to a specific slot upon entry
     protected override void OnSelectEntering(SelectEnterEventArgs args)
     {
         Transform target = this.GetAttachTransform(args.interactableObject);
 
-        if (target != null && !this.OCCUPIED_SLOTS.Contains(target))
+        if (target != null && !this.occupiedSlots.Contains(target))
         {
-            this.OCCUPIED_SLOTS.Add(target);
-            this.SELECTION_MAP.Add(args.interactableObject, target);
+            this.occupiedSlots.Add(target);
+            this.selectionMap.Add(args.interactableObject, target);
         }
 
         base.OnSelectEntering(args);
+
+        // WHEN SNAPPING: Disable Velocity Tracking (Freeze it)
+        this.SetPhysicsState(args.interactableObject, true);
     }
 
-    // Logic for freeing up a slot when an object is removed
     protected override void OnSelectExiting(SelectExitEventArgs args)
     {
-        if (this.SELECTION_MAP.TryGetValue(args.interactableObject, out Transform target))
+        // WHEN REMOVING: Enable Velocity Tracking (Unfreeze it)
+        this.SetPhysicsState(args.interactableObject, false);
+
+        if (this.selectionMap.TryGetValue(args.interactableObject, out Transform target))
         {
-            this.OCCUPIED_SLOTS.Remove(target);
-            this.SELECTION_MAP.Remove(args.interactableObject);
+            this.occupiedSlots.Remove(target);
+            this.selectionMap.Remove(args.interactableObject);
         }
 
         base.OnSelectExiting(args);
     }
     #endregion
 
+    #region Other Methods
+    /// <summary>
+    /// Configures the physics behavior of the wood log based on whether it is stored or held.
+    /// </summary>
+    private void SetPhysicsState(IXRInteractable interactable, bool isInsideSocket)
+    {
+        if (interactable is XRGrabInteractable grabObject)
+        {
+            if (grabObject.TryGetComponent(out Rigidbody rb))
+            {
+                if (isInsideSocket)
+                {
+                    // Snapped in Basket: No physics forces allowed
+                    grabObject.movementType = XRBaseInteractable.MovementType.Instantaneous;
+                    rb.isKinematic = true;
+                    rb.linearVelocity = Vector3.zero;
+                    rb.angularVelocity = Vector3.zero;
+                }
+                else
+                {
+                    // Being Held/Carried: Use physics for realistic crashes
+                    grabObject.movementType = XRBaseInteractable.MovementType.VelocityTracking;
+                    rb.isKinematic = false;
+                }
+            }
+        }
+    }
+    #endregion
+
     #region Editor Visualization
-    // Draws editor-only gizmos to visualize slot occupancy and order
     protected virtual void OnDrawGizmos()
     {
-        if (this.orderedSlots == null || this.orderedSlots.Count == 0)
-        {
-            return;
-        }
+        if (this.orderedSlots == null || this.orderedSlots.Count == 0) return;
 
         for (int i = 0; i < this.orderedSlots.Count; i++)
         {
             if (this.orderedSlots[i] == null) continue;
 
-            Gizmos.color = this.OCCUPIED_SLOTS.Contains(this.orderedSlots[i]) ? Color.red : Color.yellow;
+            Gizmos.color = this.occupiedSlots.Contains(this.orderedSlots[i]) ? Color.red : Color.yellow;
             Gizmos.DrawWireSphere(this.orderedSlots[i].position, 0.03f);
-
-#if UNITY_EDITOR
-            UnityEditor.Handles.Label(this.orderedSlots[i].position + Vector3.up * 0.05f, "Order: " + i);
-#endif
         }
     }
     #endregion
