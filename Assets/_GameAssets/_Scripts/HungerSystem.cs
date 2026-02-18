@@ -22,27 +22,29 @@ public class HungerSystem : MonoBehaviour
         public float key;
     }
     
-    [SerializeField] private float hunger; 
     // Current hunger value. Higher means the player is well-fed, lower means starving.
+    [SerializeField] private float hunger; 
 
-    [SerializeField] private TriggerArea mouthCollider; 
     // Trigger area representing the player's mouth.
     // When food enters this collider, the player "eats" it.
+    [SerializeField] private TriggerArea mouthCollider; 
 
-    [SerializeField] private float maxHunger = 100f; 
     // Maximum hunger value the player can have.
+    [SerializeField] private float maxHunger = 100f; 
 
-    [SerializeField] private float hungerDecayRate = 0.01f; 
     // Amount of hunger lost each hunger tick.
+    [SerializeField] private float hungerDecayRate = 0.01f; 
 
-    [SerializeField] private float hungerDecayTick = 0.25f; 
     // Time interval (seconds) between hunger decay updates.
+    [SerializeField] private float hungerDecayTick = 0.25f; 
     
-    private EnumHungerState hungerState;
     // current state of hunger
+    private EnumHungerState hungerState;
     
-    private float elapsedTime;
     // Tracks time passed since the last hunger decay tick.
+    private float elapsedTime;
+    
+    private Timer hungerTimer;
 
     private const float SLIGHTY_HUNGRY_THRESHOLD = 0.8f;
     private const float HUNGER_THRESHOLD = .5f;
@@ -64,6 +66,11 @@ public class HungerSystem : MonoBehaviour
     {
         this.hunger = this.maxHunger;
         this.hungerState = EnumHungerState.Full;
+        
+        // setup internal timer
+        this.hungerTimer = new Timer(hungerDecayTick, 0);
+        this.hungerTimer.OnTimerTick += HandleHungerTick;
+        this.hungerTimer.Start();
     }
 
     /// <summary>
@@ -86,6 +93,12 @@ public class HungerSystem : MonoBehaviour
         this.mouthCollider.OnTriggerEntered -= this.tryEatFood;
     }
 
+    /// <summary>
+    /// Called when an object enters the mouth trigger.
+    /// Tries to see if the collided item is a food item
+    /// If the object is a Food item, the player consumes it and gains hunger.
+    /// </summary>
+    /// <param name="other">The collider that entered the mouth trigger.</param>
     private void tryEatFood(Collider other)
     {
         if (!other.transform.parent.TryGetComponent<Food>(out var food))
@@ -100,10 +113,10 @@ public class HungerSystem : MonoBehaviour
     }
 
     /// <summary>
-    /// Called when an object enters the mouth trigger.
-    /// If the object is a Food item, the player consumes it and gains hunger.
+    /// Processes the consumption of a food item.
+    /// adding saturation to the player's hunger. and checks for state changes'
     /// </summary>
-    /// <param name="other">The collider that entered the mouth trigger.</param>
+    /// <param name="food">food being processed.</param>
     private bool eatFood(Food food)
     {
         if (food == null) return false;
@@ -111,33 +124,23 @@ public class HungerSystem : MonoBehaviour
         // Increase hunger by the food's value
         ClampHunger( food.GetFoodValue());
 
-        // If hunger has risen above the threshold, clear starvation state if needed
-        SetHungerState(GetHungerState(this.hunger));
-
         // Destroy the food object shortly after being eaten
         Destroy(food.gameObject, 0.1f);
         return true;
     }
 
     /// <summary>
-    /// Handles hunger decay over time.
     /// Every hungerDecayTick seconds, hunger decreases by hungerDecayRate.
-    /// Updates the UI and checks whether the player has reached or left starvation.
     /// </summary>
-    private void Update()
+    private void HandleHungerTick()
     {
-        this.elapsedTime += Time.deltaTime;
-
-        // Only decay hunger once the tick interval has passed
-        if (this.elapsedTime >= this.hungerDecayTick)
+        ClampHunger(-hungerDecayRate);
+        // Kill player if starved
+        if (this.hunger <= 0)
         {
-            this.elapsedTime = 0;
-
-            // Reduce hunger
-            ClampHunger(-this.hungerDecayRate);
-
-            // Check if hunger has fallen below or risen above the starvation threshold
-            SetHungerState(GetHungerState(this.hunger));
+            Debug.Log("You are starving!");
+            this.hungerTimer.Pause();
+            DeathSystem.KillPlayer(false);
         }
     }
 
@@ -146,6 +149,7 @@ public class HungerSystem : MonoBehaviour
         // clamp the new hunger plus delta between 0 and maxHunger
         this.hunger = Mathf.Clamp(this.hunger + delta, 0, this.maxHunger);
         OnHungerChanged?.Invoke(this.hunger); // Send event for listeners to update based on hunger
+        SetHungerState(GetHungerState(this.hunger));
     }
 
     private EnumHungerState GetHungerState(float currentHunger)

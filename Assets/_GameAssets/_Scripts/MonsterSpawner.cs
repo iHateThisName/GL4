@@ -23,19 +23,19 @@ public class MonsterSpawner : MonoBehaviour
 
     private void OnEnable()
     {
-        NightCycle.OnEventAvailable += SpawnMonster;
+        GameManager.OnEventAvailable += SpawnMonster;
     }
 
     private void OnDisable()
     {
-        NightCycle.OnEventAvailable -= SpawnMonster;
+        GameManager.OnEventAvailable -= SpawnMonster;
     }
 
     /* =======================
      * Spawning Logic
      * ======================= */
 
-    private void SpawnMonster()
+    private void SpawnMonster(GameManager.NightEventData eventData)
     {
         // ✅ Only allow one monster at a time
         if (currentMonster != null)
