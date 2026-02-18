@@ -75,15 +75,10 @@ public class BasketCustomSocket : XRSocketInteractor
         }
 
         base.OnSelectEntering(args);
-
-        // WHEN SNAPPING: Disable Velocity Tracking (Freeze it)
-        this.SetPhysicsState(args.interactableObject, true);
     }
 
     protected override void OnSelectExiting(SelectExitEventArgs args)
     {
-        // WHEN REMOVING: Enable Velocity Tracking (Unfreeze it)
-        this.SetPhysicsState(args.interactableObject, false);
 
         if (this.selectionMap.TryGetValue(args.interactableObject, out Transform target))
         {
@@ -92,35 +87,6 @@ public class BasketCustomSocket : XRSocketInteractor
         }
 
         base.OnSelectExiting(args);
-    }
-    #endregion
-
-    #region Other Methods
-    /// <summary>
-    /// Configures the physics behavior of the wood log based on whether it is stored or held.
-    /// </summary>
-    private void SetPhysicsState(IXRInteractable interactable, bool isInsideSocket)
-    {
-        if (interactable is XRGrabInteractable grabObject)
-        {
-            if (grabObject.TryGetComponent(out Rigidbody rb))
-            {
-                if (isInsideSocket)
-                {
-                    // Snapped in Basket: No physics forces allowed
-                    grabObject.movementType = XRBaseInteractable.MovementType.Instantaneous;
-                    rb.isKinematic = true;
-                    rb.linearVelocity = Vector3.zero;
-                    rb.angularVelocity = Vector3.zero;
-                }
-                else
-                {
-                    // Being Held/Carried: Use physics for realistic crashes
-                    grabObject.movementType = XRBaseInteractable.MovementType.VelocityTracking;
-                    rb.isKinematic = false;
-                }
-            }
-        }
     }
     #endregion
 
