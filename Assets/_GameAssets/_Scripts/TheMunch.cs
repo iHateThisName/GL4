@@ -1,5 +1,7 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 public class TheMunch : MonoBehaviour
 {
@@ -7,13 +9,17 @@ public class TheMunch : MonoBehaviour
     [SerializeField] private Animator monsterAnimator;
     [SerializeField] private string munchTriggerName = "Munch";
     [SerializeField] private string returnTriggerName = "Return";
+    [SerializeField] private string rejectTriggerName = "Reject";
 
     [Tooltip("How long the hand stays at the 'End' position before returning")]
-    [SerializeField] private float holdDuration = 10.0f;
+    [SerializeField] private float holdDuration = 2.0f;
+
+    [Header("Interaction Settings")]
+    [Range(0, 10)]
+    [SerializeField] private float maxAcceptableVelocity = 2.0f;
 
     [Header("Rejection Settings")]
     [Range(1, 20)]
-    [Tooltip("The force applied when 'flicking' away non-food items")]
     [SerializeField] private float throwForce = 5f;
 
     public Vector3 ThrowDirection = new Vector3(0, 1, 1);
@@ -24,58 +30,87 @@ public class TheMunch : MonoBehaviour
     {
         if (this.isMunching) return;
 
-        Food foodItem = other.GetComponentInParent<Food>();
+        Rigidbody parentRb = other.attachedRigidbody;
+        if (parentRb == null) return;
+
+        Food foodItem = parentRb.GetComponent<Food>();
 
         if (foodItem != null)
         {
-            StartCoroutine(this.MunchSequence(foodItem.gameObject));
+            if (this.IsMovingTooFast(parentRb))
+            {
+                this.RejectItem(parentRb);
+            }
+            else
+            {
+                StartCoroutine(this.MunchSequence(foodItem.gameObject));
+            }
         }
         else
         {
-            this.RejectItem(other.gameObject);
+            this.RejectItem(parentRb);
         }
+    }
+
+    private bool IsMovingTooFast(Rigidbody rb)
+    {
+        return rb.linearVelocity.magnitude > this.maxAcceptableVelocity;
     }
 
     private IEnumerator MunchSequence(GameObject food)
     {
         this.isMunching = true;
 
-        // 1. Play the 'Grab' animation
+        // Force release if the player is holding the food they are trying to feed
+        this.ForceRelease(food.GetComponent<XRGrabInteractable>());
+
         if (this.monsterAnimator != null)
         {
             this.monsterAnimator.SetTrigger(this.munchTriggerName);
         }
 
-        // 2. Hide/Destroy the food once it's 'grabbed'
-        // You might want to parent the food to the hand here before destroying
         Destroy(food, 0.2f);
 
-        // 3. FREEZE: Wait at the end of the grab animation
         yield return new WaitForSeconds(this.holdDuration);
 
-        // 4. Play the 'Return' animation
         if (this.monsterAnimator != null)
         {
             this.monsterAnimator.SetTrigger(this.returnTriggerName);
         }
 
-        // Wait for return animation to finish (optional) before allowing next munch
         yield return new WaitForSeconds(1.0f);
         this.isMunching = false;
     }
 
-    private void RejectItem(GameObject item)
+    private void RejectItem(Rigidbody rb)
     {
-        Rigidbody rb = item.GetComponentInParent<Rigidbody>();
-
-        if (rb != null)
+        if (this.monsterAnimator != null)
         {
-            Vector3 worldThrowDir = this.transform.TransformDirection(this.ThrowDirection);
-            rb.AddForce(worldThrowDir * this.throwForce, ForceMode.Impulse);
+            this.monsterAnimator.SetTrigger(this.rejectTriggerName);
+        }
+        // 1. Force the player to let go so physics can take over
+        XRGrabInteractable grabInteractable = rb.GetComponent<XRGrabInteractable>();
+        this.ForceRelease(grabInteractable);
+
+        // 2. Apply the slap force
+        Vector3 worldThrowDir = this.transform.TransformDirection(this.ThrowDirection);
+        rb.AddForce(worldThrowDir * this.throwForce, ForceMode.Impulse);
+
+        Debug.Log($"Monster slapped {rb.name} out of player's hand!");
+    }
+
+    private void ForceRelease(XRGrabInteractable interactable)
+    {
+        if (interactable != null && interactable.isSelected)
+        {
+            // Get the interaction manager and tell it to cancel the current selection
+            IXRInteractable iInteractable = interactable;
+            interactable.interactionManager.SelectExit(interactable.firstInteractorSelecting, interactable);
         }
     }
 
-    // Getters / Setters
-    public float GetHoldDuration() => this.holdDuration;
-    public void SetHoldDuration(float duration) => this.holdDuration = duration;
+    #region Getters/Setters
+    public float GetMaxAcceptableVelocity() => this.maxAcceptableVelocity;
+    public void SetMaxAcceptableVelocity(float velocity) => this.maxAcceptableVelocity = velocity;
+    #endregion
 }
