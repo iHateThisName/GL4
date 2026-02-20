@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6382683766791366124
 Transform:
   m_ObjectHideFlags: 0
@@ -4935,6 +4935,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FireMatchController
   rootObject: {fileID: 5959080155966302980}
   fireVFX: {fileID: 2231724948050073117}
+  despawnTimer: 3
+  flame: {fileID: 2231724948050073117}
+  rb: {fileID: 389096230292042307}
 --- !u!1 &5959080155966302980
 GameObject:
   m_ObjectHideFlags: 0
@@ -5040,7 +5043,19 @@ MonoBehaviour:
       m_Calls: []
   m_FirstSelectEntered:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2799598715579227209}
+        m_TargetAssemblyTypeName: FireMatchController, Assembly-CSharp
+        m_MethodName: EnableModel
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_LastSelectExited:
     m_PersistentCalls:
       m_Calls: []
@@ -5049,7 +5064,19 @@ MonoBehaviour:
       m_Calls: []
   m_SelectExited:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2799598715579227209}
+        m_TargetAssemblyTypeName: FireMatchController, Assembly-CSharp
+        m_MethodName: StartDespawnTimer
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_FirstFocusEntered:
     m_PersistentCalls:
       m_Calls: []

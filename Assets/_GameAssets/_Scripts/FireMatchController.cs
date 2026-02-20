@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class FireMatchController : MonoBehaviour {
@@ -5,6 +6,15 @@ public class FireMatchController : MonoBehaviour {
     public GameObject RootObject => this.rootObject;
 
     [SerializeField] private GameObject fireVFX;
+
+    [SerializeField]
+    private float despawnTimer;
+
+    [SerializeField]
+    private GameObject flame;
+
+    [SerializeField]
+    private Rigidbody rb;
 
     public bool IsIgnited { get; private set; }
 
@@ -24,4 +34,21 @@ public class FireMatchController : MonoBehaviour {
         GameObject newFireMatch = Instantiate(this.rootObject, this.transform.position, this.transform.rotation);
     }
 
+    public void EnableModel()
+    {
+        rb.isKinematic = false;
+        flame.SetActive(true);
+    }
+
+    public void StartDespawnTimer()
+    {
+        StartCoroutine(DespawnMatch());
+    }
+
+    IEnumerator DespawnMatch()
+    {
+        Debug.Log("Start match despawn");
+        yield return new WaitForSeconds(despawnTimer);
+        Destroy(this.transform.root.gameObject);
+    }
 }
