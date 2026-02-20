@@ -108,7 +108,7 @@ public class GameManager : PersistenSingleton<GameManager> {
     /// </summary>
     private void DebugEventTimeWorking(NightEventData eventData)
     {
-        Debug.Log($"Event fired at {eventData}");
+        //Debug.Log($"Event fired at {eventData}"); Yes is working relax.
     }
     
     [System.Serializable]

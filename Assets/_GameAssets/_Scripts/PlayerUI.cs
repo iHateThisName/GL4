@@ -12,19 +12,31 @@ public class PlayerUI : MonoBehaviour {
 
     [SerializeField] private TextMeshProUGUI hungerText;
 
+    private bool useDebugInfo = false;
+
     private void Start() {
         HandleTemperatureChanged(new BodyTemperatureStateChange {
             CurrentState = PlayerTemperatureSimulator.Instance.CurrentBodyTemperatureState
         });
         HandleHungerChanged(100);
+
+#if UNITY_EDITOR
+        useDebugInfo = true;
+#endif
     }
 
     private void OnEnable() {
+        this.temperatureText.text = "";
+        this.hungerText.text = "";
+        if (!this.useDebugInfo) return;
+
         PlayerTemperatureSimulator.OnBodyTemperatureStateChanged += HandleTemperatureChanged;
         HungerSystem.OnHungerChanged += HandleHungerChanged;
     }
 
     private void OnDisable() {
+        if (!this.useDebugInfo) return;
+
         PlayerTemperatureSimulator.OnBodyTemperatureStateChanged -= HandleTemperatureChanged;
         HungerSystem.OnHungerChanged -= HandleHungerChanged;
     }

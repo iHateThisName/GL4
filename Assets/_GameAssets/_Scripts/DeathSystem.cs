@@ -7,8 +7,10 @@ public static class DeathSystem
 
     public static void KillPlayer(bool completelyRestart = false)
     {
+#if !UNITY_EDITOR
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         OnPlayerDied.Invoke();
+#endif
     }
     
     public static void Clear() {}
