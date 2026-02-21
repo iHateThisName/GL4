@@ -1,58 +1,129 @@
+using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class BaseNavAIMonster : MonoBehaviour {
 
+    [field: SerializeField] public string DebugInformation { get; private set; }
+
     [Header("References")]
     [SerializeField] private NavMeshAgent agent;
     [SerializeField] private Transform player;
 
-    [Header("Layer Masks")]
-    [SerializeField] private LayerMask whatIsGround;
-
     [Header("Config")]
     [SerializeField] private MonsterTypeEnum monsterType;
+    [SerializeField] private float tickRate = 2f; // How often the monster updates its behavior (in seconds)
+    [SerializeField] private float attackRange = 0.5f;
 
-    private int outsideAreaMask = 8;
-
+    private Vector3 spawnPoint;
+    private PlayerTemperatureSimulator.EnumLocationType currentLocation;
+    private Action monsterNavigationLogic;
     private enum MonsterTypeEnum { None, Stalker }
+
+    #region Unity Lifecycle
+    /// <summary>
+    /// Subscribes to location change events when enabled.
+    /// </summary>
+    private void OnEnable() {
+        PlayerTemperatureSimulator.OnLocationTypeChanged += HandleLocationChange;
+    }
+
+    /// <summary>
+    /// Unsubscribes from location change events to prevent memory leaks.
+    /// </summary>
+    private void OnDisable() {
+        PlayerTemperatureSimulator.OnLocationTypeChanged -= HandleLocationChange;
+    }
+
+    /// <summary>
+    /// Initializes references, selects behavior strategy,
+    /// and starts the ticking coroutine.
+    /// </summary>
     private void Start() {
         if (this.player == null) {
             this.player = GameObject.FindGameObjectWithTag("Player").transform.root;
         }
 
+        // Validate NavMeshAgent reference
+        if (this.agent == null) {
+            Debug.LogError("NavMeshAgent reference is missing on BaseNavAIMonster. Please assign it in the inspector.");
+        }
+
+        // Set the spawn point to the monster's initial position
+        this.spawnPoint = this.transform.root.position;
+
+        // Initial check for location type
+        HandleLocationChange(PlayerTemperatureSimulator.Instance.CurrentLocationType);
+
+        // Select the appropriate logic function based on the monster type
+        this.monsterNavigationLogic = MonsterLogicSelector();
+
+        // Start the movement calculation coroutine. This will repeatedly call the selected monster logic function at the specified tick rate.
+        StartCoroutine(MonsterLogicCoroutine());
+    }
+
+    #endregion
+
+    /// <summary>
+    /// Updates the location type when the environment changes.
+    /// </summary>
+    private void HandleLocationChange(PlayerTemperatureSimulator.EnumLocationType type) {
+        this.currentLocation = type;
+    }
+
+    /// <summary>
+    /// Coroutine that executes the selected monster behavior
+    /// at fixed intervals defined by tickRate. Not necessary for the stalker behavior since it reacts to location changes, 
+    /// but can be useful for other behaviors that require regular updates.
+    /// </summary>
+    private IEnumerator MonsterLogicCoroutine() {
+        while (true) {
+            // Check if the monster is in attack range of the player.
+            float distanceToPlayer = Vector3.Distance(this.transform.position, this.player.position);
+            if (distanceToPlayer <= this.attackRange) {
+                AttackPlayer();
+            }
+            this.monsterNavigationLogic?.Invoke();
+
+            yield return new WaitForSeconds(this.tickRate);
+        }
+    }
+
+    /// <summary>
+    /// Returns the appropriate behavior delegate
+    /// based on the configured monster type.
+    /// </summary>
+    private Action MonsterLogicSelector() {
         switch (monsterType) {
             case MonsterTypeEnum.Stalker:
-
-                // Check if player is outside (navmesh surface set to Outside)
-                if (IsPlayerOutside()) {
-                InvokeRepeating(nameof(MoveTowardsTarget), 0f, 1f); // Move towards the player every second
-
-                } else {
-                    // Back of the player. Move to spawn point.
-                }
-
-
-                    break;
+                return StalkerNavigationLogic;
+            default:
+                return () => { Debug.LogWarning($"The logic for the selected monster {this.monsterType} is missing."); };
         }
     }
 
-    private void MoveTowardsTarget() {
-        if (this.agent == null || this.player == null) return;
-        this.agent.SetDestination(this.player.position);
+    private void AttackPlayer() {
+        this.DebugInformation = "Monster is attacking the player!";
+        // Implement attack logic here. trigger animation, reduce player health, etc.
+        Debug.Log("Monster is attacking the player!");
     }
 
-    private bool IsPlayerOutside() {
+    /// <summary>
+    /// Implements the stalker behavior pattern for the monster.
+    /// The stalker will pursue the player when they are in cold/outdoor locations,
+    /// and retreat to its spawn point when the player enters warm/indoor areas.
+    /// </summary>
+    private void StalkerNavigationLogic() {
+        // Check if player is outside.
+        if (currentLocation == PlayerTemperatureSimulator.EnumLocationType.Cold) {
+            this.agent.SetDestination(this.player.position);
+            this.DebugInformation = $"Stalker is pursuing the player at {this.player.position}";
 
-        NavMeshHit hit;
-
-        if (NavMesh.SamplePosition(player.position, out hit, 2f, NavMesh.AllAreas)) {
-            // Check if sampled position belongs to Outside area
-            return (outsideAreaMask & (1 << hit.mask)) != 0;
+        } else {
+            // Back off the player. Move towards spawn point.
+            this.agent.SetDestination(this.spawnPoint);
+            this.DebugInformation = $"Stalker is retreating to spawn point at {this.spawnPoint}";
         }
-
-        return false;
     }
-
-
 }

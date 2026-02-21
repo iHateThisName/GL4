@@ -161,13 +161,13 @@ NavMeshAgent:
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
-  m_StoppingDistance: 0
+  m_StoppingDistance: 2.5
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
-  m_WalkableMask: 4294967295
+  m_WalkableMask: 8
   m_ObstacleAvoidanceType: 4
 --- !u!1 &6353332716892592266
 GameObject:
@@ -213,7 +213,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80a8fa31f219f5e4c87eb522b972bbe1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BaseNavAIMonster
+  <DebugInformation>k__BackingField: 
   agent: {fileID: 1687273280417510100}
+  player: {fileID: 0}
+  monsterType: 1
+  tickRate: 2
+  attackRange: 3
 --- !u!1 &7869189190943243820
 GameObject:
   m_ObjectHideFlags: 0
