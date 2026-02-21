@@ -26,6 +26,8 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
 
     // Event triggered when body temperature state changes
     public static Action<BodyTemperatureStateChange> OnBodyTemperatureStateChanged;
+    // Event triggered when location type changes.
+    public static Action<EnumLocationType> OnLocationTypeChanged;
 
     // Temperature change rate based on location type, Normal slowly decreases, Cold rapidly decreases, Warm increases
     public enum EnumLocationType { Normal, Cold, Warm }
@@ -87,6 +89,7 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
     public void SetLocationType(EnumLocationType locationType) {
         if (this.currentLocationType == locationType) return; // No change in location type
         this.currentLocationType = locationType;
+        OnLocationTypeChanged?.Invoke(locationType);
     }
 
     /// <summary>
