@@ -21,10 +21,13 @@ public class TemperatureZoneTrigger : MonoBehaviour {
 
     private void OnTriggerExit(Collider other) {
         if (!other.CompareTag("Player")) return;
-        if (this.locationType != PlayerTemperatureSimulator.EnumLocationType.Warm) return;
 
         if (PlayerTemperatureSimulator.Instance.CurrentLocationType == PlayerTemperatureSimulator.EnumLocationType.Warm) {
             UpdateTemperatureZone(PlayerTemperatureSimulator.EnumLocationType.Normal);
+        }
+
+        if (PlayerTemperatureSimulator.Instance.CurrentLocationType == PlayerTemperatureSimulator.EnumLocationType.Normal) {
+            UpdateTemperatureZone(PlayerTemperatureSimulator.EnumLocationType.Cold);
         }
     }
 
