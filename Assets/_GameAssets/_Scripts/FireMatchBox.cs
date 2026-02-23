@@ -11,12 +11,14 @@ public class FireMatchBox : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        SpawnMatch();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void SpawnMatch()
     {
-        
+        GameObject newMatch = Instantiate(matchPrefab);
+        newMatch.transform.position = matchSpawnPoint.position;
+        newMatch.transform.rotation = matchSpawnPoint.rotation;
+        newMatch.GetComponent<FireMatchController>().MatchBox = this;
     }
 }

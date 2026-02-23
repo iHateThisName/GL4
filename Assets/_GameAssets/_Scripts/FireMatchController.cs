@@ -16,6 +16,8 @@ public class FireMatchController : MonoBehaviour {
     [SerializeField]
     private Rigidbody rb;
 
+    public FireMatchBox MatchBox;
+
     public bool IsIgnited { get; private set; }
 
     private void Start() {
@@ -42,6 +44,7 @@ public class FireMatchController : MonoBehaviour {
 
     public void StartDespawnTimer()
     {
+        MatchBox.SpawnMatch();
         StartCoroutine(DespawnMatch());
     }
 
