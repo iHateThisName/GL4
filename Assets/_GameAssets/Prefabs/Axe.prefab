@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1127463243679316778}
   - component: {fileID: 1213760736508006729}
-  - component: {fileID: 4049740697202759698}
+  - component: {fileID: 752306566392077161}
   m_Layer: 0
   m_Name: Axe
   m_TagString: Untagged
@@ -27,8 +27,8 @@ Transform:
   m_GameObject: {fileID: 3577282280466937115}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.552, y: 0.978, z: 1.17419}
-  m_LocalScale: {x: 0.1, y: 0.6, z: 0.1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 216323364424742080}
@@ -62,7 +62,7 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &4049740697202759698
+--- !u!114 &752306566392077161
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -75,8 +75,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.XR.Interaction.Toolkit::UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable
   m_InteractionManager: {fileID: 0}
-  m_Colliders:
-  - {fileID: 1884148469684093631}
+  m_Colliders: []
   m_InteractionLayers:
     m_Bits: 1
   m_DistanceCalculationMode: 1
@@ -320,7 +319,7 @@ PrefabInstance:
       addedObject: {fileID: 1884148469684093631}
     - targetCorrespondingSourceObject: {fileID: 611138231861592486, guid: 80f2ad6f7e7a5ee479701f9bf3c54be5, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 671989193820987410}
+      addedObject: {fileID: 6922386125894024542}
   m_SourcePrefab: {fileID: 100100000, guid: 80f2ad6f7e7a5ee479701f9bf3c54be5, type: 3}
 --- !u!4 &388604547430724892 stripped
 Transform:
@@ -332,8 +331,8 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 611138231861592486, guid: 80f2ad6f7e7a5ee479701f9bf3c54be5, type: 3}
   m_PrefabInstance: {fileID: 211142222631457527}
   m_PrefabAsset: {fileID: 0}
---- !u!64 &671989193820987410
-MeshCollider:
+--- !u!65 &6922386125894024542
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -350,10 +349,9 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 2167626781963276912, guid: 80f2ad6f7e7a5ee479701f9bf3c54be5, type: 3}
+  serializedVersion: 3
+  m_Size: {x: 0.04, y: 0.4529779, z: 0.30216232}
+  m_Center: {x: 0, y: 0.1008989, z: 0.36224157}
 --- !u!1 &1474405092436819578 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1628054723627183245, guid: 80f2ad6f7e7a5ee479701f9bf3c54be5, type: 3}

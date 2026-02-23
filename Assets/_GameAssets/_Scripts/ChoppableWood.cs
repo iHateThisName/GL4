@@ -45,7 +45,9 @@ public class ChoppableWood : MonoBehaviour
         Rigidbody axeRigidbody = axeCollider.attachedRigidbody;
         if (axeRigidbody != null)
         {
-            return axeRigidbody.linearVelocity.magnitude >= this.minChopVelocity;
+            // Calculate velocity at the blade's position specifically
+            Vector3 velocityAtPoint = axeRigidbody.GetPointVelocity(axeCollider.transform.position);
+            return velocityAtPoint.magnitude >= this.minChopVelocity;
         }
         return false;
     }
@@ -63,15 +65,17 @@ public class ChoppableWood : MonoBehaviour
     #region Actions
     private void SpawnPieces(Transform axeTransform)
     {
-        // 1. Position Logic: Using the specific axis that matched your visual gizmo
+        // 1. Position Logic: Spread pieces based on axe's forward vector
         Vector3 splitDirection = axeTransform.forward;
 
         Vector3 spawnPos1 = this.transform.position + (splitDirection * (this.splitWidth * 0.5f));
         Vector3 spawnPos2 = this.transform.position - (splitDirection * (this.splitWidth * 0.5f));
 
-        // 2. Rotation Logic: Correcting the 90-degree offset to align faces with the blade
-        float correctedY = axeTransform.eulerAngles.y + 90f;
-        Quaternion splitRotation = Quaternion.Euler(0, correctedY, 0);
+        // 2. Rotation Logic: 90-degree offset removed/commented out as requested
+        // float correctedY = axeTransform.eulerAngles.y + 90f;
+        // Quaternion splitRotation = Quaternion.Euler(0, correctedY, 0);
+
+        Quaternion splitRotation = axeTransform.rotation;
 
         Instantiate(this.firewood1, spawnPos1, splitRotation);
         Instantiate(this.firewood2, spawnPos2, splitRotation);
