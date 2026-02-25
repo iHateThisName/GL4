@@ -51,7 +51,7 @@ public class BaseNavAIMonster : MonoBehaviour {
         }
 
         // Set the spawn point to the monster's initial position
-        this.spawnPoint = this.transform.root.position;
+        this.spawnPoint = this.transform.parent.transform.position;
 
         // Initial check for location type
         HandleLocationChange(PlayerTemperatureSimulator.Instance.CurrentLocationType);
