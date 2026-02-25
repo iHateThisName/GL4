@@ -17,7 +17,9 @@ public class Timer : IDisposable
     public float Progress => Mathf.Clamp(this.Elapsed / this.Duration, 0, 1);
 
     private float nextInterval;
-    private  bool disposed;
+    private bool disposed;
+    private bool intervalWasSetDuringTick; // Track if SetInterval was called
+
     
     /// <param name="interval">Seconds between ticks.</param>
     /// <param name="duration">Total runtime before OnFinished fires. 0 = infinite.</param>
@@ -37,6 +39,7 @@ public class Timer : IDisposable
     {
         this.Interval = newInterval;
         this.nextInterval = Elapsed + this.Interval;
+        this.intervalWasSetDuringTick = true;
     }
 
     public void Start()
@@ -70,7 +73,10 @@ public class Timer : IDisposable
         if (this.Elapsed >= this.nextInterval)
         {
             OnTimerTick?.Invoke();
-            this.nextInterval = this.Elapsed + this.Interval;
+            if (!this.intervalWasSetDuringTick)
+            {
+                this.nextInterval = this.Elapsed + this.Interval;
+            }
         }
         
         // Check total duration cap

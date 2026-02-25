@@ -10,7 +10,7 @@ public static class DeathSystem
     public static void KillPlayer(DeathEvent.DeathReason reason, bool completelyRestart = false)
     {
         deathEvent = new DeathEvent(reason);
-        OnPlayerDied.Invoke();
+        OnPlayerDied?.Invoke();
         SceneManager.LoadScene("GameOver");
     }
 

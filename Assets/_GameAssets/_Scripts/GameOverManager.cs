@@ -8,7 +8,7 @@ public class GameOverManager : MonoBehaviour
 
     private void Start()
     {
-        this.reloadSceneTimer = new Timer(0, this.sceneDuration);
+        this.reloadSceneTimer = new Timer(0.1f, this.sceneDuration);
         this.reloadSceneTimer.OnTimerFinished += ReloadGameScene;
         this.reloadSceneTimer.Start();
     }
@@ -24,6 +24,8 @@ public class GameOverManager : MonoBehaviour
             this.reloadSceneTimer = null;
         }
     }
+    
+    public Timer Timer => this.reloadSceneTimer;
 
     public void ReloadGameScene()
     {
