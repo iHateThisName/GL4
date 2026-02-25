@@ -166,6 +166,18 @@ public class FlashLight : MonoBehaviour
         this.batteryTimer.OnTimerTick += HandleFlashLightBatteryDecay;
         this.batteryTimer.Start();
     }
+    
+    /// <summary>
+    /// Clean up the timer when this component is destroyed.
+    /// </summary>
+    private void OnDestroy()
+    {
+        if (this.batteryTimer != null)
+        {
+            this.batteryTimer.Dispose();
+            this.batteryTimer = null;
+        }
+    }
 
     private void HandleFlashLightBatteryDecay()
     {

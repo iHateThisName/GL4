@@ -1,6 +1,7 @@
 using Assets.Scripts.Singleton;
 using Gaskellgames;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : PersistenSingleton<GameManager> {
 
@@ -8,9 +9,10 @@ public class GameManager : PersistenSingleton<GameManager> {
     [SerializeField, AssetsOnly] private GameObject FireAdaptationVolumePrefab;
     [HideInInspector] public FireAdaptationController FireAdaptationController { get; private set; }
     
+    [Header("=== Night Configuration ===")]
     // Total duration of the night in minutes. Converted to seconds internally.
     [Tooltip("Total night duration (minutes)")]
-    [SerializeField] private float timePerNightMinutes; 
+    [SerializeField] private float timePerNightMinutes;
 
     // Minimum delay (in seconds) before the next event can occur.
     [Tooltip("Minimum seconds before next event")]
@@ -20,6 +22,8 @@ public class GameManager : PersistenSingleton<GameManager> {
     [Tooltip("Maximum seconds before next event")]
     [SerializeField] private float maxEventTimeSeconds;
 
+    [SerializeField] private int finalNight = 3;
+
     // Event invoked whenever a scheduled night event becomes available.
     // Other systems can subscribe to react (e.g., spawning enemies, triggering sounds).
     public static event System.Action<NightEventData> OnEventAvailable = delegate { };
@@ -27,6 +31,10 @@ public class GameManager : PersistenSingleton<GameManager> {
     private float nightTimeInSeconds => timePerNightMinutes * 60;  // Total night duration converted to seconds
     
     private Timer nightTimer;
+    private int night = 1;
+    private int eventsFired = 0;
+    
+    public float NightTime => this.nightTimer != null && this.nightTimer.IsRunning ? this.nightTimer.Elapsed : this.nightTimeInSeconds;
 
     /// <summary>
     /// Unity callback invoked when the object becomes enabled.
@@ -55,16 +63,36 @@ public class GameManager : PersistenSingleton<GameManager> {
             // otherwise instantiate a new one from the prefab
             this.FireAdaptationController = Instantiate(this.FireAdaptationVolumePrefab).GetComponent<FireAdaptationController>();
         }
-        
-        this.nightTimer = new Timer(1, nightTimeInSeconds);
-        this.nightTimer.OnTimerTick += HandleNightTick;
-        this.nightTimer.OnTimerFinished += HandleNightEnd;
-        this.nightTimer.Start();
+
+        InstantiateTimer();
+    }
+    
+    /// <summary>
+    /// Clean up the timer when this component is destroyed.
+    /// </summary>
+    private void OnDestroy()
+    {
+        if (this.nightTimer != null)
+        {
+            this.nightTimer.Dispose();
+            this.nightTimer = null;
+        }
     }
 
     public void ContinueGame() {
         Debug.Log("Continuing Game...");
         // Add logic to continue the game from the game over scene
+        
+        SceneManager.LoadScene("CabinLayoutFinal");
+        InstantiateTimer();
+    }
+
+    private void InstantiateTimer()
+    {
+        this.nightTimer = new Timer(0, nightTimeInSeconds);
+        this.nightTimer.OnTimerTick += HandleNightTick;
+        this.nightTimer.OnTimerFinished += HandleNightEnd;
+        this.nightTimer.Start();
     }
     
     /// <summary>
@@ -73,14 +101,25 @@ public class GameManager : PersistenSingleton<GameManager> {
     /// </summary>
     private void HandleNightTick()
     {
-        OnEventAvailable.Invoke(new NightEventData()); // Notify subscribers
+        Debug.Log($"Night event fired at: {this.night}: {this.nightTimer.Elapsed}s");
+        this.eventsFired++;
+        OnEventAvailable.Invoke(new NightEventData(this.eventsFired, this.night)); // Notify subscribers
         if (this.nightTimer != null)
             this.nightTimer.SetInterval(ScheduleNewEventTime()); // Schedule the next event
     }
 
     private void HandleNightEnd()
     {
-        Debug.Log("Night ended");
+        Debug.Log("Night Survived");
+        this.night++;
+        
+        if (this.nightTimer != null)
+            this.nightTimer.Dispose();
+        
+        DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Survived, false);
+        
+        if (this.night == finalNight)
+            DeathSystem.WinGame();
     }
 
     private void HandleNightEarlyEnd()
@@ -114,7 +153,13 @@ public class GameManager : PersistenSingleton<GameManager> {
     [System.Serializable]
     public struct NightEventData
     {
+        public int eventIdx;
+        public int night;
         
+        public NightEventData(int idx, int night) 
+        {
+            this.eventIdx = idx;
+            this.night = night;
+        }
     }
 }
-

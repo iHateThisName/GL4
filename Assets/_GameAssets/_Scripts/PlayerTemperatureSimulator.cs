@@ -34,37 +34,37 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
     // Player temperature states based on current body temperature
     public enum EnumBodyTemperatureState {
         /// <summary>
-        /// Normal body temperature (35-39°C). Player feels comfortable.
+        /// Normal body temperature (35-39ï¿½C). Player feels comfortable.
         /// </summary>
         Normal,
 
         /// <summary>
-        /// Mild hypothermia (32-35°C). Player feels cold and may experience shivering and confusion.
+        /// Mild hypothermia (32-35ï¿½C). Player feels cold and may experience shivering and confusion.
         /// </summary>
         MildHypothermia,
 
         /// <summary>
-        /// Moderate hypothermia (28-32°C). Player feels very cold with slurred speech and drowsiness.
+        /// Moderate hypothermia (28-32ï¿½C). Player feels very cold with slurred speech and drowsiness.
         /// </summary>
         ModerateHypothermia,
 
         /// <summary>
-        /// Severe hypothermia (below 28°C). Player is frozen with risk of unconsciousness and death.
+        /// Severe hypothermia (below 28ï¿½C). Player is frozen with risk of unconsciousness and death.
         /// </summary>
         Hypothermia,
 
         /// <summary>
-        /// Mild hyperthermia (38-39°C). Player feels hot and may experience heat exhaustion.
+        /// Mild hyperthermia (38-39ï¿½C). Player feels hot and may experience heat exhaustion.
         /// </summary>
         MildHyperthermia,
 
         /// <summary>
-        /// Moderate hyperthermia (39-41°C). Player feels very hot with heat stroke risk.
+        /// Moderate hyperthermia (39-41ï¿½C). Player feels very hot with heat stroke risk.
         /// </summary>
         ModerateHyperthermia,
 
         /// <summary>
-        /// Severe hyperthermia (above 41°C). Player is overheating with risk of organ failure.
+        /// Severe hyperthermia (above 41ï¿½C). Player is overheating with risk of organ failure.
         /// </summary>
         Hyperthermia
     }
@@ -134,6 +134,9 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
     private void NotifyBodyTempetureStateChange(EnumBodyTemperatureState previousState, EnumBodyTemperatureState currentState) {
         Debug.Log($"Temperature state changed from {previousState} to {currentState}");
         OnBodyTemperatureStateChanged?.Invoke(new BodyTemperatureStateChange { PreviousState = previousState, CurrentState = currentState });
+        
+        if (currentState == EnumBodyTemperatureState.Hypothermia || currentState == EnumBodyTemperatureState.Hyperthermia)
+            DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Temperature, false);
     }
 
     /// <summary>

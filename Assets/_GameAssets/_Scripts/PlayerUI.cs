@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using static PlayerTemperatureSimulator;
@@ -11,6 +12,7 @@ public class PlayerUI : MonoBehaviour {
     [SerializeField] private TMP_Text temperatureText;
     [SerializeField] private TMP_Text locationText;
     [SerializeField] private TextMeshProUGUI hungerText;
+    [SerializeField] private TextMeshProUGUI nightTimeText;
 
     private bool useDebugInfo = false;
 
@@ -47,6 +49,12 @@ public class PlayerUI : MonoBehaviour {
         PlayerTemperatureSimulator.OnBodyTemperatureStateChanged -= HandleTemperatureChanged;
         PlayerTemperatureSimulator.OnLocationTypeChanged -= HandleLocationChanged;
         HungerSystem.OnHungerChanged -= HandleHungerChanged;
+    }
+
+    private void Update()
+    {
+        if (this.nightTimeText == null) return;
+        this.nightTimeText.text = "Time: " + GameManager.Instance.NightTime;
     }
 
     /// <summary>

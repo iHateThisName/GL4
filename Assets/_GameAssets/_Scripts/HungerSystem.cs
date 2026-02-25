@@ -21,14 +21,13 @@ public class HungerSystem : MonoBehaviour
         public EnumHungerState state;
         public float key;
     }
-    
-    // Current hunger value. Higher means the player is well-fed, lower means starving.
-    [SerializeField] private float hunger; 
 
+    [Header("=== References ====")]
     // Trigger area representing the player's mouth.
     // When food enters this collider, the player "eats" it.
     [SerializeField] private TriggerArea mouthCollider; 
 
+    [Header("=== Configuration ====")]
     // Maximum hunger value the player can have.
     [SerializeField] private float maxHunger = 100f; 
 
@@ -38,13 +37,16 @@ public class HungerSystem : MonoBehaviour
     // Time interval (seconds) between hunger decay updates.
     [SerializeField] private float hungerDecayTick = 0.25f; 
     
+    private Timer hungerTimer;
+    
     // current state of hunger
     private EnumHungerState hungerState;
     
+    // Internal current hunger value. Higher means the player is well-fed, lower means starving.
+    [SerializeField] private float hunger;
+    
     // Tracks time passed since the last hunger decay tick.
     private float elapsedTime;
-    
-    private Timer hungerTimer;
 
     private const float SLIGHTY_HUNGRY_THRESHOLD = 0.8f;
     private const float HUNGER_THRESHOLD = .5f;
@@ -91,6 +93,18 @@ public class HungerSystem : MonoBehaviour
     {
         if (this.mouthCollider == null) return;
         this.mouthCollider.OnTriggerEntered -= this.tryEatFood;
+    }
+    
+    /// <summary>
+    /// Clean up the timer when this component is destroyed.
+    /// </summary>
+    private void OnDestroy()
+    {
+        if (this.hungerTimer != null)
+        {
+            this.hungerTimer.Dispose();
+            this.hungerTimer = null;
+        }
     }
 
     /// <summary>
@@ -139,8 +153,8 @@ public class HungerSystem : MonoBehaviour
         if (this.hunger <= 0)
         {
             Debug.Log("You are starving!");
-            this.hungerTimer.Pause();
-            DeathSystem.KillPlayer(false);
+            this.hungerTimer.Dispose();
+            DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Hunger, false);
         }
     }
 

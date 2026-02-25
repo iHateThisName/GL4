@@ -8,14 +8,15 @@ public class Timer : IDisposable
     public event Action OnTimerTick = delegate { };
     public event Action OnTimerFinished = delegate { };
     
-    public float Elapsed      { get; protected set; }   // time since last tick
+    public float Elapsed      { get; protected set; }   // time since start
     public float Interval     { get; protected set; }   // current tick interval
     public float Duration     { get; protected set; }   // 0 = run forever
     public bool  IsRunning    { get; private set; }
-    public bool  IsFinished => Duration > 0 && Elapsed >= Duration;
+    public bool  IsFinished => this.Duration > 0 && this.Elapsed >= this.Duration;
     
-    public float Progress => Mathf.Clamp(Elapsed / Duration, 0, 1);
-    
+    public float Progress => Mathf.Clamp(this.Elapsed / this.Duration, 0, 1);
+
+    private float nextInterval;
     private  bool disposed;
     
     /// <param name="interval">Seconds between ticks.</param>
@@ -23,9 +24,9 @@ public class Timer : IDisposable
     /// <param name="startNow">If true, starts running immediately.</param>
     public Timer(float interval, float duration = 0f)
     {
-        Interval = interval;
-        Duration = duration;
-        disposed = false;
+        this.Interval = interval;
+        this.Duration = duration;
+        this.nextInterval = interval;
     }
     
     // Destructor
@@ -34,50 +35,49 @@ public class Timer : IDisposable
     /// <summary>Change the tick interval mid-run (e.g. flashlight randomization).</summary>
     public void SetInterval(float newInterval)
     {
-        Interval = newInterval;
-        Elapsed   = 0f;   // reset current tick progress
+        this.Interval = newInterval;
+        this.nextInterval = Elapsed + this.Interval;
     }
 
     public void Start()
     {
-        if (disposed || IsFinished) return;
-        if (IsRunning) return;
+        if (this.disposed || this.IsFinished || this.IsRunning) return;
         
-        IsRunning = true;
+        this.IsRunning = true;
         TimerManager.RegisterTimer(this);
         OnTimerStart.Invoke();
     }
 
-    public void Pause() => IsRunning = false;
+    public void Pause() => this.IsRunning = false;
 
-    public void Resume() => IsRunning = true;
+    public void Resume() => this.IsRunning = true;
 
     public void ResetTimer(bool restart = false)
     {
-        Elapsed = 0f;
-        IsRunning = false;
+        this.Elapsed = 0f;
+        this.IsRunning = false;
         if (restart) Start();
     }
     
     public void Update()
     {
-        if (!IsRunning || IsFinished) return;
+        if (!this.IsRunning || this.IsFinished) return;
 
-        Elapsed += Time.deltaTime;
+        this.Elapsed += Time.deltaTime;
 
-        // Check total duration cap
-        if (Duration > 0f && Elapsed >= Duration)
-        {
-            IsRunning = false;
-            OnTimerFinished?.Invoke();
-            return;
-        }
-
+        
         // Check tick interval
-        if (Elapsed >= Interval)
+        if (this.Elapsed >= this.nextInterval)
         {
-            Elapsed -= Interval;
             OnTimerTick?.Invoke();
+            this.nextInterval = this.Elapsed + this.Interval;
+        }
+        
+        // Check total duration cap
+        if (this.Duration > 0f && this.Elapsed >= this.Duration)
+        {
+            this.IsRunning = false;
+            OnTimerFinished?.Invoke();
         }
     }
 
@@ -89,7 +89,7 @@ public class Timer : IDisposable
     
     protected virtual void Dispose(bool disposing) 
     {
-        if (disposed) return;
+        if (this.disposed) return;
 
         if (disposing) 
         {
@@ -97,7 +97,7 @@ public class Timer : IDisposable
             ClearAllEvents();
         }
 
-        disposed = true;
+        this.disposed = true;
     }
     
     private void ClearAllEvents()
