@@ -16,9 +16,26 @@ public class FireMatchBox : MonoBehaviour
 
     public void SpawnMatch()
     {
-        GameObject newMatch = Instantiate(matchPrefab);
-        newMatch.transform.position = matchSpawnPoint.position;
-        newMatch.transform.rotation = matchSpawnPoint.rotation;
-        newMatch.GetComponent<FireMatchController>().MatchBox = this;
+        if (matchPrefab == null)
+        {
+            Debug.LogError("Match Prefab is missing");
+            return;
+        }
+
+        if (matchSpawnPoint == null)
+        {
+            Debug.LogError("Match Spawn Point is missing");
+            return;
+        }
+        GameObject newMatch = Instantiate(matchPrefab, matchSpawnPoint.position, matchSpawnPoint.rotation);
+        FireMatchController controller = newMatch.GetComponentInChildren<FireMatchController>();
+
+        if (controller == null)
+        {
+            Debug.LogError("FireMatchController missing on match prefab!");
+            return;
+        }
+
+        controller.MatchBox = this;
     }
 }
