@@ -44,6 +44,7 @@ public class FireMatchController : MonoBehaviour {
 
     public void StartDespawnTimer()
     {
+        rb.isKinematic = true;
         MatchBox.SpawnMatch();
         StartCoroutine(DespawnMatch());
     }
