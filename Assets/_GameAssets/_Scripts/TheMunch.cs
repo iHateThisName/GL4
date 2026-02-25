@@ -2,6 +2,15 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
+using TMPro;
+
+public enum MunchState
+{
+    NotHungry,
+    Hungry,
+    Angry,
+    Kill
+}
 
 public class TheMunch : MonoBehaviour
 {
@@ -11,8 +20,20 @@ public class TheMunch : MonoBehaviour
     [SerializeField] private string returnTriggerName = "Return";
     [SerializeField] private string rejectTriggerName = "Reject";
 
-    [Tooltip("How long the hand stays at the 'End' position before returning")]
-    [SerializeField] private float holdDuration = 2.0f;
+    [Header("Hunger System Settings")]
+    [Tooltip("Maximum fullness. Starts at 60.")]
+    [SerializeField] private float maxSatiety = 60f;
+    [SerializeField] private float currentSatiety = 60f;
+
+    [Header("Audio Settings")]
+    [Tooltip("Assign an AudioSource on The Munch to play sounds.")]
+    [SerializeField] private AudioSource audioSource;
+    [Tooltip("Assign the sound effect for when the monster gets hungry (loops).")]
+    [SerializeField] private AudioClip hungrySound;
+    [Tooltip("Assign the warning sound for the Angry state (loops).")]
+    [SerializeField] private AudioClip angryWarningSound;
+    [Tooltip("Assign the jumpscare sound effect for the Kill state (plays once).")]
+    [SerializeField] private AudioClip killJumpscareSound;
 
     [Header("Interaction Settings")]
     [Range(0, 10)]
@@ -24,11 +45,114 @@ public class TheMunch : MonoBehaviour
 
     public Vector3 ThrowDirection = new Vector3(0, 1, 1);
 
-    private bool isMunching = false;
+    [Header("Debug UI")]
+    [Tooltip("Assign a TextMeshPro (UI or 3D) component to see live updates.")]
+    [SerializeField] private TMP_Text debugText;
+
+    private MunchState currentState;
+
+    private void Start()
+    {
+        this.currentSatiety = this.maxSatiety;
+
+        // Force the initial state to run so the arm retracts immediately on load
+        this.ChangeState(MunchState.NotHungry);
+    }
+
+    private void Update()
+    {
+        if (this.currentState == MunchState.Kill) return;
+
+        this.currentSatiety -= Time.deltaTime * 0.5f;
+        this.currentSatiety = Mathf.Clamp(this.currentSatiety, 0, this.maxSatiety);
+
+        this.UpdateMunchState();
+        this.UpdateDebugText();
+    }
+
+    private void UpdateDebugText()
+    {
+        if (this.debugText != null)
+        {
+            this.debugText.text = $"State: {this.currentState}\nSatiety: {this.currentSatiety:F1}";
+        }
+    }
+
+    private void UpdateMunchState()
+    {
+        MunchState newState = this.DetermineState(this.currentSatiety);
+
+        if (newState != this.currentState)
+        {
+            this.ChangeState(newState);
+        }
+    }
+
+    private MunchState DetermineState(float satietyValue)
+    {
+        if (satietyValue > 40f) return MunchState.NotHungry;
+        if (satietyValue > 20f) return MunchState.Hungry;
+        if (satietyValue > 0f) return MunchState.Angry;
+        return MunchState.Kill;
+    }
+
+    private void ChangeState(MunchState newState)
+    {
+        this.currentState = newState;
+
+        switch (this.currentState)
+        {
+            case MunchState.NotHungry:
+                if (this.audioSource != null) this.audioSource.Stop(); // Stop everything
+
+                if (this.monsterAnimator != null)
+                    this.monsterAnimator.SetTrigger(this.munchTriggerName);
+                break;
+
+            case MunchState.Hungry:
+                if (this.audioSource != null && this.hungrySound != null)
+                {
+                    this.audioSource.Stop(); // Cleanly stop the angry warning if fed back to Hungry
+                    this.audioSource.clip = this.hungrySound;
+                    this.audioSource.loop = true;
+                    this.audioSource.volume = 1.0f; // Ensure volume is 100%
+                    this.audioSource.Play();
+                }
+
+                if (this.monsterAnimator != null)
+                    this.monsterAnimator.SetTrigger(this.returnTriggerName);
+                break;
+
+            case MunchState.Angry:
+                if (this.audioSource != null && this.angryWarningSound != null)
+                {
+                    this.audioSource.Stop(); // Cleanly stop the hungry grumble
+                    this.audioSource.clip = this.angryWarningSound;
+                    this.audioSource.loop = true;
+                    this.audioSource.volume = 1.0f; // Ensure volume is 100%
+                    this.audioSource.Play();
+                }
+                break;
+
+            case MunchState.Kill:
+                if (this.audioSource != null)
+                {
+                    this.audioSource.Stop(); // Cut the angry warning sound immediately
+                    if (this.killJumpscareSound != null)
+                    {
+                        this.audioSource.loop = false;
+                        // Play at 50% volume (0.5f)
+                        this.audioSource.PlayOneShot(this.killJumpscareSound, 0.5f);
+                    }
+                }
+                Debug.Log("Game Over: The Munch killed the player!");
+                break;
+        }
+    }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (this.isMunching) return;
+        if (this.currentState == MunchState.Kill) return;
 
         Rigidbody parentRb = other.attachedRigidbody;
         if (parentRb == null) return;
@@ -37,13 +161,20 @@ public class TheMunch : MonoBehaviour
 
         if (foodItem != null)
         {
+            if (this.currentState == MunchState.NotHungry)
+            {
+                Debug.Log("Monster is full! Rejecting food.");
+                this.RejectItem(parentRb);
+                return;
+            }
+
             if (this.IsMovingTooFast(parentRb))
             {
                 this.RejectItem(parentRb);
             }
             else
             {
-                StartCoroutine(this.MunchSequence(foodItem.gameObject));
+                this.ConsumeFood(foodItem);
             }
         }
         else
@@ -57,29 +188,18 @@ public class TheMunch : MonoBehaviour
         return rb.linearVelocity.magnitude > this.maxAcceptableVelocity;
     }
 
-    private IEnumerator MunchSequence(GameObject food)
+    private void ConsumeFood(Food foodItem)
     {
-        this.isMunching = true;
+        this.ForceRelease(foodItem.GetComponent<XRGrabInteractable>());
 
-        // Force release if the player is holding the food they are trying to feed
-        this.ForceRelease(food.GetComponent<XRGrabInteractable>());
+        float valueToAdd = 20f;
 
-        if (this.monsterAnimator != null)
-        {
-            this.monsterAnimator.SetTrigger(this.munchTriggerName);
-        }
+        this.currentSatiety += valueToAdd;
+        this.currentSatiety = Mathf.Clamp(this.currentSatiety, 0, this.maxSatiety);
 
-        Destroy(food, 0.2f);
+        this.UpdateMunchState();
 
-        yield return new WaitForSeconds(this.holdDuration);
-
-        if (this.monsterAnimator != null)
-        {
-            this.monsterAnimator.SetTrigger(this.returnTriggerName);
-        }
-
-        yield return new WaitForSeconds(1.0f);
-        this.isMunching = false;
+        Destroy(foodItem.gameObject, 0.2f);
     }
 
     private void RejectItem(Rigidbody rb)
@@ -88,11 +208,10 @@ public class TheMunch : MonoBehaviour
         {
             this.monsterAnimator.SetTrigger(this.rejectTriggerName);
         }
-        // 1. Force the player to let go so physics can take over
+
         XRGrabInteractable grabInteractable = rb.GetComponent<XRGrabInteractable>();
         this.ForceRelease(grabInteractable);
 
-        // 2. Apply the slap force
         Vector3 worldThrowDir = this.transform.TransformDirection(this.ThrowDirection);
         rb.AddForce(worldThrowDir * this.throwForce, ForceMode.Impulse);
 
@@ -103,7 +222,6 @@ public class TheMunch : MonoBehaviour
     {
         if (interactable != null && interactable.isSelected)
         {
-            // Get the interaction manager and tell it to cancel the current selection
             IXRInteractable iInteractable = interactable;
             interactable.interactionManager.SelectExit(interactable.firstInteractorSelecting, interactable);
         }
@@ -112,5 +230,6 @@ public class TheMunch : MonoBehaviour
     #region Getters/Setters
     public float GetMaxAcceptableVelocity() => this.maxAcceptableVelocity;
     public void SetMaxAcceptableVelocity(float velocity) => this.maxAcceptableVelocity = velocity;
+    public MunchState GetCurrentState() => this.currentState;
     #endregion
 }
