@@ -38,13 +38,12 @@ public class FireMatchController : MonoBehaviour {
 
     public void EnableModel()
     {
-        rb.isKinematic = false;
+        rb.isKinematic = true;
         flame.SetActive(true);
     }
 
     public void StartDespawnTimer()
     {
-        rb.isKinematic = true;
         MatchBox.SpawnMatch();
         StartCoroutine(DespawnMatch());
     }
