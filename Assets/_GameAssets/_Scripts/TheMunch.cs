@@ -35,6 +35,10 @@ public class TheMunch : MonoBehaviour
     [Tooltip("Assign the jumpscare sound effect for the Kill state (plays once).")]
     [SerializeField] private AudioClip killJumpscareSound;
 
+    [Header("Game Managers")]
+    [Tooltip("Assign the DeathManager from your scene here.")]
+    [SerializeField] private DeathManager deathManager;
+
     [Header("Interaction Settings")]
     [Range(0, 10)]
     [SerializeField] private float maxAcceptableVelocity = 2.0f;
@@ -137,15 +141,23 @@ public class TheMunch : MonoBehaviour
             case MunchState.Kill:
                 if (this.audioSource != null)
                 {
-                    this.audioSource.Stop(); // Cut the angry warning sound immediately
+                    this.audioSource.Stop();
                     if (this.killJumpscareSound != null)
                     {
                         this.audioSource.loop = false;
-                        // Play at 50% volume (0.5f)
                         this.audioSource.PlayOneShot(this.killJumpscareSound, 0.5f);
                     }
                 }
-                Debug.Log("Game Over: The Munch killed the player!");
+
+                //Tell the global DeathManager to handle the blackout routine
+                if (this.deathManager != null)
+                {
+                    this.deathManager.TriggerDeathSequence();
+                }
+                else
+                {
+                    Debug.LogError("DeathManager is missing! Did you assign it in the Inspector?");
+                }
                 break;
         }
     }
