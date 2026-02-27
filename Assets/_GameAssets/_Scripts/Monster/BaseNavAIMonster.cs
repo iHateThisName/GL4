@@ -10,6 +10,7 @@ public class BaseNavAIMonster : MonoBehaviour {
     [Header("References")]
     [SerializeField] private NavMeshAgent agent;
     [SerializeField] private Transform player;
+    [SerializeField] private Transform[] patrolPoints;
 
     [Header("Config")]
     [SerializeField] private MonsterTypeEnum monsterType;
@@ -19,6 +20,7 @@ public class BaseNavAIMonster : MonoBehaviour {
     private Vector3 spawnPoint;
     private PlayerTemperatureSimulator.EnumLocationType currentLocation;
     private Action monsterNavigationLogic;
+    private int currentPatrolIndex = 0;
     private enum MonsterTypeEnum { None, Stalker }
 
     #region Unity Lifecycle
@@ -48,6 +50,10 @@ public class BaseNavAIMonster : MonoBehaviour {
         // Validate NavMeshAgent reference
         if (this.agent == null) {
             Debug.LogError("NavMeshAgent reference is missing on BaseNavAIMonster. Please assign it in the inspector.");
+        }
+
+        if (this.patrolPoints.Length == 0) {
+            Debug.LogWarning("No patrol points assigned to BaseNavAIMonster.");
         }
 
         // Set the spawn point to the monster's initial position
@@ -107,7 +113,7 @@ public class BaseNavAIMonster : MonoBehaviour {
         this.DebugInformation = "Monster is attacking the player!";
         // Implement attack logic here. trigger animation, reduce player health, etc.
         Debug.Log("Monster is attacking the player!");
-        DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Monster, completelyRestart:false);
+        DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Monster, completelyRestart: false);
     }
 
     /// <summary>
@@ -122,9 +128,20 @@ public class BaseNavAIMonster : MonoBehaviour {
             this.DebugInformation = $"Stalker is pursuing the player at {this.player.position}";
 
         } else {
+
             // Back off the player. Move towards spawn point.
-            this.agent.SetDestination(this.spawnPoint);
-            this.DebugInformation = $"Stalker is retreating to spawn point at {this.spawnPoint}";
+            if (this.patrolPoints.Length == 0) {
+                this.agent.SetDestination(this.spawnPoint);
+
+            } else if (Vector3.Distance(this.transform.position, this.agent.destination) < this.attackRange) {
+                // If the monster is close to the point, start patrolling between points.
+                currentPatrolIndex = (currentPatrolIndex + 1) % this.patrolPoints.Length;
+                this.agent.SetDestination(this.patrolPoints[currentPatrolIndex].position);
+
+            } else {
+                this.agent.SetDestination(this.patrolPoints[currentPatrolIndex].position);
+            }
+            this.DebugInformation = $"Stalker is idle moving towards {this.agent.destination}";
         }
     }
 }
