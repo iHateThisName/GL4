@@ -4936,7 +4936,6 @@ MonoBehaviour:
   rootObject: {fileID: 5959080155966302980}
   fireVFX: {fileID: 2231724948050073117}
   despawnTimer: 3
-  flame: {fileID: 2231724948050073117}
   rb: {fileID: 389096230292042307}
   MatchBox: {fileID: 0}
 --- !u!1 &5959080155966302980
@@ -5047,7 +5046,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2799598715579227209}
         m_TargetAssemblyTypeName: FireMatchController, Assembly-CSharp
-        m_MethodName: EnableModel
+        m_MethodName: LightMatch
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
