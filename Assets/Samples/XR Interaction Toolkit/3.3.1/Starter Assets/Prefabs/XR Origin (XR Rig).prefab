@@ -2138,9 +2138,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4065743319889240391}
-  - component: {fileID: 465966236301488539}
+  - component: {fileID: 6235309838894088146}
   m_Layer: 0
-  m_Name: DeathManager
+  m_Name: DeathFade
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2162,7 +2162,7 @@ Transform:
   - {fileID: 1489212217832671800}
   m_Father: {fileID: 1767192434}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &465966236301488539
+--- !u!114 &6235309838894088146
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2171,11 +2171,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 4993182717501256285}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 05f05b79c1148fd4f82761d6a0fc1b29, type: 3}
+  m_Script: {fileID: 11500000, guid: 1fa99150dba84005acc0594db75391cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DeathManager
+  m_EditorClassIdentifier: Assembly-CSharp::DeathFade
   fadeCanvasGroup: {fileID: 1545790937380155138}
   fadeDuration: 2
+  fadeWaitDuration: 0.5
 --- !u!1 &5167925059111895691
 GameObject:
   m_ObjectHideFlags: 0

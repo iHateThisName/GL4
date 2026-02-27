@@ -7,11 +7,16 @@ public static class DeathSystem
     
     public static DeathEvent deathEvent;
 
+    private static bool AnyListeners => OnPlayerDied?.GetInvocationList().Length > 0;
+
     public static void KillPlayer(DeathEvent.DeathReason reason, bool completelyRestart = false)
     {
         deathEvent = new DeathEvent(reason);
         OnPlayerDied?.Invoke();
-        SceneManager.LoadScene("GameOver");
+        
+        // Automatically restart the game if no listeners are registered, else let listeners handle it
+        if (!AnyListeners)
+            deathEvent.LoadScene();
     }
 
     public static void WinGame()
@@ -43,5 +48,10 @@ public static class DeathSystem
         }
         
         public DeathReason Reason => reason;
+        
+        public void LoadScene()
+        {
+            SceneManager.LoadScene("GameOver");
+        }
     }
 }
