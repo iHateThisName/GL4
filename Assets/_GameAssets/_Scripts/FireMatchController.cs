@@ -11,9 +11,6 @@ public class FireMatchController : MonoBehaviour {
     private float despawnTimer;
 
     [SerializeField]
-    private GameObject flame;
-
-    [SerializeField]
     private Rigidbody rb;
 
     public FireMatchBox MatchBox;
@@ -25,21 +22,21 @@ public class FireMatchController : MonoBehaviour {
     }
 
 
-    public void Ignite() {
+    /*public void Ignite() {
         if (this.IsIgnited) return; // Already ignited, do nothing
 
         this.IsIgnited = true;
         fireVFX.SetActive(true);
-    }
+    }*/
 
-    public void InstatiateSelf() {
-        GameObject newFireMatch = Instantiate(this.rootObject, this.transform.position, this.transform.rotation);
-    }
+    /*public void InstatiateSelf() {
+        //GameObject newFireMatch = Instantiate(this.rootObject, this.transform.position, this.transform.rotation);
+    }*/
 
     public void EnableModel()
     {
         rb.isKinematic = true;
-        flame.SetActive(true);
+        fireVFX.SetActive(true);
     }
 
     public void StartDespawnTimer()
