@@ -157,7 +157,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 3.5
+  m_Speed: 2.5
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -216,8 +216,9 @@ MonoBehaviour:
   <DebugInformation>k__BackingField: 
   agent: {fileID: 1687273280417510100}
   player: {fileID: 0}
+  patrolPoints: []
   monsterType: 1
-  tickRate: 2
+  tickRate: 0.5
   attackRange: 3
 --- !u!1 &7869189190943243820
 GameObject:
