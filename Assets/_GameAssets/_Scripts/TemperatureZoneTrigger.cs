@@ -22,11 +22,13 @@ public class TemperatureZoneTrigger : MonoBehaviour {
     private void OnTriggerExit(Collider other) {
         if (!other.CompareTag("Player")) return;
 
-        if (PlayerTemperatureSimulator.Instance.CurrentLocationType == PlayerTemperatureSimulator.EnumLocationType.Warm) {
+        PlayerTemperatureSimulator.EnumLocationType currentLocationType = PlayerTemperatureSimulator.Instance.CurrentLocationType;
+
+        if (currentLocationType == PlayerTemperatureSimulator.EnumLocationType.Warm) {
             UpdateTemperatureZone(PlayerTemperatureSimulator.EnumLocationType.Normal);
         }
 
-        if (PlayerTemperatureSimulator.Instance.CurrentLocationType == PlayerTemperatureSimulator.EnumLocationType.Normal) {
+        if (currentLocationType == PlayerTemperatureSimulator.EnumLocationType.Normal || currentLocationType == PlayerTemperatureSimulator.EnumLocationType.Shack) {
             UpdateTemperatureZone(PlayerTemperatureSimulator.EnumLocationType.Cold);
         }
     }
@@ -52,6 +54,9 @@ public class TemperatureZoneTrigger : MonoBehaviour {
 
                 // Remove heating vision
                 //GameManager.Instance.FireAdaptationController.RemoveVolume();
+                break;
+            default:
+                Debug.Log($"Player entered {type}");
                 break;
         }
 
