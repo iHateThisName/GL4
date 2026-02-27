@@ -107,6 +107,7 @@ public class BaseNavAIMonster : MonoBehaviour {
         this.DebugInformation = "Monster is attacking the player!";
         // Implement attack logic here. trigger animation, reduce player health, etc.
         Debug.Log("Monster is attacking the player!");
+        DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Monster, completelyRestart:false);
     }
 
     /// <summary>
