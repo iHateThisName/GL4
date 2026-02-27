@@ -35,14 +35,19 @@ public class FireMatchController : MonoBehaviour {
 
     public void EnableModel()
     {
+        MatchBox.matchSpawned = false;
         rb.isKinematic = true;
         fireVFX.SetActive(true);
     }
 
     public void StartDespawnTimer()
     {
-        MatchBox.SpawnMatch();
         StartCoroutine(DespawnMatch());
+        if (MatchBox.matchSpawned)
+        {
+            return;
+        }
+        MatchBox.SpawnMatch();
     }
 
     IEnumerator DespawnMatch()
