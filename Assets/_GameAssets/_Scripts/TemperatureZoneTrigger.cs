@@ -39,19 +39,19 @@ public class TemperatureZoneTrigger : MonoBehaviour {
                 // TODO Apply cold vision
 
                 // Remove heating vision
-                GameManager.Instance.FireAdaptationController.RemoveVolume();
+                //GameManager.Instance.FireAdaptationController.RemoveVolume();
                 break;
             case PlayerTemperatureSimulator.EnumLocationType.Warm:
                 Debug.Log("Player entered WARM temperature zone.");
 
                 // Apply heating vision
-                GameManager.Instance.FireAdaptationController.ApplyVolume();
+                //GameManager.Instance.FireAdaptationController.ApplyVolume();
                 break;
             case PlayerTemperatureSimulator.EnumLocationType.Normal:
                 Debug.Log("Player entered NORMAL temperature zone.");
 
                 // Remove heating vision
-                GameManager.Instance.FireAdaptationController.RemoveVolume();
+                //GameManager.Instance.FireAdaptationController.RemoveVolume();
                 break;
         }
 
