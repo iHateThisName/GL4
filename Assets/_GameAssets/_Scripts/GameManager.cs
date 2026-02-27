@@ -8,33 +8,19 @@ public class GameManager : PersistenSingleton<GameManager> {
     [Header("Prefab Refrences")]
     [SerializeField, AssetsOnly] private GameObject FireAdaptationVolumePrefab;
     [HideInInspector] public FireAdaptationController FireAdaptationController { get; private set; }
-    
-    [Header("=== Night Configuration ===")]
-    // Total duration of the night in minutes. Converted to seconds internally.
-    [Tooltip("Total night duration (minutes)")]
-    [SerializeField] private float timePerNightMinutes;
 
-    // Minimum delay (in seconds) before the next event can occur.
-    [Tooltip("Minimum seconds before next event")]
-    [SerializeField] private float minEventTimeSeconds;
-
-    // Maximum delay (in seconds) before the next event can occur.
-    [Tooltip("Maximum seconds before next event")]
-    [SerializeField] private float maxEventTimeSeconds;
-
-    [SerializeField] private int finalNight = 3;
+    [Header("=== Night Configuration ===")] 
+    [SerializeField] private NightSettings nightSettings;
 
     // Event invoked whenever a scheduled night event becomes available.
     // Other systems can subscribe to react (e.g., spawning enemies, triggering sounds).
     public static event System.Action<NightEventData> OnEventAvailable = delegate { };
-
-    private float nightTimeInSeconds => timePerNightMinutes * 60;  // Total night duration converted to seconds
     
     private Timer nightTimer;
     private int night = 1;
     private int eventsFired = 0;
     
-    public float NightTime => this.nightTimer != null && this.nightTimer.IsRunning ? this.nightTimer.Elapsed : this.nightTimeInSeconds;
+    public float NightTime => this.nightTimer != null && this.nightTimer.IsRunning ? this.nightTimer.Elapsed : this.nightSettings.GetNightTimeInSeconds();
 
     /// <summary>
     /// Unity callback invoked when the object becomes enabled.
@@ -91,7 +77,7 @@ public class GameManager : PersistenSingleton<GameManager> {
 
     private void InstantiateTimer()
     {
-        this.nightTimer = new Timer(0, nightTimeInSeconds);
+        this.nightTimer = new Timer(0, this.nightSettings.GetNightTimeInSeconds());
         this.nightTimer.OnTimerTick += HandleNightTick;
         this.nightTimer.OnTimerFinished += HandleNightEnd;
         this.nightTimer.Start();
@@ -106,8 +92,8 @@ public class GameManager : PersistenSingleton<GameManager> {
         Debug.Log($"Night event fired at: {this.night}: {this.nightTimer.Elapsed}s");
         this.eventsFired++;
         OnEventAvailable.Invoke(new NightEventData(this.eventsFired, this.night)); // Notify subscribers
-        if (this.nightTimer != null)
-            this.nightTimer.SetInterval(ScheduleNewEventTime()); // Schedule the next event
+        if (this.nightTimer != null && this.nightSettings != null)
+            this.nightTimer.SetInterval(this.nightSettings.GetNewNightEventTime()); // Schedule the next event
     }
 
     private void HandleNightEnd()
@@ -120,7 +106,7 @@ public class GameManager : PersistenSingleton<GameManager> {
         
         DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Survived, false);
         
-        if (this.night == finalNight)
+        if (this.night == this.nightSettings.GetFinalNight())
             DeathSystem.WinGame();
     }
 
@@ -128,19 +114,6 @@ public class GameManager : PersistenSingleton<GameManager> {
     {
         if (this.nightTimer != null)
             this.nightTimer.Dispose();
-    }
-
-    /// <summary>
-    /// Schedules the next event by selecting a random time window within the allowed range.
-    /// Ensures the event does not exceed the total night duration (with a small buffer).
-    /// </summary>
-    private float ScheduleNewEventTime()
-    {
-        // Pick a random timestamp between the min and max bounds
-        float newEventTime = Random.Range(minEventTimeSeconds, maxEventTimeSeconds);
-
-        // Clamp event time so it never exceeds the night duration by more than a small buffer
-        return Mathf.Min(newEventTime, this.nightTimeInSeconds + 5f);
     }
 
     /// <summary>

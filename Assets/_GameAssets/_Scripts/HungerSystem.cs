@@ -28,14 +28,7 @@ public class HungerSystem : MonoBehaviour
     [SerializeField] private TriggerArea mouthCollider; 
 
     [Header("=== Configuration ====")]
-    // Maximum hunger value the player can have.
-    [SerializeField] private float maxHunger = 100f; 
-
-    // Amount of hunger lost each hunger tick.
-    [SerializeField] private float hungerDecayRate = 0.01f; 
-
-    // Time interval (seconds) between hunger decay updates.
-    [SerializeField] private float hungerDecayTick = 0.25f; 
+    [SerializeField] private HungerSettings hungerSettings;
     
     private Timer hungerTimer;
     
@@ -59,6 +52,8 @@ public class HungerSystem : MonoBehaviour
     public static event HungerStateChanged HungerStateChangedEvent;
     
     public static System.Action<float> OnHungerChanged;
+    
+    public float MaxHunger => this.hungerSettings != null ? this.hungerSettings.GetMaxHunger() : 100;
 
     /// <summary>
     /// Initializes the hunger system by setting hunger to maximum
@@ -66,13 +61,16 @@ public class HungerSystem : MonoBehaviour
     /// </summary>
     private void Start()
     {
-        this.hunger = this.maxHunger;
-        this.hungerState = EnumHungerState.Full;
-        
-        // setup internal timer
-        this.hungerTimer = new Timer(hungerDecayTick, 0);
-        this.hungerTimer.OnTimerTick += HandleHungerTick;
-        this.hungerTimer.Start();
+        if (this.hungerSettings != null)
+        {
+            this.hunger = this.MaxHunger;
+            this.hungerState = EnumHungerState.Full;
+            
+            // setup internal timer
+            this.hungerTimer = new Timer(this.hungerSettings.GetHungerDecayTick(), 0);
+            this.hungerTimer.OnTimerTick += HandleHungerTick;
+            this.hungerTimer.Start();
+        }
     }
 
     /// <summary>
@@ -121,7 +119,7 @@ public class HungerSystem : MonoBehaviour
             return;
         }
         
-        if (this.hunger.Equals(this.maxHunger - 20)) return;
+        if (this.hunger.Equals(this.MaxHunger - 20)) return;
         
         eatFood(food);
     }
@@ -148,7 +146,10 @@ public class HungerSystem : MonoBehaviour
     /// </summary>
     private void HandleHungerTick()
     {
-        ClampHunger(-hungerDecayRate);
+        if (this.hungerSettings == null) return;
+        
+        ClampHunger(-this.hungerSettings.GetHungerDecayRate());
+            
         // Kill player if starved
         if (this.hunger <= 0)
         {
@@ -161,16 +162,16 @@ public class HungerSystem : MonoBehaviour
     private void ClampHunger(float delta)
     {
         // clamp the new hunger plus delta between 0 and maxHunger
-        this.hunger = Mathf.Clamp(this.hunger + delta, 0, this.maxHunger);
+        this.hunger = Mathf.Clamp(this.hunger + delta, 0, this.MaxHunger);
         OnHungerChanged?.Invoke(this.hunger); // Send event for listeners to update based on hunger
         SetHungerState(GetHungerState(this.hunger));
     }
 
     private EnumHungerState GetHungerState(float currentHunger)
     {
-        float slightHungryThreshold = SLIGHTY_HUNGRY_THRESHOLD * this.maxHunger;
-        float hungerThreshold = HUNGER_THRESHOLD * this.maxHunger;
-        float starvingThreshold = STARVING_THRESHOLD * this.maxHunger;
+        float slightHungryThreshold = SLIGHTY_HUNGRY_THRESHOLD * this.MaxHunger;
+        float hungerThreshold = HUNGER_THRESHOLD * this.MaxHunger;
+        float starvingThreshold = STARVING_THRESHOLD * this.MaxHunger;
         
         if (currentHunger <= slightHungryThreshold && currentHunger > hungerThreshold) return EnumHungerState.SlightlyHungry;
         else if (currentHunger <= hungerThreshold && currentHunger > starvingThreshold) return EnumHungerState.Hungry;
@@ -185,7 +186,7 @@ public class HungerSystem : MonoBehaviour
         this.hungerState = newHungerState;
         HungerStateChangedEvent?.Invoke(previousState, this.hungerState);
     }
-
+    
     #region DEPRECATED_HELPER
     /// <summary>
     /// Updates the hunger UI text field with a new value.
