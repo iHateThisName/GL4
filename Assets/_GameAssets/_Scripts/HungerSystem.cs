@@ -118,8 +118,12 @@ public class HungerSystem : MonoBehaviour
             Debug.LogError("Food object entered mouth trigger but could not be cast to Food component.");
             return;
         }
-        
-        if (this.hunger.Equals(this.MaxHunger - 20)) return;
+
+        if (this.hunger.Equals(this.MaxHunger - 20))
+        {
+            Debug.Log("You are already full!");
+            return;
+        }
         
         eatFood(food);
     }
