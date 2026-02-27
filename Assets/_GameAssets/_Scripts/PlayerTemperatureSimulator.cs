@@ -177,7 +177,7 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
         // The lowest allowed body temperature in different environments
         return location switch {
             EnumLocationType.Cold => 25f,
-            EnumLocationType.Normal => 34f,
+            EnumLocationType.Normal => 25f,
             EnumLocationType.Warm => 36f,
             _ => 34f,
         };
