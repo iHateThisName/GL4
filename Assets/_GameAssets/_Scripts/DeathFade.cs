@@ -1,10 +1,14 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DeathFade : MonoBehaviour
 {
     [Header("Death UI Settings")]
     [Tooltip("Assign the Canvas Group from your black fade Canvas.")]
     [SerializeField] private CanvasGroup fadeCanvasGroup;
+    
+    [Tooltip("The Color used for the fade.")]
+    [SerializeField] private Color fadeColor = Color.black;
 
     [Tooltip("How long it takes to fade to black before restarting.")]
     [SerializeField] private float fadeDuration = 2.0f;
@@ -13,6 +17,7 @@ public class DeathFade : MonoBehaviour
     [SerializeField] private float fadeWaitDuration = 0.5f;
 
     private Timer fadeTimer;
+    private Image fadeImage;
 
     public System.Action OnFadeFinished;
 
@@ -27,6 +32,9 @@ public class DeathFade : MonoBehaviour
             // Ensure the canvas is turned off at the start of the scene
             this.fadeCanvasGroup.gameObject.SetActive(false);
         }
+        
+        this.fadeImage = this.fadeCanvasGroup.gameObject.GetComponentInChildren<Image>();
+        if (this.fadeImage != null) this.fadeImage.color = this.fadeColor;
     }
     
     private void OnEnable()
@@ -56,6 +64,9 @@ public class DeathFade : MonoBehaviour
         this.fadeTimer.OnTimerTick += TickFade;
         this.fadeTimer.OnTimerFinished += FinishFade;
         this.fadeTimer.Start();
+        
+        if (DeathSystem.deathEvent.Reason == DeathSystem.DeathEvent.DeathReason.Survived)
+            this.fadeImage.color = Color.white;
     }
 
     private void TickFade()
