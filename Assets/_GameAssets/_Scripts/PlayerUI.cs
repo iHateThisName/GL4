@@ -17,9 +17,9 @@ public class PlayerUI : MonoBehaviour {
     private bool useDebugInfo = false;
 
     private void Awake() {
-#if UNITY_EDITOR
+//#if UNITY_EDITOR
         this.useDebugInfo = true;
-#endif
+//#endif
     }
     private void Start() {
         if (!this.useDebugInfo) return; // Avoid initializing if we're not in debug mode.
