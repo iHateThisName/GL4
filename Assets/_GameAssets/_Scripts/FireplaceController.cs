@@ -98,6 +98,7 @@ public class FireplaceController : MonoBehaviour {
     private void AddFuelDebug() {
         // For testing purposes
         ForceAddFuel(10f);
+        Debug.Log($"Current Fuel Percentage: {this.FuelPercentage * 100f}%");
     }
 
     /// <summary>
@@ -150,6 +151,8 @@ public class FireplaceController : MonoBehaviour {
         mask &= ~InteractionLayerMask.GetMask("Default"); // Remove default layer
         mask |= InteractionLayerMask.GetMask("Firewood"); // Making sure the Firewood mask is there
         grabInteractable.interactionLayers = mask; // Set the new interaction layers to the grab interactable.
+
+        Debug.Log($"Current Fuel Percentage: {this.FuelPercentage * 100f}%");
     }
 
     public void Ignite(FireMatchController match) {
