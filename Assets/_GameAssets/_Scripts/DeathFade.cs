@@ -71,7 +71,7 @@ public class DeathFade : MonoBehaviour
 
     private void TickFade()
     {
-        if (this.fadeCanvasGroup == null && !this.fadeCanvasGroup.gameObject.activeInHierarchy) return;
+        if (this.fadeCanvasGroup == null || !this.fadeCanvasGroup.gameObject.activeInHierarchy) return;
         
         this.fadeCanvasGroup.alpha = Mathf.Clamp01(this.fadeTimer.Elapsed / this.fadeDuration);
     }
