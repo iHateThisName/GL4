@@ -30,7 +30,7 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
     public static Action<EnumLocationType> OnLocationTypeChanged;
 
     // Temperature change rate based on location type, Normal slowly decreases, Cold rapidly decreases, Warm increases
-    public enum EnumLocationType { Normal, Cold, Warm }
+    public enum EnumLocationType { Normal, Cold, Warm, Shack }
     // Player temperature states based on current body temperature
     public enum EnumBodyTemperatureState {
         /// <summary>
@@ -169,6 +169,7 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
             EnumLocationType.Cold => this.FREEZE_RATE, // Cold locations cause rapid cooling
             EnumLocationType.Normal => this.NORMAL_RATE, // Normal locations cause slight cooling
             EnumLocationType.Warm => this.WARM_RATE, // Warm locations cause warming
+            EnumLocationType.Shack => this.FREEZE_RATE,
             _ => this.NORMAL_RATE,
         };
     }
@@ -179,7 +180,7 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
             EnumLocationType.Cold => 25f,
             EnumLocationType.Normal => 25f,
             EnumLocationType.Warm => 36f,
-            _ => 34f,
+            _ => 25f,
         };
     }
 
@@ -189,7 +190,7 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
             EnumLocationType.Cold => 36f,
             EnumLocationType.Normal => 37f,
             EnumLocationType.Warm => 40.2f,
-            _ => 39f,
+            _ => 41f,
         };
     }    
 }
