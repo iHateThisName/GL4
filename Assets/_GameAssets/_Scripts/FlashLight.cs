@@ -21,10 +21,10 @@ public class FlashLight : MonoBehaviour
     [SerializeField] private XRGrabInteractable handleInteractable;
 
     // Crank used to generate flashlight power
-    [SerializeField] private CrankRotationInteractable crankInteractable;
+    [SerializeField] private RotationableInteractable crankInteractable;
 
     // Unity Light component controlling beam visuals
-    [SerializeField] private Light light;
+    [SerializeField] private Light lightSource;
     
     [Header("=== Light Settings ===")]
     // Initial light intensity at startup
@@ -74,12 +74,6 @@ public class FlashLight : MonoBehaviour
     // Timer used to track battery life
     private Timer batteryTimer;
 
-    // Time accumulator for decay ticking
-    private float elapsedTime;
-
-    // Current randomized decay interval
-    private float currentLightDecayTick;
-
     // Target intensity we smoothly move toward
     private float targetLightIntensity;
 
@@ -100,8 +94,8 @@ public class FlashLight : MonoBehaviour
     /// </summary>
     private void Awake()
     {
-        if (this.light == null)
-            this.light = GetComponentInChildren<Light>();
+        if (this.lightSource == null)
+            this.lightSource = GetComponentInChildren<Light>();
     }
 
     /// <summary>
@@ -141,18 +135,14 @@ public class FlashLight : MonoBehaviour
     /// </summary>
     private void Start()
     {
-        this.elapsedTime = 0f;
-
-        // Initialize randomized decay timing
-        this.currentLightDecayTick = this.lightDecayTickMin;
         RandomizeLightDecayTick();
 
         this.poweredOn = false;
         
-        if (this.light != null)
+        if (this.lightSource != null)
         {
-            this.light.intensity = this.startingLightPower;
-            this.light.range = this.startingLightRange;
+            this.lightSource.intensity = this.startingLightPower;
+            this.lightSource.range = this.startingLightRange;
             this.targetLightIntensity = this.startingLightPower;
         }
 
@@ -258,7 +248,7 @@ public class FlashLight : MonoBehaviour
     // ==== Light Logic ====
 
     // Current visible light intensity
-    public float LightIntensity => this.light != null ? this.light.intensity : this.startingLightPower;
+    public float LightIntensity => this.lightSource != null ? this.lightSource.intensity : this.startingLightPower;
     
     /// <summary>
     /// Randomizes next decay tick interval.
@@ -283,16 +273,16 @@ public class FlashLight : MonoBehaviour
     /// </summary>
     private void UpdateFlashLight()
     {
-        if (this.light == null) return;
+        if (this.lightSource == null) return;
         
         // Smooth transition toward target intensity
-        this.light.intensity = Mathf.MoveTowards(this.LightIntensity, this.targetLightIntensity, 5f * Time.deltaTime);
+        this.lightSource.intensity = Mathf.MoveTowards(this.LightIntensity, this.targetLightIntensity, 5f * Time.deltaTime);
         
         // Normalize intensity to 0–1 range
         float normalized = Mathf.InverseLerp(this.minLightPower, this.maxLightPower, this.LightIntensity);
 
         // Adjust beam range based on power level
-        this.light.range = Mathf.Lerp(this.minLightRange, this.maxLightRange, normalized);
+        this.lightSource.range = Mathf.Lerp(this.minLightRange, this.maxLightRange, normalized);
     }
     
     // ==== Flashlight Helpers ====
@@ -324,7 +314,7 @@ public class FlashLight : MonoBehaviour
     {
         this.poweredOn = toggle;
 
-        if (this.light != null)
-            this.light.enabled = this.poweredOn;
+        if (this.lightSource != null)
+            this.lightSource.enabled = this.poweredOn;
     }
 }

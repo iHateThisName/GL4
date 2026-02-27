@@ -121,7 +121,7 @@ public class HungerSystem : MonoBehaviour
             return;
         }
         
-        if (this.hunger.Equals(this.maxHunger)) return;
+        if (this.hunger.Equals(this.maxHunger - 20)) return;
         
         eatFood(food);
     }

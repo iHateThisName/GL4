@@ -10,8 +10,16 @@ using UnityEngine.XR.Interaction.Toolkit.Interactors;
 /// calculates signed angular delta around a selected axis,
 /// applies rotation to the pivot, and notifies listeners via OnCrank.
 /// </summary>
-public class CrankRotationInteractable : MonoBehaviour
+public class RotationableInteractable : MonoBehaviour
 {
+    [System.Serializable]
+    public enum RotationAxis
+    {
+        X,
+        Y,
+        Z,
+    }
+    
     // XR interactable used to detect grab/release events.
     [SerializeField] private XRSimpleInteractable interactable;
 
@@ -22,17 +30,11 @@ public class CrankRotationInteractable : MonoBehaviour
     [SerializeField] private Transform visual;
 
     // Axis around which the crank rotates.
-    [SerializeField] private RotatorInteractable.RotationAxis rotationAxis = RotatorInteractable.RotationAxis.Y;
+    [SerializeField] private RotationAxis rotationAxis = RotationAxis.Y;
 
     // Whether rotation should be limited between minAngle and maxAngle.
     // (Currently not enforced inside ApplyRotation.)
     [SerializeField] private bool isRotationClamped;
-
-    // Minimum allowed rotation angle when clamping is enabled.
-    [SerializeField] private float minAngle = -90f;
-    
-    // Maximum allowed rotation angle when clamping is enabled.
-    [SerializeField] private float maxAngle = 90f;
 
     // The interactor currently grabbing this crank.
     private IXRSelectInteractor interactor;
@@ -181,9 +183,9 @@ public class CrankRotationInteractable : MonoBehaviour
     {
         return rotationAxis switch
         {
-            RotatorInteractable.RotationAxis.X => pivot.right,
-            RotatorInteractable.RotationAxis.Y => pivot.up,
-            RotatorInteractable.RotationAxis.Z => pivot.forward,
+            RotationAxis.X => pivot.right,
+            RotationAxis.Y => pivot.up,
+            RotationAxis.Z => pivot.forward,
             _ => pivot.forward
         };
     }

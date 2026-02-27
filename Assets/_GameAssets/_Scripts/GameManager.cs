@@ -70,8 +70,10 @@ public class GameManager : PersistenSingleton<GameManager> {
     /// <summary>
     /// Clean up the timer when this component is destroyed.
     /// </summary>
-    private void OnDestroy()
+    protected override void OnDestroy()
     {
+        base.OnDestroy();
+        
         if (this.nightTimer != null)
         {
             this.nightTimer.Dispose();
