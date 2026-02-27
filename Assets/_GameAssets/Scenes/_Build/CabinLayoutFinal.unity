@@ -4140,7 +4140,7 @@ PrefabInstance:
     - target: {fileID: 3060243921034406785, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
       propertyPath: deathManager
       value: 
-      objectReference: {fileID: 1077380529}
+      objectReference: {fileID: 0}
     - target: {fileID: 4950517335717247463, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
       propertyPath: m_Name
       value: TheMunch
@@ -6233,17 +6233,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 336dad0e541c09945bf874da73fb7ad8, type: 3}
---- !u!114 &1077380529 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 465966236301488539, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
-  m_PrefabInstance: {fileID: 1928917307}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 05f05b79c1148fd4f82761d6a0fc1b29, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DeathManager
 --- !u!1001 &1085081497
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8492,8 +8481,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 0.7803165, y: 1, z: 0.5979993}
+  m_Center: {x: -0.053347904, y: 0, z: -0.042204764}
 --- !u!23 &1619668322
 MeshRenderer:
   m_ObjectHideFlags: 0
