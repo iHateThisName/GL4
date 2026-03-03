@@ -102,6 +102,17 @@ public class FireplaceController : MonoBehaviour {
     }
 
     /// <summary>
+    /// Debug method to add 100 fuel to the fireplace.
+    /// Accessible via Unity's context menu in the inspector.
+    /// </summary>
+    [ContextMenu("Add Fuel (100)")]
+    private void Add100FuelDebug() {
+        // For testing purposes
+        ForceAddFuel(100f);
+        Debug.Log($"Current Fuel Percentage: {this.FuelPercentage * 100f}%");
+    }
+
+    /// <summary>
     /// Adds the specified amount of fuel to the fire and forces it to become lit, regardless of its previous state.
     /// </summary>
     /// <remarks>This method is intended for debugging or testing scenarios where fuel needs to be added
