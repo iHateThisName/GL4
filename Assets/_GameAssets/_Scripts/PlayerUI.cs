@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using static PlayerTemperatureSimulator;
@@ -9,19 +10,51 @@ public class PlayerUI : MonoBehaviour {
 
     [Header("Refrences")]
     [SerializeField] private TMP_Text temperatureText;
+    [SerializeField] private TMP_Text locationText;
+    [SerializeField] private TextMeshProUGUI hungerText;
+    [SerializeField] private TextMeshProUGUI nightTimeText;
 
+    private bool useDebugInfo = false;
+
+    private void Awake() {
+//#if UNITY_EDITOR
+        this.useDebugInfo = true;
+//#endif
+    }
     private void Start() {
+        if (!this.useDebugInfo) return; // Avoid initializing if we're not in debug mode.
+
         HandleTemperatureChanged(new BodyTemperatureStateChange {
             CurrentState = PlayerTemperatureSimulator.Instance.CurrentBodyTemperatureState
         });
+        HandleHungerChanged(100);
+        HandleLocationChanged(PlayerTemperatureSimulator.Instance.CurrentLocationType);
+
     }
 
     private void OnEnable() {
+        this.temperatureText.text = "";
+        this.hungerText.text = "";
+        this.locationText.text = "";
+        if (!this.useDebugInfo) return; // Avoid subscribing if we're not in debug mode.
+
         PlayerTemperatureSimulator.OnBodyTemperatureStateChanged += HandleTemperatureChanged;
+        PlayerTemperatureSimulator.OnLocationTypeChanged += HandleLocationChanged;
+        HungerSystem.OnHungerChanged += HandleHungerChanged;
     }
 
     private void OnDisable() {
+        if (!this.useDebugInfo) return; // Avoid unsubscribing if we never subscribed in the first place.
+
         PlayerTemperatureSimulator.OnBodyTemperatureStateChanged -= HandleTemperatureChanged;
+        PlayerTemperatureSimulator.OnLocationTypeChanged -= HandleLocationChanged;
+        HungerSystem.OnHungerChanged -= HandleHungerChanged;
+    }
+
+    private void Update()
+    {
+        if (this.nightTimeText == null) return;
+        this.nightTimeText.text = "Time: " + GameManager.Instance.NightTime;
     }
 
     /// <summary>
@@ -29,7 +62,7 @@ public class PlayerUI : MonoBehaviour {
     /// </summary>
     /// <param name="change">The body temperature state change data.</param>
     private void HandleTemperatureChanged(BodyTemperatureStateChange change) {
-        this.temperatureText.text = $"Temperature State: {change.CurrentState}, Location: {PlayerTemperatureSimulator.Instance.CurrentLocationType}";
+        this.temperatureText.text = $"Temperature State: {change.CurrentState}";
         UpdateColor(change.CurrentState);
     }
 
@@ -64,5 +97,12 @@ public class PlayerUI : MonoBehaviour {
                 this.temperatureText.color = Color.magenta; // Extreme conditions Dead.
                 break;
         }
+    }
+    
+    private void HandleHungerChanged(float hunger) {
+        this.hungerText.text = "Hunger: " + hunger.ToString("F2");
+    }
+    private void HandleLocationChanged(EnumLocationType type) {
+        this.locationText.text = $"Location: {PlayerTemperatureSimulator.Instance.CurrentLocationType}";
     }
 }

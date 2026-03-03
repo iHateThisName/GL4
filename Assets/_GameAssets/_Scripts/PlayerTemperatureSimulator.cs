@@ -26,43 +26,45 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
 
     // Event triggered when body temperature state changes
     public static Action<BodyTemperatureStateChange> OnBodyTemperatureStateChanged;
+    // Event triggered when location type changes.
+    public static Action<EnumLocationType> OnLocationTypeChanged;
 
     // Temperature change rate based on location type, Normal slowly decreases, Cold rapidly decreases, Warm increases
-    public enum EnumLocationType { Normal, Cold, Warm }
+    public enum EnumLocationType { Normal, Cold, Warm, Shack }
     // Player temperature states based on current body temperature
     public enum EnumBodyTemperatureState {
         /// <summary>
-        /// Normal body temperature (35-39°C). Player feels comfortable.
+        /// Normal body temperature (35-39ï¿½C). Player feels comfortable.
         /// </summary>
         Normal,
 
         /// <summary>
-        /// Mild hypothermia (32-35°C). Player feels cold and may experience shivering and confusion.
+        /// Mild hypothermia (32-35ï¿½C). Player feels cold and may experience shivering and confusion.
         /// </summary>
         MildHypothermia,
 
         /// <summary>
-        /// Moderate hypothermia (28-32°C). Player feels very cold with slurred speech and drowsiness.
+        /// Moderate hypothermia (28-32ï¿½C). Player feels very cold with slurred speech and drowsiness.
         /// </summary>
         ModerateHypothermia,
 
         /// <summary>
-        /// Severe hypothermia (below 28°C). Player is frozen with risk of unconsciousness and death.
+        /// Severe hypothermia (below 28ï¿½C). Player is frozen with risk of unconsciousness and death.
         /// </summary>
         Hypothermia,
 
         /// <summary>
-        /// Mild hyperthermia (38-39°C). Player feels hot and may experience heat exhaustion.
+        /// Mild hyperthermia (38-39ï¿½C). Player feels hot and may experience heat exhaustion.
         /// </summary>
         MildHyperthermia,
 
         /// <summary>
-        /// Moderate hyperthermia (39-41°C). Player feels very hot with heat stroke risk.
+        /// Moderate hyperthermia (39-41ï¿½C). Player feels very hot with heat stroke risk.
         /// </summary>
         ModerateHyperthermia,
 
         /// <summary>
-        /// Severe hyperthermia (above 41°C). Player is overheating with risk of organ failure.
+        /// Severe hyperthermia (above 41ï¿½C). Player is overheating with risk of organ failure.
         /// </summary>
         Hyperthermia
     }
@@ -87,6 +89,7 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
     public void SetLocationType(EnumLocationType locationType) {
         if (this.currentLocationType == locationType) return; // No change in location type
         this.currentLocationType = locationType;
+        OnLocationTypeChanged?.Invoke(locationType);
     }
 
     /// <summary>
@@ -131,6 +134,9 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
     private void NotifyBodyTempetureStateChange(EnumBodyTemperatureState previousState, EnumBodyTemperatureState currentState) {
         Debug.Log($"Temperature state changed from {previousState} to {currentState}");
         OnBodyTemperatureStateChanged?.Invoke(new BodyTemperatureStateChange { PreviousState = previousState, CurrentState = currentState });
+        
+        if (currentState == EnumBodyTemperatureState.Hypothermia || currentState == EnumBodyTemperatureState.Hyperthermia)
+            DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Temperature, false);
     }
 
     /// <summary>
@@ -163,6 +169,7 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
             EnumLocationType.Cold => this.FREEZE_RATE, // Cold locations cause rapid cooling
             EnumLocationType.Normal => this.NORMAL_RATE, // Normal locations cause slight cooling
             EnumLocationType.Warm => this.WARM_RATE, // Warm locations cause warming
+            EnumLocationType.Shack => this.FREEZE_RATE,
             _ => this.NORMAL_RATE,
         };
     }
@@ -171,9 +178,9 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
         // The lowest allowed body temperature in different environments
         return location switch {
             EnumLocationType.Cold => 25f,
-            EnumLocationType.Normal => 34f,
+            EnumLocationType.Normal => 25f,
             EnumLocationType.Warm => 36f,
-            _ => 34f,
+            _ => 25f,
         };
     }
 
@@ -183,7 +190,7 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
             EnumLocationType.Cold => 36f,
             EnumLocationType.Normal => 37f,
             EnumLocationType.Warm => 40.2f,
-            _ => 39f,
+            _ => 41f,
         };
     }    
 }

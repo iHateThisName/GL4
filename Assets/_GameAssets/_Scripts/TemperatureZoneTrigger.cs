@@ -21,10 +21,15 @@ public class TemperatureZoneTrigger : MonoBehaviour {
 
     private void OnTriggerExit(Collider other) {
         if (!other.CompareTag("Player")) return;
-        if (this.locationType != PlayerTemperatureSimulator.EnumLocationType.Warm) return;
 
-        if (PlayerTemperatureSimulator.Instance.CurrentLocationType == PlayerTemperatureSimulator.EnumLocationType.Warm) {
+        PlayerTemperatureSimulator.EnumLocationType currentLocationType = PlayerTemperatureSimulator.Instance.CurrentLocationType;
+
+        if (currentLocationType == PlayerTemperatureSimulator.EnumLocationType.Warm) {
             UpdateTemperatureZone(PlayerTemperatureSimulator.EnumLocationType.Normal);
+        }
+
+        if (currentLocationType == PlayerTemperatureSimulator.EnumLocationType.Normal || currentLocationType == PlayerTemperatureSimulator.EnumLocationType.Shack) {
+            UpdateTemperatureZone(PlayerTemperatureSimulator.EnumLocationType.Cold);
         }
     }
 
@@ -36,19 +41,22 @@ public class TemperatureZoneTrigger : MonoBehaviour {
                 // TODO Apply cold vision
 
                 // Remove heating vision
-                GameManager.Instance.FireAdaptationController.RemoveVolume();
+                //GameManager.Instance.FireAdaptationController.RemoveVolume();
                 break;
             case PlayerTemperatureSimulator.EnumLocationType.Warm:
                 Debug.Log("Player entered WARM temperature zone.");
 
                 // Apply heating vision
-                GameManager.Instance.FireAdaptationController.ApplyVolume();
+                //GameManager.Instance.FireAdaptationController.ApplyVolume();
                 break;
             case PlayerTemperatureSimulator.EnumLocationType.Normal:
                 Debug.Log("Player entered NORMAL temperature zone.");
 
                 // Remove heating vision
-                GameManager.Instance.FireAdaptationController.RemoveVolume();
+                //GameManager.Instance.FireAdaptationController.RemoveVolume();
+                break;
+            default:
+                Debug.Log($"Player entered {type}");
                 break;
         }
 

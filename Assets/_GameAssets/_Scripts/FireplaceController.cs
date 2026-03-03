@@ -31,16 +31,23 @@ public class FireplaceController : MonoBehaviour {
     /// <summary>
     /// Gets the current fuel level as a percentage (0-1) relative to the maximum fuel required for full heat output. Normalized value.
     /// </summary>
+
+    [Header("Refrences")]
     public float FuelPercentage {
         get {
             return Mathf.Clamp01(this.CurrentFuelAmount / this.MAX_FUEL_FOR_FULL_HEAT);
         }
     }
 
+    [SerializeField] private GameObject fireVFX;
     private void FixedUpdate() {
-        if (IsLit && fuelQueue.Count > 0) {
+        if (fuelQueue.Count > 0) {
             this.HasFuel = true;
-            BurnFuel();
+            if (IsLit) {
+                BurnFuel();
+            }
+        } else {
+            this.HasFuel = false;
         }
     }
 
@@ -74,6 +81,7 @@ public class FireplaceController : MonoBehaviour {
                 // No more fuel left, extinguish fire
                 this.HasFuel = false;
                 this.IsLit = false;
+                this.fireVFX.SetActive(false);
             } else if (destroyedFuel < 0) {
                 // Apply remaining burn to next piece of firewood
                 this.currentBurningFuel = fuelQueue.Peek();
@@ -90,6 +98,7 @@ public class FireplaceController : MonoBehaviour {
     private void AddFuelDebug() {
         // For testing purposes
         ForceAddFuel(10f);
+        Debug.Log($"Current Fuel Percentage: {this.FuelPercentage * 100f}%");
     }
 
     /// <summary>
@@ -109,7 +118,7 @@ public class FireplaceController : MonoBehaviour {
         // Adding the fuel
         this.fuelQueue.Push(wood);
         this.hasNewFuel = true;
-        this.IsLit = true; // Currently, adding fuel always lights the fire
+        //this.IsLit = true; // Currently, adding fuel always lights the fire
 
         XRGrabInteractable grabInteractable = wood.GetComponent<XRGrabInteractable>();
         InteractionLayerMask mask = grabInteractable.interactionLayers;
@@ -126,7 +135,7 @@ public class FireplaceController : MonoBehaviour {
     public void AddFuel(Firewood wood) {
         // Ensure we dont add the same firewood multiple times
         if (wood.IsBurning) return;
-        
+
         wood.IsBurning = true; // Mark the firewood as burning
         if (wood.RemainingFuel == 0) {
             wood.RemainingFuel = UnityEngine.Random.Range(wood.FuelValue * 0.8f, wood.FuelValue * 1.2f); // Randomize fuel value a bit for realism
@@ -134,7 +143,7 @@ public class FireplaceController : MonoBehaviour {
         // Adding the fuel
         this.fuelQueue.Push(wood);
         this.hasNewFuel = true;
-        this.IsLit = true; // Currently, adding fuel always lights the fire
+        //this.IsLit = true; // Currently, adding fuel always lights the fire
 
         // Making the firewood not interactable anymore since it's now part of the fire. All firewood should not be interactable when the fire is lit
         XRGrabInteractable grabInteractable = wood.GetComponent<XRGrabInteractable>();
@@ -142,5 +151,13 @@ public class FireplaceController : MonoBehaviour {
         mask &= ~InteractionLayerMask.GetMask("Default"); // Remove default layer
         mask |= InteractionLayerMask.GetMask("Firewood"); // Making sure the Firewood mask is there
         grabInteractable.interactionLayers = mask; // Set the new interaction layers to the grab interactable.
+
+        Debug.Log($"Current Fuel Percentage: {this.FuelPercentage * 100f}%");
+    }
+
+    public void Ignite(FireMatchController match) {
+        this.IsLit = true;
+        this.fireVFX.SetActive(true);
+        Destroy(match.RootObject);
     }
 }
