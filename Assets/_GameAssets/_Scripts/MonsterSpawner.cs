@@ -35,7 +35,7 @@ public class MonsterSpawner : MonoBehaviour
      * Spawning Logic
      * ======================= */
 
-    private void SpawnMonster(GameManager.NightEventData eventData)
+    private void SpawnMonster(GameManager.NightEvent eventData)
     {
         // ✅ Only allow one monster at a time
         if (currentMonster != null)

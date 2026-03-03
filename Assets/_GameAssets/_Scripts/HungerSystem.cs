@@ -37,9 +37,6 @@ public class HungerSystem : MonoBehaviour
     
     // Internal current hunger value. Higher means the player is well-fed, lower means starving.
     [SerializeField] private float hunger;
-    
-    // Tracks time passed since the last hunger decay tick.
-    private float elapsedTime;
 
     private const float SLIGHTY_HUNGRY_THRESHOLD = 0.8f;
     private const float HUNGER_THRESHOLD = .5f;
@@ -113,16 +110,16 @@ public class HungerSystem : MonoBehaviour
     /// <param name="other">The collider that entered the mouth trigger.</param>
     private void tryEatFood(Collider other)
     {
-        var foodObject = other.transform.parent;
-        if (!foodObject.CompareTag("Food"))
+        Transform foodObject = other.transform.parent;
+        if (!foodObject || !foodObject.CompareTag("Food"))
         {
-            Debug.Log("You can't eat that!");
+            Debug.LogWarning("You can't eat that!");
             return;
         }
 
         if (this.hunger + this.hungerSettings.GetFoodFillValue() >= this.MaxHunger)
         {
-            Debug.Log("You are already full!");
+            Debug.LogError("You are already full!");
             return;
         }
         

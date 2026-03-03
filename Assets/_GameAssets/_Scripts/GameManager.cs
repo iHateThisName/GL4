@@ -14,11 +14,13 @@ public class GameManager : PersistenSingleton<GameManager> {
 
     // Event invoked whenever a scheduled night event becomes available.
     // Other systems can subscribe to react (e.g., spawning enemies, triggering sounds).
-    public static event System.Action<NightEventData> OnEventAvailable = delegate { };
+    public static event System.Action<NightEvent> OnEventAvailable = delegate { };
     
     private Timer nightTimer;
     private int night = 1;
     private int eventsFired = 0;
+
+    private NightEventData[] eventsToFire;
     
     public float NightTime => this.nightTimer != null && this.nightTimer.IsRunning ? this.nightTimer.Elapsed : this.nightSettings.GetNightTimeInSeconds();
 
@@ -51,6 +53,7 @@ public class GameManager : PersistenSingleton<GameManager> {
         }
 
         InstantiateTimer();
+        this.eventsToFire = this.nightSettings.GetEventsForNight(this.night);
     }
     
     /// <summary>
@@ -77,7 +80,7 @@ public class GameManager : PersistenSingleton<GameManager> {
 
     private void InstantiateTimer()
     {
-        this.nightTimer = new Timer(0, this.nightSettings.GetNightTimeInSeconds());
+        this.nightTimer = new Timer(this.nightSettings.GetNewNightEventTime(), this.nightSettings.GetNightTimeInSeconds());
         this.nightTimer.OnTimerTick += HandleNightTick;
         this.nightTimer.OnTimerFinished += HandleNightEnd;
         this.nightTimer.Start();
@@ -91,7 +94,11 @@ public class GameManager : PersistenSingleton<GameManager> {
     {
         Debug.Log($"Night event fired at: {this.night}: {this.nightTimer.Elapsed}s");
         this.eventsFired++;
-        OnEventAvailable.Invoke(new NightEventData(this.eventsFired, this.night)); // Notify subscribers
+        
+        // No need to fire any new events if we have fired of configured events
+        if (this.eventsFired > this.eventsToFire.Length) return;
+        
+        OnEventAvailable.Invoke(new NightEvent(this.eventsToFire[this.eventsFired - 1], this.eventsFired, this.night)); // Notify subscribers
         if (this.nightTimer != null && this.nightSettings != null)
             this.nightTimer.SetInterval(this.nightSettings.GetNewNightEventTime()); // Schedule the next event
     }
@@ -120,21 +127,48 @@ public class GameManager : PersistenSingleton<GameManager> {
     /// Debug helper method that logs when an event fires and when the next one is scheduled.
     /// Useful for verifying timing behavior during development.
     /// </summary>
-    private void DebugEventTimeWorking(NightEventData eventData)
+    private void DebugEventTimeWorking(NightEvent eventData)
     {
         //Debug.Log($"Event fired at {eventData}"); Yes is working relax.
+    }
+
+    [System.Serializable]
+    public enum EventType
+    {
+        SpawnMonster,
+        SpawnFood,
     }
     
     [System.Serializable]
     public struct NightEventData
     {
-        public int eventIdx;
-        public int night;
+        [SerializeField] private GameManager.EventType eventType;
+        [SerializeField] private GameObject monster;
+        [SerializeField] private int monsterCount;
         
-        public NightEventData(int idx, int night) 
+        public GameManager.EventType GetEventType() => this.eventType;
+        public GameObject GetMonsterPrefab() => this.monster;
+        public int GetMonsterCount() => this.monsterCount;
+    }
+    
+    [System.Serializable]
+    public struct NightEvent
+    {
+        [SerializeField] private int eventIdx;
+        [SerializeField] private int night;
+        [SerializeField] private NightEventData eventData;
+        
+        public NightEvent(NightEventData eventData, int idx, int night) 
         {
             this.eventIdx = idx;
             this.night = night;
+            this.eventData = eventData;
         }
+        
+        public int Index => this.eventIdx;
+
+        public int Night => this.night;
+
+        public NightEventData GetPayload() => this.eventData;
     }
 }
