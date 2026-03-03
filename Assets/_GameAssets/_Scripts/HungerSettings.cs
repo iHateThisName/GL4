@@ -12,9 +12,13 @@ public class HungerSettings : ScriptableObject
     // Time interval (seconds) between hunger decay updates.
     [SerializeField] private float hungerDecayTick = 0.25f; 
     
+    [SerializeField] private float foodValue = 20f;
+    
     public float GetMaxHunger() => this.maxHunger;
     
     public float GetHungerDecayRate() => this.hungerDecayRate;
     
     public float GetHungerDecayTick() => this.hungerDecayTick;
+
+    public float GetFoodFillValue() => this.foodValue;
 }

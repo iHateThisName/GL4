@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2329256316618689405}
   m_Layer: 0
   m_Name: Mesh
-  m_TagString: Untagged
+  m_TagString: Food
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -121,12 +121,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6425082152748541098}
-  - component: {fileID: 530355551271947720}
   - component: {fileID: 6109536622673867575}
   - component: {fileID: 3319514676321966021}
   m_Layer: 0
   m_Name: FoodPrefab
-  m_TagString: Untagged
+  m_TagString: Food
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -140,27 +139,13 @@ Transform:
   m_GameObject: {fileID: 8176909898846573472}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.56142, y: 0, z: -0.80498}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 9101815931036346029}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &530355551271947720
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8176909898846573472}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 78f71b06a057b8841aa9991f194e8380, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Food
-  foodValue: 20
-  grabInteractable: {fileID: 3319514676321966021}
 --- !u!54 &6109536622673867575
 Rigidbody:
   m_ObjectHideFlags: 0

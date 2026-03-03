@@ -1,6 +1,4 @@
-using System.Collections;
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using TMPro;
 
@@ -34,10 +32,6 @@ public class TheMunch : MonoBehaviour
     [SerializeField] private AudioClip angryWarningSound;
     [Tooltip("Assign the jumpscare sound effect for the Kill state (plays once).")]
     [SerializeField] private AudioClip killJumpscareSound;
-
-    [Header("Game Managers")]
-    [Tooltip("Assign the DeathManager from your scene here.")]
-    [SerializeField] private DeathManager deathManager;
 
     [Header("Interaction Settings")]
     [Range(0, 10)]
@@ -148,16 +142,8 @@ public class TheMunch : MonoBehaviour
                         this.audioSource.PlayOneShot(this.killJumpscareSound, 0.5f);
                     }
                 }
-
-                //Tell the global DeathManager to handle the blackout routine
-                if (this.deathManager != null)
-                {
-                    this.deathManager.TriggerDeathSequence();
-                }
-                else
-                {
-                    Debug.LogError("DeathManager is missing! Did you assign it in the Inspector?");
-                }
+                
+                DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Monster, false);
                 break;
         }
     }
@@ -168,30 +154,22 @@ public class TheMunch : MonoBehaviour
 
         Rigidbody parentRb = other.attachedRigidbody;
         if (parentRb == null) return;
+        
+        Transform foodObject = other.transform.parent;
 
-        Food foodItem = parentRb.GetComponent<Food>();
-
-        if (foodItem != null)
+        if (!foodObject.CompareTag("Food") || this.currentState == MunchState.NotHungry) 
         {
-            if (this.currentState == MunchState.NotHungry)
-            {
-                Debug.Log("Monster is full! Rejecting food.");
-                this.RejectItem(parentRb);
-                return;
-            }
-
-            if (this.IsMovingTooFast(parentRb))
-            {
-                this.RejectItem(parentRb);
-            }
-            else
-            {
-                this.ConsumeFood(foodItem);
-            }
+            this.RejectItem(parentRb);
+            return;
+        }
+            
+        if (this.IsMovingTooFast(parentRb))
+        {
+            this.RejectItem(parentRb);
         }
         else
         {
-            this.RejectItem(parentRb);
+            this.ConsumeFood(foodObject.gameObject);
         }
     }
 
@@ -200,9 +178,9 @@ public class TheMunch : MonoBehaviour
         return rb.linearVelocity.magnitude > this.maxAcceptableVelocity;
     }
 
-    private void ConsumeFood(Food foodItem)
+    private void ConsumeFood(GameObject foodObject)
     {
-        this.ForceRelease(foodItem.GetComponent<XRGrabInteractable>());
+        this.ForceRelease(foodObject.GetComponent<XRGrabInteractable>());
 
         float valueToAdd = 20f;
 
@@ -211,7 +189,7 @@ public class TheMunch : MonoBehaviour
 
         this.UpdateMunchState();
 
-        Destroy(foodItem.gameObject, 0.2f);
+        Destroy(foodObject, 0.2f);
     }
 
     private void RejectItem(Rigidbody rb)
