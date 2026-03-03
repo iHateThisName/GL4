@@ -21,6 +21,7 @@ public class BaseNavAIMonster : MonoBehaviour {
     private PlayerTemperatureSimulator.EnumLocationType currentLocation;
     private Action monsterNavigationLogic;
     private int currentPatrolIndex = 0;
+    private bool isPlayerKilled = false;
     private enum MonsterTypeEnum { None, Stalker }
 
     #region Unity Lifecycle
@@ -110,6 +111,9 @@ public class BaseNavAIMonster : MonoBehaviour {
     }
 
     private void AttackPlayer() {
+        if (this.isPlayerKilled) return; // Prevent multiple attack triggers if the player is already killed.
+        this.isPlayerKilled = true;
+
         this.DebugInformation = "Monster is attacking the player!";
         // Implement attack logic here. trigger animation, reduce player health, etc.
         Debug.Log("Monster is attacking the player!");
