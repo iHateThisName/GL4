@@ -13,6 +13,7 @@ public class BaseNavAIMonster : MonoBehaviour
     [SerializeField] private Transform player;
     [SerializeField] private Transform[] patrolPoints;
     [SerializeField] private AudioSource stalkerAudioSource;
+    [SerializeField] private AudioClip StalkerKill;
 
     [Header("Config")]
     [SerializeField] private MonsterTypeEnum monsterType;
@@ -134,6 +135,9 @@ public class BaseNavAIMonster : MonoBehaviour
     {
         if (this.isPlayerKilled) return; // Prevent multiple attack triggers if the player is already killed.
         this.isPlayerKilled = true;
+
+        //Audio
+        SoundEffectManager.Instance.PlaySoundFXClip(this.StalkerKill, transform, 0.75f);
 
         this.DebugInformation = "Monster is attacking the player!";
         // Implement attack logic here. trigger animation, reduce player health, etc.

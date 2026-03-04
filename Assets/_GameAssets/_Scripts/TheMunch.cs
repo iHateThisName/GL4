@@ -141,8 +141,7 @@ public class TheMunch : MonoBehaviour
                     this.audioSource.Stop();
                     if (this.killJumpscareSound != null)
                     {
-                        this.audioSource.loop = false;
-                        this.audioSource.PlayOneShot(this.killJumpscareSound, 0.5f);
+                        SoundEffectManager.Instance.PlaySoundFXClip(this.killJumpscareSound, transform, 0.5f);
                     }
                 }
                 
