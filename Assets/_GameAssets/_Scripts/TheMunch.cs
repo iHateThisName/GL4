@@ -32,6 +32,9 @@ public class TheMunch : MonoBehaviour
     [SerializeField] private AudioClip angryWarningSound;
     [Tooltip("Assign the jumpscare sound effect for the Kill state (plays once).")]
     [SerializeField] private AudioClip killJumpscareSound;
+    [Tooltip("Assign the eat sound effect for the Munch eating (plays once).")]
+    [SerializeField] private AudioClip eatSound;
+
 
     [Header("Interaction Settings")]
     [Range(0, 10)]
@@ -188,8 +191,9 @@ public class TheMunch : MonoBehaviour
         this.currentSatiety = Mathf.Clamp(this.currentSatiety, 0, this.maxSatiety);
 
         this.UpdateMunchState();
-
-        Destroy(foodObject, 0.2f);
+        if (eatSound == null) return;
+        SoundEffectManager.Instance.PlaySoundFXClip(this.eatSound, transform, 1f);
+        Destroy(foodObject, 2f);
     }
 
     private void RejectItem(Rigidbody rb)

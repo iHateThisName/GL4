@@ -25,11 +25,15 @@ public class HungerSystem : MonoBehaviour
     [Header("=== References ====")]
     // Trigger area representing the player's mouth.
     // When food enters this collider, the player "eats" it.
-    [SerializeField] private TriggerArea mouthCollider; 
+    [SerializeField] private TriggerArea mouthCollider;
+    //SFX of eating food
+    [SerializeField] private AudioClip eatSFX;
 
     [Header("=== Configuration ====")]
     [SerializeField] private HungerSettings hungerSettings;
-    
+
+
+
     private Timer hungerTimer;
     
     // current state of hunger
@@ -137,6 +141,10 @@ public class HungerSystem : MonoBehaviour
         
         // Increase hunger by the food's value
         ClampHunger(this.hungerSettings.GetFoodFillValue());
+
+        //Play eatSFX
+        if (eatSFX == null) return true;
+        SoundEffectManager.Instance.PlaySoundFXClip(this.eatSFX, transform, 1f);
 
         // Destroy the food object shortly after being eaten
         Destroy(foodObject, 0.1f);
