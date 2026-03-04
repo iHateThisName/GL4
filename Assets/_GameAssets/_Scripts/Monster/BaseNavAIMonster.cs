@@ -86,6 +86,12 @@ public class BaseNavAIMonster : MonoBehaviour
     private void HandleLocationChange(PlayerTemperatureSimulator.EnumLocationType type)
     {
         this.currentLocation = type;
+
+        // If the player is no longer in the Cold, stop the stalking audio.
+        if (type != PlayerTemperatureSimulator.EnumLocationType.Cold)
+        {
+            UpdateStalkingAudio(false);
+        }
     }
 
     /// <summary>
