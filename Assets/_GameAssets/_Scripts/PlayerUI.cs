@@ -54,7 +54,7 @@ public class PlayerUI : MonoBehaviour {
     private void Update()
     {
         if (this.nightTimeText == null) return;
-        this.nightTimeText.text = "Time: " + GameManager.Instance.NightTime;
+        this.nightTimeText.text = "Time: " + GameManager.Instance.NightTime.ToString("F2");
     }
 
     /// <summary>
