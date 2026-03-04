@@ -112,9 +112,19 @@ namespace Refactored
                     spawnPoint = null;
                     break;
                 case BaseNavAIMonster.MonsterTypeEnum.Stalker:
+                    if (stalkerSpawnPoints == null || stalkerSpawnPoints.Length == 0)
+                    {
+                        Debug.LogError("No stalker spawn points assigned!");
+                        return null;
+                    }
                     spawnPoint = stalkerSpawnPoints[Random.Range(0, stalkerSpawnPoints.Length)];
                     break;
                 case BaseNavAIMonster.MonsterTypeEnum.Munch:
+                    if (munchSpawnPoints == null || munchSpawnPoints.Length == 0)
+                    {
+                        Debug.LogError("No munch spawn points assigned!");
+                        return null;
+                    }
                     spawnPoint = munchSpawnPoints[Random.Range(0, munchSpawnPoints.Length)];
                     break;
                 default:

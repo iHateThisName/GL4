@@ -66,8 +66,8 @@ public class Timer : IDisposable
     {
         if (!this.IsRunning || this.IsFinished) return;
 
+        this.intervalWasSetDuringTick = false;
         this.Elapsed += Time.deltaTime;
-
         
         // Check tick interval
         if (this.Elapsed >= this.nextInterval)

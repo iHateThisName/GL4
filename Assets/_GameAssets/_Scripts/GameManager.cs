@@ -80,6 +80,7 @@ public class GameManager : PersistenSingleton<GameManager> {
 
     private void InstantiateTimer()
     {
+        Debug.Log("Instantiating Timer...");
         this.nightTimer = new Timer(this.nightSettings.GetNewNightEventTime(), this.nightSettings.GetNightTimeInSeconds());
         this.nightTimer.OnTimerTick += HandleNightTick;
         this.nightTimer.OnTimerFinished += HandleNightEnd;
