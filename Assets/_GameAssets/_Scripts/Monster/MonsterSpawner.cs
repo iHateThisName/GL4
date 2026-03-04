@@ -8,7 +8,7 @@ namespace Refactored
     {
         [Header("TEMP spawn points")]
         [SerializeField] private Transform[] munchSpawnPoints;
-        [SerializeField] private Transform[] StalkerSpawnPoints;
+        [SerializeField] private Transform[] stalkerSpawnPoints;
         
         [Header("Temp navigation points for spawning Stalker")]
         [SerializeField] private Transform[] stalkerPatrolPoints;
@@ -75,10 +75,6 @@ namespace Refactored
                 return;
             }
             
-            // GetPosition from Monster's Config if using refactored system, for now using Temporary Predetermined Positions.
-            Vector3 monsterSpawnPosition = GetMonsterSpawnPosition(monsterType);
-            Quaternion monsterSpawnRotation = GetMonsterSpawnRotation(monsterType);
-            
             Transform monsterSpawnPoint = GetMonsterSpawnPoint(monsterType);
             if (monsterSpawnPoint == null)
             {
@@ -108,59 +104,24 @@ namespace Refactored
 
         private Transform GetMonsterSpawnPoint(BaseNavAIMonster.MonsterTypeEnum monsterType)
         {
+            Transform spawnPoint = null;
+            
             switch (monsterType)
             {
                 case BaseNavAIMonster.MonsterTypeEnum.None:
-                    return null;
+                    spawnPoint = null;
                     break;
                 case BaseNavAIMonster.MonsterTypeEnum.Stalker:
-                    return StalkerSpawnPoints[Random.Range(0, StalkerSpawnPoints.Length)];
+                    spawnPoint = stalkerSpawnPoints[Random.Range(0, stalkerSpawnPoints.Length)];
                     break;
                 case BaseNavAIMonster.MonsterTypeEnum.Munch:
-                    return munchSpawnPoints[Random.Range(0, munchSpawnPoints.Length)];
+                    spawnPoint = munchSpawnPoints[Random.Range(0, munchSpawnPoints.Length)];
                     break;
                 default:
-                    return null;
+                    spawnPoint = null;
                     break;
             }
-        }
-
-        private Vector3 GetMonsterSpawnPosition(BaseNavAIMonster.MonsterTypeEnum monsterType)
-        {
-            switch (monsterType)
-            {
-                case BaseNavAIMonster.MonsterTypeEnum.None:
-                    return Vector3.zero;
-                    break;
-                case BaseNavAIMonster.MonsterTypeEnum.Stalker:
-                    return StalkerSpawnPoints[Random.Range(0, StalkerSpawnPoints.Length)].position;
-                    break;
-                case BaseNavAIMonster.MonsterTypeEnum.Munch:
-                    return munchSpawnPoints[Random.Range(0, munchSpawnPoints.Length)].position;
-                    break;
-                default:
-                    return Vector3.zero;
-                    break;
-            }
-        }
-        
-        private Quaternion GetMonsterSpawnRotation(BaseNavAIMonster.MonsterTypeEnum monsterType)
-        {
-            switch (monsterType)
-            {
-                case BaseNavAIMonster.MonsterTypeEnum.None:
-                    return Quaternion.identity;
-                    break;
-                case BaseNavAIMonster.MonsterTypeEnum.Stalker:
-                    return StalkerSpawnPoints[Random.Range(0, StalkerSpawnPoints.Length)].rotation;
-                    break;
-                case BaseNavAIMonster.MonsterTypeEnum.Munch:
-                    return munchSpawnPoints[Random.Range(0, munchSpawnPoints.Length)].rotation;
-                    break;
-                default:
-                    return Quaternion.identity;
-                    break;
-            }
+            return spawnPoint;
         }
     }
 }
