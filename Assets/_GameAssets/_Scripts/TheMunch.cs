@@ -51,6 +51,7 @@ public class TheMunch : MonoBehaviour
     [SerializeField] private TMP_Text debugText;
 
     private MunchState currentState;
+    private BaseNavAIMonster.MonsterTypeEnum monsterType = BaseNavAIMonster.MonsterTypeEnum.Munch;
 
     private void Start()
     {
@@ -193,6 +194,7 @@ public class TheMunch : MonoBehaviour
         if (eatSound == null) return;
         SoundEffectManager.Instance.PlaySoundFXClip(this.eatSound, transform, 1f);
         Destroy(foodObject, 2f);
+        Refactored.MonsterSpawner.Instance.RelocateMonster(this.transform.root, this.monsterType);
     }
 
     private void RejectItem(Rigidbody rb)
@@ -224,5 +226,6 @@ public class TheMunch : MonoBehaviour
     public float GetMaxAcceptableVelocity() => this.maxAcceptableVelocity;
     public void SetMaxAcceptableVelocity(float velocity) => this.maxAcceptableVelocity = velocity;
     public MunchState GetCurrentState() => this.currentState;
+    public BaseNavAIMonster.MonsterTypeEnum GetMonsterType() => this.monsterType;
     #endregion
 }

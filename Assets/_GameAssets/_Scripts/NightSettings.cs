@@ -46,6 +46,6 @@ public class NightSettings : ScriptableObject
 
     public GameManager.NightEventData[] GetEventsForNight(int night)
     {
-        return this.nightEvents[night].GetEvents();
+        return this.nightEvents[night - 1].GetEvents();
     }
 }

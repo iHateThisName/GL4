@@ -96,7 +96,12 @@ public class GameManager : PersistenSingleton<GameManager> {
         this.eventsFired++;
         
         // No need to fire any new events if we have fired of configured events
-        if (this.eventsFired > this.eventsToFire.Length) return;
+        if (this.eventsFired > this.eventsToFire.Length)
+        {
+            if (this.nightTimer != null && this.nightSettings != null)
+                this.nightTimer.SetInterval(this.nightSettings.GetNightTimeInSeconds() + 10);
+            return;
+        }
         
         OnEventAvailable.Invoke(new NightEvent(this.eventsToFire[this.eventsFired - 1], this.eventsFired, this.night)); // Notify subscribers
         if (this.nightTimer != null && this.nightSettings != null)

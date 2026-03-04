@@ -25,7 +25,9 @@ public class BaseNavAIMonster : MonoBehaviour
     private Action monsterNavigationLogic;
     private int currentPatrolIndex = 0;
     private bool isPlayerKilled = false;
-    private enum MonsterTypeEnum { None, Stalker }
+    
+    [System.Serializable]
+    public enum MonsterTypeEnum { None, Stalker, Munch }
 
     #region Unity Lifecycle
     /// <summary>
@@ -209,5 +211,10 @@ public class BaseNavAIMonster : MonoBehaviour
                 stalkerAudioSource.Stop();
             }
         }
+    }
+    
+    public void SetPatrolPoints(Transform[] points)
+    {
+        this.patrolPoints = points;
     }
 }
