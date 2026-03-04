@@ -3,7 +3,8 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class BaseNavAIMonster : MonoBehaviour {
+public class BaseNavAIMonster : MonoBehaviour
+{
 
     [field: SerializeField] public string DebugInformation { get; private set; }
 
@@ -11,6 +12,7 @@ public class BaseNavAIMonster : MonoBehaviour {
     [SerializeField] private NavMeshAgent agent;
     [SerializeField] private Transform player;
     [SerializeField] private Transform[] patrolPoints;
+    [SerializeField] private AudioSource stalkerAudioSource;
 
     [Header("Config")]
     [SerializeField] private MonsterTypeEnum monsterType;
@@ -28,14 +30,16 @@ public class BaseNavAIMonster : MonoBehaviour {
     /// <summary>
     /// Subscribes to location change events when enabled.
     /// </summary>
-    private void OnEnable() {
+    private void OnEnable()
+    {
         PlayerTemperatureSimulator.OnLocationTypeChanged += HandleLocationChange;
     }
 
     /// <summary>
     /// Unsubscribes from location change events to prevent memory leaks.
     /// </summary>
-    private void OnDisable() {
+    private void OnDisable()
+    {
         PlayerTemperatureSimulator.OnLocationTypeChanged -= HandleLocationChange;
     }
 
@@ -43,17 +47,21 @@ public class BaseNavAIMonster : MonoBehaviour {
     /// Initializes references, selects behavior strategy,
     /// and starts the ticking coroutine.
     /// </summary>
-    private void Start() {
-        if (this.player == null) {
+    private void Start()
+    {
+        if (this.player == null)
+        {
             this.player = GameObject.FindGameObjectWithTag("Player").transform.root;
         }
 
         // Validate NavMeshAgent reference
-        if (this.agent == null) {
+        if (this.agent == null)
+        {
             Debug.LogError("NavMeshAgent reference is missing on BaseNavAIMonster. Please assign it in the inspector.");
         }
 
-        if (this.patrolPoints.Length == 0) {
+        if (this.patrolPoints.Length == 0)
+        {
             Debug.LogWarning("No patrol points assigned to BaseNavAIMonster.");
         }
 
@@ -75,7 +83,8 @@ public class BaseNavAIMonster : MonoBehaviour {
     /// <summary>
     /// Updates the location type when the environment changes.
     /// </summary>
-    private void HandleLocationChange(PlayerTemperatureSimulator.EnumLocationType type) {
+    private void HandleLocationChange(PlayerTemperatureSimulator.EnumLocationType type)
+    {
         this.currentLocation = type;
     }
 
@@ -84,11 +93,14 @@ public class BaseNavAIMonster : MonoBehaviour {
     /// at fixed intervals defined by tickRate. Not necessary for the stalker behavior since it reacts to location changes, 
     /// but can be useful for other behaviors that require regular updates.
     /// </summary>
-    private IEnumerator MonsterLogicCoroutine() {
-        while (true) {
+    private IEnumerator MonsterLogicCoroutine()
+    {
+        while (true)
+        {
             // Check if the monster is in attack range of the player.
             float distanceToPlayer = Vector3.Distance(this.transform.position, this.player.position);
-            if (distanceToPlayer <= this.attackRange) {
+            if (distanceToPlayer <= this.attackRange)
+            {
                 AttackPlayer();
             }
             this.monsterNavigationLogic?.Invoke();
@@ -101,8 +113,10 @@ public class BaseNavAIMonster : MonoBehaviour {
     /// Returns the appropriate behavior delegate
     /// based on the configured monster type.
     /// </summary>
-    private Action MonsterLogicSelector() {
-        switch (monsterType) {
+    private Action MonsterLogicSelector()
+    {
+        switch (monsterType)
+        {
             case MonsterTypeEnum.Stalker:
                 return StalkerNavigationLogic;
             default:
@@ -110,7 +124,8 @@ public class BaseNavAIMonster : MonoBehaviour {
         }
     }
 
-    private void AttackPlayer() {
+    private void AttackPlayer()
+    {
         if (this.isPlayerKilled) return; // Prevent multiple attack triggers if the player is already killed.
         this.isPlayerKilled = true;
 
@@ -125,27 +140,64 @@ public class BaseNavAIMonster : MonoBehaviour {
     /// The stalker will pursue the player when they are in cold/outdoor locations,
     /// and retreat to its spawn point when the player enters warm/indoor areas.
     /// </summary>
-    private void StalkerNavigationLogic() {
+    private void StalkerNavigationLogic()
+    {
         // Check if player is outside.
-        if (currentLocation == PlayerTemperatureSimulator.EnumLocationType.Cold) {
+        if (currentLocation == PlayerTemperatureSimulator.EnumLocationType.Cold)
+        {
             this.agent.SetDestination(this.player.position);
             this.DebugInformation = $"Stalker is pursuing the player at {this.player.position}";
 
-        } else {
+            //Audio
+            UpdateStalkingAudio(true);
+
+        }
+        else
+        {
+
+            //Audio
+            UpdateStalkingAudio(false);
 
             // Back off the player. Move towards spawn point.
-            if (this.patrolPoints.Length == 0) {
+            if (this.patrolPoints.Length == 0)
+            {
                 this.agent.SetDestination(this.spawnPoint);
 
-            } else if (Vector3.Distance(this.transform.position, this.agent.destination) < this.attackRange) {
+            }
+            else if (Vector3.Distance(this.transform.position, this.agent.destination) < this.attackRange)
+            {
                 // If the monster is close to the point, start patrolling between points.
                 currentPatrolIndex = (currentPatrolIndex + 1) % this.patrolPoints.Length;
                 this.agent.SetDestination(this.patrolPoints[currentPatrolIndex].position);
 
-            } else {
+            }
+            else
+            {
                 this.agent.SetDestination(this.patrolPoints[currentPatrolIndex].position);
             }
             this.DebugInformation = $"Stalker is idle moving towards {this.agent.destination}";
+        }
+    }
+
+    private void UpdateStalkingAudio(bool isStalking)
+    {
+        if (stalkerAudioSource == null) return;
+
+        if (isStalking)
+        {
+            // Only call Play if it's not already playing to avoid "stuttering" restarts
+            if (!stalkerAudioSource.isPlaying)
+            {
+                stalkerAudioSource.Play();
+            }
+        }
+        else
+        {
+            // Stop the sound if the monster is retreating/patrolling
+            if (stalkerAudioSource.isPlaying)
+            {
+                stalkerAudioSource.Stop();
+            }
         }
     }
 }
