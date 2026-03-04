@@ -84,6 +84,7 @@ public class GameManager : PersistenSingleton<GameManager> {
         this.nightTimer.OnTimerTick += HandleNightTick;
         this.nightTimer.OnTimerFinished += HandleNightEnd;
         this.nightTimer.Start();
+        this.eventsFired = 0;
     }
     
     /// <summary>
@@ -126,6 +127,9 @@ public class GameManager : PersistenSingleton<GameManager> {
     {
         if (this.nightTimer != null)
             this.nightTimer.Dispose();
+
+        if (DeathSystem.deathEvent.Reason != DeathSystem.DeathEvent.DeathReason.Survived)
+            this.night = 1;
     }
 
     /// <summary>
