@@ -1,4 +1,3 @@
-using System;
 using TMPro;
 using UnityEngine;
 using static PlayerTemperatureSimulator;
@@ -13,6 +12,9 @@ public class PlayerUI : MonoBehaviour {
     [SerializeField] private TMP_Text locationText;
     [SerializeField] private TextMeshProUGUI hungerText;
     [SerializeField] private TextMeshProUGUI nightTimeText;
+
+    [Header("Vision Effect Refrences")]
+    [SerializeField] private GameObject heatEffect;
 
     private bool useDebugInfo = false;
 
@@ -64,6 +66,10 @@ public class PlayerUI : MonoBehaviour {
     private void HandleTemperatureChanged(BodyTemperatureStateChange change) {
         this.temperatureText.text = $"Temperature State: {change.CurrentState}";
         UpdateColor(change.CurrentState);
+
+        if (change.CurrentState == EnumBodyTemperatureState.Normal && change.PreviousState == EnumBodyTemperatureState.MildHyperthermia) {
+            this.heatEffect.SetActive(false);
+        }
     }
 
     /// <summary>
@@ -104,5 +110,11 @@ public class PlayerUI : MonoBehaviour {
     }
     private void HandleLocationChanged(EnumLocationType type) {
         this.locationText.text = $"Location: {PlayerTemperatureSimulator.Instance.CurrentLocationType}";
+
+        if (type == EnumLocationType.Warm) {
+            this.heatEffect.SetActive(true);
+        } else if (PlayerTemperatureSimulator.Instance.CurrentBodyTemperatureState != EnumBodyTemperatureState.MildHyperthermia && PlayerTemperatureSimulator.Instance.CurrentBodyTemperatureState != EnumBodyTemperatureState.ModerateHyperthermia) {
+            this.heatEffect.SetActive(false);
+        }
     }
 }
