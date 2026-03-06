@@ -204,7 +204,7 @@ public class TheMunch : MonoBehaviour
         this.UpdateMunchState();
         if (eatSound == null) return;
         SoundEffectManager.Instance.PlaySoundFXClip(this.eatSound, transform, 0.5f);
-        Destroy(foodObject, 2f);
+        Destroy(foodObject);
     }
 
     private void RejectItem(Rigidbody rb)
