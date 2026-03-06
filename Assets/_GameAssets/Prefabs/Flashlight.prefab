@@ -164,7 +164,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FlashLight
   handleInteractable: {fileID: 5712471205608079930}
   crankInteractable: {fileID: 2446850459793024294}
-  light: {fileID: 4685029044085830758}
+  lightSource: {fileID: 0}
   startingLightPower: 40
   minLightPower: 3
   maxLightPower: 140
@@ -666,8 +666,6 @@ MonoBehaviour:
   visual: {fileID: 126305826506853866}
   rotationAxis: 2
   isRotationClamped: 0
-  minAngle: -90
-  maxAngle: 90
 --- !u!114 &5304644391142830657
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -944,7 +942,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.50000024
+  m_Radius: 5
   m_Height: 2.0000005
   m_Direction: 1
-  m_Center: {x: 0.000000059604645, y: -0.0000076293945, z: -0.00000008940699}
+  m_Center: {x: 0, y: -0.5, z: 0}
