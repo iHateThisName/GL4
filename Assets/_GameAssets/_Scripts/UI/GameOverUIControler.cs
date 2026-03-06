@@ -4,38 +4,47 @@ using UnityEngine.UI;
 
 public class GameOverUIControler : MonoBehaviour
 {
-
-    [Header("=== References ===")] 
-    [SerializeField] private GameOverManager controller;
+    [Header("=== References ===")]
     [SerializeField] private Button continueButton;
     [SerializeField] private TextMeshProUGUI gameOverText;
     [SerializeField] private TextMeshProUGUI resetTimerText;
-
-    private void OnEnable()
-    {
-        
-    }
-
-    private void OnDisable()
-    {
-        
-    }
+    [SerializeField] private float sceneDuration = 5f;
+    
+    private Timer reloadSceneTimer;
 
     private void Start() {
         this.continueButton.onClick.AddListener(OnContinueClicked);
         
         UpdateDeathUI(DeathSystem.deathEvent);
-        if (controller != null)
-            controller.Timer.OnTimerTick += OnResetTimerTicked;
+        
+        this.reloadSceneTimer = new Timer(0.1f, this.sceneDuration);
+        this.reloadSceneTimer.OnTimerTick += OnResetTimerTicked;
+        this.reloadSceneTimer.OnTimerFinished += ReloadGameScene;
+        this.reloadSceneTimer.Start();
     }
-
+    
+    /// <summary>
+    /// Clean up the timer when this component is destroyed.
+    /// </summary>
     private void OnDestroy() {
         this.continueButton.onClick.RemoveListener(OnContinueClicked);
         
-        if (controller != null)
-            controller.Timer.OnTimerTick -= OnResetTimerTicked;
+        if (this.reloadSceneTimer != null)
+        {
+            this.reloadSceneTimer.OnTimerTick -= OnResetTimerTicked;
+            this.reloadSceneTimer.OnTimerFinished -= ReloadGameScene;
+            this.reloadSceneTimer.Dispose();
+            this.reloadSceneTimer = null;
+        }
     }
+    
     void OnContinueClicked() {
+        GameManager.Instance.ContinueGame();
+    }
+    
+    public void ReloadGameScene()
+    {
+        this.reloadSceneTimer.Dispose();
         GameManager.Instance.ContinueGame();
     }
     
@@ -43,7 +52,7 @@ public class GameOverUIControler : MonoBehaviour
     {
         if (this.resetTimerText == null) return;
 
-        var timeRemaining = Mathf.CeilToInt(this.controller.Timer.Duration - this.controller.Timer.Elapsed);
+        var timeRemaining = Mathf.CeilToInt(this.reloadSceneTimer.Duration - this.reloadSceneTimer.Elapsed);
         
         timeRemaining = Mathf.Max(0, timeRemaining);
         
