@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using TMPro;
+using System.Collections;
 
 public enum MunchState
 {
@@ -98,18 +99,28 @@ public class TheMunch : MonoBehaviour
         return MunchState.Kill;
     }
 
+    private IEnumerator MunchAndRelocate()
+    {
+        if (this.audioSource != null) this.audioSource.Stop();
+        if (this.monsterAnimator != null)
+            this.monsterAnimator.SetTrigger(this.munchTriggerName);
+        yield return null;
+        float animLength = this.monsterAnimator.GetCurrentAnimatorStateInfo(0).length;
+        yield return new WaitForSeconds(animLength);
+        Refactored.MonsterSpawner.Instance.RelocateMonster(this.transform.root, this.monsterType);
+    }
+
     private void ChangeState(MunchState newState)
     {
         this.currentState = newState;
 
+
+
         switch (this.currentState)
         {
             case MunchState.NotHungry:
-                if (this.audioSource != null) this.audioSource.Stop(); // Stop everything
-
-                if (this.monsterAnimator != null)
-                    this.monsterAnimator.SetTrigger(this.munchTriggerName);
-                break;
+                StartCoroutine(MunchAndRelocate());
+            break;
 
             case MunchState.Hungry:
                 if (this.audioSource != null && this.hungrySound != null)
@@ -192,9 +203,8 @@ public class TheMunch : MonoBehaviour
 
         this.UpdateMunchState();
         if (eatSound == null) return;
-        SoundEffectManager.Instance.PlaySoundFXClip(this.eatSound, transform, 1f);
+        SoundEffectManager.Instance.PlaySoundFXClip(this.eatSound, transform, 0.5f);
         Destroy(foodObject, 2f);
-        Refactored.MonsterSpawner.Instance.RelocateMonster(this.transform.root, this.monsterType);
     }
 
     private void RejectItem(Rigidbody rb)
