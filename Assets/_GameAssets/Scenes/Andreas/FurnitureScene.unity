@@ -6962,7 +6962,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3371498014634053185, guid: 4ee2e20ec6ccd5146b0b235b0157119c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.61
+      value: -0.37801173
       objectReference: {fileID: 0}
     - target: {fileID: 3371498014634053185, guid: 4ee2e20ec6ccd5146b0b235b0157119c, type: 3}
       propertyPath: m_LocalPosition.y
@@ -6970,23 +6970,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3371498014634053185, guid: 4ee2e20ec6ccd5146b0b235b0157119c, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 5.5232673
+      value: 5.7502875
       objectReference: {fileID: 0}
     - target: {fileID: 3371498014634053185, guid: 4ee2e20ec6ccd5146b0b235b0157119c, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 3371498014634053185, guid: 4ee2e20ec6ccd5146b0b235b0157119c, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3371498014634053185, guid: 4ee2e20ec6ccd5146b0b235b0157119c, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 3371498014634053185, guid: 4ee2e20ec6ccd5146b0b235b0157119c, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3371498014634053185, guid: 4ee2e20ec6ccd5146b0b235b0157119c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -6994,7 +6994,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3371498014634053185, guid: 4ee2e20ec6ccd5146b0b235b0157119c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 3371498014634053185, guid: 4ee2e20ec6ccd5146b0b235b0157119c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -7002,7 +7002,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 3371498014634053185, guid: 4ee2e20ec6ccd5146b0b235b0157119c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1753422248}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 3078830655925941358, guid: 4ee2e20ec6ccd5146b0b235b0157119c, type: 3}
       insertIndex: -1
@@ -9171,6 +9174,37 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1711631154}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1753422247
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1753422248}
+  m_Layer: 0
+  m_Name: AttachPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1753422248
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1753422247}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.238, y: -0.042, z: -0.34}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1367999830}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1756220578
 GameObject:
   m_ObjectHideFlags: 0
@@ -11672,6 +11706,10 @@ PrefabInstance:
     - target: {fileID: 4971049100163328207, guid: d7f9431a2e7c3224abf21b5f9296b2fc, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 7718860837656964940, guid: d7f9431a2e7c3224abf21b5f9296b2fc, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
