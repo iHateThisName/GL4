@@ -177,7 +177,6 @@ public class FireplaceController : MonoBehaviour {
     public void Ignite(FireMatchController match) {
         this.IsLit = true;
         this.fireVFX.SetActive(true);
-        Destroy(match.RootObject);
     }
     private void HandleFireAudio()
     {
