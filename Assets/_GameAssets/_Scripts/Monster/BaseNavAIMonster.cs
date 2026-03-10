@@ -13,6 +13,7 @@ public class BaseNavAIMonster : MonoBehaviour {
     [SerializeField] private Transform[] patrolPoints;
     [SerializeField, Space(5)] private AudioSource MonsterAudioSource;
     [SerializeField] private AudioClip StalkerKill;
+    [SerializeField] private AudioClip StalkerFlashed;
 
     [Header("Config")]
     [SerializeField] private MonsterTypeEnum monsterType;
@@ -109,22 +110,19 @@ public class BaseNavAIMonster : MonoBehaviour {
     /// </summary>
     private IEnumerator MonsterLogicCoroutine() {
         while (true) {
-            // Update flee timer if fleeing
-            while (this.isFleeing) {
-                this.fleeTimer -= this.tickRate;
-                if (this.fleeTimer <= 0f) this.isFleeing = false;
-                
-                yield return new WaitForSeconds(this.tickRate);
-            }
+            if (!this.isFleeing) CheckAttackRange();
 
-            // Check if the monster is in attack range of the player.
-            float distanceToPlayer = Vector3.Distance(this.transform.position, this.player.position);
-            if (distanceToPlayer <= this.attackRange) {
-                AttackPlayer();
-            }
             this.monsterNavigationLogic?.Invoke();
 
             yield return new WaitForSeconds(this.tickRate);
+        }
+    }
+
+    private void CheckAttackRange() {
+        // Check if the monster is in attack range of the player.
+        float distanceToPlayer = Vector3.Distance(this.transform.position, this.player.position);
+        if (distanceToPlayer <= this.attackRange) {
+            AttackPlayer();
         }
     }
 
@@ -161,7 +159,8 @@ public class BaseNavAIMonster : MonoBehaviour {
     /// </summary>
     private void StalkerNavigationLogic() {
         if (this.isFleeing) {
-            Debug.LogWarning("Stalker is currently fleeing. StalkerNavigationLogic should not be executing.");
+            this.fleeTimer -= this.tickRate;
+            if (this.fleeTimer <= 0f) this.isFleeing = false;
             return;
         }
 
@@ -236,6 +235,9 @@ public class BaseNavAIMonster : MonoBehaviour {
 
         //Audio - stop stalking audio when hit by flashlight
         UpdateStalkingAudio(false);
+
+        //Audio - play flashlight hit reaction sound
+        SoundEffectManager.Instance.PlaySoundFXClip(audioClip: this.StalkerFlashed, spawmTransform: this.transform, volume: 0.75f, parentSpawnTransform: this.transform);
 
         Debug.Log($"Monster hit by flashlight! Fleeing from {lightSourcePosition} to {this.fleeDestination}");
     }
