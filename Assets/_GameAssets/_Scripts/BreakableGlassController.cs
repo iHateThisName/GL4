@@ -16,7 +16,7 @@ public class BreakableGlassController : MonoBehaviour {
         this.shatteredGlass.parent = null;
         this.shatteredGlass.gameObject.SetActive(true);
         Destroy(shatteredGlass, 60f);
-        Destroy(this.transform.root, 60f);
+        Destroy(this.transform.root.gameObject, 20f);
 
         foreach (Collider collider in GetComponents<Collider>()) {
             collider.isTrigger = true;

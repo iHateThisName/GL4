@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 9101815931036346029}
   - component: {fileID: 2004280194109331624}
   - component: {fileID: 6285189167023190715}
-  - component: {fileID: 2329256316618689405}
+  - component: {fileID: 4194336877533302316}
   m_Layer: 0
   m_Name: Mesh
   m_TagString: Food
@@ -91,8 +91,8 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!135 &2329256316618689405
-SphereCollider:
+--- !u!65 &4194336877533302316
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -110,7 +110,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.09114522
+  m_Size: {x: 0.1075488, y: 0.13986747, z: 0.10878464}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &8176909898846573472
 GameObject:
@@ -187,7 +187,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.XR.Interaction.Toolkit::UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable
   m_InteractionManager: {fileID: 0}
   m_Colliders:
-  - {fileID: 2329256316618689405}
+  - {fileID: 4194336877533302316}
   m_InteractionLayers:
     m_Bits: 1
   m_DistanceCalculationMode: 1
