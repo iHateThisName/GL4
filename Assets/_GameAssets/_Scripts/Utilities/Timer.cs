@@ -70,13 +70,11 @@ public class Timer : IDisposable
         this.Elapsed += Time.deltaTime;
         
         // Check tick interval
-        if (this.Elapsed >= this.nextInterval)
+        while (this.Elapsed >= this.nextInterval)
         {
             OnTimerTick?.Invoke();
             if (!this.intervalWasSetDuringTick)
-            {
                 this.nextInterval = this.Elapsed + this.Interval;
-            }
         }
         
         // Check total duration cap

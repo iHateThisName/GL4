@@ -1,3 +1,4 @@
+using Assets.Scripts.Singleton;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
@@ -14,7 +15,7 @@ using Random = UnityEngine.Random;
 /// </summary>
 [RequireComponent(typeof(XRGrabInteractable))] 
 // Ensures the object always has an XRGrabInteractable component
-public class FlashLight : MonoBehaviour
+public class FlashLight : Singleton<FlashLight>
 {
     [Header("=== References ===")]
     // Handle used to grab and toggle the flashlight on/off
@@ -64,31 +65,45 @@ public class FlashLight : MonoBehaviour
 
     // Maximum number of full crank rotations allowed
     [SerializeField] private int maxRotations = 10;
-
-    // Current partial crank angle (0–360 range)
-    public float currentAngle { get; private set; }
-
-    // Total number of full crank rotations completed
-    public int fullRotations { get; private set; }
     
+    // Detection angle for detection cone
+    [SerializeField] private float detectionAngle = 40;
+
     // Timer used to track battery life
     private Timer batteryTimer;
+    
+    // range squared for cone detection
+    private float rangeSquared;
+    
+    // cosine threshold for stunning
+    private float cosineThreshold;
+    
+    // cosine threshold squared for cone detection
+    private float cosineThresholdSquared;
+    
+    // inverse cone range for cone detection
+    private float inverseConeRange;
 
+    // Current partial crank angle (0–360 range)
+    private float currentAngle;
+    
     // Target intensity we smoothly move toward
     private float targetLightIntensity;
 
     // Target range (derived from intensity)
     private float targetLightRange;
 
+    // Total number of full crank rotations completed
+    private int fullRotations;
+
     // Whether flashlight is currently turned on
-    public bool poweredOn = false;
+    private bool powered;
 
     // How much intensity one full crank rotation adds
     private const float LIGHT_MAGNITUDE = 10;
 
     // ==== Unity Lifecycle ====
     #region Unity Lifecycle
-
     /// <summary>
     /// Automatically fetch Light component if not set in inspector.
     /// </summary>
@@ -137,13 +152,14 @@ public class FlashLight : MonoBehaviour
     {
         RandomizeLightDecayTick();
 
-        this.poweredOn = false;
+        this.powered = false;
         
         if (this.lightSource != null)
         {
             this.lightSource.intensity = this.startingLightPower;
             this.lightSource.range = this.startingLightRange;
             this.targetLightIntensity = this.startingLightPower;
+            this.targetLightRange = this.startingLightRange;
         }
 
         // Ensure flashlight starts off
@@ -155,6 +171,20 @@ public class FlashLight : MonoBehaviour
         this.batteryTimer = new Timer(this.lightDecayTickMin, 0);
         this.batteryTimer.OnTimerTick += HandleFlashLightBatteryDecay;
         this.batteryTimer.Start();
+        
+        RecalculateDetectionCone();
+    }
+    
+    /// <summary>
+    /// Handles power decay and light updates while flashlight is on.
+    /// </summary>
+    private void Update()
+    {
+        // Do nothing if flashlight is off
+        if (!this.powered) return;
+        
+        // Smoothly update light intensity and range
+        UpdateFlashLight();
     }
     
     /// <summary>
@@ -167,6 +197,26 @@ public class FlashLight : MonoBehaviour
             this.batteryTimer.Dispose();
             this.batteryTimer = null;
         }
+    }
+    
+#if UNITY_EDITOR
+    /// <summary>
+    /// Updates light preview in editor when values change.
+    /// </summary>
+    private void OnValidate()
+    {
+        if (Application.isPlaying) return;
+        UpdateLightIntensity(this.startingLightPower);
+    }
+#endif
+    #endregion
+    
+    public void RecalculateDetectionCone()
+    {
+        rangeSquared = targetLightRange * targetLightRange;
+        cosineThreshold = Mathf.Cos(detectionAngle * 0.5f * Mathf.Deg2Rad);
+        cosineThresholdSquared = cosineThreshold * cosineThreshold;
+        inverseConeRange = 1f / (1f - cosineThreshold);
     }
 
     private void HandleFlashLightBatteryDecay()
@@ -183,30 +233,6 @@ public class FlashLight : MonoBehaviour
         // Randomize next decay tick
         this.batteryTimer.SetInterval(RandomizeLightDecayTick());
     }
-
-    /// <summary>
-    /// Handles power decay and light updates while flashlight is on.
-    /// </summary>
-    private void Update()
-    {
-        // Do nothing if flashlight is off
-        if (!this.poweredOn) return;
-        
-        // Smoothly update light intensity and range
-        UpdateFlashLight();
-    }
-    
-#if UNITY_EDITOR
-    /// <summary>
-    /// Updates light preview in editor when values change.
-    /// </summary>
-    private void OnValidate()
-    {
-        if (Application.isPlaying) return;
-        UpdateLightIntensity(this.startingLightPower);
-    }
-#endif
-    #endregion
     
     // Whether flashlight is in low power state
     public bool HasLowPower => this.LightIntensity <= this.lowPowerThreshold;
@@ -264,7 +290,6 @@ public class FlashLight : MonoBehaviour
     private void UpdateLightIntensity(float delta)
     {
         float clampedLightIntensity = Mathf.Clamp(this.targetLightIntensity + delta, this.minLightPower, this.maxLightPower);
-
         this.targetLightIntensity = clampedLightIntensity;
     }
 
@@ -282,7 +307,8 @@ public class FlashLight : MonoBehaviour
         float normalized = Mathf.InverseLerp(this.minLightPower, this.maxLightPower, this.LightIntensity);
 
         // Adjust beam range based on power level
-        this.lightSource.range = Mathf.Lerp(this.minLightRange, this.maxLightRange, normalized);
+        this.targetLightRange = Mathf.Lerp(this.minLightRange, this.maxLightRange, normalized);
+        this.lightSource.range = this.targetLightIntensity;
     }
     
     // ==== Flashlight Helpers ====
@@ -312,9 +338,65 @@ public class FlashLight : MonoBehaviour
     /// </summary>
     private void ToggleFlashLight(bool toggle)
     {
-        this.poweredOn = toggle;
+        this.powered = toggle;
 
         if (this.lightSource != null)
-            this.lightSource.enabled = this.poweredOn;
+            this.lightSource.enabled = this.powered;
     }
+
+    #region Getters
+    // public getter for cached Range
+    public bool PoweredOn => this.powered;
+    
+    // public getter for cached RangeSquared
+    public float GetRangeSquared() => this.rangeSquared;
+    
+    // public getter for cached CosineThreshold
+    public float GetCosineThreshold() => this.cosineThreshold;
+    
+    // public getter for cached CosineThresholdSquared
+    public float GetCosineThresholdSquared() => this.cosineThresholdSquared;
+    
+    // public getter for cached InverseConeRange
+    public float GetInverseConeRange() => this.inverseConeRange;
+    #endregion
+    
+#if UNITY_EDITOR
+    private void OnDrawGizmos()
+    {
+        Vector3 origin = this.transform.position;
+        Vector3 forward = this.transform.forward;
+        float halfAngle = this.detectionAngle * 0.5f;
+
+        // Reference edge: forward tilted by halfAngle
+        Vector3 baseEdge = Quaternion.AngleAxis(halfAngle, this.transform.right) * forward;
+
+        const int rimSegments = 32;
+        const int edgeLines = 8;
+
+        // Cone edge lines
+        Gizmos.color = Color.yellow;
+        for (int i = 0; i < edgeLines; i++)
+        {
+            float azimuth = (360f / edgeLines) * i;
+            Vector3 edgeDir = Quaternion.AngleAxis(azimuth, forward) * baseEdge;
+            Gizmos.DrawRay(origin, edgeDir * this.targetLightRange);
+        }
+
+        // Rim circle at range
+        Vector3 prevPoint = origin + baseEdge * this.targetLightRange;
+        for (int i = 1; i <= rimSegments; i++)
+        {
+            float azimuth = (360f / rimSegments) * i;
+            Vector3 edgeDir = Quaternion.AngleAxis(azimuth, forward) * baseEdge;
+            Vector3 point = origin + edgeDir * this.targetLightRange;
+            Gizmos.DrawLine(prevPoint, point);
+            prevPoint = point;
+        }
+
+        // Center forward line
+        Gizmos.color = Color.white;
+        Gizmos.DrawRay(origin, forward * this.targetLightRange);
+    }
+#endif
 }
