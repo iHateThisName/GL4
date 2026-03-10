@@ -30,7 +30,7 @@ public class FlashLight : Singleton<FlashLight>
     [Header("=== Light Settings ===")]
     // Initial light intensity at startup
     [SerializeField] private float startingLightPower = 40f;
-
+    
     // Minimum possible light intensity
     [SerializeField] private float minLightPower = 3f;
 
@@ -104,11 +104,13 @@ public class FlashLight : Singleton<FlashLight>
 
     // ==== Unity Lifecycle ====
     #region Unity Lifecycle
+
     /// <summary>
     /// Automatically fetch Light component if not set in inspector.
     /// </summary>
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         if (this.lightSource == null)
             this.lightSource = GetComponentInChildren<Light>();
     }
