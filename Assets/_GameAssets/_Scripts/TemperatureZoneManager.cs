@@ -18,6 +18,8 @@ public class TemperatureZoneManager : Singleton<TemperatureZoneManager> {
         RecalculateZone();
     }
 
+    public bool IsPlayerInZone(PlayerTemperatureSimulator.EnumLocationType type) => activeZones.Contains(type);
+
     /// <summary>
     /// Evaluates the player's active temperature zones by priorty and updates the current location type accordingly.
     /// </summary>
