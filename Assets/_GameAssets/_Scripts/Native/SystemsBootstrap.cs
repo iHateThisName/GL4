@@ -3,35 +3,40 @@ using UnityEngine;
 using UnityEngine.LowLevel;
 using UnityEngine.PlayerLoop;
 
+/// <summary>
+/// Initializes custom systems by injecting them into Unity's PlayerLoopSystem.
+/// Runs automatically when assemblies are loaded, before any scene loads.
+/// </summary>
+/// <remarks>
+/// PlayerLoopSystem integration allows custom systems to run without MonoBehaviour overhead.
+/// This is more performant than using Update() methods, especially for systems that need
+/// to run every frame like TimerManager.
+/// </remarks>
 internal static class SystemsBootstrap
 {
-    private static PlayerLoopSystem timerSystem;
-    private static PlayerLoopSystem deathSystem;
+    private static PlayerLoopSystem timerSystem; // Cached reference for removal
 
+    /// <summary>
+    /// Called automatically by Unity after assemblies are loaded.
+    /// Injects TimerManager into the Update phase of the PlayerLoop.
+    /// </summary>
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
     internal static void Initialize()
     {
         PlayerLoopSystem currentPlayerLoop = PlayerLoop.GetCurrentPlayerLoop();
 
-        // TimerManager
+        // Register TimerManager into the Update loop
         if (!InsertTimerManager<Update>(ref currentPlayerLoop, 0))
         {
             Debug.LogWarning("Improved Timers not initialized, unable to register TimerManager into the Update loop.");
             return;
         }
-        
-        // DeathSystem
-        if (!InsertDeathManager<Update>(ref currentPlayerLoop, 0))
-        {
-            Debug.LogWarning("Death system not initialized, unable to register DeathSystem into the Update loop.");
-            return;
-        }
 
-        // insert into PlayerLoop Lifecycle
+        // Apply the modified PlayerLoop
         PlayerLoop.SetPlayerLoop(currentPlayerLoop);
 
 #if UNITY_EDITOR
-        // Make Playerloops work in the editor
+        // Handle editor play mode transitions to properly clean up systems
         EditorApplication.playModeStateChanged -= OnPlayModeState;
         EditorApplication.playModeStateChanged += OnPlayModeState;
 
@@ -39,13 +44,13 @@ internal static class SystemsBootstrap
         {
             if (state == PlayModeStateChange.ExitingPlayMode)
             {
+                // Remove custom systems from PlayerLoop when exiting play mode
                 PlayerLoopSystem currentPlayerLoop = PlayerLoop.GetCurrentPlayerLoop();
                 RemoveTimerManager<Update>(ref currentPlayerLoop);
-                RemoveDeathManager<Update>(ref currentPlayerLoop);
-                
+
                 PlayerLoop.SetPlayerLoop(currentPlayerLoop);
 
-                // clear for editor
+                // Clear static data to prevent stale references in editor
                 TimerManager.Clear();
                 DeathSystem.Clear();
             }
@@ -53,15 +58,26 @@ internal static class SystemsBootstrap
 #endif
     }
 
-    #region InsertionsAndRemovers
+    #region TimerManager Integration
 
-    // TimerManager
-    static void RemoveTimerManager<T>(ref PlayerLoopSystem loop)
+    /// <summary>
+    /// Removes the TimerManager system from the specified PlayerLoop phase.
+    /// </summary>
+    /// <typeparam name="T">The PlayerLoop phase type (e.g., Update).</typeparam>
+    /// <param name="loop">The PlayerLoop to modify.</param>
+    private static void RemoveTimerManager<T>(ref PlayerLoopSystem loop)
     {
         PlayerLoopUtils.RemoveSystem<T>(ref loop, in timerSystem);
     }
 
-    static bool InsertTimerManager<T>(ref PlayerLoopSystem loop, int index)
+    /// <summary>
+    /// Inserts the TimerManager system into the specified PlayerLoop phase.
+    /// </summary>
+    /// <typeparam name="T">The PlayerLoop phase type (e.g., Update).</typeparam>
+    /// <param name="loop">The PlayerLoop to modify.</param>
+    /// <param name="index">Position within the phase's subsystem list.</param>
+    /// <returns>True if insertion succeeded, false otherwise.</returns>
+    private static bool InsertTimerManager<T>(ref PlayerLoopSystem loop, int index)
     {
         timerSystem = new PlayerLoopSystem()
         {
@@ -71,21 +87,6 @@ internal static class SystemsBootstrap
         };
         return PlayerLoopUtils.InsertSystem<T>(ref loop, in timerSystem, index);
     }
-    
-    // DeathSystem
-    static void RemoveDeathManager<T>(ref PlayerLoopSystem loop)
-    {
-        PlayerLoopUtils.RemoveSystem<T>(ref loop, in timerSystem);
-    }
 
-    static bool InsertDeathManager<T>(ref PlayerLoopSystem loop, int index)
-    {
-        deathSystem = new PlayerLoopSystem()
-        {
-            type = typeof(DeathSystem),
-            subSystemList = null
-        };
-        return PlayerLoopUtils.InsertSystem<T>(ref loop, in deathSystem, index);
-    }
     #endregion
 }
