@@ -128,7 +128,7 @@ public class FlashLight : Singleton<FlashLight>
         if (this.handleInteractable != null)
         {
             this.handleInteractable.selectEntered.AddListener(ToggleOnFlashlight);
-            this.handleInteractable.selectExited.AddListener(ToggleOffFlashlight);
+            //this.handleInteractable.selectExited.AddListener(ToggleOffFlashlight);
         }
     }
 
@@ -143,7 +143,7 @@ public class FlashLight : Singleton<FlashLight>
         if (this.handleInteractable != null)
         {
             this.handleInteractable.selectEntered.RemoveListener(ToggleOnFlashlight);
-            this.handleInteractable.selectExited.RemoveListener(ToggleOffFlashlight);
+            //this.handleInteractable.selectExited.RemoveListener(ToggleOffFlashlight);
         }
     }
 
@@ -169,10 +169,10 @@ public class FlashLight : Singleton<FlashLight>
 
         // Optional debug start
         if (startEnabled) ToggleFlashLight(true);
-
+/*
         this.batteryTimer = new Timer(this.lightDecayTickMin, 0);
         this.batteryTimer.OnTimerTick += HandleFlashLightBatteryDecay;
-        this.batteryTimer.Start();
+        this.batteryTimer.Start();*/
         
         RecalculateDetectionCone();
     }

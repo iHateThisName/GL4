@@ -12,6 +12,9 @@ public static class TimerManager
 {
     private static readonly List<Timer> timers = new(); // Active timers to update each frame
     private static readonly List<Timer> sweep = new(); // Temporary copy to allow safe iteration during modifications
+    
+    private const float FixedStep = 1f / 60f; // 16.67ms                                                                                                                          
+    private static float accumulator;
 
     /// <summary>
     /// Registers a timer to receive Update() calls each frame.
@@ -34,13 +37,27 @@ public static class TimerManager
     public static void UpdateTimers()
     {
         if (timers.Count == 0) return;
-
+        
+        accumulator += UnityEngine.Time.deltaTime;
+        
+        int maxIterations = 4; // Prevent spiral of death  
+        while (accumulator >= FixedStep && maxIterations-- > 0)                                                                                                                   
+        {                                                                                                                                                                         
+            accumulator -= FixedStep;                                                                                                                                             
+                                                                                                                                                                                    
+            sweep.RefreshWith(timers);                                                                                                                                            
+            foreach (var timer in sweep)                                                                                                                                          
+            {                                                                                                                                                                     
+                timer.UpdateFixed(FixedStep); // New method using fixed step                                                                                                      
+            }                                                                                                                                                                     
+        }  
+/*
         // Copy to sweep list to allow safe modification during iteration
         sweep.RefreshWith(timers);
         foreach (var timer in sweep)
         {
             timer.Update();
-        }
+        }*/
     }
 
     /// <summary>

@@ -120,6 +120,29 @@ public class Timer : IDisposable
             OnTimerFinished?.Invoke();
         }
     }
+    
+    public void UpdateFixed(float deltaTime)                                                                                                                                          
+    {                                                                                                                                                                                 
+        if (!this.IsRunning || this.IsFinished) return;
+
+        this.intervalWasSetDuringTick = false;
+        this.Elapsed += deltaTime;
+
+        // Fire tick events, catching up if frame took longer than interval
+        while (this.Elapsed >= this.nextInterval)
+        {
+            OnTimerTick?.Invoke();
+            if (!this.intervalWasSetDuringTick)
+                this.nextInterval += this.Interval;
+        }
+
+        // Check if duration reached (finite timers only)
+        if (this.Duration > 0f && this.Elapsed >= this.Duration)
+        {
+            this.IsRunning = false;
+            OnTimerFinished?.Invoke();
+        }                                                                                                                                                      
+    } 
 
     /// <summary>
     /// Disposes the timer, deregistering from TimerManager and clearing all event listeners.
