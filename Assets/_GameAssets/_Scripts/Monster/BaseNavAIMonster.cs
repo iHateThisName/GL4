@@ -182,7 +182,7 @@ public class BaseNavAIMonster : MonoBehaviour {
             if (this.patrolPoints.Length == 0) {
                 this.agent.SetDestination(this.spawnPoint);
 
-            } else if (Vector3.Distance(this.transform.position, this.agent.destination) < this.attackRange) {
+            } else if (Vector3.Distance(this.transform.position, this.patrolPoints[this.currentPatrolIndex].position) < this.attackRange) {
                 // If the monster is close to the point, start patrolling between points.
                 currentPatrolIndex = (currentPatrolIndex + 1) % this.patrolPoints.Length;
                 this.agent.SetDestination(this.patrolPoints[currentPatrolIndex].position);
