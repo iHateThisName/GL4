@@ -1,11 +1,11 @@
-using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using static PlayerTemperatureSimulator;
 
-    /// <summary>
-    /// Manages the player's UI display
-    /// </summary>
+/// <summary>
+/// Manages the player's UI display
+/// </summary>
 public class PlayerUI : MonoBehaviour {
 
     [Header("Refrences")]
@@ -14,12 +14,21 @@ public class PlayerUI : MonoBehaviour {
     [SerializeField] private TextMeshProUGUI hungerText;
     [SerializeField] private TextMeshProUGUI nightTimeText;
 
+    [Header("Vision Effect Refrences")]
+    [SerializeField] private CanvasGroup heatCanvasGroup;
+    [SerializeField] private CanvasGroup coldCanvasGroup;
+
+    [Header("Fade Settings")]
+    [SerializeField] private float fadeDuration = 2f;
+
     private bool useDebugInfo = false;
+    private Coroutine currentWarmFadeCoroutine;
+    private Coroutine currentColdFadeCoroutine;
 
     private void Awake() {
-//#if UNITY_EDITOR
+        //#if UNITY_EDITOR
         this.useDebugInfo = true;
-//#endif
+        //#endif
     }
     private void Start() {
         if (!this.useDebugInfo) return; // Avoid initializing if we're not in debug mode.
@@ -51,10 +60,9 @@ public class PlayerUI : MonoBehaviour {
         HungerSystem.OnHungerChanged -= HandleHungerChanged;
     }
 
-    private void Update()
-    {
+    private void Update() {
         if (this.nightTimeText == null) return;
-        this.nightTimeText.text = "Time: " + GameManager.Instance.NightTime;
+        this.nightTimeText.text = "Time: " + GameManager.Instance.NightTime.ToString("F2");
     }
 
     /// <summary>
@@ -64,6 +72,20 @@ public class PlayerUI : MonoBehaviour {
     private void HandleTemperatureChanged(BodyTemperatureStateChange change) {
         this.temperatureText.text = $"Temperature State: {change.CurrentState}";
         UpdateColor(change.CurrentState);
+
+        if (change.CurrentState == EnumBodyTemperatureState.Normal && change.PreviousState == EnumBodyTemperatureState.MildHyperthermia) {
+            StartFadeCanvasGroup(canvasGroup: this.heatCanvasGroup, fadeIn: false);
+        } else if (change.CurrentState == EnumBodyTemperatureState.ModerateHyperthermia && change.PreviousState == EnumBodyTemperatureState.MildHyperthermia) {
+            StartFadeCanvasGroup(canvasGroup: this.heatCanvasGroup, fadeIn: true, targetAlpha: 1f);
+        }
+
+        if (change.CurrentState == EnumBodyTemperatureState.Normal && change.PreviousState == EnumBodyTemperatureState.MildHypothermia) {
+            StartFadeCanvasGroup(canvasGroup: this.coldCanvasGroup, fadeIn: false);
+        } else if (change.CurrentState == EnumBodyTemperatureState.MildHypothermia) {
+            StartFadeCanvasGroup(canvasGroup: this.coldCanvasGroup, fadeIn: true, targetAlpha: 0.5f);
+        } else if (change.CurrentState == EnumBodyTemperatureState.ModerateHypothermia) {
+            StartFadeCanvasGroup(canvasGroup: this.coldCanvasGroup, fadeIn: true, targetAlpha: 1f);
+        }
     }
 
     /// <summary>
@@ -98,11 +120,75 @@ public class PlayerUI : MonoBehaviour {
                 break;
         }
     }
-    
+
     private void HandleHungerChanged(float hunger) {
         this.hungerText.text = "Hunger: " + hunger.ToString("F2");
     }
     private void HandleLocationChanged(EnumLocationType type) {
         this.locationText.text = $"Location: {PlayerTemperatureSimulator.Instance.CurrentLocationType}";
+        EnumBodyTemperatureState currentBodyTemperatureState = PlayerTemperatureSimulator.Instance.CurrentBodyTemperatureState;
+
+        if (type == EnumLocationType.Warm) {
+            if (currentBodyTemperatureState == EnumBodyTemperatureState.ModerateHyperthermia) {
+                StartFadeCanvasGroup(this.heatCanvasGroup, fadeIn: true, targetAlpha: 1f);
+            } else {
+                StartFadeCanvasGroup(this.heatCanvasGroup, fadeIn: true, targetAlpha: 0.5f);
+            }
+        } else if (currentBodyTemperatureState != EnumBodyTemperatureState.MildHyperthermia || currentBodyTemperatureState != EnumBodyTemperatureState.ModerateHyperthermia) {
+            if (!TemperatureZoneManager.Instance.IsPlayerInZone(EnumLocationType.Warm)) {
+                StartFadeCanvasGroup(this.heatCanvasGroup, fadeIn: false);
+            }
+        }
+    }
+
+    private void StartFadeCanvasGroup(CanvasGroup canvasGroup, bool fadeIn, float targetAlpha = -1) {
+        // Determine if this is the warm effect or cold effect based on the canvas group reference.
+        bool isWarmEffect = canvasGroup == this.heatCanvasGroup;
+
+        if (isWarmEffect) {
+            if (this.currentWarmFadeCoroutine != null) StopCoroutine(this.currentWarmFadeCoroutine);
+            this.currentWarmFadeCoroutine = StartCoroutine(FadeCanvasGroupCoroutine(canvasGroup, fadeIn, targetAlpha));
+        } else {
+            if (this.currentColdFadeCoroutine != null) StopCoroutine(this.currentColdFadeCoroutine);
+            this.currentColdFadeCoroutine = StartCoroutine(FadeCanvasGroupCoroutine(canvasGroup, fadeIn, targetAlpha));
+        }
+    }
+
+    /// <summary>
+    /// Fades a canvas group in or out over a specified duration.
+    /// </summary>
+    /// <param name="canvasGroup">The canvas group to fade.</param>
+    /// <param name="fadeIn">True to fade in, false to fade out.</param>
+    /// <returns>IEnumerator for coroutine.</returns>
+    private IEnumerator FadeCanvasGroupCoroutine(CanvasGroup canvasGroup, bool fadeIn, float targetAlpha = -1) {
+        Debug.Log($"Starting fade {(fadeIn ? "in" : "out")} for {canvasGroup.gameObject.name} to target alpha {targetAlpha}");
+
+        if (canvasGroup == null) yield break;
+
+
+        if (fadeIn && !canvasGroup.gameObject.activeInHierarchy) {
+            // If fading in and the canvas group is not active, enable it before starting the fade.
+            canvasGroup.gameObject.SetActive(true);
+        }
+
+        float startAlpha = canvasGroup.alpha;
+        if (targetAlpha == -1) {
+            targetAlpha = fadeIn ? 1f : 0f;
+        }
+        float elapsedTime = 0f;
+
+        while (elapsedTime < this.fadeDuration) {
+            elapsedTime += Time.deltaTime;
+            float t = elapsedTime / this.fadeDuration;
+            canvasGroup.alpha = Mathf.Lerp(startAlpha, targetAlpha, t);
+            yield return null;
+        }
+
+        canvasGroup.alpha = targetAlpha; // Ensure final alpha is set
+
+        if (!fadeIn) {
+            // If fading out, disable the canvas group after the fade is complete
+            canvasGroup.gameObject.SetActive(false);
+        }
     }
 }

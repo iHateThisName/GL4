@@ -134,7 +134,7 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
     private void NotifyBodyTempetureStateChange(EnumBodyTemperatureState previousState, EnumBodyTemperatureState currentState) {
         Debug.Log($"Temperature state changed from {previousState} to {currentState}");
         OnBodyTemperatureStateChanged?.Invoke(new BodyTemperatureStateChange { PreviousState = previousState, CurrentState = currentState });
-        
+
         if (currentState == EnumBodyTemperatureState.Hypothermia || currentState == EnumBodyTemperatureState.Hyperthermia)
             DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Temperature, false);
     }
@@ -192,7 +192,7 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
             EnumLocationType.Warm => 40.2f,
             _ => 41f,
         };
-    }    
+    }
 }
 
 public struct BodyTemperatureStateChange {

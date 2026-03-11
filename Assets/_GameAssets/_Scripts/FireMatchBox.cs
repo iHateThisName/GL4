@@ -1,62 +1,79 @@
 using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
+[RequireComponent(typeof(XRSimpleInteractable))]
 public class FireMatchBox : MonoBehaviour
 {
     //A refrence to the fire match prefab which will be spawned by the match box
-    [SerializeField]
-    private GameObject matchPrefab;
 
-    //The spawn point which the match will spawned in
-    [SerializeField]
-    private Transform matchSpawnPoint;
+    [SerializeField] private GameObject matchPrefab;
+    [SerializeField] private XRInteractionManager interactionManager;
+    [SerializeField] private XRSimpleInteractable interactable;
+
 
     //A bool that is supposed to stop the match from duplicating, doesn't work
-    public bool MatchSpawned = false;
-
-
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private bool matchSpawned = false;
+    private void Start()
     {
-        //Spawn a match at game start
-        SpawnMatch();
+        // Cache the manager to handle the swap
+        //interactionManager = GetComponentInParent<XRInteractionManager>();
+        this.interactable = GetComponent<XRSimpleInteractable>();
+        // If not in parent, try to find it in the scene
+        if (this.interactionManager == null)
+            this.interactionManager = Object.FindAnyObjectByType<XRInteractionManager>();
     }
 
-    public void SpawnMatch()
+    private void OnEnable()
     {
-        //If there is already a match spawned, a new match should not be spawned
-        if (!MatchSpawned)
+        if (this.interactable != null)
         {
-            //Check for if the refrence to the match prefab is missing
-            if (matchPrefab == null)
-            {
-                Debug.LogError("Match Prefab is missing");
-                return;
-            }
-
-            //Check for if the refrence to the match spawn point is missing
-            if (matchSpawnPoint == null)
-            {
-                Debug.LogError("Match Spawn Point is missing");
-                return;
-            }
-
-            //Spawn in a match at the match spawn point
-            GameObject newMatch = Instantiate(matchPrefab, matchSpawnPoint.position, matchSpawnPoint.rotation);
-            //Gets a refrence to the match's FireMatchController
-            FireMatchController controller = newMatch.GetComponentInChildren<FireMatchController>();
-
-            //Check for if the match doesn't have a FireMatchController
-            if (controller == null)
-            {
-                Debug.LogError("FireMatchController missing on match prefab!");
-                return;
-            }
-
-            //Sets a refrence in the match for this matchbox
-            controller.MatchBox = this;
-            //This should make sure that the match doesn't duplicate 
-            MatchSpawned = true;
+            this.interactable.selectEntered.AddListener(OnSpawnerSelected);
         }
+        FireMatchController.OnMatchDespawn += FireMatchController_OnMatchDespawn;
     }
+    private void OnDisable()
+    {
+        if (this.interactable != null)
+        {
+            this.interactable.selectEntered.RemoveListener(OnSpawnerSelected);
+        }
+        FireMatchController.OnMatchDespawn -= FireMatchController_OnMatchDespawn;
+    }
+
+    private void FireMatchController_OnMatchDespawn()
+    {
+        this.interactable.enabled = true;
+        this.matchSpawned = false;
+    }
+
+
+    public void OnSpawnerSelected(SelectEnterEventArgs args)
+    {
+        if (this.matchSpawned)
+        {
+            return;
+        }
+        // 1. Identify the Interactor (the hand)
+        IXRSelectInteractor hand = args.interactorObject;
+
+        // 2. Instantiate the new grabable object
+        GameObject spawnedObj = Instantiate(this.matchPrefab/*, hand.transform.position, hand.transform.rotation*/);
+        XRGrabInteractable newGrabable = spawnedObj.GetComponent<XRGrabInteractable>();
+
+        if (newGrabable != null)
+        {
+            // 3. Force the hand to 'drop' the Spawner and 'grab' the new object
+            // This happens in the same frame, so the player never sees the drop
+            this.interactionManager.SelectExit(hand, args.interactableObject);
+            this.interactionManager.SelectEnter(hand, newGrabable);
+            this.matchSpawned=true;
+        }
+        this.interactable.enabled = false;
+    }
+
+
+
+
 }

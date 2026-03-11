@@ -1,8 +1,7 @@
-using System.Collections;
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using TMPro;
+using System.Collections;
 
 public enum MunchState
 {
@@ -34,10 +33,9 @@ public class TheMunch : MonoBehaviour
     [SerializeField] private AudioClip angryWarningSound;
     [Tooltip("Assign the jumpscare sound effect for the Kill state (plays once).")]
     [SerializeField] private AudioClip killJumpscareSound;
+    [Tooltip("Assign the eat sound effect for the Munch eating (plays once).")]
+    [SerializeField] private AudioClip eatSound;
 
-    [Header("Game Managers")]
-    [Tooltip("Assign the DeathManager from your scene here.")]
-    [SerializeField] private DeathManager deathManager;
 
     [Header("Interaction Settings")]
     [Range(0, 10)]
@@ -54,6 +52,7 @@ public class TheMunch : MonoBehaviour
     [SerializeField] private TMP_Text debugText;
 
     private MunchState currentState;
+    private BaseNavAIMonster.MonsterTypeEnum monsterType = BaseNavAIMonster.MonsterTypeEnum.Munch;
 
     private void Start()
     {
@@ -67,7 +66,7 @@ public class TheMunch : MonoBehaviour
     {
         if (this.currentState == MunchState.Kill) return;
 
-        this.currentSatiety -= Time.deltaTime * 0.2f;
+        this.currentSatiety -= Time.deltaTime * 0.4f;
         this.currentSatiety = Mathf.Clamp(this.currentSatiety, 0, this.maxSatiety);
 
         this.UpdateMunchState();
@@ -100,18 +99,28 @@ public class TheMunch : MonoBehaviour
         return MunchState.Kill;
     }
 
+    private IEnumerator MunchAndRelocate()
+    {
+        if (this.audioSource != null) this.audioSource.Stop();
+        if (this.monsterAnimator != null)
+            this.monsterAnimator.SetTrigger(this.munchTriggerName);
+        yield return null;
+        float animLength = this.monsterAnimator.GetCurrentAnimatorStateInfo(0).length;
+        yield return new WaitForSeconds(animLength);
+        Refactored.MonsterSpawner.Instance.RelocateMonster(this.transform.root, this.monsterType);
+    }
+
     private void ChangeState(MunchState newState)
     {
         this.currentState = newState;
 
+
+
         switch (this.currentState)
         {
             case MunchState.NotHungry:
-                if (this.audioSource != null) this.audioSource.Stop(); // Stop everything
-
-                if (this.monsterAnimator != null)
-                    this.monsterAnimator.SetTrigger(this.munchTriggerName);
-                break;
+                StartCoroutine(MunchAndRelocate());
+            break;
 
             case MunchState.Hungry:
                 if (this.audioSource != null && this.hungrySound != null)
@@ -144,20 +153,11 @@ public class TheMunch : MonoBehaviour
                     this.audioSource.Stop();
                     if (this.killJumpscareSound != null)
                     {
-                        this.audioSource.loop = false;
-                        this.audioSource.PlayOneShot(this.killJumpscareSound, 0.5f);
+                        SoundEffectManager.Instance.PlaySoundFXClip(this.killJumpscareSound, transform, 0.5f);
                     }
                 }
-
-                //Tell the global DeathManager to handle the blackout routine
-                if (this.deathManager != null)
-                {
-                    this.deathManager.TriggerDeathSequence();
-                }
-                else
-                {
-                    Debug.LogError("DeathManager is missing! Did you assign it in the Inspector?");
-                }
+                
+                DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Monster, false);
                 break;
         }
     }
@@ -168,30 +168,22 @@ public class TheMunch : MonoBehaviour
 
         Rigidbody parentRb = other.attachedRigidbody;
         if (parentRb == null) return;
+        
+        Transform foodObject = other.transform.parent;
 
-        Food foodItem = parentRb.GetComponent<Food>();
-
-        if (foodItem != null)
+        if (!foodObject.CompareTag("Food") || this.currentState == MunchState.NotHungry) 
         {
-            if (this.currentState == MunchState.NotHungry)
-            {
-                Debug.Log("Monster is full! Rejecting food.");
-                this.RejectItem(parentRb);
-                return;
-            }
-
-            if (this.IsMovingTooFast(parentRb))
-            {
-                this.RejectItem(parentRb);
-            }
-            else
-            {
-                this.ConsumeFood(foodItem);
-            }
+            this.RejectItem(parentRb);
+            return;
+        }
+            
+        if (this.IsMovingTooFast(parentRb))
+        {
+            this.RejectItem(parentRb);
         }
         else
         {
-            this.RejectItem(parentRb);
+            this.ConsumeFood(foodObject.gameObject);
         }
     }
 
@@ -200,9 +192,9 @@ public class TheMunch : MonoBehaviour
         return rb.linearVelocity.magnitude > this.maxAcceptableVelocity;
     }
 
-    private void ConsumeFood(Food foodItem)
+    private void ConsumeFood(GameObject foodObject)
     {
-        this.ForceRelease(foodItem.GetComponent<XRGrabInteractable>());
+        this.ForceRelease(foodObject.GetComponent<XRGrabInteractable>());
 
         float valueToAdd = 20f;
 
@@ -210,8 +202,9 @@ public class TheMunch : MonoBehaviour
         this.currentSatiety = Mathf.Clamp(this.currentSatiety, 0, this.maxSatiety);
 
         this.UpdateMunchState();
-
-        Destroy(foodItem.gameObject, 0.2f);
+        if (eatSound == null) return;
+        SoundEffectManager.Instance.PlaySoundFXClip(this.eatSound, transform, 0.5f);
+        Destroy(foodObject);
     }
 
     private void RejectItem(Rigidbody rb)
@@ -243,5 +236,6 @@ public class TheMunch : MonoBehaviour
     public float GetMaxAcceptableVelocity() => this.maxAcceptableVelocity;
     public void SetMaxAcceptableVelocity(float velocity) => this.maxAcceptableVelocity = velocity;
     public MunchState GetCurrentState() => this.currentState;
+    public BaseNavAIMonster.MonsterTypeEnum GetMonsterType() => this.monsterType;
     #endregion
 }

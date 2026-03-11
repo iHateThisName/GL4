@@ -11,17 +11,37 @@ public class BaseNavAIMonster : MonoBehaviour {
     [SerializeField] private NavMeshAgent agent;
     [SerializeField] private Transform player;
     [SerializeField] private Transform[] patrolPoints;
+    [SerializeField, Space(5)] private AudioSource MonsterAudioSource;
+    [SerializeField] private AudioClip StalkerKill;
+    [SerializeField] private AudioClip StalkerFlashed;
 
     [Header("Config")]
     [SerializeField] private MonsterTypeEnum monsterType;
     [SerializeField] private float tickRate = 2f; // How often the monster updates its behavior (in seconds)
     [SerializeField] private float attackRange = 0.5f;
 
+    [Header("Flee Behaviour")]
+    [SerializeField] private float fleeDuration = 35f; // How long the monster flees after being hit by flashlight
+    [SerializeField] private float fleeDistance = 20f; // How far the monster tries to flee
+
+    // Nav
     private Vector3 spawnPoint;
-    private PlayerTemperatureSimulator.EnumLocationType currentLocation;
-    private Action monsterNavigationLogic;
     private int currentPatrolIndex = 0;
-    private enum MonsterTypeEnum { None, Stalker }
+    private PlayerTemperatureSimulator.EnumLocationType currentLocation;
+
+    // Delegate for monster behavior logic. This will point to the appropriate function based on the monster type.
+    private Action monsterNavigationLogic;
+
+    // Flags
+    private bool isPlayerKilled = false;
+    private bool isFleeing = false;
+
+    // Flee
+    private float fleeTimer = 0f;
+    private Vector3 fleeDestination;
+
+    [System.Serializable]
+    public enum MonsterTypeEnum { None, Stalker, Munch }
 
     #region Unity Lifecycle
     /// <summary>
@@ -76,6 +96,11 @@ public class BaseNavAIMonster : MonoBehaviour {
     /// </summary>
     private void HandleLocationChange(PlayerTemperatureSimulator.EnumLocationType type) {
         this.currentLocation = type;
+
+        // If the player is no longer in the Cold, stop the stalking audio.
+        if (type != PlayerTemperatureSimulator.EnumLocationType.Cold) {
+            UpdateStalkingAudio(false);
+        }
     }
 
     /// <summary>
@@ -85,14 +110,19 @@ public class BaseNavAIMonster : MonoBehaviour {
     /// </summary>
     private IEnumerator MonsterLogicCoroutine() {
         while (true) {
-            // Check if the monster is in attack range of the player.
-            float distanceToPlayer = Vector3.Distance(this.transform.position, this.player.position);
-            if (distanceToPlayer <= this.attackRange) {
-                AttackPlayer();
-            }
+            if (!this.isFleeing) CheckAttackRange();
+
             this.monsterNavigationLogic?.Invoke();
 
             yield return new WaitForSeconds(this.tickRate);
+        }
+    }
+
+    private void CheckAttackRange() {
+        // Check if the monster is in attack range of the player.
+        float distanceToPlayer = Vector3.Distance(this.transform.position, this.player.position);
+        if (distanceToPlayer <= this.attackRange) {
+            AttackPlayer();
         }
     }
 
@@ -110,6 +140,12 @@ public class BaseNavAIMonster : MonoBehaviour {
     }
 
     private void AttackPlayer() {
+        if (this.isPlayerKilled) return; // Prevent multiple attack triggers if the player is already killed.
+        this.isPlayerKilled = true;
+
+        //Audio
+        SoundEffectManager.Instance.PlaySoundFXClip(this.StalkerKill, transform, 0.75f);
+
         this.DebugInformation = "Monster is attacking the player!";
         // Implement attack logic here. trigger animation, reduce player health, etc.
         Debug.Log("Monster is attacking the player!");
@@ -122,18 +158,30 @@ public class BaseNavAIMonster : MonoBehaviour {
     /// and retreat to its spawn point when the player enters warm/indoor areas.
     /// </summary>
     private void StalkerNavigationLogic() {
+        if (this.isFleeing) {
+            this.fleeTimer -= this.tickRate;
+            if (this.fleeTimer <= 0f) this.isFleeing = false;
+            return;
+        }
+
         // Check if player is outside.
         if (currentLocation == PlayerTemperatureSimulator.EnumLocationType.Cold) {
             this.agent.SetDestination(this.player.position);
             this.DebugInformation = $"Stalker is pursuing the player at {this.player.position}";
 
+            //Audio
+            UpdateStalkingAudio(true);
+
         } else {
+
+            //Audio
+            UpdateStalkingAudio(false);
 
             // Back off the player. Move towards spawn point.
             if (this.patrolPoints.Length == 0) {
                 this.agent.SetDestination(this.spawnPoint);
 
-            } else if (Vector3.Distance(this.transform.position, this.agent.destination) < this.attackRange) {
+            } else if (Vector3.Distance(this.transform.position, this.patrolPoints[this.currentPatrolIndex].position) < this.attackRange) {
                 // If the monster is close to the point, start patrolling between points.
                 currentPatrolIndex = (currentPatrolIndex + 1) % this.patrolPoints.Length;
                 this.agent.SetDestination(this.patrolPoints[currentPatrolIndex].position);
@@ -143,5 +191,58 @@ public class BaseNavAIMonster : MonoBehaviour {
             }
             this.DebugInformation = $"Stalker is idle moving towards {this.agent.destination}";
         }
+    }
+
+    private void UpdateStalkingAudio(bool isStalking) {
+        if (MonsterAudioSource == null) return;
+
+        if (isStalking) {
+            // Only call Play if it's not already playing to avoid "stuttering" restarts
+            if (!MonsterAudioSource.isPlaying) {
+                MonsterAudioSource.Play();
+            }
+        } else {
+            // Stop the sound if the monster is retreating/patrolling
+            if (MonsterAudioSource.isPlaying) {
+                MonsterAudioSource.Stop();
+            }
+        }
+    }
+
+    [ContextMenu("Simulate flashlight hit from front")]
+    public void DebugFlaslgihtHitFront() => OnFlashlightHit(this.transform.position + this.transform.forward);
+    [ContextMenu("Simulate flashlight hit from Origin")]
+    public void DebugFlashlightHitOrigin() => OnFlashlightHit(Vector3.zero);
+
+    /// <summary>
+    /// Public method to be called when the monster is hit by a flashlight.
+    /// Makes the stalker flee in the opposite direction from the light source.
+    /// </summary>
+    /// <param name="lightSourcePosition">The position of the flashlight/light source</param>
+    public void OnFlashlightHit(Vector3 lightSourcePosition) {
+        // Calculate flee direction (away from light source)
+        Vector3 fleeDirection = (this.transform.position - lightSourcePosition).normalized;
+
+        // Calculate flee destination
+        this.fleeDestination = this.transform.position + (fleeDirection * this.fleeDistance);
+
+        // Set fleeing state
+        this.isFleeing = true;
+        this.fleeTimer = this.fleeDuration;
+
+        // Immediately set destination to flee
+        this.agent.SetDestination(this.fleeDestination);
+
+        //Audio - stop stalking audio when hit by flashlight
+        UpdateStalkingAudio(false);
+
+        //Audio - play flashlight hit reaction sound
+        SoundEffectManager.Instance.PlaySoundFXClip(audioClip: this.StalkerFlashed, spawmTransform: this.transform, volume: 0.75f, parentSpawnTransform: this.transform);
+
+        Debug.Log($"Monster hit by flashlight! Fleeing from {lightSourcePosition} to {this.fleeDestination}");
+    }
+
+    public void SetPatrolPoints(Transform[] points) {
+        this.patrolPoints = points;
     }
 }

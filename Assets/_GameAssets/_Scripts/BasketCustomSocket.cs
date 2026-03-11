@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
@@ -12,6 +13,9 @@ public class BasketCustomSocket : XRSocketInteractor
 
     [Tooltip("The ordered list of slots.")]
     [SerializeField] private List<Transform> orderedSlots = new List<Transform>();
+
+    [Header("Audio Settings")]
+    [SerializeField] private AudioClip basketEntrySFX;
 
     private readonly Dictionary<IXRInteractable, Transform> selectionMap = new Dictionary<IXRInteractable, Transform>();
     private readonly HashSet<Transform> occupiedSlots = new HashSet<Transform>();
@@ -72,6 +76,9 @@ public class BasketCustomSocket : XRSocketInteractor
         {
             this.occupiedSlots.Add(target);
             this.selectionMap.Add(args.interactableObject, target);
+
+            //Audio
+            PlayEntrySound();
         }
 
         base.OnSelectEntering(args);
@@ -104,4 +111,13 @@ public class BasketCustomSocket : XRSocketInteractor
         }
     }
     #endregion
+
+    private void PlayEntrySound()
+    {
+        if (basketEntrySFX != null && SoundEffectManager.Instance != null)
+        {
+            // We use the basket's transform so the sound is localized to the basket
+            SoundEffectManager.Instance.PlaySoundFXClip(basketEntrySFX, transform, 1f);
+        }
+    }
 }

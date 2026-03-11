@@ -26,8 +26,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1.35, y: 1.35, z: 1.35}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 6280661042755601159}
   m_Father: {fileID: 0}
@@ -272,7 +272,7 @@ GameObject:
   - component: {fileID: 8108400608609311108}
   - component: {fileID: 3136521679087517044}
   m_Layer: 0
-  m_Name: HingeDoor (2)
+  m_Name: HingeDoor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -382,7 +382,7 @@ Rigidbody:
   m_GameObject: {fileID: 8157144770054614209}
   serializedVersion: 5
   m_Mass: 5
-  m_LinearDamping: 0
+  m_LinearDamping: 3
   m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
@@ -453,6 +453,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::XRObjectDistanceBreak
   m_InteractionManager: {fileID: 0}
   m_Colliders:
+  - {fileID: 2998546211471445681}
   - {fileID: 3339036486686410213}
   m_InteractionLayers:
     m_Bits: 1
@@ -514,9 +515,9 @@ MonoBehaviour:
   m_StartingInteractionStrengthFilters: []
   m_AutoFindParentInteractableInHierarchy: 0
   m_ParentInteractableObject: {fileID: 0}
-  m_AttachTransform: {fileID: 2811023363765779532}
+  m_AttachTransform: {fileID: 0}
   m_SecondaryAttachTransform: {fileID: 0}
-  m_UseDynamicAttach: 0
+  m_UseDynamicAttach: 1
   m_MatchAttachPosition: 1
   m_MatchAttachRotation: 1
   m_SnapToColliderVolume: 1
@@ -569,6 +570,6 @@ MonoBehaviour:
   m_LimitAngularVelocity: 0
   m_MaxLinearVelocityDelta: 10
   m_MaxAngularVelocityDelta: 20
-  maxBreakDistance: 0.8
+  maxBreakDistance: 1
   useHapticWarning: 1
   hapticIntensity: 0.5

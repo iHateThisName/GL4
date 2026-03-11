@@ -41,6 +41,10 @@ public class FireplaceController : MonoBehaviour {
 
     [SerializeField] private GameObject fireVFX;
     private void FixedUpdate() {
+
+        //Audio logic
+        HandleFireAudio();
+
         if (fuelQueue.Count > 0) {
             this.HasFuel = true;
             if (IsLit) {
@@ -50,6 +54,10 @@ public class FireplaceController : MonoBehaviour {
             this.HasFuel = false;
         }
     }
+
+    [Header("Audio Settings")]
+    [SerializeField] private AudioSource fireAudioSource;
+    [SerializeField][Range(0f, 1f)] private float maxVolume = 1.0f;
 
     /// <summary>
     /// Burns fuel over time at the specified burn rate. 
@@ -98,6 +106,17 @@ public class FireplaceController : MonoBehaviour {
     private void AddFuelDebug() {
         // For testing purposes
         ForceAddFuel(10f);
+        Debug.Log($"Current Fuel Percentage: {this.FuelPercentage * 100f}%");
+    }
+
+    /// <summary>
+    /// Debug method to add 100 fuel to the fireplace.
+    /// Accessible via Unity's context menu in the inspector.
+    /// </summary>
+    [ContextMenu("Add Fuel (100)")]
+    private void Add100FuelDebug() {
+        // For testing purposes
+        ForceAddFuel(100f);
         Debug.Log($"Current Fuel Percentage: {this.FuelPercentage * 100f}%");
     }
 
@@ -158,6 +177,21 @@ public class FireplaceController : MonoBehaviour {
     public void Ignite(FireMatchController match) {
         this.IsLit = true;
         this.fireVFX.SetActive(true);
-        Destroy(match.RootObject);
+    }
+    private void HandleFireAudio()
+    {
+        if (fireAudioSource == null) return;
+
+        // Determine target volume: if not lit, it's 0. If lit, it's based on fuel.
+        //0.1f minimum volume while still "Lit"
+        float targetVolume = IsLit ? Mathf.Max(FuelPercentage * maxVolume, 0.1f) : 0f;
+
+        // Smoothly transition volume of fireplace
+        fireAudioSource.volume = Mathf.MoveTowards(fireAudioSource.volume, targetVolume, Time.fixedDeltaTime * 0.5f);
+
+        if (IsLit)
+        {
+            fireAudioSource.pitch = Mathf.Lerp(1.1f, 0.85f, FuelPercentage);
+        }
     }
 }

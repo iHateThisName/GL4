@@ -2,64 +2,37 @@ using UnityEngine;
 
 public class TemperatureZoneTrigger : MonoBehaviour {
 
-    [SerializeField] private PlayerTemperatureSimulator.EnumLocationType locationType;
+    [SerializeField] private PlayerTemperatureSimulator.EnumLocationType locationType; // The type of temperature zone this trigger represents.
 
-    [ContextMenu("Debug Trigger Zone")]
-    public void DebugTrigger() {
-        Debug.Log($"Debug Trigger Activated for {locationType} zone.");
-        UpdateTemperatureZone(this.locationType);
-    }
+    /// <summary>
+    /// Handles the event when a collider enters the trigger zone, and initiates temperature zone transitions for the player.
+    /// </summary>
+    /// <param name="other">The collider that has entered the trigger zone. Must be tagged as 'Player' to trigger temperature zone changes.</param>
     private void OnTriggerEnter(Collider other) {
-        if (!other.CompareTag("Player")) return;
+        if (!other.CompareTag("Player")) return; // Check if the entering collider is tagged as 'Player'. If not, exit the method.
+        TemperatureZoneManager.Instance.EnterZone(this.locationType);
 
-        if (this.locationType == PlayerTemperatureSimulator.EnumLocationType.Warm && PlayerTemperatureSimulator.Instance.CurrentLocationType == PlayerTemperatureSimulator.EnumLocationType.Cold) {
-            return; // Prevent entering warm zone if currently in cold zone because heat zone can reach through walls
+        // If the player enters a 'Normal' zone, ensure they exit the 'Cold' zone to maintain accurate temperature state since there is no trigger for cold zones
+        if (this.locationType == PlayerTemperatureSimulator.EnumLocationType.Normal) {
+            TemperatureZoneManager.Instance.ExitZone(PlayerTemperatureSimulator.EnumLocationType.Cold);
         }
 
-        UpdateTemperatureZone(this.locationType);
     }
 
+    /// <summary>
+    /// Handles the event when a collider exits the trigger zone. If the exiting collider is tagged as 'Player', updates
+    /// the temperature zone manager to reflect the player's departure from the current zone.
+    /// </summary>
+    /// <param name="other">The collider that exited the trigger zone. Must represent a player object, identified by the 'Player' tag.</param>
     private void OnTriggerExit(Collider other) {
-        if (!other.CompareTag("Player")) return;
+        if (!other.CompareTag("Player")) return; // Check if the exiting collider is tagged as 'Player'. If not, exit the method.
+        TemperatureZoneManager.Instance.ExitZone(this.locationType);
 
-        PlayerTemperatureSimulator.EnumLocationType currentLocationType = PlayerTemperatureSimulator.Instance.CurrentLocationType;
-
-        if (currentLocationType == PlayerTemperatureSimulator.EnumLocationType.Warm) {
-            UpdateTemperatureZone(PlayerTemperatureSimulator.EnumLocationType.Normal);
-        }
-
-        if (currentLocationType == PlayerTemperatureSimulator.EnumLocationType.Normal || currentLocationType == PlayerTemperatureSimulator.EnumLocationType.Shack) {
-            UpdateTemperatureZone(PlayerTemperatureSimulator.EnumLocationType.Cold);
+        // If the player exits a 'Normal' zone, ensure they enter the 'Cold' zone to maintain accurate temperature state since there is no trigger for cold zones
+        if (this.locationType == PlayerTemperatureSimulator.EnumLocationType.Normal) {
+            TemperatureZoneManager.Instance.EnterZone(PlayerTemperatureSimulator.EnumLocationType.Cold);
         }
     }
 
-    private void UpdateTemperatureZone(PlayerTemperatureSimulator.EnumLocationType type) {
-        switch (type) {
-            case PlayerTemperatureSimulator.EnumLocationType.Cold:
-                Debug.Log("Player entered COLD temperature zone.");
 
-                // TODO Apply cold vision
-
-                // Remove heating vision
-                //GameManager.Instance.FireAdaptationController.RemoveVolume();
-                break;
-            case PlayerTemperatureSimulator.EnumLocationType.Warm:
-                Debug.Log("Player entered WARM temperature zone.");
-
-                // Apply heating vision
-                //GameManager.Instance.FireAdaptationController.ApplyVolume();
-                break;
-            case PlayerTemperatureSimulator.EnumLocationType.Normal:
-                Debug.Log("Player entered NORMAL temperature zone.");
-
-                // Remove heating vision
-                //GameManager.Instance.FireAdaptationController.RemoveVolume();
-                break;
-            default:
-                Debug.Log($"Player entered {type}");
-                break;
-        }
-
-        PlayerTemperatureSimulator.Instance.SetLocationType(type);
-    }
 }

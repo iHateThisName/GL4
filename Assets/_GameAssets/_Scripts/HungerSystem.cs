@@ -25,11 +25,15 @@ public class HungerSystem : MonoBehaviour
     [Header("=== References ====")]
     // Trigger area representing the player's mouth.
     // When food enters this collider, the player "eats" it.
-    [SerializeField] private TriggerArea mouthCollider; 
+    [SerializeField] private TriggerArea mouthCollider;
+    //SFX of eating food
+    [SerializeField] private AudioClip eatSFX;
 
     [Header("=== Configuration ====")]
     [SerializeField] private HungerSettings hungerSettings;
-    
+
+
+
     private Timer hungerTimer;
     
     // current state of hunger
@@ -37,9 +41,6 @@ public class HungerSystem : MonoBehaviour
     
     // Internal current hunger value. Higher means the player is well-fed, lower means starving.
     [SerializeField] private float hunger;
-    
-    // Tracks time passed since the last hunger decay tick.
-    private float elapsedTime;
 
     private const float SLIGHTY_HUNGRY_THRESHOLD = 0.8f;
     private const float HUNGER_THRESHOLD = .5f;
@@ -113,19 +114,20 @@ public class HungerSystem : MonoBehaviour
     /// <param name="other">The collider that entered the mouth trigger.</param>
     private void tryEatFood(Collider other)
     {
-        if (!other.transform.parent.TryGetComponent<Food>(out var food))
+        Transform foodObject = other.transform.parent;
+        if (!foodObject || !foodObject.CompareTag("Food"))
         {
-            Debug.LogError("Food object entered mouth trigger but could not be cast to Food component.");
+            Debug.LogWarning("You can't eat that!");
             return;
         }
 
-        if (this.hunger + food.GetFoodValue() >= this.MaxHunger)
+        if (this.hunger + this.hungerSettings.GetFoodFillValue() >= this.MaxHunger)
         {
-            Debug.Log("You are already full!");
+            Debug.LogError("You are already full!");
             return;
         }
         
-        eatFood(food);
+        eatFood(foodObject.gameObject);
     }
 
     /// <summary>
@@ -133,15 +135,19 @@ public class HungerSystem : MonoBehaviour
     /// adding saturation to the player's hunger. and checks for state changes'
     /// </summary>
     /// <param name="food">food being processed.</param>
-    private bool eatFood(Food food)
+    private bool eatFood(GameObject foodObject)
     {
-        if (food == null) return false;
+        if (foodObject == null) return false;
         
         // Increase hunger by the food's value
-        ClampHunger( food.GetFoodValue());
+        ClampHunger(this.hungerSettings.GetFoodFillValue());
+
+        //Play eatSFX
+        if (eatSFX == null) return true;
+        SoundEffectManager.Instance.PlaySoundFXClip(this.eatSFX, transform, 1f);
 
         // Destroy the food object shortly after being eaten
-        Destroy(food.gameObject, 0.1f);
+        Destroy(foodObject, 0.1f);
         return true;
     }
 
