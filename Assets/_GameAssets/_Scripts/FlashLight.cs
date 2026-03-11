@@ -2,6 +2,7 @@ using Assets.Scripts.Singleton;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
 /// <summary>
 /// Simulates a crank-powered flashlight.
@@ -14,11 +15,11 @@ using UnityEngine.XR.Interaction.Toolkit.Interactables;
 /// </summary>
 [RequireComponent(typeof(XRGrabInteractable))] 
 // Ensures the object always has an XRGrabInteractable component
-public class FlashLight : Singleton<FlashLight>
+public class Flashlight : Singleton<Flashlight>
 {
     [Header("=== References ===")]
     // Handle used to grab and toggle the flashlight on/off
-    [SerializeField] private XRGrabInteractable handleInteractable;
+    [SerializeField] private XRGrabInteractable grabInteractable;
 
     // Crank used to generate flashlight power
     [SerializeField] private RotationableInteractable crankInteractable;
@@ -131,10 +132,10 @@ public class FlashLight : Singleton<FlashLight>
             this.crankInteractable.OnCrank += OnCrankRotated;
         
         // Subscribe to handle grab events (on/off toggle)
-        if (this.handleInteractable != null)
+        if (this.grabInteractable != null)
         {
-            this.handleInteractable.selectEntered.AddListener(ToggleOnFlashlight);
-            this.handleInteractable.selectExited.AddListener(OnFlashlightDropped);
+            this.grabInteractable.selectEntered.AddListener(OnFlashlightPickedup);
+            this.grabInteractable.selectExited.AddListener(OnFlashlightDropped);
         }
     }
 
@@ -146,10 +147,10 @@ public class FlashLight : Singleton<FlashLight>
         if (this.crankInteractable != null) 
             this.crankInteractable.OnCrank -= OnCrankRotated;
 
-        if (this.handleInteractable != null)
+        if (this.grabInteractable != null)
         {
-            this.handleInteractable.selectEntered.RemoveListener(ToggleOnFlashlight);
-            this.handleInteractable.selectExited.RemoveListener(OnFlashlightDropped);
+            this.grabInteractable.selectEntered.RemoveListener(OnFlashlightPickedup);
+            this.grabInteractable.selectExited.RemoveListener(OnFlashlightDropped);
         }
     }
 
@@ -308,7 +309,15 @@ public class FlashLight : Singleton<FlashLight>
     {
         SetupDroppedFlashlightTimer();
     }
-    
+
+    /// <summary>
+    /// Called when flashlight is grabbed. Ensures it always ends up in the left hand.
+    /// </summary>
+    private void OnFlashlightPickedup(SelectEnterEventArgs args)
+    {
+        ToggleOnFlashlight();
+    }
+
     private void OnFlashlightFlicker()
     {
         flickeredLastFrame = !flickeredLastFrame;
@@ -362,7 +371,7 @@ public class FlashLight : Singleton<FlashLight>
     /// <summary>
     /// Turns flashlight on when grabbed.
     /// </summary>
-    private void ToggleOnFlashlight(SelectEnterEventArgs args)
+    private void ToggleOnFlashlight()
     {
         ToggleFlashLight(true);
         if (this.batteryTimer != null)
@@ -429,7 +438,7 @@ public class FlashLight : Singleton<FlashLight>
     [ContextMenu("Test Pickup")]
     private void TestPickup()
     {
-        ToggleOnFlashlight(null);
+        ToggleOnFlashlight();
     }
     
     [ContextMenu("Test Crank")]

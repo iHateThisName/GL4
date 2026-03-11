@@ -17,7 +17,7 @@ public class LightSensor : MonoBehaviour
     
     [System.Obsolete("temporary internal timer")]
     private Timer performanceTimer;
-    private FlashLight flashlight;
+    private Flashlight flashlight;
     private Transform sensorTransform;
     private Transform flashlightTransform;
     private float remainingCooldownTime;
@@ -140,11 +140,11 @@ public class LightSensor : MonoBehaviour
     /// Assigns the flashlight reference for this sensor to track.                                                                                                           
     /// Should be called when the player spawns or when the flashlight becomes available.                                                                                    
     /// </summary>                                                                                                                                                           
-    /// <param name="flashLight">The flashlight instance to monitor.</param> 
-    public void SetFlashLight(FlashLight flashLight)
+    /// <param name="flashlight">The flashlight instance to monitor.</param> 
+    public void SetFlashLight(Flashlight flashlight)
     {
-        this.flashlight = flashLight;
-        this.flashlightTransform = flashLight.transform;
+        this.flashlight = flashlight;
+        this.flashlightTransform = flashlight.transform;
     }
 
     /// <summary>                                                                                                                                                            

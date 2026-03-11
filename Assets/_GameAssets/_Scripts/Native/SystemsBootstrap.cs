@@ -59,7 +59,6 @@ internal static class SystemsBootstrap
     }
 
     #region TimerManager Integration
-
     /// <summary>
     /// Removes the TimerManager system from the specified PlayerLoop phase.
     /// </summary>
@@ -87,6 +86,5 @@ internal static class SystemsBootstrap
         };
         return PlayerLoopUtils.InsertSystem<T>(ref loop, in timerSystem, index);
     }
-
     #endregion
 }

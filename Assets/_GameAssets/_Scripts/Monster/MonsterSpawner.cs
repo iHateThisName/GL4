@@ -92,7 +92,7 @@ namespace Refactored
                 
                 var lightSensor = monster.GetComponentInChildren<LightSensor>();
                 if (lightSensor != null) 
-                    lightSensor.SetFlashLight(FlashLight.Instance);
+                    lightSensor.SetFlashLight(Flashlight.Instance);
             }
         }
 
