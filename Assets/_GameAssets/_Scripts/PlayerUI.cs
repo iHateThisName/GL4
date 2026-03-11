@@ -19,9 +19,9 @@ public class PlayerUI : MonoBehaviour {
     [SerializeField] private CanvasGroup coldCanvasGroup;
 
     [Header("Fade Settings")]
-    [SerializeField] private float fadeDuration = 2f;
-    private const float DEFAULT_MEDIUM_EFFECT_ALPHA = 0.25f;
-    private const float DEFAULT_HIGH_EFFECT_ALPHA = 0.5f;
+    [SerializeField] private float fadeDuration = 5f;
+    private const float DEFAULT_MEDIUM_EFFECT_ALPHA = 0.125f;
+    private const float DEFAULT_HIGH_EFFECT_ALPHA = 0.25f;
 
     private bool useDebugInfo = false;
     private Coroutine currentWarmFadeCoroutine;
