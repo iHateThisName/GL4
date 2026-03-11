@@ -2,7 +2,6 @@ using Assets.Scripts.Singleton;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
-using Random = UnityEngine.Random;
 
 /// <summary>
 /// Simulates a crank-powered flashlight.
@@ -37,6 +36,7 @@ public class FlashLight : Singleton<FlashLight>
     // Maximum possible light intensity
     [SerializeField] private float maxLightPower = 140f;
 
+    [Header("=== Range Settings ===")]
     // Initial light beam range
     [SerializeField] private float startingLightRange = 6f;
 
@@ -45,19 +45,22 @@ public class FlashLight : Singleton<FlashLight>
 
     // Minimum beam range at lowest power
     [SerializeField] private float minLightRange = 4f;
+    
+    // Detection angle for detection cone
+    [SerializeField] private float detectionAngle = 40;
 
+    [Header("=== Decay Settings ===")]
     // How much intensity is lost per decay tick
     [SerializeField] private float lightDecayRate = 1.5f;
 
     // Maximum time between decay ticks
-    [SerializeField] private float lightDecayTickMax = 15f;
-
-    // Minimum time between decay ticks
-    [SerializeField] private float lightDecayTickMin = 3f;
-
-    // Debug/testing: start flashlight enabled
-    [System.Obsolete("Only for testing purposes.")]
-    [SerializeField] private bool startEnabled = false;
+    [SerializeField] private float lightDecayTick = 6f;
+    
+    [Header("=== Flicker Settings ===")]
+    // How long to flicker the flashlight
+    [SerializeField] private float flickerTime;
+    // Time between flickering off and on
+    [SerializeField] private float flickerInterval = 0.33f;
     
     [Header("=== Power Settings ===")]
     // Threshold considered "low power"
@@ -66,11 +69,24 @@ public class FlashLight : Singleton<FlashLight>
     // Maximum number of full crank rotations allowed
     [SerializeField] private int maxRotations = 10;
     
-    // Detection angle for detection cone
-    [SerializeField] private float detectionAngle = 40;
+    // Debug/testing: start flashlight enabled
+    [System.Obsolete("Only for testing purposes.")]
+    [SerializeField] private bool startEnabled = false;
 
     // Timer used to track battery life
     private Timer batteryTimer;
+    
+    // Target intensity we smoothly move toward
+    private float targetLightIntensity;
+
+    // Target range (derived from intensity)
+    private float targetLightRange;
+    
+    // Current partial crank angle (0–360 range)
+    private float currentAngle;
+
+    // Total number of full crank rotations completed
+    private int fullRotations;
     
     // range squared for cone detection
     private float rangeSquared;
@@ -84,27 +100,17 @@ public class FlashLight : Singleton<FlashLight>
     // inverse cone range for cone detection
     private float inverseConeRange;
 
-    // Current partial crank angle (0–360 range)
-    private float currentAngle;
-    
-    // Target intensity we smoothly move toward
-    private float targetLightIntensity;
-
-    // Target range (derived from intensity)
-    private float targetLightRange;
-
-    // Total number of full crank rotations completed
-    private int fullRotations;
-
     // Whether flashlight is currently turned on
     private bool powered;
+    
+    // Whether the flashlight should flicker on or off this frame/flicker
+    private bool flickeredLastFrame;
 
     // How much intensity one full crank rotation adds
     private const float LIGHT_MAGNITUDE = 10;
 
     // ==== Unity Lifecycle ====
     #region Unity Lifecycle
-
     /// <summary>
     /// Automatically fetch Light component if not set in inspector.
     /// </summary>
@@ -128,7 +134,7 @@ public class FlashLight : Singleton<FlashLight>
         if (this.handleInteractable != null)
         {
             this.handleInteractable.selectEntered.AddListener(ToggleOnFlashlight);
-            //this.handleInteractable.selectExited.AddListener(ToggleOffFlashlight);
+            this.handleInteractable.selectExited.AddListener(OnFlashlightDropped);
         }
     }
 
@@ -143,7 +149,7 @@ public class FlashLight : Singleton<FlashLight>
         if (this.handleInteractable != null)
         {
             this.handleInteractable.selectEntered.RemoveListener(ToggleOnFlashlight);
-            //this.handleInteractable.selectExited.RemoveListener(ToggleOffFlashlight);
+            this.handleInteractable.selectExited.RemoveListener(OnFlashlightDropped);
         }
     }
 
@@ -152,8 +158,6 @@ public class FlashLight : Singleton<FlashLight>
     /// </summary>
     private void Start()
     {
-        RandomizeLightDecayTick();
-
         this.powered = false;
         
         if (this.lightSource != null)
@@ -169,38 +173,21 @@ public class FlashLight : Singleton<FlashLight>
 
         // Optional debug start
         if (startEnabled) ToggleFlashLight(true);
-/*
-        this.batteryTimer = new Timer(this.lightDecayTickMin, 0);
-        this.batteryTimer.OnTimerTick += HandleFlashLightBatteryDecay;
-        this.batteryTimer.Start();*/
+        
+       SetupActiveFlashlightTimer();
         
         RecalculateDetectionCone();
     }
-    
-    /// <summary>
-    /// Handles power decay and light updates while flashlight is on.
-    /// </summary>
-    private void Update()
-    {
-        // Do nothing if flashlight is off
-        if (!this.powered) return;
-        
-        // Smoothly update light intensity and range
-        UpdateFlashLight();
-    }
-    
+
     /// <summary>
     /// Clean up the timer when this component is destroyed.
     /// </summary>
     private void OnDestroy()
     {
-        if (this.batteryTimer != null)
-        {
-            this.batteryTimer.Dispose();
-            this.batteryTimer = null;
-        }
+        this.batteryTimer?.Dispose();
+        this.batteryTimer = null;
     }
-    
+
 #if UNITY_EDITOR
     /// <summary>
     /// Updates light preview in editor when values change.
@@ -221,7 +208,7 @@ public class FlashLight : Singleton<FlashLight>
         inverseConeRange = 1f / (1f - cosineThreshold);
     }
 
-    private void HandleFlashLightBatteryDecay()
+    private void OnFlashlightDecay()
     {
         // If power is too low, turn off
         if (this.LightIntensity <= this.minLightPower)
@@ -231,59 +218,8 @@ public class FlashLight : Singleton<FlashLight>
         }
         // Reduce intensity
         UpdateLightIntensity(-this.lightDecayRate);
-        
-        // Randomize next decay tick
-        this.batteryTimer.SetInterval(RandomizeLightDecayTick());
-    }
-    
-    // Whether flashlight is in low power state
-    public bool HasLowPower => this.LightIntensity <= this.lowPowerThreshold;
-    
-    // ==== Crank Logic ====
-
-    /// <summary>
-    /// Called whenever the crank rotates.
-    /// Converts rotation into power.
-    /// </summary>
-    void OnCrankRotated(float delta)
-    {
-        // Prevent exceeding max allowed rotations
-        if (this.fullRotations >= this.maxRotations) return;
-        
-        this.currentAngle += delta;
-        
-        // Count positive full rotations
-        while (this.currentAngle >= 360f)
-        {
-            this.currentAngle -= 360f;
-            this.fullRotations++;
-
-            // Increase light power
-            UpdateLightIntensity(LIGHT_MAGNITUDE);
-        }
-
-        // Count negative rotations
-        while (this.currentAngle <= -360f)
-        {
-            this.currentAngle += 360f;
-            this.fullRotations--;
-
-            // Decrease light power
-            UpdateLightIntensity(-LIGHT_MAGNITUDE);
-        }
-    }
-    
-    // ==== Light Logic ====
-
-    // Current visible light intensity
-    public float LightIntensity => this.lightSource != null ? this.lightSource.intensity : this.startingLightPower;
-    
-    /// <summary>
-    /// Randomizes next decay tick interval.
-    /// </summary>
-    private float RandomizeLightDecayTick()
-    {
-        return Random.Range(this.lightDecayTickMin, this.lightDecayTickMax);
+        UpdateFlashLight();
+        RecalculateDetectionCone();
     }
     
     /// <summary>
@@ -301,20 +237,128 @@ public class FlashLight : Singleton<FlashLight>
     private void UpdateFlashLight()
     {
         if (this.lightSource == null) return;
-        
+
         // Smooth transition toward target intensity
         this.lightSource.intensity = Mathf.MoveTowards(this.LightIntensity, this.targetLightIntensity, 5f * Time.deltaTime);
-        
+
         // Normalize intensity to 0–1 range
         float normalized = Mathf.InverseLerp(this.minLightPower, this.maxLightPower, this.LightIntensity);
 
         // Adjust beam range based on power level
         this.targetLightRange = Mathf.Lerp(this.minLightRange, this.maxLightRange, normalized);
-        this.lightSource.range = this.targetLightIntensity;
+        this.lightSource.range = Mathf.MoveTowards(this.lightSource.range, this.targetLightRange, 5f * Time.deltaTime);
+    }
+
+    /// <summary>
+    /// Immediately applies intensity and range changes (used for crank feedback).
+    /// </summary>
+    private void ApplyLightChanges()
+    {
+        if (this.lightSource == null) return;
+
+        // Apply intensity directly
+        this.lightSource.intensity = this.targetLightIntensity;
+
+        // Normalize intensity to 0–1 range
+        float normalized = Mathf.InverseLerp(this.minLightPower, this.maxLightPower, this.targetLightIntensity);
+
+        // Calculate and apply range based on power level
+        this.targetLightRange = Mathf.Lerp(this.minLightRange, this.maxLightRange, normalized);
+        this.lightSource.range = this.targetLightRange;
+    }
+    
+    // ==== Crank Logic ====
+
+    /// <summary>
+    /// Called whenever the crank rotates.
+    /// Converts rotation into power.
+    /// </summary>
+    void OnCrankRotated(float delta)
+    {
+        // Prevent exceeding max allowed rotations
+        if (this.fullRotations >= this.maxRotations) return;
+
+        this.currentAngle += delta;
+
+        // Apply partial power based on rotation (gives immediate feedback while cranking)
+        float partialPower = (delta / 360f) * LIGHT_MAGNITUDE;
+        UpdateLightIntensity(partialPower);
+
+        // Count full rotations for tracking purposes
+        while (this.currentAngle >= 360f)
+        {
+            this.currentAngle -= 360f;
+            this.fullRotations++;
+        }
+
+        while (this.currentAngle <= -360f)
+        {
+            this.currentAngle += 360f;
+            this.fullRotations--;
+        }
+
+        // Apply visual changes immediately
+        ApplyLightChanges();
+        RecalculateDetectionCone();
     }
     
     // ==== Flashlight Helpers ====
 
+    private void OnFlashlightDropped(SelectExitEventArgs args)
+    {
+        SetupDroppedFlashlightTimer();
+    }
+    
+    private void OnFlashlightFlicker()
+    {
+        flickeredLastFrame = !flickeredLastFrame;
+        ToggleFlashLight(flickeredLastFrame);
+    }
+    
+    /// <summary>
+    /// Timer setups
+    /// </summary>
+    private void SetupActiveFlashlightTimer()
+    {
+        this.batteryTimer = new Timer(this.lightDecayTick, 0);
+        this.batteryTimer.OnTimerTick += OnFlashlightDecay;
+        this.batteryTimer.Start();
+    }
+
+    private void SetupDroppedFlashlightTimer()
+    {
+        this.batteryTimer?.Pause();
+        this.batteryTimer?.Dispose();
+        
+        this.batteryTimer = new Timer(0, 5);
+        this.batteryTimer.OnTimerFinished += SetupFlashlightFlickerTimer;
+        this.batteryTimer.Start();
+    }
+
+    private void SetupFlashlightFlickerTimer()
+    {
+        this.batteryTimer?.Pause();
+        this.batteryTimer?.Dispose();
+        
+        // setup the timer for flickering
+        this.batteryTimer = new Timer(flickerInterval, flickerTime);
+        this.batteryTimer.OnTimerTick += OnFlashlightFlicker;
+        this.batteryTimer.OnTimerFinished += ResumeFlashlightAfterFlicker;
+        this.batteryTimer.Start();
+    }
+
+    private void ResumeFlashlightAfterFlicker()
+    {
+        this.flickeredLastFrame = false;
+        ToggleFlashLight(true);
+        
+        if (this.LightIntensity < this.minLightPower)
+        {
+            ToggleFlashLight(false);
+        }
+        SetupActiveFlashlightTimer();
+    }
+    
     /// <summary>
     /// Turns flashlight on when grabbed.
     /// </summary>
@@ -328,7 +372,7 @@ public class FlashLight : Singleton<FlashLight>
     /// <summary>
     /// Turns flashlight off when released.
     /// </summary>
-    private void ToggleOffFlashlight(SelectExitEventArgs args)
+    private void ToggleOffFlashlight()
     {
         ToggleFlashLight(false);
         if (this.batteryTimer != null)
@@ -350,6 +394,12 @@ public class FlashLight : Singleton<FlashLight>
     // public getter for cached Range
     public bool PoweredOn => this.powered;
     
+    // Whether flashlight is in low power state
+    public bool HasLowPower => this.LightIntensity <= this.lowPowerThreshold;
+    
+    // Current visible light intensity
+    public float LightIntensity => this.lightSource != null ? this.lightSource.intensity : this.startingLightPower;
+    
     // public getter for cached RangeSquared
     public float GetRangeSquared() => this.rangeSquared;
     
@@ -364,6 +414,30 @@ public class FlashLight : Singleton<FlashLight>
     #endregion
     
 #if UNITY_EDITOR
+    [ContextMenu("Test Flicker")]
+    private void TestFlicker()
+    {
+        SetupFlashlightFlickerTimer();
+    }
+
+    [ContextMenu("Test Drop")]
+    private void TestDrop()
+    {
+        OnFlashlightDropped(null);
+    }
+
+    [ContextMenu("Test Pickup")]
+    private void TestPickup()
+    {
+        ToggleOnFlashlight(null);
+    }
+    
+    [ContextMenu("Test Crank")]
+    private void TestCrank()
+    {
+        OnCrankRotated(180);
+    }
+    
     private void OnDrawGizmos()
     {
         Vector3 origin = this.transform.position;

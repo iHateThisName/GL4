@@ -106,7 +106,7 @@ public class Timer : IDisposable
         this.Elapsed += Time.deltaTime;
 
         // Fire tick events, catching up if frame took longer than interval
-        while (this.Elapsed >= this.nextInterval)
+        while (this.Elapsed >= this.nextInterval && this.nextInterval > 0)
         {
             OnTimerTick?.Invoke();
             if (!this.intervalWasSetDuringTick)
@@ -129,7 +129,7 @@ public class Timer : IDisposable
         this.Elapsed += deltaTime;
 
         // Fire tick events, catching up if frame took longer than interval
-        while (this.Elapsed >= this.nextInterval)
+        while (this.Elapsed >= this.nextInterval && this.nextInterval > 0)
         {
             OnTimerTick?.Invoke();
             if (!this.intervalWasSetDuringTick)
@@ -173,7 +173,7 @@ public class Timer : IDisposable
     /// <summary>
     /// Clears all event subscribers to prevent memory leaks.
     /// </summary>
-    private void ClearAllEvents()
+    public void ClearAllEvents()
     {
         OnTimerStart = delegate { };
         OnTimerTick = delegate { };
