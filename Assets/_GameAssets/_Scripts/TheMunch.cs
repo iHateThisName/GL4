@@ -66,7 +66,7 @@ public class TheMunch : MonoBehaviour
     {
         if (this.currentState == MunchState.Kill) return;
 
-        this.currentSatiety -= Time.deltaTime * 0.2f;
+        this.currentSatiety -= Time.deltaTime * 0.4f;
         this.currentSatiety = Mathf.Clamp(this.currentSatiety, 0, this.maxSatiety);
 
         this.UpdateMunchState();
