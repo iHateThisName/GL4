@@ -167,24 +167,24 @@ public class TheMunch : MonoBehaviour
     {
         if (this.currentState == MunchState.Kill) return;
 
-        Rigidbody parentRb = other.attachedRigidbody;
-        if (parentRb == null) return;
-        
-        Transform foodObject = other.transform.parent;
+        Rigidbody foodRb = other.attachedRigidbody;
+        if (foodRb == null) return;
 
-        if (!foodObject.CompareTag("Food") || this.currentState == MunchState.NotHungry) 
+        GameObject rootFoodObject = foodRb.gameObject;
+
+        if (!rootFoodObject.CompareTag("Food") || this.currentState == MunchState.NotHungry)
         {
-            this.RejectItem(parentRb);
+            this.RejectItem(foodRb);
             return;
         }
-            
-        if (this.IsMovingTooFast(parentRb))
+
+        if (this.IsMovingTooFast(foodRb))
         {
-            this.RejectItem(parentRb);
+            this.RejectItem(foodRb);
         }
         else
         {
-            this.ConsumeFood(foodObject.gameObject);
+            this.ConsumeFood(rootFoodObject);
         }
     }
 
