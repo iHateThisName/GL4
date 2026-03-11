@@ -10,7 +10,7 @@ public class GameManager : PersistenSingleton<GameManager> {
     [HideInInspector] public FireAdaptationController FireAdaptationController { get; private set; }
 
     [Header("=== Night Configuration ===")] 
-    [SerializeField] private NightSettings nightSettings;
+    [SerializeField] private SO_NightSettings nightSettings;
 
     // Event invoked whenever a scheduled night event becomes available.
     // Other systems can subscribe to react (e.g., spawning enemies, triggering sounds).

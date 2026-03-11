@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f90ace7a71ac4ba6a98737758ec421ff, type: 3}
+  m_Name: FlashlightSettings
+  m_EditorClassIdentifier: Assembly-CSharp::SO_FlashlightSettings
+  startingLightPower: 40
+  minLightPower: 3
+  maxLightPower: 140
+  startingLightRange: 6
+  maxLightRange: 12
+  minLightRange: 4
+  detectionAngle: 40
+  lightDecayRate: 1.5
+  lightDecayTick: 6
+  flickerTime: 2
+  flickerInterval: 0.33
+  lowPowerThreshold: 5
+  maxRotations: 10

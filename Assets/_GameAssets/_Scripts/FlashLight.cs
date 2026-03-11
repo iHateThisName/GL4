@@ -28,47 +28,7 @@ public class Flashlight : Singleton<Flashlight>
     [SerializeField] private Light lightSource;
     
     [Header("=== Light Settings ===")]
-    // Initial light intensity at startup
-    [SerializeField] private float startingLightPower = 40f;
-    
-    // Minimum possible light intensity
-    [SerializeField] private float minLightPower = 3f;
-
-    // Maximum possible light intensity
-    [SerializeField] private float maxLightPower = 140f;
-
-    [Header("=== Range Settings ===")]
-    // Initial light beam range
-    [SerializeField] private float startingLightRange = 6f;
-
-    // Maximum beam range at full power
-    [SerializeField] private float maxLightRange = 12f;
-
-    // Minimum beam range at lowest power
-    [SerializeField] private float minLightRange = 4f;
-    
-    // Detection angle for detection cone
-    [SerializeField] private float detectionAngle = 40;
-
-    [Header("=== Decay Settings ===")]
-    // How much intensity is lost per decay tick
-    [SerializeField] private float lightDecayRate = 1.5f;
-
-    // Maximum time between decay ticks
-    [SerializeField] private float lightDecayTick = 6f;
-    
-    [Header("=== Flicker Settings ===")]
-    // How long to flicker the flashlight
-    [SerializeField] private float flickerTime;
-    // Time between flickering off and on
-    [SerializeField] private float flickerInterval = 0.33f;
-    
-    [Header("=== Power Settings ===")]
-    // Threshold considered "low power"
-    [SerializeField] private float lowPowerThreshold = 5f;
-
-    // Maximum number of full crank rotations allowed
-    [SerializeField] private int maxRotations = 10;
+    [SerializeField] private SO_FlashlightSettings flashlightSettings;
     
     // Debug/testing: start flashlight enabled
     [System.Obsolete("Only for testing purposes.")]
@@ -88,18 +48,6 @@ public class Flashlight : Singleton<Flashlight>
 
     // Total number of full crank rotations completed
     private int fullRotations;
-    
-    // range squared for cone detection
-    private float rangeSquared;
-    
-    // cosine threshold for stunning
-    private float cosineThreshold;
-    
-    // cosine threshold squared for cone detection
-    private float cosineThresholdSquared;
-    
-    // inverse cone range for cone detection
-    private float inverseConeRange;
 
     // Whether flashlight is currently turned on
     private bool powered;
@@ -163,21 +111,22 @@ public class Flashlight : Singleton<Flashlight>
         
         if (this.lightSource != null)
         {
-            this.lightSource.intensity = this.startingLightPower;
-            this.lightSource.range = this.startingLightRange;
-            this.targetLightIntensity = this.startingLightPower;
-            this.targetLightRange = this.startingLightRange;
+            this.targetLightIntensity = this.flashlightSettings.GetStartingLightPower();
+            this.targetLightRange = this.flashlightSettings.GetStartingLightRange();
+            this.lightSource.intensity = this.targetLightIntensity;
+            this.lightSource.range = this.targetLightRange;
         }
+        this.flashlightSettings.CalculateDetectionCone(this.targetLightRange);
+        
+        SO_FlashlightSettings.SetFlashlightTransform(this.transform);
 
         // Ensure flashlight starts off
         ToggleFlashLight(false);
 
         // Optional debug start
         if (startEnabled) ToggleFlashLight(true);
-        
-       SetupActiveFlashlightTimer();
-        
-        RecalculateDetectionCone();
+
+        SetupActiveFlashlightTimer();
     }
 
     /// <summary>
@@ -196,31 +145,22 @@ public class Flashlight : Singleton<Flashlight>
     private void OnValidate()
     {
         if (Application.isPlaying) return;
-        UpdateLightIntensity(this.startingLightPower);
+        UpdateLightIntensity(this.flashlightSettings.GetStartingLightPower());
     }
 #endif
     #endregion
-    
-    public void RecalculateDetectionCone()
-    {
-        rangeSquared = targetLightRange * targetLightRange;
-        cosineThreshold = Mathf.Cos(detectionAngle * 0.5f * Mathf.Deg2Rad);
-        cosineThresholdSquared = cosineThreshold * cosineThreshold;
-        inverseConeRange = 1f / (1f - cosineThreshold);
-    }
 
     private void OnFlashlightDecay()
     {
         // If power is too low, turn off
-        if (this.LightIntensity <= this.minLightPower)
+        if (this.LightIntensity <= this.flashlightSettings.GetMinLightPower())
         {
             ToggleFlashLight(false);
             return;
         }
         // Reduce intensity
-        UpdateLightIntensity(-this.lightDecayRate);
+        UpdateLightIntensity(-this.flashlightSettings.GetLightDecayRate());
         UpdateFlashLight();
-        RecalculateDetectionCone();
     }
     
     /// <summary>
@@ -228,7 +168,7 @@ public class Flashlight : Singleton<Flashlight>
     /// </summary>
     private void UpdateLightIntensity(float delta)
     {
-        float clampedLightIntensity = Mathf.Clamp(this.targetLightIntensity + delta, this.minLightPower, this.maxLightPower);
+        float clampedLightIntensity = Mathf.Clamp(this.targetLightIntensity + delta, this.flashlightSettings.GetMinLightPower(), this.flashlightSettings.GetMaxLightPower());
         this.targetLightIntensity = clampedLightIntensity;
     }
 
@@ -243,29 +183,14 @@ public class Flashlight : Singleton<Flashlight>
         this.lightSource.intensity = Mathf.MoveTowards(this.LightIntensity, this.targetLightIntensity, 5f * Time.deltaTime);
 
         // Normalize intensity to 0–1 range
-        float normalized = Mathf.InverseLerp(this.minLightPower, this.maxLightPower, this.LightIntensity);
+        float normalized = Mathf.InverseLerp(this.flashlightSettings.GetMinLightPower(), this.flashlightSettings.GetMaxLightPower(), this.LightIntensity);
 
         // Adjust beam range based on power level
-        this.targetLightRange = Mathf.Lerp(this.minLightRange, this.maxLightRange, normalized);
+        this.targetLightRange = Mathf.Lerp(this.flashlightSettings.GetMinLightRange(), this.flashlightSettings.GetMaxLightRange(), normalized);
         this.lightSource.range = Mathf.MoveTowards(this.lightSource.range, this.targetLightRange, 5f * Time.deltaTime);
-    }
 
-    /// <summary>
-    /// Immediately applies intensity and range changes (used for crank feedback).
-    /// </summary>
-    private void ApplyLightChanges()
-    {
-        if (this.lightSource == null) return;
-
-        // Apply intensity directly
-        this.lightSource.intensity = this.targetLightIntensity;
-
-        // Normalize intensity to 0–1 range
-        float normalized = Mathf.InverseLerp(this.minLightPower, this.maxLightPower, this.targetLightIntensity);
-
-        // Calculate and apply range based on power level
-        this.targetLightRange = Mathf.Lerp(this.minLightRange, this.maxLightRange, normalized);
-        this.lightSource.range = this.targetLightRange;
+        // Update detection cone with new range
+        this.flashlightSettings.CalculateDetectionCone(this.targetLightRange);
     }
     
     // ==== Crank Logic ====
@@ -277,7 +202,7 @@ public class Flashlight : Singleton<Flashlight>
     void OnCrankRotated(float delta)
     {
         // Prevent exceeding max allowed rotations
-        if (this.fullRotations >= this.maxRotations) return;
+        if (this.fullRotations >= this.flashlightSettings.GetMaxRotations()) return;
 
         this.currentAngle += delta;
 
@@ -297,10 +222,8 @@ public class Flashlight : Singleton<Flashlight>
             this.currentAngle += 360f;
             this.fullRotations--;
         }
-
-        // Apply visual changes immediately
-        ApplyLightChanges();
-        RecalculateDetectionCone();
+        
+        UpdateFlashLight();
     }
     
     // ==== Flashlight Helpers ====
@@ -329,7 +252,7 @@ public class Flashlight : Singleton<Flashlight>
     /// </summary>
     private void SetupActiveFlashlightTimer()
     {
-        this.batteryTimer = new Timer(this.lightDecayTick, 0);
+        this.batteryTimer = new Timer(this.flashlightSettings.GetLightDecayTick(), 0);
         this.batteryTimer.OnTimerTick += OnFlashlightDecay;
         this.batteryTimer.Start();
     }
@@ -350,7 +273,7 @@ public class Flashlight : Singleton<Flashlight>
         this.batteryTimer?.Dispose();
         
         // setup the timer for flickering
-        this.batteryTimer = new Timer(flickerInterval, flickerTime);
+        this.batteryTimer = new Timer(this.flashlightSettings.GetFlickerInterval(), this.flashlightSettings.GetFlickerTime());
         this.batteryTimer.OnTimerTick += OnFlashlightFlicker;
         this.batteryTimer.OnTimerFinished += ResumeFlashlightAfterFlicker;
         this.batteryTimer.Start();
@@ -361,7 +284,7 @@ public class Flashlight : Singleton<Flashlight>
         this.flickeredLastFrame = false;
         ToggleFlashLight(true);
         
-        if (this.LightIntensity < this.minLightPower)
+        if (this.LightIntensity < this.flashlightSettings.GetMinLightPower())
         {
             ToggleFlashLight(false);
         }
@@ -400,26 +323,14 @@ public class Flashlight : Singleton<Flashlight>
     }
 
     #region Getters
-    // public getter for cached Range
+    // public getter for powered state
     public bool PoweredOn => this.powered;
-    
+
     // Whether flashlight is in low power state
-    public bool HasLowPower => this.LightIntensity <= this.lowPowerThreshold;
-    
+    public bool HasLowPower => this.LightIntensity <= this.flashlightSettings.GetLowPowerThreshold();
+
     // Current visible light intensity
-    public float LightIntensity => this.lightSource != null ? this.lightSource.intensity : this.startingLightPower;
-    
-    // public getter for cached RangeSquared
-    public float GetRangeSquared() => this.rangeSquared;
-    
-    // public getter for cached CosineThreshold
-    public float GetCosineThreshold() => this.cosineThreshold;
-    
-    // public getter for cached CosineThresholdSquared
-    public float GetCosineThresholdSquared() => this.cosineThresholdSquared;
-    
-    // public getter for cached InverseConeRange
-    public float GetInverseConeRange() => this.inverseConeRange;
+    public float LightIntensity => this.lightSource != null ? this.lightSource.intensity : this.flashlightSettings.GetStartingLightPower();
     #endregion
     
 #if UNITY_EDITOR
@@ -451,7 +362,7 @@ public class Flashlight : Singleton<Flashlight>
     {
         Vector3 origin = this.transform.position;
         Vector3 forward = this.transform.forward;
-        float halfAngle = this.detectionAngle * 0.5f;
+        float halfAngle = this.flashlightSettings ? this.flashlightSettings.GetDetectionAngle() * 0.5f : 3;
 
         // Reference edge: forward tilted by halfAngle
         Vector3 baseEdge = Quaternion.AngleAxis(halfAngle, this.transform.right) * forward;

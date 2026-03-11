@@ -30,7 +30,7 @@ public class HungerSystem : MonoBehaviour
     [SerializeField] private AudioClip eatSFX;
 
     [Header("=== Configuration ====")]
-    [SerializeField] private HungerSettings hungerSettings;
+    [SerializeField] private SO_HungerSettings hungerSettings;
 
 
 

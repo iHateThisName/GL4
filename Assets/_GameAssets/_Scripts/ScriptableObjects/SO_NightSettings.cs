@@ -1,7 +1,7 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "NightSettings", menuName = "TeamSuperSimple/NightSettings", order = 0)]
-public class NightSettings : ScriptableObject
+[CreateAssetMenu(fileName = "NightSettings", menuName = "TeamSuperSimple/Night Settings", order = 0)]
+public class SO_NightSettings : ScriptableObject
 {
     // Total duration of the night in minutes. Converted to seconds internally.
     [Tooltip("Total night duration (minutes)")]
