@@ -230,7 +230,8 @@ public class Flashlight : Singleton<Flashlight>
 
     private void OnFlashlightDropped(SelectExitEventArgs args)
     {
-        SetupDroppedFlashlightTimer();
+        if (args.interactorObject == null)
+            SetupDroppedFlashlightTimer();
     }
 
     /// <summary>

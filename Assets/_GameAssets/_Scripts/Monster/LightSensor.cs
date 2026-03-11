@@ -60,6 +60,7 @@ public class LightSensor : MonoBehaviour
         if (this.remainingCooldownTime > 0)
         {
             this.remainingCooldownTime -= this.tickInterval;
+            Debug.Log("On cooldown");
             return;
         }
         
@@ -67,6 +68,7 @@ public class LightSensor : MonoBehaviour
         if (this.flashlightTransform == null)
         {
             AdjustExposure(-this.exposureDecaySpeed);
+            Debug.LogWarning("Flashlight Transform null.");
             return;
         }
 
@@ -82,6 +84,7 @@ public class LightSensor : MonoBehaviour
         if (distanceSquared > this.detectionData.RangeSquared)
         {
             AdjustExposure(-this.exposureDecaySpeed);
+            Debug.Log("Sensor is outside flashlight range: " + this.detectionData.RangeSquared);
             return;
         }
 
@@ -91,6 +94,7 @@ public class LightSensor : MonoBehaviour
         if (rawDot <= 0f)
         {
             AdjustExposure(-this.exposureDecaySpeed);
+            Debug.Log("Sensor is behind the flashlight? " + rawDot);
             return;
         }
 
@@ -99,6 +103,7 @@ public class LightSensor : MonoBehaviour
         if (rawDot * rawDot < this.detectionData.CosineThresholdSquared * distanceSquared)
         {
             AdjustExposure(-this.exposureDecaySpeed);
+            Debug.Log("Sensor is outside the flashlight cone angle: " + (rawDot * rawDot < this.detectionData.CosineThresholdSquared * distanceSquared));
             return;
         }
 
@@ -106,6 +111,7 @@ public class LightSensor : MonoBehaviour
         if (Physics.Linecast(flashLightPos, sensorPos, this.occlusionMask))
         {
             AdjustExposure(-this.exposureDecaySpeed);
+            Debug.Log("Sensor is occluded by geometry");
             return;
         }
 
@@ -117,6 +123,7 @@ public class LightSensor : MonoBehaviour
         
         // Build exposure based on intensity
         AdjustExposure(intensity * this.exposureBuildSpeed);
+        Debug.Log("Sensor is in the light: " + intensity);
 
         // Check for stun threshold
         if (this.exposure >= this.stunThreshold)
