@@ -230,7 +230,7 @@ public class Flashlight : Singleton<Flashlight>
 
     private void OnFlashlightDropped(SelectExitEventArgs args)
     {
-        if (args.interactorObject == null)
+        if (args.interactorObject == null || this.LightIntensity <= this.flashlightSettings.GetMinLightPower())
             SetupDroppedFlashlightTimer();
     }
 

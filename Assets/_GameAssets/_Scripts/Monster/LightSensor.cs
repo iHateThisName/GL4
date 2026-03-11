@@ -60,7 +60,6 @@ public class LightSensor : MonoBehaviour
         if (this.remainingCooldownTime > 0)
         {
             this.remainingCooldownTime -= this.tickInterval;
-            Debug.Log("On cooldown");
             return;
         }
         
@@ -68,14 +67,13 @@ public class LightSensor : MonoBehaviour
         if (this.flashlightTransform == null)
         {
             AdjustExposure(-this.exposureDecaySpeed);
-            Debug.LogWarning("Flashlight Transform null.");
             return;
         }
 
         // Get detection cone from flashlight (uses runtime range)
         this.detectionData = flashlightSettings.GetDetectionCone();
 
-        Vector3 flashLightPos = this.flashlightSettings.GetFlashlightTransform().position;
+        Vector3 flashLightPos = this.flashlightTransform.position;
         Vector3 sensorPos = this.sensorTransform.position;
         Vector3 toSensor = sensorPos - flashLightPos;
         float distanceSquared = toSensor.sqrMagnitude;
@@ -84,26 +82,31 @@ public class LightSensor : MonoBehaviour
         if (distanceSquared > this.detectionData.RangeSquared)
         {
             AdjustExposure(-this.exposureDecaySpeed);
-            Debug.Log("Sensor is outside flashlight range: " + this.detectionData.RangeSquared);
             return;
         }
 
+        // Flatten to XZ plane (ignore vertical angle)
         Vector3 flashlightForward = this.flashlightTransform.forward;
-        float rawDot = Vector3.Dot(flashlightForward, toSensor);
-        // Sensor is behind the flashlight
+        flashlightForward.y = 0f;
+        flashlightForward.Normalize();
+
+        Vector3 toSensorFlat = toSensor;
+        toSensorFlat.y = 0f;
+        float flatDistanceSquared = toSensorFlat.sqrMagnitude;
+
+        float rawDot = Vector3.Dot(flashlightForward, toSensorFlat);
+        // Sensor is behind the flashlight (horizontally)
         if (rawDot <= 0f)
         {
             AdjustExposure(-this.exposureDecaySpeed);
-            Debug.Log("Sensor is behind the flashlight? " + rawDot);
             return;
         }
 
-        // Sensor is outside the flashlight cone angle
+        // Sensor is outside the flashlight cone angle (horizontal only)
         // Uses squared comparison to avoid sqrt: (dot)^2 < (cosThreshold)^2 * dist^2
-        if (rawDot * rawDot < this.detectionData.CosineThresholdSquared * distanceSquared)
+        if (rawDot * rawDot < this.detectionData.CosineThresholdSquared * flatDistanceSquared)
         {
             AdjustExposure(-this.exposureDecaySpeed);
-            Debug.Log("Sensor is outside the flashlight cone angle: " + (rawDot * rawDot < this.detectionData.CosineThresholdSquared * distanceSquared));
             return;
         }
 
@@ -111,19 +114,17 @@ public class LightSensor : MonoBehaviour
         if (Physics.Linecast(flashLightPos, sensorPos, this.occlusionMask))
         {
             AdjustExposure(-this.exposureDecaySpeed);
-            Debug.Log("Sensor is occluded by geometry");
             return;
         }
 
-        // Sensor is in the light - calculate exposure intensity based on cone position
+        // Sensor is in the light - calculate exposure intensity based on cone position (horizontal)
         // Intensity is higher when closer to the center of the cone
-        float distance = Mathf.Sqrt(distanceSquared);
-        float dot = rawDot / distance;
+        float flatDistance = Mathf.Sqrt(flatDistanceSquared);
+        float dot = rawDot / flatDistance;
         float intensity = (dot - this.detectionData.CosineThreshold) * this.detectionData.InverseConeRange;
         
         // Build exposure based on intensity
         AdjustExposure(intensity * this.exposureBuildSpeed);
-        Debug.Log("Sensor is in the light: " + intensity);
 
         // Check for stun threshold
         if (this.exposure >= this.stunThreshold)
