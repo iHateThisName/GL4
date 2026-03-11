@@ -23,6 +23,7 @@ public class TheMunch : MonoBehaviour
     [Tooltip("Maximum fullness. Starts at 60.")]
     [SerializeField] private float maxSatiety = 60f;
     [SerializeField] private float currentSatiety = 60f;
+    [SerializeField] private float flatSatietyGain = 25f;
 
     [Header("Audio Settings")]
     [Tooltip("Assign an AudioSource on The Munch to play sounds.")]
@@ -196,14 +197,18 @@ public class TheMunch : MonoBehaviour
     {
         this.ForceRelease(foodObject.GetComponent<XRGrabInteractable>());
 
-        float valueToAdd = 20f;
+        // Now uses the value set in the Unity Inspector
+        this.currentSatiety += this.flatSatietyGain;
 
-        this.currentSatiety += valueToAdd;
         this.currentSatiety = Mathf.Clamp(this.currentSatiety, 0, this.maxSatiety);
 
         this.UpdateMunchState();
-        if (eatSound == null) return;
-        SoundEffectManager.Instance.PlaySoundFXClip(this.eatSound, transform, 0.5f);
+
+        if (this.eatSound != null)
+        {
+            SoundEffectManager.Instance.PlaySoundFXClip(this.eatSound, transform, 0.5f);
+        }
+
         Destroy(foodObject);
     }
 
