@@ -132,6 +132,8 @@ public class GameManager : PersistenSingleton<GameManager> {
         if (DeathSystem.deathEvent.Reason != DeathSystem.DeathEvent.DeathReason.Survived)
             this.night = 1;
     }
+    
+    public int GetCurrentNight() => this.night;
 
     /// <summary>
     /// Debug helper method that logs when an event fires and when the next one is scheduled.
