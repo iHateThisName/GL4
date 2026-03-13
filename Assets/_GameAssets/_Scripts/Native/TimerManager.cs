@@ -10,8 +10,8 @@ using System.Collections.Generic;
 /// </remarks>
 public static class TimerManager
 {
-    private static readonly List<Timer> timers = new(); // Active timers to update each frame
-    private static readonly List<Timer> sweep = new(); // Temporary copy to allow safe iteration during modifications
+    private static readonly List<Timer> TIMERS = new(); // Active timers to update each frame
+    private static readonly List<Timer> SWEEP = new(); // Temporary copy to allow safe iteration during modifications
     
     private const float FIXED_STEP = 1f / 60f; // 16.67ms                                                                                                                          
     private static float accumulator;
@@ -21,14 +21,14 @@ public static class TimerManager
     /// Called automatically by Timer.Start().
     /// </summary>
     /// <param name="timer">The timer to register.</param>
-    public static void RegisterTimer(Timer timer) => timers.Add(timer);
+    public static void RegisterTimer(Timer timer) => TIMERS.Add(timer);
 
     /// <summary>
     /// Removes a timer from the update loop.
     /// Called automatically by Timer.Dispose().
     /// </summary>
     /// <param name="timer">The timer to deregister.</param>
-    public static void DeregisterTimer(Timer timer) => timers.Remove(timer);
+    public static void DeregisterTimer(Timer timer) => TIMERS.Remove(timer);
 
     /// <summary>
     /// Updates all registered timers. Called each frame by the PlayerLoopSystem.
@@ -36,7 +36,7 @@ public static class TimerManager
     /// </summary>
     public static void UpdateTimers()
     {
-        if (timers.Count == 0) return;
+        if (TIMERS.Count == 0) return;
         
         accumulator += UnityEngine.Time.deltaTime;
         
@@ -45,16 +45,16 @@ public static class TimerManager
         {                                                                                                                                                                         
             accumulator -= FIXED_STEP;                                                                                                                                             
                                                                                                                                                                                     
-            sweep.RefreshWith(timers);                                                                                                                                            
-            foreach (var timer in sweep)                                                                                                                                          
+            SWEEP.RefreshWith(TIMERS);                                                                                                                                            
+            foreach (var timer in SWEEP)                                                                                                                                          
             {                                                                                                                                                                     
                 timer.UpdateFixed(FIXED_STEP); // New method using fixed step                                                                                                      
             }                                                                                                                                                                     
         }  
 /*
         // Copy to sweep list to allow safe modification during iteration
-        sweep.RefreshWith(timers);
-        foreach (var timer in sweep)
+        SWEEP.RefreshWith(timers);
+        foreach (var timer in SWEEP)
         {
             timer.Update();
         }*/
@@ -66,13 +66,13 @@ public static class TimerManager
     /// </summary>
     public static void Clear()
     {
-        sweep.RefreshWith(timers);
-        foreach (var timer in sweep)
+        SWEEP.RefreshWith(TIMERS);
+        foreach (var timer in SWEEP)
         {
             timer.Dispose();
         }
-        timers.Clear();
-        sweep.Clear();
+        TIMERS.Clear();
+        SWEEP.Clear();
     }
 }
 

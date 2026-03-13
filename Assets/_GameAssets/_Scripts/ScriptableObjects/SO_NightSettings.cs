@@ -17,15 +17,7 @@ public class SO_NightSettings : ScriptableObject
     [Tooltip("Maximum seconds before next event")]
     public float nightEventMaxTimeSeconds = 570;
     
-    [System.Serializable]
-    public struct NightEventConfig
-    {
-        [SerializeField] private GameManager.NightEventData[] events;
-        
-        public GameManager.NightEventData[] GetEvents() => this.events;
-    }
-    
-    [SerializeField] private NightEventConfig[] nightEvents;
+    [SerializeField] private SO_NightEvent[] nightEvents;
     
     public int GetFinalNight() => this.maxNights;
     
@@ -46,6 +38,6 @@ public class SO_NightSettings : ScriptableObject
 
     public GameManager.NightEventData[] GetEventsForNight(int night)
     {
-        return this.nightEvents[night - 1].GetEvents();
+        return this.nightEvents[night - 1].GetEventData();
     }
 }
