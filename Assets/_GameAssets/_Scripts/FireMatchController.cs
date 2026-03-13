@@ -4,15 +4,8 @@ using UnityEngine;
 
 public class FireMatchController : MonoBehaviour 
 {
-
-    [SerializeField] private GameObject rootObject;
-
-    //[SerializeField] private GameObject fireVFX;
-
-    [SerializeField]
-    private float despawnTimer;
-
-    public FireMatchBox MatchBox;
+    //Time before the match despawns
+    [SerializeField] private float despawnTimer;
 
     public void StartDespawnTimer()
     {
