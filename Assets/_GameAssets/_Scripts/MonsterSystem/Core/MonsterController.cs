@@ -26,7 +26,7 @@ namespace MonsterSystem
         public MonsterState CurrentState { get; private set; }
         public MonsterState PreviousState { get; private set; }
         public MonsterConfig Config => config;
-        public int CurrentNight => GameManager.Instance != null ? GameManager.Instance.Night : 1;
+        public int CurrentNight => GameManager.Instance != null ? GameManager.Instance.GetCurrentNight() : 1;
         public MonsterTransition[] Transitions => transitions;
 
         private void Awake()

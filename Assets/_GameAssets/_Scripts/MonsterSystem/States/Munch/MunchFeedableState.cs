@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 namespace MonsterSystem
@@ -8,6 +7,8 @@ namespace MonsterSystem
     /// and inline accept/reject logic.
     public abstract class MunchFeedableState : MonsterState
     {
+        [SerializeField] private float satiatyGain;
+        
         [Header("Feed Zone")]
         [SerializeField] private TriggerArea feedZone;
         [SerializeField] private float maxAcceptableVelocity = 2f;
@@ -46,37 +47,31 @@ namespace MonsterSystem
 
         private void HandleFeedTrigger(Collider other)
         {
-            if (cachedController == null) return;
+            if (cachedController == null || !other.CompareTag("Food")) return;
 
-            Rigidbody rb = other.attachedRigidbody;
-            if (rb == null) return;
-
-            Food food = rb.GetComponent<Food>();
-            if (food != null && rb.linearVelocity.magnitude <= maxAcceptableVelocity)
-            {
-                Accept(food, rb);
-            }
+            Rigidbody foodRb = other.attachedRigidbody;
+            if (foodRb == null) return;
+            
+            if (foodRb.linearVelocity.magnitude <= maxAcceptableVelocity)
+                Accept(foodRb, foodRb.gameObject);
             else
-            {
-                Reject(rb);
-            }
+                Reject(foodRb);
         }
 
-        private void Accept(Food food, Rigidbody rb)
+        private void Accept(Rigidbody rb, GameObject foodObject)
         {
             var grab = rb.GetComponent<XRGrabInteractable>();
             ForceRelease(grab);
 
             var sensor = cachedController.GetSensor<SatietySensor>();
             if (sensor != null)
-                sensor.AddSatiety(food.GetFoodValue(), cachedController);
+                sensor.AddSatiety(satiatyGain, cachedController);
 
             var config = cachedController.GetConfig<MunchConfig>();
             if (config != null)
                 MonsterAudio.PlayOneShot(cachedController.Audio, config.eatSound);
 
-            Destroy(food.gameObject, 0.2f);
-
+            Destroy(foodObject, 0.2f);
             RequestTransition(cachedController, fedState);
         }
 

@@ -136,17 +136,6 @@ public class Flashlight : Singleton<Flashlight>
         this.batteryTimer?.Dispose();
         this.batteryTimer = null;
     }
-
-#if UNITY_EDITOR
-    /// <summary>
-    /// Updates light preview in editor when values change.
-    /// </summary>
-    private void OnValidate()
-    {
-        if (Application.isPlaying) return;
-        UpdateLightIntensity(this.flashlightSettings.GetStartingLightPower());
-    }
-#endif
     #endregion
 
     private void OnFlashlightDecay()
@@ -334,6 +323,13 @@ public class Flashlight : Singleton<Flashlight>
     #endregion
     
 #if UNITY_EDITOR
+    [ContextMenu("Update Light Intensity")]
+    private void TestLightIntensity()
+    {
+        UpdateLightIntensity(this.flashlightSettings.GetStartingLightPower());
+        UpdateFlashLight();
+    }
+    
     [ContextMenu("Test Flicker")]
     private void TestFlicker()
     {
