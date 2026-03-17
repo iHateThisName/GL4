@@ -5,7 +5,10 @@ namespace MonsterSystem
 {
     /// <summary>
     /// State for NavMesh-based movement with multiple modes.
-    /// Implements IStateWithContext&lt;Transform&gt; to receive a target dynamically during transitions.
+    ///
+    /// FollowTarget: follows Config.PlayerTarget (or context if provided).
+    /// GoToPoint:    navigates to points from a SO_NavMeshMoveConfig asset.
+    /// AwayFromTarget: flees from a context Transform (e.g., flashlight from LightSensor).
     /// </summary>
     public class NavMeshMoveState : MonsterState, IStateWithContext<Transform>
     {
@@ -20,7 +23,8 @@ namespace MonsterSystem
         {
             ClosestToSelf,
             FurthestFromTarget,
-            Random
+            Random,
+            Sequential
         }
 
         [SerializeField] private NavMeshAgent agent;
@@ -28,51 +32,78 @@ namespace MonsterSystem
         [SerializeField] private MoveMode mode;
 
         [Header("Target")]
-        [SerializeField] private Transform target;
-        [SerializeField] private float arrivalThreshold = 0.5f;
-
-        [Header("FollowTarget")]
-        [SerializeField] private float repositionThreshold = 1f;
+        [SerializeField] private float targetThreshold = 0.5f;
+        [SerializeField] private MonsterState arrivalState;
 
         [Header("AwayFromTarget")]
         [SerializeField] private float fleeDistance = 20f;
 
         [Header("GoToPoint")]
-        [SerializeField] private Transform[] points;
+        [SerializeField] private SO_NavMeshMoveConfig moveConfig;
         [SerializeField] private PointSelection selectionStrategy;
 
-        private Vector3 lastSetDestination;
+        [Header("Audio")]
+        [SerializeField] private AudioClip stateAudio;
+        [SerializeField] private bool loopAudio = true;
+        [SerializeField] [Range(0f, 1f)] private float audioVolume = 1f;
 
-        public Transform Target { get => target; set => target = value; }
+        // Resolved at runtime
+        private Transform target;
+        private Vector3[] resolvedPoints;
+        private Vector3 lastSetDestination;
+        private int sequentialIndex;
+
         public bool HasArrived { get; private set; }
 
-        /// <summary>
-        /// Receives a target Transform during transition.
-        /// Used for dynamic target assignment (e.g., flee from light source).
-        /// </summary>
         public void ReceiveContext(Transform context)
         {
             this.target = context;
         }
 
+        public override void Initialize(MonsterController owningController)
+        {
+            base.Initialize(owningController);
+
+            if (this.moveConfig != null && this.moveConfig.points != null && this.moveConfig.points.Length > 0)
+            {
+                this.resolvedPoints = new Vector3[this.moveConfig.points.Length];
+                for (int i = 0; i < this.moveConfig.points.Length; i++)
+                    this.resolvedPoints[i] = this.moveConfig.points[i].position;
+            }
+        }
+
         public override void OnStateEnter()
         {
-            HasArrived = false;
-            lastSetDestination = Vector3.positiveInfinity;
+            this.HasArrived = false;
+            this.lastSetDestination = Vector3.positiveInfinity;
 
-            if (agent != null)
-                agent.isStopped = false;
+            if (this.agent != null)
+                this.agent.isStopped = false;
 
-            if (mode == MoveMode.GoToPoint)
-                SelectAndSetPointDestination(controller);
+            // FollowTarget resolves player from config if no context was provided
+            if (this.target == null && this.mode == MoveMode.FollowTarget)
+                this.target = this.controller.Config.PlayerTarget;
+
+            switch (mode)
+            {
+                case MoveMode.GoToPoint:
+                    SelectAndSetPointDestination();
+                    break;
+                case MoveMode.AwayFromTarget:
+                    CalculateFleeDestination();
+                    break;
+            }
+
+            if (this.stateAudio != null && this.controller.Audio != null)
+                MonsterAudio.Play(this.controller.Audio, this.stateAudio, this.loopAudio, this.audioVolume);
         }
 
         public override void OnStateTick(float tickDelta)
         {
-            if (agent == null) return;
+            if (this.agent == null) return;
 
-            var nightOverride = controller.Config.GetOverrideForNight(controller.CurrentNight);
-            agent.speed = baseSpeed * nightOverride.speedMultiplier;
+            var nightOverride = this.controller.Config.GetOverrideForNight(this.controller.CurrentNight);
+            this.agent.speed = this.baseSpeed * nightOverride.speedMultiplier;
 
             switch (mode)
             {
@@ -80,113 +111,131 @@ namespace MonsterSystem
                     TickFollowTarget();
                     break;
                 case MoveMode.AwayFromTarget:
-                    TickAwayFromTarget(controller);
+                    TickAwayFromTarget();
                     break;
                 case MoveMode.GoToPoint:
                     TickGoToPoint();
                     break;
             }
+
+            if (this.HasArrived && this.arrivalState != null)
+                RequestTransition(this.arrivalState);
         }
 
         public override void OnStateExit()
         {
-            if (agent != null)
-                agent.ResetPath();
+            if (this.stateAudio != null && this.controller.Audio != null)
+                MonsterAudio.Stop(this.controller.Audio);
+
+            if (this.agent != null)
+                this.agent.ResetPath();
+
+            this.target = null;
         }
 
         private void TickFollowTarget()
         {
-            if (target == null) return;
+            if (this.target == null) return;
 
-            Vector3 targetPos = target.position;
+            Vector3 targetPos = this.target.position;
 
-            if (Vector3.Distance(lastSetDestination, targetPos) > repositionThreshold)
+            if (Vector3.Distance(this.lastSetDestination, targetPos) > this.targetThreshold)
             {
-                agent.SetDestination(targetPos);
-                lastSetDestination = targetPos;
+                this.agent.SetDestination(targetPos);
+                this.lastSetDestination = targetPos;
             }
 
-            HasArrived = !agent.pathPending && agent.remainingDistance <= arrivalThreshold;
+            this.HasArrived = !this.agent.pathPending && this.agent.remainingDistance <= this.targetThreshold;
         }
 
-        private void TickAwayFromTarget(MonsterController controller)
+        private void TickAwayFromTarget()
         {
-            if (target == null) return;
+            this.HasArrived = !this.agent.pathPending && this.agent.remainingDistance <= this.targetThreshold;
+        }
 
-            Vector3 fleeDir = (controller.transform.position - target.position).normalized;
-            Vector3 fleeTarget = controller.transform.position + fleeDir * fleeDistance;
+        private void CalculateFleeDestination()
+        {
+            if (this.agent == null || this.target == null) return;
 
-            if (NavMesh.SamplePosition(fleeTarget, out NavMeshHit hit, fleeDistance, NavMesh.AllAreas))
-            {
-                agent.SetDestination(hit.position);
-            }
+            Vector3 fleeDir = (this.controller.transform.position - this.target.position).normalized;
+            Vector3 fleeTarget = this.controller.transform.position + fleeDir * this.fleeDistance;
+
+            if (NavMesh.SamplePosition(fleeTarget, out NavMeshHit hit, this.fleeDistance, NavMesh.AllAreas))
+                this.agent.SetDestination(hit.position);
         }
 
         private void TickGoToPoint()
         {
-            HasArrived = !agent.pathPending && agent.remainingDistance <= arrivalThreshold;
+            if (this.resolvedPoints == null || this.resolvedPoints.Length == 0) return;
+
+            this.HasArrived = !this.agent.pathPending && this.agent.remainingDistance <= this.targetThreshold;
+
+            if (this.HasArrived && this.selectionStrategy == PointSelection.Sequential)
+            {
+                this.sequentialIndex = (this.sequentialIndex + 1) % this.resolvedPoints.Length;
+                this.agent.SetDestination(this.resolvedPoints[this.sequentialIndex]);
+                this.HasArrived = false;
+            }
         }
 
-        private void SelectAndSetPointDestination(MonsterController controller)
+        private void SelectAndSetPointDestination()
         {
-            if (points == null || points.Length == 0) return;
+            if (this.resolvedPoints == null || this.resolvedPoints.Length == 0) return;
 
-            Transform selected = null;
+            Vector3 destination;
 
-            switch (selectionStrategy)
+            switch (this.selectionStrategy)
             {
                 case PointSelection.ClosestToSelf:
-                    selected = GetClosestToSelf(controller);
+                    destination = GetClosestToSelf();
                     break;
                 case PointSelection.FurthestFromTarget:
-                    selected = GetFurthestFromTarget();
+                    destination = GetFurthestFromTarget();
                     break;
-                case PointSelection.Random:
-                    selected = points[Random.Range(0, points.Length)];
+                case PointSelection.Sequential:
+                    destination = this.resolvedPoints[this.sequentialIndex % this.resolvedPoints.Length];
+                    break;
+                default:
+                    destination = this.resolvedPoints[Random.Range(0, this.resolvedPoints.Length)];
                     break;
             }
 
-            if (selected != null)
-                agent.SetDestination(selected.position);
+            this.agent.SetDestination(destination);
         }
 
-        private Transform GetClosestToSelf(MonsterController controller)
+        private Vector3 GetClosestToSelf()
         {
-            Transform closest = null;
+            Vector3 closest = this.resolvedPoints[0];
             float closestDist = float.MaxValue;
 
-            for (int i = 0; i < points.Length; i++)
+            for (int i = 0; i < this.resolvedPoints.Length; i++)
             {
-                if (points[i] == null) continue;
-                float dist = Vector3.Distance(controller.transform.position, points[i].position);
+                float dist = Vector3.Distance(this.controller.transform.position, this.resolvedPoints[i]);
                 if (dist < closestDist)
                 {
                     closestDist = dist;
-                    closest = points[i];
+                    closest = this.resolvedPoints[i];
                 }
             }
-
             return closest;
         }
 
-        private Transform GetFurthestFromTarget()
+        private Vector3 GetFurthestFromTarget()
         {
-            if (target == null) return points[0];
+            if (this.target == null) return this.resolvedPoints[0];
 
-            Transform furthest = null;
+            Vector3 furthest = this.resolvedPoints[0];
             float furthestDist = float.MinValue;
 
-            for (int i = 0; i < points.Length; i++)
+            for (int i = 0; i < this.resolvedPoints.Length; i++)
             {
-                if (points[i] == null) continue;
-                float dist = Vector3.Distance(target.position, points[i].position);
+                float dist = Vector3.Distance(this.target.position, this.resolvedPoints[i]);
                 if (dist > furthestDist)
                 {
                     furthestDist = dist;
-                    furthest = points[i];
+                    furthest = this.resolvedPoints[i];
                 }
             }
-
             return furthest;
         }
     }

@@ -28,7 +28,7 @@ public class LightSensor : MonoBehaviour
     private void Awake()
     {
         this.sensorTransform = this.transform;
-        this.flashlightTransform = this.flashlightSettings?.GetFlashlightTransform();
+        this.flashlightTransform = null; //this.flashlightSettings?.GetFlashlightTransform();
     }
 
     /// <summary>                                                                                                                                                            
@@ -71,7 +71,7 @@ public class LightSensor : MonoBehaviour
         }
 
         // Get detection cone from flashlight (uses runtime range)
-        this.detectionData = flashlightSettings.GetDetectionCone();
+        this.detectionData = new DetectionConeData();//flashlightSettings.GetDetectionCone();
 
         Vector3 flashLightPos = this.flashlightTransform.position;
         Vector3 sensorPos = this.sensorTransform.position;

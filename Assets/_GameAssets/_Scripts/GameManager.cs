@@ -9,7 +9,11 @@ public class GameManager : PersistenSingleton<GameManager> {
     [SerializeField, AssetsOnly] private GameObject FireAdaptationVolumePrefab;
     [HideInInspector] public FireAdaptationController FireAdaptationController { get; private set; }
 
-    [Header("=== Night Configuration ===")] 
+    [Header("=== Runtime References ===")]
+    [SerializeField] private SO_RuntimeReferences runtimeRefs;
+    [SerializeField] private Transform player;
+
+    [Header("=== Night Configuration ===")]
     [SerializeField] private SO_NightSettings nightSettings;
 
     // Event invoked whenever a scheduled night event becomes available.
@@ -45,6 +49,13 @@ public class GameManager : PersistenSingleton<GameManager> {
     }
     
     private void Start() {
+        // Register player reference
+        if (this.runtimeRefs != null)
+        {
+            if (player != null)
+                this.runtimeRefs.Player = player;
+        }
+
         // use the existing instance if it exists in the scene
         this.FireAdaptationController = FindFirstObjectByType<FireAdaptationController>();
         if (this.FireAdaptationController == null) {

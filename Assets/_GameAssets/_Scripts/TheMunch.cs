@@ -149,7 +149,7 @@ public class TheMunch : MonoBehaviour
 
         float animLength = this.monsterAnimator.GetCurrentAnimatorStateInfo(0).length;
         yield return new WaitForSeconds(animLength);
-        Refactored.MonsterSpawner.Instance.RelocateMonster(this.transform.root, this.monsterType);
+        //Refactored.MonsterSpawner.Instance.RelocateMonster(this.transform.root, this.monsterType);
     }
 
     private void ChangeState(EnumMunchState newState)

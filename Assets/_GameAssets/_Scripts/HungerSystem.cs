@@ -31,9 +31,7 @@ public class HungerSystem : MonoBehaviour
 
     [Header("=== Configuration ====")]
     [SerializeField] private SO_HungerSettings hungerSettings;
-
-
-
+    
     private Timer hungerTimer;
     
     // current state of hunger

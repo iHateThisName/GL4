@@ -43,9 +43,9 @@ namespace MonsterSystem
         /// </summary>
         protected void TriggerStateTransition()
         {
-            if (hasTriggeredTransition || controller.IsBlockingTransitions) return;
-            hasTriggeredTransition = true;
-            controller.TransitionTo(stateToTransitionTo);
+            if (this.hasTriggeredTransition || this.controller.IsBlockingTransitions) return;
+            this.hasTriggeredTransition = true;
+            this.controller.TransitionTo(this.stateToTransitionTo);
         }
 
         /// <summary>
@@ -54,9 +54,9 @@ namespace MonsterSystem
         /// </summary>
         protected void TriggerStateTransition<T>(T context)
         {
-            if (hasTriggeredTransition || controller.IsBlockingTransitions) return;
-            hasTriggeredTransition = true;
-            controller.TransitionTo(stateToTransitionTo, context);
+            if (this.hasTriggeredTransition || this.controller.IsBlockingTransitions) return;
+            this.hasTriggeredTransition = true;
+            this.controller.TransitionTo(this.stateToTransitionTo, context);
         }
 
         /// <summary>
@@ -65,9 +65,9 @@ namespace MonsterSystem
         /// </summary>
         protected void TriggerTransitionTo(MonsterState state)
         {
-            if (hasTriggeredTransition || controller.IsBlockingTransitions) return;
-            hasTriggeredTransition = true;
-            controller.TransitionTo(state);
+            if (this.hasTriggeredTransition || this.controller.IsBlockingTransitions) return;
+            this.hasTriggeredTransition = true;
+            this.controller.TransitionTo(state);
         }
 
         /// <summary>
@@ -76,9 +76,9 @@ namespace MonsterSystem
         /// </summary>
         protected void TriggerTransitionTo<T>(MonsterState state, T context)
         {
-            if (hasTriggeredTransition || controller.IsBlockingTransitions) return;
-            hasTriggeredTransition = true;
-            controller.TransitionTo(state, context);
+            if (this.hasTriggeredTransition || this.controller.IsBlockingTransitions) return;
+            this.hasTriggeredTransition = true;
+            this.controller.TransitionTo(state, context);
         }
     }
 }

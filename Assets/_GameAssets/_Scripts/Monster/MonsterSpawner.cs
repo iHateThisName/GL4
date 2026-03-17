@@ -1,4 +1,5 @@
 using Assets.Scripts.Singleton;
+using MonsterSystem;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -6,13 +7,7 @@ namespace Refactored
 {
     public class MonsterSpawner : Singleton<MonsterSpawner>
     {
-        [Header("TEMP spawn points")]
-        [SerializeField] private Transform[] munchSpawnPoints;
-        [SerializeField] private Transform[] stalkerSpawnPoints;
-        
-        [Header("Temp navigation points for spawning Stalker")]
-        [SerializeField] private Transform[] stalkerPatrolPoints;
-        
+        [Header("=== References ===")]
         [SerializeField] private SO_NightSettings nightSettings;
         
         private void OnEnable()
@@ -44,94 +39,28 @@ namespace Refactored
                     Debug.LogError("Monster Prefab is null, cannot spawn monster.");
                     return;
                 }
-
-                var stalker = monster.GetComponentInChildren<BaseNavAIMonster>();//.TryGetComponent<BaseNavAIMonster>(out var stalker); 
-                var munch = monster.GetComponentInChildren<TheMunch>();;//.TryGetComponent<TheMunch>(out var munch);
                 
-                Debug.Log($"Monster: {monster.name}, Stalker: {stalker != null}, Munch: {munch != null}");
-                
-                BaseNavAIMonster.MonsterTypeEnum monsterType = BaseNavAIMonster.MonsterTypeEnum.None;
-
-                // is Stalker
-                if (stalker && !munch)
+                var monsterController = monster.GetComponent<MonsterController>();
+                if (monsterController == null)
                 {
-                    monsterType = BaseNavAIMonster.MonsterTypeEnum.Stalker;
+                    Debug.LogError("Monster Controller is null, cannot spawn monster.");
+                    return;
                 }
-                else if (munch && !stalker)
-                {
-                    monsterType = BaseNavAIMonster.MonsterTypeEnum.Munch;
-                }
-                
-                SpawnMonster(monster, monsterType);
+                SpawnMonster(monster, monsterController);
             }
         }
 
-        private void SpawnMonster(GameObject monsterToSpawn, BaseNavAIMonster.MonsterTypeEnum monsterType)
+        private void SpawnMonster(GameObject monsterToSpawn, MonsterController monsterController)
         {
-            Debug.Log($"Spawning Monster FR: {monsterToSpawn != null}, Type: {monsterType}");
-            if (monsterType == BaseNavAIMonster.MonsterTypeEnum.None)
+            var config = monsterController.Config;
+            if (config == null || config.spawnPoints == null || config.spawnPoints.Length == 0)
             {
-                Debug.LogWarning("Monster Type is None, cannot spawn monster.");
+                Debug.LogError("Monster Config or spawn points missing, cannot spawn monster.");
                 return;
             }
-            
-            Transform monsterSpawnPoint = GetMonsterSpawnPoint(monsterType);
-            if (monsterSpawnPoint == null)
-            {
-                Debug.Log("Monster Spawn Point Not Found");
-                return;
-            }
-            var monster = Instantiate(monsterToSpawn, monsterSpawnPoint.position, monsterSpawnPoint.rotation);//Instantiate(monsterToSpawn, monsterSpawnPosition, monsterSpawnRotation);
-            Debug.Log($"Monster Euler Rotation: {monster.transform.eulerAngles}");
-            Debug.Log($"Spawn Euler Rotation: {monsterSpawnPoint.rotation.eulerAngles}");
-            if (monsterType == BaseNavAIMonster.MonsterTypeEnum.Stalker)
-            {
-                var navigationComponent = monster.GetComponentInChildren<BaseNavAIMonster>();
-                if (navigationComponent == null) return;
-                navigationComponent.SetPatrolPoints(stalkerPatrolPoints);
-            }
-        }
 
-        public void RelocateMonster(Transform monsterTransform, BaseNavAIMonster.MonsterTypeEnum monsterType)
-        {
-            if (monsterTransform == null) return;
-            
-            Transform newPosition = GetMonsterSpawnPoint(monsterType);
-            if (newPosition == null) return;
-            
-            monsterTransform.SetPositionAndRotation(newPosition.position, newPosition.rotation);
-        }
-
-        private Transform GetMonsterSpawnPoint(BaseNavAIMonster.MonsterTypeEnum monsterType)
-        {
-            Transform spawnPoint = null;
-            
-            switch (monsterType)
-            {
-                case BaseNavAIMonster.MonsterTypeEnum.None:
-                    spawnPoint = null;
-                    break;
-                case BaseNavAIMonster.MonsterTypeEnum.Stalker:
-                    if (stalkerSpawnPoints == null || stalkerSpawnPoints.Length == 0)
-                    {
-                        Debug.LogError("No stalker spawn points assigned!");
-                        return null;
-                    }
-                    spawnPoint = stalkerSpawnPoints[Random.Range(0, stalkerSpawnPoints.Length)];
-                    break;
-                case BaseNavAIMonster.MonsterTypeEnum.Munch:
-                    if (munchSpawnPoints == null || munchSpawnPoints.Length == 0)
-                    {
-                        Debug.LogError("No munch spawn points assigned!");
-                        return null;
-                    }
-                    spawnPoint = munchSpawnPoints[Random.Range(0, munchSpawnPoints.Length)];
-                    break;
-                default:
-                    spawnPoint = null;
-                    break;
-            }
-            return spawnPoint;
+            var spawnPoint = config.GetRandomSpawnPoint();
+            Instantiate(monsterToSpawn, spawnPoint.position, Quaternion.Euler(spawnPoint.rotation));
         }
     }
 }
