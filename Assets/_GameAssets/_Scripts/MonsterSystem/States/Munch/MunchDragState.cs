@@ -3,7 +3,7 @@ using UnityEngine;
 namespace MonsterSystem
 {
     /// Munch teleports behind the player, jumpscares, and kills them.
-    public class MunchDragState : MonsterState
+    public class MunchDragState : MonsterStateWithTimer
     {
         [Header("Teleport")]
         [SerializeField] private Transform player;
@@ -12,18 +12,15 @@ namespace MonsterSystem
         [Header("Kill")]
         [SerializeField] private float killDelay = 1f;
 
-        private const string DragTimer = "drag";
-
-        public override void OnStateEnter(MonsterController controller)
+        public override void OnStateEnter()
         {
+            base.OnStateEnter();
             if (player != null)
             {
                 controller.transform.position = player.position - player.forward * behindDistance;
                 controller.transform.LookAt(player);
             }
-
-            controller.ResetTimer(DragTimer);
-
+            
             MonsterAudio.Stop(controller.Audio);
 
             var config = controller.GetConfig<MunchConfig>();
@@ -31,14 +28,17 @@ namespace MonsterSystem
                 MonsterAudio.PlayOneShot(controller.Audio, config.killJumpscareSound, 0.5f);
         }
 
-        public override void OnStateTick(MonsterController controller, float tickDelta)
+        protected override void OnTimerTick()
         {
-            controller.TickTimer(DragTimer, tickDelta);
+            if (!this.GetTime().Equals(this.killDelay)) return;
+            
+            OnStateExit();
+        }
 
-            if (controller.GetTimer(DragTimer) >= killDelay)
-            {
-                DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Monster);
-            }
+        public override void OnStateExit()
+        {
+            base.OnStateExit();
+            DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Monster);
         }
     }
 }

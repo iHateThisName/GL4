@@ -5,16 +5,16 @@ namespace MonsterSystem
 {
     public static class MonsterStateManager
     {
-        static readonly List<MonsterController> activeMonsters = new();
-        static readonly List<MonsterController> sweep = new();
+        static readonly List<MonsterController> ACTIVE_MONSTERS = new();
+        static readonly List<MonsterController> SWEEP = new();
 
         static float tickInterval = 0.2f;  // 5 ticks/sec
         static float elapsed = 0f;
         static int batchIndex = 0;
         static int batchSize = 5;  // Max monsters per tick cycle
 
-        public static void Register(MonsterController controller) => activeMonsters.Add(controller);
-        public static void Deregister(MonsterController controller) => activeMonsters.Remove(controller);
+        public static void Register(MonsterController controller) => ACTIVE_MONSTERS.Add(controller);
+        public static void Deregister(MonsterController controller) => ACTIVE_MONSTERS.Remove(controller);
 
         /// Called every frame by PlayerLoop (via MonsterBootstrap).
         public static void UpdateMonsters()
@@ -26,8 +26,8 @@ namespace MonsterSystem
             elapsed = 0f;
 
             // Snapshot active list to avoid mutation during iteration
-            sweep.RefreshWith(activeMonsters);
-            int count = sweep.Count;
+            SWEEP.RefreshWith(ACTIVE_MONSTERS);
+            int count = SWEEP.Count;
             if (count == 0) return;
 
             // Staggered batching: tick batchSize monsters per tick cycle,
@@ -37,7 +37,7 @@ namespace MonsterSystem
 
             for (int i = start; i < end; i++)
             {
-                TickMonster(sweep[i], tickDelta);
+                TickMonster(SWEEP[i], tickDelta);
             }
 
             batchIndex = (end >= count) ? 0 : end;
@@ -48,19 +48,12 @@ namespace MonsterSystem
             if (controller == null || !controller.isActiveAndEnabled) return;
 
             // 1. Tick sensors (refresh data before evaluating transitions)
-            controller.TickSensors();
+            controller.TickSensors(tickDelta);
 
-            // 2. Evaluate transitions (first match wins)
-            var transition = controller.EvaluateTransitions();
-            if (transition != null)
-            {
-                controller.TransitionTo(transition.toState);
-            }
-
-            // 3. Tick current state
+            // 2. Tick current state
             if (controller.CurrentState != null)
             {
-                controller.CurrentState.OnStateTick(controller, tickDelta);
+                controller.CurrentState.OnStateTick(tickDelta);
             }
         }
 
@@ -71,10 +64,19 @@ namespace MonsterSystem
             controller.TransitionTo(targetState);
         }
 
+        /// <summary>
+        /// Immediate imperative transition with typed context data.
+        /// </summary>
+        public static void RequestTransition<T>(MonsterController controller, MonsterState targetState, T context)
+        {
+            if (controller == null || targetState == null) return;
+            controller.TransitionTo(targetState, context);
+        }
+
         public static void Clear()
         {
-            activeMonsters.Clear();
-            sweep.Clear();
+            ACTIVE_MONSTERS.Clear();
+            SWEEP.Clear();
             elapsed = 0f;
             batchIndex = 0;
         }

@@ -34,8 +34,10 @@ namespace MonsterSystem
             OnPlayerExited?.Invoke();
         }
 
-        public override void Tick(MonsterController controller)
+        public override void OnTick(float tickDelta)
         {
+            base.OnTick(tickDelta);
+
             if (IsPlayerInRange && PlayerTransform != null)
             {
                 DistanceToPlayer = Vector3.Distance(transform.position, PlayerTransform.position);

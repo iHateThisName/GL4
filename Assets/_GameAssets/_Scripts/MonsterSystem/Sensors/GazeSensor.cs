@@ -20,8 +20,10 @@ namespace MonsterSystem
             return cachedCamera;
         }
 
-        public override void Tick(MonsterController controller)
+        public override void OnTick(float tickDelta)
         {
+            base.OnTick(tickDelta);
+
             Transform cam = GetCamera();
             if (cam == null)
             {

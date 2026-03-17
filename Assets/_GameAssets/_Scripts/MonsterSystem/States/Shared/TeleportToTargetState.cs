@@ -8,7 +8,7 @@ namespace MonsterSystem
 
         public Transform Target { get => target; set => target = value; }
 
-        public override void OnStateEnter(MonsterController controller)
+        public override void OnStateEnter()
         {
             if (target != null)
             {

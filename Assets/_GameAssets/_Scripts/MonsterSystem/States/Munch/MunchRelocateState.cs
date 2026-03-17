@@ -3,18 +3,14 @@ using UnityEngine;
 namespace MonsterSystem
 {
     /// Teleports Munch to a random shadow position from config, then auto-transitions.
-    public class MunchRelocateState : MonsterState
+    public class MunchRelocateState : AnimatedState
     {
-        [SerializeField] private MonsterState nextState;
-        [SerializeField] private string retractTrigger = "Munch";
-
         private int lastIndex = -1;
 
-        public override void OnStateEnter(MonsterController controller)
+        public override void OnStateEnter()
         {
-            MonsterAudio.Stop(controller.Audio);
-            MonsterAnimation.SetTrigger(controller.Animator, retractTrigger);
-
+            base.OnStateEnter();
+            
             var config = controller.GetConfig<MunchConfig>();
             if (config != null && config.shadowPositions != null && config.shadowPositions.Length > 0)
             {
@@ -31,12 +27,10 @@ namespace MonsterSystem
                     }
                     while (index == lastIndex);
                 }
-
                 lastIndex = index;
                 controller.transform.position = config.shadowPositions[index];
             }
-
-            RequestTransition(controller, nextState);
+            RequestTransition(nextState);
         }
     }
 }

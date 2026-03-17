@@ -3,7 +3,11 @@ using UnityEngine.AI;
 
 namespace MonsterSystem
 {
-    public class NavMeshMoveState : MonsterState
+    /// <summary>
+    /// State for NavMesh-based movement with multiple modes.
+    /// Implements IStateWithContext&lt;Transform&gt; to receive a target dynamically during transitions.
+    /// </summary>
+    public class NavMeshMoveState : MonsterState, IStateWithContext<Transform>
     {
         public enum MoveMode
         {
@@ -42,7 +46,16 @@ namespace MonsterSystem
         public Transform Target { get => target; set => target = value; }
         public bool HasArrived { get; private set; }
 
-        public override void OnStateEnter(MonsterController controller)
+        /// <summary>
+        /// Receives a target Transform during transition.
+        /// Used for dynamic target assignment (e.g., flee from light source).
+        /// </summary>
+        public void ReceiveContext(Transform context)
+        {
+            this.target = context;
+        }
+
+        public override void OnStateEnter()
         {
             HasArrived = false;
             lastSetDestination = Vector3.positiveInfinity;
@@ -54,7 +67,7 @@ namespace MonsterSystem
                 SelectAndSetPointDestination(controller);
         }
 
-        public override void OnStateTick(MonsterController controller, float tickDelta)
+        public override void OnStateTick(float tickDelta)
         {
             if (agent == null) return;
 
@@ -75,7 +88,7 @@ namespace MonsterSystem
             }
         }
 
-        public override void OnStateExit(MonsterController controller)
+        public override void OnStateExit()
         {
             if (agent != null)
                 agent.ResetPath();

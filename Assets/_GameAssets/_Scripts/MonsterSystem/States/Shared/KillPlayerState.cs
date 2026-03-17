@@ -8,7 +8,7 @@ namespace MonsterSystem
         [SerializeField] private AudioClip killSound;
         [SerializeField] [Range(0f, 1f)] private float killSoundVolume = 1f;
 
-        public override void OnStateEnter(MonsterController controller)
+        public override void OnStateEnter()
         {
             MonsterAnimation.SetTrigger(controller.Animator, killAnimTrigger);
             MonsterAudio.PlayOneShot(controller.Audio, killSound, killSoundVolume);

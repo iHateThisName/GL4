@@ -5,8 +5,10 @@ namespace MonsterSystem
         public float CurrentAggressionModifier { get; private set; } = 1f;
         public bool IsDangerMode { get; private set; }
 
-        public override void Tick(MonsterController controller)
+        public override void OnTick(float tickDelta)
         {
+            base.OnTick(tickDelta);
+
             CurrentAggressionModifier = RadioBroadcast.AggressionMultiplier;
             IsDangerMode = RadioBroadcast.IsDangerMode;
         }
