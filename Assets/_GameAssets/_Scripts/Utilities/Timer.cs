@@ -70,7 +70,7 @@ public class Timer : IDisposable
 
         this.IsRunning = true;
         TimerManager.RegisterTimer(this);
-        OnTimerStart.Invoke();
+        this.OnTimerStart.Invoke();
     }
 
     /// <summary>
@@ -108,7 +108,7 @@ public class Timer : IDisposable
         // Fire tick events, catching up if frame took longer than interval
         while (this.Elapsed >= this.nextInterval && this.nextInterval > 0)
         {
-            OnTimerTick?.Invoke();
+            this.OnTimerTick?.Invoke();
             if (!this.intervalWasSetDuringTick)
                 this.nextInterval += this.Interval;
         }
@@ -117,7 +117,7 @@ public class Timer : IDisposable
         if (this.Duration > 0f && this.Elapsed >= this.Duration)
         {
             this.IsRunning = false;
-            OnTimerFinished?.Invoke();
+            this.OnTimerFinished?.Invoke();
         }
     }
     
@@ -131,7 +131,7 @@ public class Timer : IDisposable
         // Fire tick events, catching up if frame took longer than interval
         while (this.Elapsed >= this.nextInterval && this.nextInterval > 0)
         {
-            OnTimerTick?.Invoke();
+            this.OnTimerTick?.Invoke();
             if (!this.intervalWasSetDuringTick)
                 this.nextInterval += this.Interval;
         }
@@ -140,8 +140,8 @@ public class Timer : IDisposable
         if (this.Duration > 0f && this.Elapsed >= this.Duration)
         {
             this.IsRunning = false;
-            OnTimerFinished?.Invoke();
-        }                                                                                                                                                      
+            this.OnTimerFinished?.Invoke();
+        }
     } 
 
     /// <summary>
@@ -166,7 +166,6 @@ public class Timer : IDisposable
             TimerManager.DeregisterTimer(this);
             ClearAllEvents();
         }
-
         this.disposed = true;
     }
 
@@ -175,8 +174,8 @@ public class Timer : IDisposable
     /// </summary>
     public void ClearAllEvents()
     {
-        OnTimerStart = delegate { };
-        OnTimerTick = delegate { };
-        OnTimerFinished = delegate { };
+        this.OnTimerStart = delegate { };
+        this.OnTimerTick = delegate { };
+        this.OnTimerFinished = delegate { };
     }
 }

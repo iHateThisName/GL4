@@ -5,6 +5,8 @@ using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
 public class XRObjectDistanceBreak : XRGrabInteractable
 {
+    //Used on grabable objects(joints) where you want to lose the grip if you move to far away from it.
+
     [SerializeField]
     [Tooltip("Maximum distance before forced release")]
     private float maxBreakDistance = 0.5f;

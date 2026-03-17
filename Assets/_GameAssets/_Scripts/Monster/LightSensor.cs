@@ -8,6 +8,8 @@ public class LightSensor : MonoBehaviour
     [System.Obsolete("Hard coded solution for now.")]
     [SerializeField] private BaseNavAIMonster stalkerRef; // Reference to the monster AI for stun callback
     
+    [SerializeField] private SO_FlashlightSettings flashlightSettings;
+    
     [Header("=== Configuration ===")]
     [SerializeField] private float exposureBuildSpeed = 3f; // Rate of exposure increase per second when in light
     [SerializeField] private float exposureDecaySpeed = 2f; // Rate of exposure decrease per second when not in light
@@ -17,15 +19,16 @@ public class LightSensor : MonoBehaviour
     
     [System.Obsolete("temporary internal timer")]
     private Timer performanceTimer;
-    private FlashLight flashlight;
-    private Transform sensorTransform;
+    private DetectionConeData detectionData;
     private Transform flashlightTransform;
+    private Transform sensorTransform;
     private float remainingCooldownTime;
-    private float exposure; // Current exposure level (0-1), visible in inspector for debugging      
+    private float exposure; // Current exposure level (0-1), visible in inspector for debugging
 
     private void Awake()
     {
         this.sensorTransform = this.transform;
+        this.flashlightTransform = this.flashlightSettings?.GetFlashlightTransform();
     }
 
     /// <summary>                                                                                                                                                            
@@ -60,54 +63,65 @@ public class LightSensor : MonoBehaviour
             return;
         }
         
-        // No valid flashlight or flashlight is off  
-        if (this.flashlightTransform == null || !this.flashlight.PoweredOn)
+        // No valid flashlight or flashlight is off
+        if (this.flashlightTransform == null)
         {
             AdjustExposure(-this.exposureDecaySpeed);
             return;
         }
-        
+
+        // Get detection cone from flashlight (uses runtime range)
+        this.detectionData = flashlightSettings.GetDetectionCone();
+
         Vector3 flashLightPos = this.flashlightTransform.position;
         Vector3 sensorPos = this.sensorTransform.position;
         Vector3 toSensor = sensorPos - flashLightPos;
         float distanceSquared = toSensor.sqrMagnitude;
-        
-        // Sensor is outside flashlight range      
-        if (distanceSquared > this.flashlight.GetRangeSquared())
+
+        // Sensor is outside flashlight range
+        if (distanceSquared > this.detectionData.RangeSquared)
         {
             AdjustExposure(-this.exposureDecaySpeed);
             return;
         }
-        
+
+        // Flatten to XZ plane (ignore vertical angle)
         Vector3 flashlightForward = this.flashlightTransform.forward;
-        float rawDot = Vector3.Dot(flashlightForward, toSensor);
-        // Sensor is behind the flashlight
+        flashlightForward.y = 0f;
+        flashlightForward.Normalize();
+
+        Vector3 toSensorFlat = toSensor;
+        toSensorFlat.y = 0f;
+        float flatDistanceSquared = toSensorFlat.sqrMagnitude;
+
+        float rawDot = Vector3.Dot(flashlightForward, toSensorFlat);
+        // Sensor is behind the flashlight (horizontally)
         if (rawDot <= 0f)
         {
             AdjustExposure(-this.exposureDecaySpeed);
             return;
         }
-        
-        // Sensor is outside the flashlight cone angle                                                                                                                    
+
+        // Sensor is outside the flashlight cone angle (horizontal only)
         // Uses squared comparison to avoid sqrt: (dot)^2 < (cosThreshold)^2 * dist^2
-        if (rawDot * rawDot < this.flashlight.GetCosineThresholdSquared() * distanceSquared)
+        if (rawDot * rawDot < this.detectionData.CosineThresholdSquared * flatDistanceSquared)
         {
             AdjustExposure(-this.exposureDecaySpeed);
             return;
         }
-        
+
         // Sensor is occluded by geometry (wall, obstacle, etc.)
         if (Physics.Linecast(flashLightPos, sensorPos, this.occlusionMask))
         {
             AdjustExposure(-this.exposureDecaySpeed);
             return;
         }
-        
-        // Sensor is in the light - calculate exposure intensity based on cone position                                                                                      
+
+        // Sensor is in the light - calculate exposure intensity based on cone position (horizontal)
         // Intensity is higher when closer to the center of the cone
-        float distance = Mathf.Sqrt(distanceSquared);
-        float dot = rawDot / distance;
-        float intensity = (dot - this.flashlight.GetCosineThreshold()) * this.flashlight.GetInverseConeRange();
+        float flatDistance = Mathf.Sqrt(flatDistanceSquared);
+        float dot = rawDot / flatDistance;
+        float intensity = (dot - this.detectionData.CosineThreshold) * this.detectionData.InverseConeRange;
         
         // Build exposure based on intensity
         AdjustExposure(intensity * this.exposureBuildSpeed);
@@ -139,12 +153,10 @@ public class LightSensor : MonoBehaviour
     /// <summary>                                                                                                                                                            
     /// Assigns the flashlight reference for this sensor to track.                                                                                                           
     /// Should be called when the player spawns or when the flashlight becomes available.                                                                                    
-    /// </summary>                                                                                                                                                           
-    /// <param name="flashLight">The flashlight instance to monitor.</param> 
-    public void SetFlashLight(FlashLight flashLight)
+    /// </summary>
+    public void SetFlashLight(Transform flashlight)
     {
-        this.flashlight = flashLight;
-        this.flashlightTransform = flashLight.transform;
+        this.flashlightTransform = flashlight.transform;
     }
 
     /// <summary>                                                                                                                                                            

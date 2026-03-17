@@ -1,7 +1,7 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "HungerSettings", menuName = "TeamSuperSimple/HungerSettings", order = 0)]
-public class HungerSettings : ScriptableObject
+[CreateAssetMenu(fileName = "HungerSettings", menuName = "TeamSuperSimple/Hunger Settings", order = 0)]
+public class SO_HungerSettings : ScriptableObject
 {
     // Maximum hunger value the player can have.
     [SerializeField] private float maxHunger = 100f; 

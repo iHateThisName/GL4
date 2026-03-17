@@ -48,6 +48,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   stalkerRef: {fileID: 2172033496520880208}
+  flashlightSettings: {fileID: 11400000, guid: e1d80fbeeb3e27b498a6a95b85fa8a72, type: 2}
   exposureBuildSpeed: 1.5
   exposureDecaySpeed: 1.5
   stunThreshold: 1
@@ -196,7 +197,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8380608638720507806}
-  - {fileID: 7650357608283989303}
   - {fileID: 770692443582581550}
   - {fileID: 2260409626383651327}
   m_Father: {fileID: 0}
@@ -271,14 +271,10 @@ MonoBehaviour:
   <DebugInformation>k__BackingField: 
   agent: {fileID: 1687273280417510100}
   player: {fileID: 0}
-  patrolPoints:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  patrolPoints: []
   MonsterAudioSource: {fileID: 1039173040071757335}
-  StalkerKill: {fileID: 8300000, guid: 8c14c768f15dcfa439790ff6573869a4, type: 3}
-  StalkerFlashed: {fileID: 8300000, guid: fc323e27414aadf4095893d373c60c49, type: 3}
+  killAudio: {fileID: 8300000, guid: 8c14c768f15dcfa439790ff6573869a4, type: 3}
+  flashedAudio: {fileID: 8300000, guid: fc323e27414aadf4095893d373c60c49, type: 3}
   monsterType: 1
   tickRate: 0.5
   attackRange: 3
@@ -412,37 +408,6 @@ Transform:
   m_Children:
   - {fileID: 5887611296675901069}
   - {fileID: 8074509929005069209}
-  m_Father: {fileID: 325820956463124110}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &8231368424717773453
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7650357608283989303}
-  m_Layer: 0
-  m_Name: StalkerController
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &7650357608283989303
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8231368424717773453}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
   m_Father: {fileID: 325820956463124110}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8656071304902856334

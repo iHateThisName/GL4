@@ -1,0 +1,181 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace MonsterSystem
+{
+    public class MonsterController : MonoBehaviour
+    {
+        [Header("Config")]
+        [SerializeField] private MonsterConfig config;
+
+        [Header("State Machine")]
+        [SerializeField] private MonsterState initialState;
+
+        // Auto-collected on Awake
+        private MonsterState[] states;
+        private MonsterSensor[] sensors;
+        private Dictionary<System.Type, MonsterSensor> sensorCache;
+
+        // Auto-collected component refs
+        public Animator Animator { get; private set; }
+        public AudioSource Audio { get; private set; }
+
+        // Runtime
+        public MonsterState CurrentState { get; private set; }
+        public MonsterState PreviousState { get; private set; }
+        public MonsterConfig Config => config;
+        public int CurrentNight => GameManager.Instance != null ? GameManager.Instance.GetCurrentNight() : 1;
+
+        private void Awake()
+        {
+            sensorCache = new Dictionary<System.Type, MonsterSensor>();
+
+            Animator = GetComponentInChildren<Animator>();
+            Audio = GetComponentInChildren<AudioSource>();
+
+            // Auto-collect states from "States" child
+            Transform statesRoot = transform.Find("States");
+            if (statesRoot != null)
+                states = statesRoot.GetComponentsInChildren<MonsterState>(true);
+            else
+                states = GetComponentsInChildren<MonsterState>(true);
+
+            // Auto-collect sensors from this GO and children
+            sensors = GetComponentsInChildren<MonsterSensor>(true);
+
+            // Disable all states and initialize for caching controller
+            for (int i = states.Length - 1; i >= 0; i--)
+            {
+                var state = states[i];
+                state.Initialize(this);
+                state.gameObject.SetActive(false);
+            }
+
+            // Initialize sensors
+            for (int i = sensors.Length - 1; i >= 0; i--)
+            {
+                var sensor = sensors[i];
+                sensor.Initialize(this);
+            }
+        }
+
+        private void OnEnable()
+        {
+            MonsterStateManager.Register(this);
+
+            // Enter initial state
+            if (initialState != null && CurrentState == null)
+            {
+                TransitionTo(initialState);
+            }
+        }
+
+        private void OnDisable()
+        {
+            MonsterStateManager.Deregister(this);
+        }
+
+        // --- Sensor Accessors ---
+
+        /// Get the first sensor of type T.
+        public T GetSensor<T>() where T : MonsterSensor
+        {
+            System.Type type = typeof(T);
+            if (sensorCache.TryGetValue(type, out MonsterSensor cached))
+                return (T)cached;
+
+            for (int i = 0; i < sensors.Length; i++)
+            {
+                if (sensors[i] is T typed)
+                {
+                    sensorCache[type] = sensors[i];
+                    return typed;
+                }
+            }
+            return null;
+        }
+        
+        // --- Config Accessors ---
+
+        public T GetConfig<T>() where T : MonsterConfig => config as T;
+
+        // --- State Machine ---
+
+        /// Tick all sensors with the elapsed time since last tick.
+        public void TickSensors(float tickDelta)
+        {
+            for (int i = 0; i < sensors.Length; i++)
+            {
+                sensors[i].OnTick(tickDelta);
+            }
+        }
+
+        /// Perform a state transition.
+        public void TransitionTo(MonsterState newState)
+        {
+            if (newState == null) return;
+
+            if (CurrentState != null)
+            {
+                CurrentState.OnStateExit();
+                CurrentState.gameObject.SetActive(false);
+            }
+
+            PreviousState = CurrentState;
+            CurrentState = newState;
+            CurrentState.gameObject.SetActive(true);
+            CurrentState.OnStateEnter();
+
+            // Notify sensors that state changed so they can trigger again
+            NotifySensorsStateChanged();
+        }
+
+        /// <summary>
+        /// Perform a state transition with typed context data.
+        /// If the target state implements IStateWithContext&lt;T&gt;, it will receive the context
+        /// before OnStateEnter is called.
+        /// </summary>
+        public void TransitionTo<T>(MonsterState newState, T context)
+        {
+            if (newState == null) return;
+
+            if (CurrentState != null)
+            {
+                CurrentState.OnStateExit();
+                CurrentState.gameObject.SetActive(false);
+            }
+
+            PreviousState = CurrentState;
+            CurrentState = newState;
+            CurrentState.gameObject.SetActive(true);
+
+            // Pass context to the state if it implements the interface
+            if (newState is IStateWithContext<T> contextState)
+                contextState.ReceiveContext(context);
+
+            CurrentState.OnStateEnter();
+
+            // Notify sensors that state changed so they can trigger again
+            NotifySensorsStateChanged();
+        }
+
+        /// <summary>
+        /// Returns true if the current state is blocking external transitions (e.g., from sensors).
+        /// </summary>
+        public bool IsBlockingTransitions => CurrentState != null && CurrentState.BlocksTransitions;
+
+        private void NotifySensorsStateChanged()
+        {
+            for (int i = 0; i < sensors.Length; i++)
+            {
+                sensors[i].OnStateChanged();
+            }
+        }
+
+        /// Swap the active config at runtime (for Mimic or night changes).
+        public void SetConfig(MonsterConfig newConfig)
+        {
+            config = newConfig;
+        }
+    }
+}

@@ -10,7 +10,7 @@ public class GameManager : PersistenSingleton<GameManager> {
     [HideInInspector] public FireAdaptationController FireAdaptationController { get; private set; }
 
     [Header("=== Night Configuration ===")] 
-    [SerializeField] private NightSettings nightSettings;
+    [SerializeField] private SO_NightSettings nightSettings;
 
     // Event invoked whenever a scheduled night event becomes available.
     // Other systems can subscribe to react (e.g., spawning enemies, triggering sounds).
@@ -94,16 +94,16 @@ public class GameManager : PersistenSingleton<GameManager> {
     /// </summary>
     private void HandleNightTick()
     {
-        Debug.Log($"Night event fired at: {this.night}: {this.nightTimer.Elapsed}s");
-        this.eventsFired++;
-        
         // No need to fire any new events if we have fired of configured events
-        if (this.eventsFired > this.eventsToFire.Length)
+        if (this.eventsFired + 1 > this.eventsToFire.Length)
         {
             if (this.nightTimer != null && this.nightSettings != null)
                 this.nightTimer.SetInterval(this.nightSettings.GetNightTimeInSeconds() + 10);
             return;
         }
+        
+        Debug.Log($"Night event fired at: {this.night}: {this.nightTimer.Elapsed}s");
+        this.eventsFired++;
         
         OnEventAvailable.Invoke(new NightEvent(this.eventsToFire[this.eventsFired - 1], this.eventsFired, this.night)); // Notify subscribers
         if (this.nightTimer != null && this.nightSettings != null)
@@ -132,6 +132,8 @@ public class GameManager : PersistenSingleton<GameManager> {
         if (DeathSystem.deathEvent.Reason != DeathSystem.DeathEvent.DeathReason.Survived)
             this.night = 1;
     }
+    
+    public int GetCurrentNight() => this.night;
 
     /// <summary>
     /// Debug helper method that logs when an event fires and when the next one is scheduled.

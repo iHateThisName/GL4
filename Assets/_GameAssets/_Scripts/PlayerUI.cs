@@ -19,7 +19,9 @@ public class PlayerUI : MonoBehaviour {
     [SerializeField] private CanvasGroup coldCanvasGroup;
 
     [Header("Fade Settings")]
-    [SerializeField] private float fadeDuration = 2f;
+    [SerializeField] private float fadeDuration = 5f;
+    private const float DEFAULT_MEDIUM_EFFECT_ALPHA = 0.125f;
+    private const float DEFAULT_HIGH_EFFECT_ALPHA = 0.25f;
 
     private bool useDebugInfo = false;
     private Coroutine currentWarmFadeCoroutine;
@@ -75,16 +77,18 @@ public class PlayerUI : MonoBehaviour {
 
         if (change.CurrentState == EnumBodyTemperatureState.Normal && change.PreviousState == EnumBodyTemperatureState.MildHyperthermia) {
             StartFadeCanvasGroup(canvasGroup: this.heatCanvasGroup, fadeIn: false);
-        } else if (change.CurrentState == EnumBodyTemperatureState.ModerateHyperthermia && change.PreviousState == EnumBodyTemperatureState.MildHyperthermia) {
-            StartFadeCanvasGroup(canvasGroup: this.heatCanvasGroup, fadeIn: true, targetAlpha: 1f);
+        } else if (change.CurrentState == EnumBodyTemperatureState.MildHyperthermia) {
+            StartFadeCanvasGroup(canvasGroup: this.heatCanvasGroup, fadeIn: true, targetAlpha: DEFAULT_MEDIUM_EFFECT_ALPHA);
+        } else if (change.CurrentState == EnumBodyTemperatureState.ModerateHypothermia) {
+            StartFadeCanvasGroup(canvasGroup: this.heatCanvasGroup, fadeIn: true, targetAlpha: DEFAULT_HIGH_EFFECT_ALPHA);
         }
 
         if (change.CurrentState == EnumBodyTemperatureState.Normal && change.PreviousState == EnumBodyTemperatureState.MildHypothermia) {
             StartFadeCanvasGroup(canvasGroup: this.coldCanvasGroup, fadeIn: false);
         } else if (change.CurrentState == EnumBodyTemperatureState.MildHypothermia) {
-            StartFadeCanvasGroup(canvasGroup: this.coldCanvasGroup, fadeIn: true, targetAlpha: 0.5f);
+            StartFadeCanvasGroup(canvasGroup: this.coldCanvasGroup, fadeIn: true, targetAlpha: DEFAULT_MEDIUM_EFFECT_ALPHA);
         } else if (change.CurrentState == EnumBodyTemperatureState.ModerateHypothermia) {
-            StartFadeCanvasGroup(canvasGroup: this.coldCanvasGroup, fadeIn: true, targetAlpha: 1f);
+            StartFadeCanvasGroup(canvasGroup: this.coldCanvasGroup, fadeIn: true, targetAlpha: DEFAULT_HIGH_EFFECT_ALPHA);
         }
     }
 
@@ -130,9 +134,9 @@ public class PlayerUI : MonoBehaviour {
 
         if (type == EnumLocationType.Warm) {
             if (currentBodyTemperatureState == EnumBodyTemperatureState.ModerateHyperthermia) {
-                StartFadeCanvasGroup(this.heatCanvasGroup, fadeIn: true, targetAlpha: 1f);
+                StartFadeCanvasGroup(this.heatCanvasGroup, fadeIn: true, targetAlpha: DEFAULT_HIGH_EFFECT_ALPHA);
             } else {
-                StartFadeCanvasGroup(this.heatCanvasGroup, fadeIn: true, targetAlpha: 0.5f);
+                StartFadeCanvasGroup(this.heatCanvasGroup, fadeIn: true, targetAlpha: DEFAULT_MEDIUM_EFFECT_ALPHA);
             }
         } else if (currentBodyTemperatureState != EnumBodyTemperatureState.MildHyperthermia || currentBodyTemperatureState != EnumBodyTemperatureState.ModerateHyperthermia) {
             if (!TemperatureZoneManager.Instance.IsPlayerInZone(EnumLocationType.Warm)) {
@@ -173,7 +177,7 @@ public class PlayerUI : MonoBehaviour {
 
         float startAlpha = canvasGroup.alpha;
         if (targetAlpha == -1) {
-            targetAlpha = fadeIn ? 1f : 0f;
+            targetAlpha = fadeIn ? DEFAULT_HIGH_EFFECT_ALPHA : 0f;
         }
         float elapsedTime = 0f;
 

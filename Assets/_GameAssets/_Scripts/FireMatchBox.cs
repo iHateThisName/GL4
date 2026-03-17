@@ -3,77 +3,68 @@ using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
+// Ensures this script is always attached to a GameObject that has an XRSimpleInteractable component
 [RequireComponent(typeof(XRSimpleInteractable))]
 public class FireMatchBox : MonoBehaviour
 {
-    //A refrence to the fire match prefab which will be spawned by the match box
-
     [SerializeField] private GameObject matchPrefab;
     [SerializeField] private XRInteractionManager interactionManager;
     [SerializeField] private XRSimpleInteractable interactable;
 
-
-    //A bool that is supposed to stop the match from duplicating, doesn't work
-    private bool matchSpawned = false;
-    private void Start()
+    // Keeps track of the match we just spawned so we don't accidentally spawn infinite matches
+    private GameObject currentSpawnedMatch;
+    private void Awake()
     {
-        // Cache the manager to handle the swap
-        //interactionManager = GetComponentInParent<XRInteractionManager>();
+        // Automatically grab the required component if we did not assign it in the inspector
         this.interactable = GetComponent<XRSimpleInteractable>();
-        // If not in parent, try to find it in the scene
+
+        // Find the master Interaction Manager in the scene if we haven't linked it manually
         if (this.interactionManager == null)
             this.interactionManager = Object.FindAnyObjectByType<XRInteractionManager>();
     }
 
     private void OnEnable()
     {
+        // Start listening for when the player grabs or selects the matchbox
         if (this.interactable != null)
         {
             this.interactable.selectEntered.AddListener(OnSpawnerSelected);
         }
-        FireMatchController.OnMatchDespawn += FireMatchController_OnMatchDespawn;
     }
+
     private void OnDisable()
     {
+        // Stop listening when the matchbox is disabled or destroyed to prevent memory leaks
         if (this.interactable != null)
         {
             this.interactable.selectEntered.RemoveListener(OnSpawnerSelected);
         }
-        FireMatchController.OnMatchDespawn -= FireMatchController_OnMatchDespawn;
-    }
-
-    private void FireMatchController_OnMatchDespawn()
-    {
-        this.interactable.enabled = true;
-        this.matchSpawned = false;
     }
 
 
     public void OnSpawnerSelected(SelectEnterEventArgs args)
     {
-        if (this.matchSpawned)
+        // If a match is already spawned and active, stop here and don't spawn another one
+        if (this.currentSpawnedMatch != null)
         {
             return;
         }
-        // 1. Identify the Interactor (the hand)
+
+        // Identify exactly which hand (controller) interacted with the matchbox
         IXRSelectInteractor hand = args.interactorObject;
 
-        // 2. Instantiate the new grabable object
-        GameObject spawnedObj = Instantiate(this.matchPrefab/*, hand.transform.position, hand.transform.rotation*/);
-        XRGrabInteractable newGrabable = spawnedObj.GetComponent<XRGrabInteractable>();
+        // Spawn a new match exactly where the player's hand is currently positioned and rotated
+        this.currentSpawnedMatch = Instantiate(this.matchPrefab, hand.transform.position, hand.transform.rotation);
+
+        // Grab the interaction component from our newly spawned match
+        XRGrabInteractable newGrabable = this.currentSpawnedMatch.GetComponent<XRGrabInteractable>();
 
         if (newGrabable != null)
         {
-            // 3. Force the hand to 'drop' the Spawner and 'grab' the new object
-            // This happens in the same frame, so the player never sees the drop
+            // Force the player's hand to let go of the matchbox...
             this.interactionManager.SelectExit(hand, args.interactableObject);
+            // ...and instantly force that same hand to grab the new match instead
             this.interactionManager.SelectEnter(hand, newGrabable);
-            this.matchSpawned=true;
         }
-        this.interactable.enabled = false;
     }
-
-
-
-
 }

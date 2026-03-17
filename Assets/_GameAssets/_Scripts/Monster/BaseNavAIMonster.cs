@@ -11,9 +11,11 @@ public class BaseNavAIMonster : MonoBehaviour {
     [SerializeField] private NavMeshAgent agent;
     [SerializeField] private Transform player;
     [SerializeField] private Transform[] patrolPoints;
-    [SerializeField, Space(5)] private AudioSource MonsterAudioSource;
-    [SerializeField] private AudioClip StalkerKill;
-    [SerializeField] private AudioClip StalkerFlashed;
+
+    [Header("Sound")] 
+    [SerializeField] private AudioSource MonsterAudioSource;
+    [SerializeField] private AudioClip killAudio;
+    [SerializeField] private AudioClip flashedAudio;
 
     [Header("Config")]
     [SerializeField] private MonsterTypeEnum monsterType;
@@ -144,7 +146,7 @@ public class BaseNavAIMonster : MonoBehaviour {
         this.isPlayerKilled = true;
 
         //Audio
-        SoundEffectManager.Instance.PlaySoundFXClip(this.StalkerKill, transform, 0.75f);
+        SoundEffectManager.Instance.PlaySoundFXClip(this.killAudio, transform, 0.75f);
 
         this.DebugInformation = "Monster is attacking the player!";
         // Implement attack logic here. trigger animation, reduce player health, etc.
@@ -237,7 +239,7 @@ public class BaseNavAIMonster : MonoBehaviour {
         UpdateStalkingAudio(false);
 
         //Audio - play flashlight hit reaction sound
-        SoundEffectManager.Instance.PlaySoundFXClip(audioClip: this.StalkerFlashed, spawmTransform: this.transform, volume: 0.75f, parentSpawnTransform: this.transform);
+        SoundEffectManager.Instance.PlaySoundFXClip(audioClip: this.flashedAudio, spawmTransform: this.transform, volume: 0.75f, parentSpawnTransform: this.transform);
 
         Debug.Log($"Monster hit by flashlight! Fleeing from {lightSourcePosition} to {this.fleeDestination}");
     }

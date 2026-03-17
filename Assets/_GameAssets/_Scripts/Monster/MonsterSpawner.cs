@@ -13,7 +13,7 @@ namespace Refactored
         [Header("Temp navigation points for spawning Stalker")]
         [SerializeField] private Transform[] stalkerPatrolPoints;
         
-        [SerializeField] private NightSettings nightSettings;
+        [SerializeField] private SO_NightSettings nightSettings;
         
         private void OnEnable()
         {
@@ -89,10 +89,6 @@ namespace Refactored
                 var navigationComponent = monster.GetComponentInChildren<BaseNavAIMonster>();
                 if (navigationComponent == null) return;
                 navigationComponent.SetPatrolPoints(stalkerPatrolPoints);
-                
-                var lightSensor = monster.GetComponentInChildren<LightSensor>();
-                if (lightSensor != null) 
-                    lightSensor.SetFlashLight(FlashLight.Instance);
             }
         }
 

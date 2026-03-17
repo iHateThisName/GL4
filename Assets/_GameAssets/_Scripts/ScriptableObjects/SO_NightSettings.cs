@@ -1,7 +1,7 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "NightSettings", menuName = "TeamSuperSimple/NightSettings", order = 0)]
-public class NightSettings : ScriptableObject
+[CreateAssetMenu(fileName = "NightSettings", menuName = "TeamSuperSimple/Night Settings", order = 0)]
+public class SO_NightSettings : ScriptableObject
 {
     // Total duration of the night in minutes. Converted to seconds internally.
     [Tooltip("Total night duration (minutes)")]
@@ -17,15 +17,7 @@ public class NightSettings : ScriptableObject
     [Tooltip("Maximum seconds before next event")]
     public float nightEventMaxTimeSeconds = 570;
     
-    [System.Serializable]
-    public struct NightEventConfig
-    {
-        [SerializeField] private GameManager.NightEventData[] events;
-        
-        public GameManager.NightEventData[] GetEvents() => this.events;
-    }
-    
-    [SerializeField] private NightEventConfig[] nightEvents;
+    [SerializeField] private SO_NightEvent[] nightEvents;
     
     public int GetFinalNight() => this.maxNights;
     
@@ -46,6 +38,6 @@ public class NightSettings : ScriptableObject
 
     public GameManager.NightEventData[] GetEventsForNight(int night)
     {
-        return this.nightEvents[night - 1].GetEvents();
+        return this.nightEvents[night - 1].GetEventData();
     }
 }

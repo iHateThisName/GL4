@@ -165,7 +165,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 198978350799082992}
-  - component: {fileID: 2578312095528045008}
+  - component: {fileID: 550460609972357289}
   - component: {fileID: 3140050388995310438}
   - component: {fileID: 5712471205608079930}
   m_Layer: 0
@@ -193,7 +193,7 @@ Transform:
   - {fileID: 199904188668991804}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: -91.828, z: 0}
---- !u!114 &2578312095528045008
+--- !u!114 &550460609972357289
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -202,26 +202,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 3179078415202894602}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 002a9710b2557b2408ad449c11401bf0, type: 3}
+  m_Script: {fileID: 11500000, guid: a8ec56b0fd9e18049b7c243bfb7f3b0b, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FlashLight
-  handleInteractable: {fileID: 5712471205608079930}
+  m_EditorClassIdentifier: Assembly-CSharp::Flashlight
+  grabInteractable: {fileID: 5712471205608079930}
   crankInteractable: {fileID: 2446850459793024294}
   lightSource: {fileID: 4685029044085830758}
-  startingLightPower: 50
-  minLightPower: 3
-  maxLightPower: 140
-  startingLightRange: 10
-  maxLightRange: 14
-  minLightRange: 6
-  detectionAngle: 60
-  lightDecayRate: 1.5
-  lightDecayTick: 6
-  flickerTime: 0
-  flickerInterval: 1
-  lowPowerThreshold: 5
-  maxRotations: 10
-  startEnabled: 1
+  flashlightSettings: {fileID: 11400000, guid: e1d80fbeeb3e27b498a6a95b85fa8a72, type: 2}
+  startEnabled: 0
 --- !u!54 &3140050388995310438
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -265,7 +253,7 @@ MonoBehaviour:
   m_Colliders:
   - {fileID: 4831633267216106991}
   m_InteractionLayers:
-    m_Bits: 1
+    m_Bits: 64
   m_DistanceCalculationMode: 1
   m_SelectMode: 0
   m_FocusMode: 1
@@ -780,7 +768,7 @@ MonoBehaviour:
   m_Colliders:
   - {fileID: 7761110050300649158}
   m_InteractionLayers:
-    m_Bits: 1
+    m_Bits: 128
   m_DistanceCalculationMode: 1
   m_SelectMode: 0
   m_FocusMode: 1
