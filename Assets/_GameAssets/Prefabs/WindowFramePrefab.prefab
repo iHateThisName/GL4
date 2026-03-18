@@ -29,6 +29,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1807107427343972303}
   - {fileID: 7694464390217599016}
   m_Father: {fileID: 1567895836604336823}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -44,6 +45,7 @@ GameObject:
   - component: {fileID: 7765759471441886368}
   - component: {fileID: 743676018423934764}
   - component: {fileID: 5550693368237763848}
+  - component: {fileID: 2896225140687992118}
   m_Layer: 0
   m_Name: Handle
   m_TagString: Untagged
@@ -60,11 +62,11 @@ Transform:
   m_GameObject: {fileID: 4763561317496736531}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.172, y: 0, z: -0.126}
+  m_LocalPosition: {x: -1.172, y: 0, z: -0.12599993}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 7694464390217599016}
+  m_Father: {fileID: 4177461410370727615}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &7765759471441886368
 BoxCollider:
@@ -109,7 +111,7 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
@@ -247,6 +249,22 @@ MonoBehaviour:
   maxBreakDistance: 10
   useHapticWarning: 1
   hapticIntensity: 0.5
+--- !u!138 &2896225140687992118
+FixedJoint:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4763561317496736531}
+  serializedVersion: 1
+  m_ConnectedBody: {fileID: 6674782989407369988}
+  m_ConnectedArticulationBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_EnableCollision: 0
+  m_EnablePreprocessing: 1
+  m_MassScale: 1
+  m_ConnectedMassScale: 1
 --- !u!1 &6516322614821744518
 GameObject:
   m_ObjectHideFlags: 0
@@ -496,7 +514,6 @@ Transform:
   m_Children:
   - {fileID: 8518816432571767072}
   - {fileID: 4238332877212090284}
-  - {fileID: 1807107427343972303}
   m_Father: {fileID: 4177461410370727615}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &3558986138903910051
@@ -657,13 +674,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::VRLever
   joint: {fileID: 2870190853020250542}
   grabInteractable: {fileID: 5550693368237763848}
-  optimizeUpdate: 0
+  optimizeUpdate: 1
   printDebug: 1
   skipStartRotationInitialization: 0
   SpringSnapForce: 3
-  startingPercentage: 0
+  startingPercentage: 100
   leaningThresholdPercentage: 50
   snapClosedPercentage: 20
   snapOpenPercentage: 80
-  invertOpenClosedState: 0
+  invertOpenClosedState: 1
   currentState: 0
