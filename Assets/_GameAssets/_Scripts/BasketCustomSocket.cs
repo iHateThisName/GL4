@@ -20,6 +20,9 @@ public class BasketCustomSocket : XRSocketInteractor
     private readonly Dictionary<IXRInteractable, Transform> selectionMap = new Dictionary<IXRInteractable, Transform>();
     private readonly HashSet<Transform> occupiedSlots = new HashSet<Transform>();
 
+    // NEW: Dictionary to store the original movement type of the firewood
+    private readonly Dictionary<IXRInteractable, XRBaseInteractable.MovementType> originalMovementTypes = new Dictionary<IXRInteractable, XRBaseInteractable.MovementType>();
+
     #region Unity Lifecycle
     protected override void Awake()
     {
@@ -77,8 +80,16 @@ public class BasketCustomSocket : XRSocketInteractor
             this.occupiedSlots.Add(target);
             this.selectionMap.Add(args.interactableObject, target);
 
-            //Audio
+            // Audio
             PlayEntrySound();
+        }
+
+        // NEW: Change movement type to Instantaneous to stop physics freakouts
+        if (args.interactableObject is XRGrabInteractable grabInteractable)
+        {
+            // Save the original movement type before changing it
+            this.originalMovementTypes[args.interactableObject] = grabInteractable.movementType;
+            grabInteractable.movementType = XRBaseInteractable.MovementType.Instantaneous;
         }
 
         base.OnSelectEntering(args);
@@ -86,11 +97,20 @@ public class BasketCustomSocket : XRSocketInteractor
 
     protected override void OnSelectExiting(SelectExitEventArgs args)
     {
-
         if (this.selectionMap.TryGetValue(args.interactableObject, out Transform target))
         {
             this.occupiedSlots.Remove(target);
             this.selectionMap.Remove(args.interactableObject);
+        }
+
+        // NEW: Restore the original movement type when removed from the basket
+        if (args.interactableObject is XRGrabInteractable grabInteractable)
+        {
+            if (this.originalMovementTypes.TryGetValue(args.interactableObject, out var originalType))
+            {
+                grabInteractable.movementType = originalType;
+                this.originalMovementTypes.Remove(args.interactableObject);
+            }
         }
 
         base.OnSelectExiting(args);
