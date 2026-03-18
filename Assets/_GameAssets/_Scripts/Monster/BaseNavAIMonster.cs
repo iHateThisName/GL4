@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -9,7 +10,7 @@ public class BaseNavAIMonster : MonoBehaviour {
 
     [Header("References")]
     [SerializeField] private NavMeshAgent agent;
-    [SerializeField] private Transform player;
+    [SerializeField] private Transform target;
     [SerializeField] private Transform[] patrolPoints;
 
     [Header("Sound")]
@@ -65,8 +66,8 @@ public class BaseNavAIMonster : MonoBehaviour {
     /// and starts the ticking coroutine.
     /// </summary>
     private void Start() {
-        if (this.player == null) {
-            this.player = GameObject.FindGameObjectWithTag("Player").transform.root;
+        if (this.target == null) {
+            this.target = GameObject.FindGameObjectWithTag("Player").transform.root;
         }
 
         // Validate NavMeshAgent reference
@@ -122,7 +123,7 @@ public class BaseNavAIMonster : MonoBehaviour {
 
     private void CheckAttackRange() {
         // Check if the monster is in attack range of the player.
-        float distanceToPlayer = Vector3.Distance(this.transform.position, this.player.position);
+        float distanceToPlayer = Vector3.Distance(this.transform.position, this.target.position);
         if (distanceToPlayer <= this.attackRange) {
             AttackPlayer();
         }
@@ -144,7 +145,16 @@ public class BaseNavAIMonster : MonoBehaviour {
     }
 
     private void IntruderNavigationLogic() {
-        StalkerNavigationLogic();
+        Debug.Log($"{this.agent.destination}");
+        return;
+        if (this.agent.destination != target.position) {
+            // Get all windows that has the state closed
+            List<WindowController> closedWindows = GameManager.Instance.GetClosedWindows();
+            WindowController targetWindow = closedWindows[UnityEngine.Random.Range(0, closedWindows.Count + 1)];
+            this.target = targetWindow.targetPosition;
+            agent.SetDestination(targetWindow.transform.position);
+        }
+
     }
 
 
@@ -162,8 +172,8 @@ public class BaseNavAIMonster : MonoBehaviour {
 
         // Check if player is outside.
         if (currentLocation == PlayerTemperatureSimulator.EnumLocationType.Cold) {
-            this.agent.SetDestination(this.player.position);
-            this.DebugInformation = $"Stalker is pursuing the player at {this.player.position}";
+            this.agent.SetDestination(this.target.position);
+            this.DebugInformation = $"Stalker is pursuing the player at {this.target.position}";
 
             //Audio
             UpdateStalkingAudio(true);

@@ -1,5 +1,7 @@
 using Assets.Scripts.Singleton;
 using Gaskellgames;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -25,7 +27,9 @@ public class GameManager : PersistenSingleton<GameManager> {
     private int eventsFired = 0;
 
     private NightEventData[] eventsToFire;
-    
+
+    public Dictionary<WindowController, VRLever.EnumLeverState> WindowsDictonary { get; private set; } = new Dictionary<WindowController, VRLever.EnumLeverState>();
+
     public float NightTime => this.nightTimer != null && this.nightTimer.IsRunning ? this.nightTimer.Elapsed : this.nightSettings.GetNightTimeInSeconds();
 
     /// <summary>
@@ -146,6 +150,21 @@ public class GameManager : PersistenSingleton<GameManager> {
     
     public int GetCurrentNight() => this.night;
 
+    public void UpdateWindowState(WindowController windowController, VRLever.EnumLeverState newSate) {
+        // update the dictionary with the new state and remove the old refrence
+        this.WindowsDictonary.Add(windowController, newSate);
+    }
+
+    public List<WindowController> GetClosedWindows() { 
+        List<WindowController> closedWindows = new List<WindowController>();
+        foreach (var kvp in this.WindowsDictonary) {
+            if (kvp.Value == VRLever.EnumLeverState.Closed) {
+                closedWindows.Add(kvp.Key);
+            }
+        }
+        return closedWindows;
+    }
+
     /// <summary>
     /// Debug helper method that logs when an event fires and when the next one is scheduled.
     /// Useful for verifying timing behavior during development.
@@ -154,6 +173,8 @@ public class GameManager : PersistenSingleton<GameManager> {
     {
         //Debug.Log($"Event fired at {eventData}"); Yes is working relax.
     }
+
+
 
     [System.Serializable]
     public enum EventType
