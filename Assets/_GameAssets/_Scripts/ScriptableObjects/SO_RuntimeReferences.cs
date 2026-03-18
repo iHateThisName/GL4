@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 /// <summary>
@@ -14,6 +15,8 @@ public class SO_RuntimeReferences : SO_RuntimeScriptableObject
     // Cached reference to the Radio, set at runtime
     [System.NonSerialized] private Radio radio;
 
+    [System.NonSerialized] private readonly System.Collections.Generic.List<WindowController>  windows;
+
     /// <summary>
     /// Gets or sets the runtime reference to the player's Transform.
     /// </summary>
@@ -23,6 +26,28 @@ public class SO_RuntimeReferences : SO_RuntimeScriptableObject
     /// Gets or sets the runtime reference to the Radio.
     /// </summary>
     public Radio Radio { get => this.radio; set => this.radio = value; }
+    
+    /// <summary>
+    /// Gets the runtime reference to the windows.
+    /// </summary>
+    public WindowController[] Windows => this.windows.ToArray();
+    
+    /// <summary>
+    /// Adds a runtime reference for a window.
+    /// </summary>
+    public void RegisterWindow(WindowController window) => this.windows.Add(window);
+    
+    /// <summary>
+    /// Removes a runtime reference for a window.
+    /// </summary>
+    public void DeregisterWindow(WindowController window) => this.windows.Remove(window);
+
+    /// <summary>
+    /// Gets only the closed windows.
+    /// </summary>
+    public WindowController[] ClosedWindows =>
+        Windows?.Where(w => w != null && w.GetCurrentWindowState() == VRLever.EnumLeverState.Closed).ToArray()
+        ?? System.Array.Empty<WindowController>();
 
     /// <summary>
     /// Clears all runtime references so the SO starts clean each play session.

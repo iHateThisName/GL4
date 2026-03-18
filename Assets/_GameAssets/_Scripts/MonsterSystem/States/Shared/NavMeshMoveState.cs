@@ -24,7 +24,9 @@ namespace MonsterSystem
             ClosestToSelf,
             FurthestFromTarget,
             Random,
-            Sequential
+            Sequential,
+            ClosestClosedWindow,
+            RandomClosedWindow,
         }
 
         [SerializeField] private NavMeshAgent agent;
@@ -41,6 +43,9 @@ namespace MonsterSystem
         [Header("GoToPoint")]
         [SerializeField] private SO_NavMeshMoveConfig moveConfig;
         [SerializeField] private PointSelection selectionStrategy;
+
+        [Header("Window Selection")]
+        [SerializeField] private SO_RuntimeReferences runtimeReferences;
 
         [Header("Audio")]
         [SerializeField] private AudioClip stateAudio;
@@ -195,6 +200,12 @@ namespace MonsterSystem
                 case PointSelection.Sequential:
                     destination = this.resolvedPoints[this.sequentialIndex % this.resolvedPoints.Length];
                     break;
+                case PointSelection.ClosestClosedWindow:
+                    destination = GetClosestClosedWindow();
+                    break;
+                case PointSelection.RandomClosedWindow:
+                    destination = GetRandomClosedWindow();
+                    break;
                 default:
                     destination = this.resolvedPoints[Random.Range(0, this.resolvedPoints.Length)];
                     break;
@@ -237,6 +248,46 @@ namespace MonsterSystem
                 }
             }
             return furthest;
+        }
+
+        private Vector3 GetClosestClosedWindow()
+        {
+            var closedWindows = this.runtimeReferences?.ClosedWindows;
+            if (closedWindows == null || closedWindows.Length == 0)
+            {
+                Debug.LogWarning("[NavMeshMoveState] No closed windows found!", this);
+                return this.controller.transform.position;
+            }
+
+            WindowController closest = closedWindows[0];
+            float closestDist = float.MaxValue;
+
+            for (int i = 0; i < closedWindows.Length; i++)
+            {
+                if (closedWindows[i].targetPosition == null) continue;
+
+                float dist = Vector3.Distance(this.controller.transform.position, closedWindows[i].targetPosition.position);
+                if (dist < closestDist)
+                {
+                    closestDist = dist;
+                    closest = closedWindows[i];
+                }
+            }
+
+            return closest.targetPosition != null ? closest.targetPosition.position : this.controller.transform.position;
+        }
+
+        private Vector3 GetRandomClosedWindow()
+        {
+            var closedWindows = this.runtimeReferences?.ClosedWindows;
+            if (closedWindows == null || closedWindows.Length == 0)
+            {
+                Debug.LogWarning("[NavMeshMoveState] No closed windows found!", this);
+                return this.controller.transform.position;
+            }
+
+            var window = closedWindows[Random.Range(0, closedWindows.Length)];
+            return window.targetPosition != null ? window.targetPosition.position : this.controller.transform.position;
         }
     }
 }
