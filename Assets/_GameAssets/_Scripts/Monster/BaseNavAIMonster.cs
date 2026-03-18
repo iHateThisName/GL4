@@ -12,7 +12,7 @@ public class BaseNavAIMonster : MonoBehaviour {
     [SerializeField] private Transform player;
     [SerializeField] private Transform[] patrolPoints;
 
-    [Header("Sound")] 
+    [Header("Sound")]
     [SerializeField] private AudioSource MonsterAudioSource;
     [SerializeField] private AudioClip killAudio;
     [SerializeField] private AudioClip flashedAudio;
@@ -43,7 +43,7 @@ public class BaseNavAIMonster : MonoBehaviour {
     private Vector3 fleeDestination;
 
     [System.Serializable]
-    public enum MonsterTypeEnum { None, Stalker, Munch }
+    public enum MonsterTypeEnum { None, Stalker, Munch, Intruder }
 
     #region Unity Lifecycle
     /// <summary>
@@ -136,23 +136,17 @@ public class BaseNavAIMonster : MonoBehaviour {
         switch (monsterType) {
             case MonsterTypeEnum.Stalker:
                 return StalkerNavigationLogic;
+            case MonsterTypeEnum.Intruder:
+                return IntruderNavigationLogic;
             default:
                 return () => { Debug.LogWarning($"The logic for the selected monster {this.monsterType} is missing."); };
         }
     }
 
-    private void AttackPlayer() {
-        if (this.isPlayerKilled) return; // Prevent multiple attack triggers if the player is already killed.
-        this.isPlayerKilled = true;
-
-        //Audio
-        SoundEffectManager.Instance.PlaySoundFXClip(this.killAudio, transform, 0.75f);
-
-        this.DebugInformation = "Monster is attacking the player!";
-        // Implement attack logic here. trigger animation, reduce player health, etc.
-        Debug.Log("Monster is attacking the player!");
-        DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Monster, completelyRestart: false);
+    private void IntruderNavigationLogic() {
+        StalkerNavigationLogic();
     }
+
 
     /// <summary>
     /// Implements the stalker behavior pattern for the monster.
@@ -193,6 +187,18 @@ public class BaseNavAIMonster : MonoBehaviour {
             }
             this.DebugInformation = $"Stalker is idle moving towards {this.agent.destination}";
         }
+    }
+    private void AttackPlayer() {
+        if (this.isPlayerKilled) return; // Prevent multiple attack triggers if the player is already killed.
+        this.isPlayerKilled = true;
+
+        //Audio
+        SoundEffectManager.Instance.PlaySoundFXClip(this.killAudio, transform, 0.75f);
+
+        this.DebugInformation = "Monster is attacking the player!";
+        // Implement attack logic here. trigger animation, reduce player health, etc.
+        Debug.Log("Monster is attacking the player!");
+        DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Monster, completelyRestart: false);
     }
 
     private void UpdateStalkingAudio(bool isStalking) {
