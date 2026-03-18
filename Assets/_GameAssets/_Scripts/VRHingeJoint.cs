@@ -132,6 +132,7 @@ public class VRLever : MonoBehaviour {
 
         float targetClosed = this.invertOpenClosedState ? this.joint.limits.max : this.joint.limits.min;
         float targetOpen = this.invertOpenClosedState ? this.joint.limits.min : this.joint.limits.max;
+        Debug.Log($"{((currentState == EnumLeverState.Closed || currentState == EnumLeverState.LeaningClosed) ? targetClosed : targetOpen)}");
 
         return new JointSpring {
             spring = (currentState == EnumLeverState.Closed || currentState == EnumLeverState.Open) ? (float)this.SpringSnapForce : this.originalSpring.spring,

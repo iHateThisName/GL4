@@ -152,6 +152,7 @@ public class GameManager : PersistenSingleton<GameManager> {
 
     public void UpdateWindowState(WindowController windowController, VRLever.EnumLeverState newSate) {
         // update the dictionary with the new state and remove the old refrence
+        this.WindowsDictonary.Remove(windowController);
         this.WindowsDictonary.Add(windowController, newSate);
     }
 
