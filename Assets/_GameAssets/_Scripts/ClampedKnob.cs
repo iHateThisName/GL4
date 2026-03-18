@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit;
@@ -7,7 +6,7 @@ using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
 /// <summary>
 /// A clamped, snapping XR knob that rotates around its local forward (Z) axis.
-/// Outputs a normalized value (0-1) based on rotation.
+/// Outputs a normalized value (0-1) and current step index.
 /// Uses delta-based tracking to avoid accumulation/buffer problems.
 /// </summary>
 public class ClampedKnob : XRBaseInteractable
@@ -17,31 +16,34 @@ public class ClampedKnob : XRBaseInteractable
      * ======================= */
 
     [Header("Knob Settings")]
-    [SerializeField]
     [Tooltip("The transform that visually rotates. If null, uses this transform.")]
-    private Transform handle;
+    [SerializeField] private Transform handle;
 
-    [SerializeField]
     [Tooltip("Rotation angle at value 0 (left limit)")]
-    private float minAngle = -140f;
+    [SerializeField] private float minAngle = -140f;
 
-    [SerializeField]
     [Tooltip("Rotation angle at value 1 (right limit)")]
-    private float maxAngle = 140f;
+    [SerializeField] private float maxAngle = 140f;
 
-    [SerializeField]
-    [Tooltip("Starting normalized value (0-1)")]
-    [Range(0f, 1f)]
-    private float startingValue = 0.5f;
+    [Tooltip("Invert the rotation direction")]
+    [SerializeField] private bool invertRotation = false;
 
-    [Header("Snapping")]
-    [SerializeField]
-    [Tooltip("Number of snap positions. Set to 0 for smooth rotation.")]
-    private int snapPositions = 0;
+    [Tooltip("Maximum rotation per frame (prevents wrap-around jumps)")]
+    [SerializeField] private float maxDeltaPerFrame = 45f;
+
+    [Header("Steps")]
+    [Tooltip("Number of discrete positions/channels. Must be >= 2.")]
+    [SerializeField] private int steps = 10;
+
+    [Header("Editor Testing")]
+    [Tooltip("Amount to rotate when using context menu (degrees)")]
+    [SerializeField] private float debugRotationStep = 30f;
+
+    [Tooltip("How far forward to draw the gizmo arc")]
+    [SerializeField] private float gizmoForwardOffset = 0.1f;
 
     [Header("Events")]
-    [SerializeField]
-    private UnityEvent<float> onValueChanged = new UnityEvent<float>();
+    [SerializeField] private UnityEvent<int> onStepChanged = new UnityEvent<int>();
 
     /* =======================
      * Private Fields
@@ -50,6 +52,7 @@ public class ClampedKnob : XRBaseInteractable
     private IXRSelectInteractor interactor;
     private Vector3 lastProjectedDir;
     private float currentAngle;
+    private int currentStep = -1;
 
     /* =======================
      * Properties
@@ -61,8 +64,24 @@ public class ClampedKnob : XRBaseInteractable
     /// <summary>Current rotation angle in degrees</summary>
     public float Angle => currentAngle;
 
-    /// <summary>Event fired when value changes</summary>
-    public UnityEvent<float> OnValueChanged => onValueChanged;
+    /// <summary>Current step index (0 to Steps-1)</summary>
+    public int CurrentStep => currentStep;
+
+    /// <summary>Total number of steps</summary>
+    public int Steps
+    {
+        get => steps;
+        set => steps = Mathf.Max(2, value);
+    }
+
+    /// <summary>The step index that corresponds to angle 0</summary>
+    public int StepAtAngleZero => AngleToStep(0f);
+
+    /// <summary>Angle increment per step</summary>
+    public float AnglePerStep => (maxAngle - minAngle) / (steps - 1);
+
+    /// <summary>Event fired when step changes</summary>
+    public UnityEvent<int> OnStepChanged => onStepChanged;
 
     /// <summary>The visual handle transform</summary>
     public Transform Handle
@@ -83,14 +102,12 @@ public class ClampedKnob : XRBaseInteractable
         {
             handle = transform;
         }
-    }
 
-    private void Start()
-    {
-        // Initialize from starting value
-        currentAngle = ValueToAngle(startingValue);
-        ApplySnapping(ref currentAngle);
+        // Initialize to angle 0 in Awake, so Radio.Start() can override it
+        currentAngle = 0f;
+        SnapToNearestStep();
         UpdateVisual();
+        currentStep = AngleToStep(currentAngle);
     }
 
     protected override void OnEnable()
@@ -161,11 +178,20 @@ public class ClampedKnob : XRBaseInteractable
 
         if (Mathf.Abs(delta) < 0.001f) return;
 
+        // Clamp delta to prevent wrap-around jumps (e.g., -180 to 180)
+        delta = Mathf.Clamp(delta, -maxDeltaPerFrame, maxDeltaPerFrame);
+
+        // Invert rotation direction if needed
+        if (invertRotation)
+        {
+            delta = -delta;
+        }
+
         // Calculate new angle with clamping
         float newAngle = Mathf.Clamp(currentAngle + delta, minAngle, maxAngle);
 
         // Apply snapping
-        ApplySnapping(ref newAngle);
+        SnapAngle(ref newAngle);
 
         // Ensure still within bounds after snapping
         newAngle = Mathf.Clamp(newAngle, minAngle, maxAngle);
@@ -174,18 +200,51 @@ public class ClampedKnob : XRBaseInteractable
 
         currentAngle = newAngle;
         UpdateVisual();
-        onValueChanged.Invoke(Value);
+
+        // Check if step changed
+        int newStep = AngleToStep(currentAngle);
+        if (newStep != currentStep)
+        {
+            currentStep = newStep;
+            onStepChanged.Invoke(currentStep);
+        }
     }
 
-    private void ApplySnapping(ref float angle)
+    private void SnapAngle(ref float angle)
     {
-        if (snapPositions <= 1) return;
+        if (steps <= 1) return;
 
         float range = maxAngle - minAngle;
-        float snapAngle = range / (snapPositions - 1);
+        float stepAngle = range / (steps - 1);
         float normalized = (angle - minAngle) / range;
-        int snapIndex = Mathf.RoundToInt(normalized * (snapPositions - 1));
-        angle = minAngle + snapIndex * snapAngle;
+        int stepIndex = Mathf.RoundToInt(normalized * (steps - 1));
+        angle = minAngle + stepIndex * stepAngle;
+    }
+
+    private void SnapToNearestStep()
+    {
+        SnapAngle(ref currentAngle);
+        currentAngle = Mathf.Clamp(currentAngle, minAngle, maxAngle);
+    }
+
+    private int AngleToStep(float angle)
+    {
+        if (steps <= 1) return 0;
+
+        float range = maxAngle - minAngle;
+        float normalized = (angle - minAngle) / range;
+        int stepIndex = Mathf.RoundToInt(normalized * (steps - 1));
+        return Mathf.Clamp(stepIndex, 0, steps - 1);
+    }
+
+    private float StepToAngle(int step)
+    {
+        if (steps <= 1) return minAngle;
+
+        step = Mathf.Clamp(step, 0, steps - 1);
+        float range = maxAngle - minAngle;
+        float stepAngle = range / (steps - 1);
+        return minAngle + step * stepAngle;
     }
 
     /* =======================
@@ -244,15 +303,37 @@ public class ClampedKnob : XRBaseInteractable
      * ======================= */
 
     /// <summary>
+    /// Sets the knob to a specific step index.
+    /// </summary>
+    public void SetStep(int step)
+    {
+        step = Mathf.Clamp(step, 0, steps - 1);
+        currentAngle = StepToAngle(step);
+        UpdateVisual();
+
+        if (step != currentStep)
+        {
+            currentStep = step;
+            onStepChanged.Invoke(currentStep);
+        }
+    }
+
+    /// <summary>
     /// Sets the knob to a specific normalized value (0-1).
     /// </summary>
     public void SetValue(float value)
     {
         value = Mathf.Clamp01(value);
         currentAngle = ValueToAngle(value);
-        ApplySnapping(ref currentAngle);
+        SnapToNearestStep();
         UpdateVisual();
-        onValueChanged.Invoke(Value);
+
+        int newStep = AngleToStep(currentAngle);
+        if (newStep != currentStep)
+        {
+            currentStep = newStep;
+            onStepChanged.Invoke(currentStep);
+        }
     }
 
     /// <summary>
@@ -261,9 +342,15 @@ public class ClampedKnob : XRBaseInteractable
     public void SetAngle(float angle)
     {
         currentAngle = Mathf.Clamp(angle, minAngle, maxAngle);
-        ApplySnapping(ref currentAngle);
+        SnapToNearestStep();
         UpdateVisual();
-        onValueChanged.Invoke(Value);
+
+        int newStep = AngleToStep(currentAngle);
+        if (newStep != currentStep)
+        {
+            currentStep = newStep;
+            onStepChanged.Invoke(currentStep);
+        }
     }
 
     /* =======================
@@ -277,38 +364,67 @@ public class ClampedKnob : XRBaseInteractable
             minAngle = maxAngle;
         }
 
-        if (snapPositions < 0)
+        if (steps < 2)
         {
-            snapPositions = 0;
+            steps = 2;
         }
     }
 
     private void OnDrawGizmosSelected()
     {
-        Vector3 center = transform.position;
-        Vector3 forward = transform.forward;
-        Vector3 right = transform.right;
+        // Use world axes so the gizmo stays static
+        // Up is the 0° direction (12 o'clock), forward is the rotation axis
+        Vector3 forward = Vector3.forward;
+        Vector3 up = Vector3.up;
+        Vector3 center = transform.position + transform.forward * gizmoForwardOffset;
 
         float radius = 0.05f;
 
-        // Draw min angle
+        // Draw min angle (left limit) - red line
         Gizmos.color = Color.red;
-        Vector3 minDir = Quaternion.AngleAxis(-minAngle, forward) * right;
+        Vector3 minDir = Quaternion.AngleAxis(minAngle, forward) * up;
         Gizmos.DrawLine(center, center + minDir * radius);
 
-        // Draw max angle
+        // Draw max angle (right limit) - green line
         Gizmos.color = Color.green;
-        Vector3 maxDir = Quaternion.AngleAxis(-maxAngle, forward) * right;
+        Vector3 maxDir = Quaternion.AngleAxis(maxAngle, forward) * up;
         Gizmos.DrawLine(center, center + maxDir * radius);
 
-        // Draw current angle
+        // Draw zero/center angle - white line (12 o'clock)
+        Gizmos.color = Color.white;
+        Gizmos.DrawLine(center, center + up * radius * 0.8f);
+
+        // Draw step positions - dots with current step highlighted
+        if (steps >= 2)
+        {
+            for (int i = 0; i < steps; i++)
+            {
+                float stepAngle = StepToAngle(i);
+                Vector3 stepDir = Quaternion.AngleAxis(stepAngle, forward) * up;
+
+                if (i == currentStep)
+                {
+                    // Current step - larger yellow/orange sphere
+                    Gizmos.color = new Color(1f, 0.6f, 0f); // Orange
+                    Gizmos.DrawSphere(center + stepDir * radius, 0.004f);
+                }
+                else
+                {
+                    // Other steps - small cyan dots
+                    Gizmos.color = Color.cyan;
+                    Gizmos.DrawSphere(center + stepDir * radius, 0.002f);
+                }
+            }
+        }
+
+        // Draw current angle - yellow line (longer)
         Gizmos.color = Color.yellow;
-        Vector3 currentDir = Quaternion.AngleAxis(-currentAngle, forward) * right;
+        Vector3 currentDir = Quaternion.AngleAxis(currentAngle, forward) * up;
         Gizmos.DrawLine(center, center + currentDir * radius * 1.2f);
 
-        // Draw arc
-        Gizmos.color = new Color(0f, 1f, 0f, 0.3f);
-        DrawArc(center, forward, right, minAngle, maxAngle, radius);
+        // Draw arc showing valid rotation range
+        Gizmos.color = new Color(0f, 1f, 1f, 0.3f);
+        DrawArc(center, forward, up, minAngle, maxAngle, radius);
     }
 
     private void DrawArc(Vector3 center, Vector3 axis, Vector3 startDir, float fromAngle, float toAngle, float radius)
@@ -321,10 +437,103 @@ public class ClampedKnob : XRBaseInteractable
             float a1 = fromAngle + (i / (float)segments) * angleRange;
             float a2 = fromAngle + ((i + 1) / (float)segments) * angleRange;
 
-            Vector3 p1 = center + Quaternion.AngleAxis(-a1, axis) * startDir * radius;
-            Vector3 p2 = center + Quaternion.AngleAxis(-a2, axis) * startDir * radius;
+            Vector3 p1 = center + Quaternion.AngleAxis(a1, axis) * startDir * radius;
+            Vector3 p2 = center + Quaternion.AngleAxis(a2, axis) * startDir * radius;
 
             Gizmos.DrawLine(p1, p2);
         }
+    }
+
+    /* =======================
+     * Context Menu (Editor Testing)
+     * ======================= */
+
+    [ContextMenu("Rotate Left")]
+    private void DebugRotateLeft()
+    {
+        DebugRotate(-GetDebugStep());
+    }
+
+    [ContextMenu("Rotate Right")]
+    private void DebugRotateRight()
+    {
+        DebugRotate(GetDebugStep());
+    }
+
+    [ContextMenu("Set to Angle Zero")]
+    private void DebugSetToAngleZero()
+    {
+        DebugSetAngle(0f);
+    }
+
+    [ContextMenu("Next Step")]
+    private void DebugNextStep()
+    {
+        int nextStep = Mathf.Min(currentStep + 1, steps - 1);
+        SetStep(nextStep);
+        Debug.Log($"[ClampedKnob] Step: {currentStep} | Angle: {currentAngle:F1}°");
+    }
+
+    [ContextMenu("Previous Step")]
+    private void DebugPrevStep()
+    {
+        int prevStep = Mathf.Max(currentStep - 1, 0);
+        SetStep(prevStep);
+        Debug.Log($"[ClampedKnob] Step: {currentStep} | Angle: {currentAngle:F1}°");
+    }
+
+    [ContextMenu("Set to Step at Angle Zero")]
+    private void DebugSetToStepAtAngleZero()
+    {
+        SetStep(StepAtAngleZero);
+        Debug.Log($"[ClampedKnob] Step at angle 0: {StepAtAngleZero} | Angle: {currentAngle:F1}°");
+    }
+
+    private float GetDebugStep()
+    {
+        return debugRotationStep > 0f ? debugRotationStep : 30f;
+    }
+
+    private void DebugRotate(float delta)
+    {
+        float newAngle = Mathf.Clamp(currentAngle + delta, minAngle, maxAngle);
+        SnapAngle(ref newAngle);
+        newAngle = Mathf.Clamp(newAngle, minAngle, maxAngle);
+
+        if (Mathf.Approximately(newAngle, currentAngle)) return;
+
+        currentAngle = newAngle;
+        UpdateVisual();
+
+        int newStep = AngleToStep(currentAngle);
+        if (newStep != currentStep)
+        {
+            currentStep = newStep;
+            if (Application.isPlaying)
+            {
+                onStepChanged.Invoke(currentStep);
+            }
+        }
+
+        Debug.Log($"[ClampedKnob] Step: {currentStep} | Angle: {currentAngle:F1}°");
+    }
+
+    private void DebugSetAngle(float angle)
+    {
+        currentAngle = Mathf.Clamp(angle, minAngle, maxAngle);
+        SnapToNearestStep();
+        UpdateVisual();
+
+        int newStep = AngleToStep(currentAngle);
+        if (newStep != currentStep)
+        {
+            currentStep = newStep;
+            if (Application.isPlaying)
+            {
+                onStepChanged.Invoke(currentStep);
+            }
+        }
+
+        Debug.Log($"[ClampedKnob] Step: {currentStep} | Angle: {currentAngle:F1}°");
     }
 }

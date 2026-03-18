@@ -8,6 +8,7 @@ namespace MonsterSystem
 
         protected MonsterController controller;
         private bool hasTriggeredTransition;
+        private bool hasStarted;
 
         /// <summary>
         /// Time elapsed since the last tick. Use this for time-based calculations.
@@ -27,6 +28,31 @@ namespace MonsterSystem
         {
             this.controller = owningMonster;
         }
+
+        protected virtual void Start()
+        {
+            hasStarted = true;
+            Subscribe();
+        }
+
+        protected virtual void OnEnable()
+        {
+            // Only subscribe in OnEnable if Start has already run (re-enabling)
+            if (hasStarted)
+                Subscribe();
+        }
+
+        protected virtual void OnDisable() => Unsubscribe();
+
+        /// <summary>
+        /// Override to subscribe to events. Called in Start and on re-enable.
+        /// </summary>
+        protected virtual void Subscribe() { }
+
+        /// <summary>
+        /// Override to unsubscribe from events. Called in OnDisable.
+        /// </summary>
+        protected virtual void Unsubscribe() { }
 
         /// <summary>
         /// Called when the monster transitions to a new state.

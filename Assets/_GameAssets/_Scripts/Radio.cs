@@ -1,212 +1,172 @@
+using System;
 using UnityEngine;
-using UnityEngine.Events;
 using TMPro;
 
 public class Radio : MonoBehaviour
 {
-    /* =======================
-     * Serialized Fields
-     * ======================= */
-
-    [Header("Knob Reference")]
+    [Header("References")]
     [SerializeField] private ClampedKnob knob;
+    [SerializeField] private SO_RuntimeReferences runtimeReferences;
+    [SerializeField] private TextMeshProUGUI channelText;
 
     [Header("Channel Settings")]
-    [SerializeField] private int totalChannels = 5;
-    [SerializeField] private int safeChannel = 2;
+    [Tooltip("If true, Radio sets the knob's steps to match totalChannels. If false, uses the knob's existing steps.")]
+    [SerializeField] private bool overrideKnobSteps = true;
+    [Tooltip("Number of channels. Only used if overrideKnobSteps is true.")]
+    [SerializeField] private int totalChannels = 9;
+    [Tooltip("The safe channel (1-indexed). Use 0 to auto-select the channel at angle 0.")]
+    [SerializeField] private int safeChannel = 0;
+    [Tooltip("Prefix added to channel for display (e.g., 88 shows channels as 89, 90, 91...)")]
     [SerializeField] private int channelPrefix = 88;
+    [Tooltip("Channel to start on (1-indexed). Use 0 to start at the channel closest to angle 0.")]
+    [SerializeField] private int startingChannel = 0;
 
-    [Header("Debug UI")]
-    [SerializeField] private TMP_Text debugChannelText;
-    [SerializeField] private bool showDebugUI = true;
+    // Internal channel is 0-indexed (matches knob.CurrentStep)
+    private int currentChannelInternal = -1;
+    // Resolved safe channel is 0-indexed
+    private int resolvedSafeChannelInternal;
+    // Whether currently tuned to the safe channel</summary>
+    private bool isOnSafeChannel;
+    
+    /// <summary>
+    /// C# Action fired when channel changes. Parameters: (channel 1-indexed, isSafe)
+    /// </summary>
+    public event Action<int, bool> OnChannelChanged;
+    
+    private void Awake()
+    {
+        // Register this Radio in RuntimeReferences
+        if (runtimeReferences != null)
+            runtimeReferences.Radio = this;
 
-    [Header("Events")]
-    public UnityEvent<int> OnChannelChanged;
-    public UnityEvent OnTunedToSafeChannel;
-    public UnityEvent OnTunedAwayFromSafeChannel;
-
-    /* =======================
-     * Private Fields
-     * ======================= */
-
-    private int currentChannel = -1;
-    private bool wasOnSafeChannel;
-
-    /* =======================
-     * Properties
-     * ======================= */
-
-    /// <summary>Current channel index (0 to totalChannels-1)</summary>
-    public int CurrentChannel => currentChannel;
-
-    /// <summary>Current channel with prefix (e.g., 88, 89, 90...)</summary>
-    public int CurrentFrequency => channelPrefix + currentChannel;
-
-    /// <summary>Whether currently tuned to the safe channel</summary>
-    public bool IsOnSafeChannel => currentChannel == safeChannel;
-
-    /// <summary>Total number of channels</summary>
-    public int TotalChannels => totalChannels;
-
-    /// <summary>The safe channel index</summary>
-    public int SafeChannel => safeChannel;
-
-    /* =======================
-     * Unity Lifecycle
-     * ======================= */
+        // Set knob steps before anything else initializes
+        if (knob != null && overrideKnobSteps)
+            knob.Steps = totalChannels;
+    }
 
     private void OnEnable()
     {
         if (knob != null)
-        {
-            knob.OnValueChanged.AddListener(OnKnobValueChanged);
-        }
+            knob.OnStepChanged.AddListener(OnKnobStepChanged);
     }
 
     private void OnDisable()
     {
         if (knob != null)
-        {
-            knob.OnValueChanged.RemoveListener(OnKnobValueChanged);
-        }
+            knob.OnStepChanged.RemoveListener(OnKnobStepChanged);
     }
 
     private void Start()
     {
-        // Initialize channel from knob's current value
-        if (knob != null)
+        if (knob == null)
         {
-            UpdateChannelFromValue(knob.Value);
+            Debug.LogError("[Radio] No ClampedKnob assigned!", this);
+            return;
         }
 
-        wasOnSafeChannel = IsOnSafeChannel;
-        UpdateDebugUI();
-    }
+        // Resolve safe channel (0 means use center channel)
+        // Convert from 1-indexed input to 0-indexed internal
+        if (safeChannel <= 0) resolvedSafeChannelInternal = knob.StepAtAngleZero;
+        else resolvedSafeChannelInternal = safeChannel - 1;
+        
+        resolvedSafeChannelInternal = Mathf.Clamp(resolvedSafeChannelInternal, 0, knob.Steps - 1);
 
-    /* =======================
-     * Knob Callback
-     * ======================= */
+        // Resolve starting channel (0 means use center channel)
+        // Convert from 1-indexed input to 0-indexed internal
+        int resolvedStartingInternal;
+        
+        if (startingChannel <= 0) resolvedStartingInternal = knob.StepAtAngleZero;
+        else resolvedStartingInternal = startingChannel - 1;
+        
+        resolvedStartingInternal = Mathf.Clamp(resolvedStartingInternal, 0, knob.Steps - 1);
 
-    private void OnKnobValueChanged(float value)
-    {
-        UpdateChannelFromValue(value);
-    }
+        // Set knob to starting channel (0-indexed)
+        knob.SetStep(resolvedStartingInternal);
+        currentChannelInternal = knob.CurrentStep;
 
-    private void UpdateChannelFromValue(float normalizedValue)
-    {
-        // Map normalized value (0-1) to channel index (0 to totalChannels-1)
-        int newChannel = Mathf.FloorToInt(normalizedValue * totalChannels);
-
-        // Handle edge case: when value = 1, we want the last channel
-        newChannel = Mathf.Clamp(newChannel, 0, totalChannels - 1);
-
-        if (newChannel == currentChannel) return;
-
-        currentChannel = newChannel;
-
-        // Fire channel changed event
-        OnChannelChanged?.Invoke(currentChannel);
-
-        // Check safe channel transitions
-        bool isNowOnSafe = IsOnSafeChannel;
-
-        if (isNowOnSafe && !wasOnSafeChannel)
-        {
-            OnTunedToSafeChannel?.Invoke();
-        }
-        else if (!isNowOnSafe && wasOnSafeChannel)
-        {
-            OnTunedAwayFromSafeChannel?.Invoke();
-        }
-
-        wasOnSafeChannel = isNowOnSafe;
+        // Set initial safe channel state
+        isOnSafeChannel = IsOnChannel(SafeChannel);
 
         UpdateDebugUI();
     }
 
-    /* =======================
-     * Debug UI
-     * ======================= */
-
-    private void UpdateDebugUI()
+    private void OnKnobStepChanged(int step)
     {
-        if (debugChannelText == null || !showDebugUI) return;
-
-        string safeIndicator = IsOnSafeChannel ? " [SAFE]" : "";
-        debugChannelText.text = $"CH: {CurrentFrequency}{safeIndicator}";
+        ApplyChannel(step);
     }
 
     /// <summary>
-    /// Toggles debug UI visibility at runtime.
-    /// </summary>
-    public void SetDebugUIVisible(bool visible)
-    {
-        showDebugUI = visible;
-
-        if (debugChannelText != null)
-        {
-            debugChannelText.gameObject.SetActive(visible);
-        }
-
-        if (visible)
-        {
-            UpdateDebugUI();
-        }
-    }
-
-    /* =======================
-     * Public API
-     * ======================= */
-
-    /// <summary>
-    /// Sets the radio to a specific channel via the knob.
+    /// Sets the radio to a specific channel (1-indexed).
     /// </summary>
     public void SetChannel(int channel)
     {
         if (knob == null) return;
 
-        channel = Mathf.Clamp(channel, 0, totalChannels - 1);
+        // Convert 1-indexed to 0-indexed and set knob
+        int step = Mathf.Clamp(channel - 1, 0, knob.Steps - 1);
+        knob.SetStep(step);
 
-        // Calculate normalized value for the center of this channel
-        float normalizedValue = (channel + 0.5f) / totalChannels;
-        knob.SetValue(normalizedValue);
+        // Apply will be called via OnKnobStepChanged from the knob's event
     }
 
-    /// <summary>
-    /// Sets the radio to the safe channel.
-    /// </summary>
-    public void TuneToSafeChannel()
+    private void ApplyChannel(int stepInternal)
     {
-        SetChannel(safeChannel);
+        if (stepInternal == currentChannelInternal) return;
+
+        currentChannelInternal = stepInternal;
+        isOnSafeChannel = IsOnChannel(SafeChannel);
+
+        OnChannelChanged?.Invoke(CurrentChannel, isOnSafeChannel);
+        UpdateDebugUI();
+    }
+
+    private void UpdateDebugUI()
+    {
+        if (channelText == null) return;
+        channelText.text = $"CH: {CurrentFrequency}";
     }
 
     /// <summary>
-    /// Checks if currently on a specific channel.
+    /// Checks if currently on a specific channel (1-indexed).
     /// </summary>
     public bool IsOnChannel(int channel)
     {
-        return currentChannel == channel;
+        return CurrentChannel == channel;
     }
-
-    /// <summary>
-    /// Checks if NOT on a specific channel.
-    /// </summary>
-    public bool IsNotOnChannel(int channel)
-    {
-        return currentChannel != channel;
-    }
-
-    /* =======================
-     * Editor
-     * ======================= */
 
     private void OnValidate()
     {
-        if (totalChannels < 1)
-        {
-            totalChannels = 1;
-        }
+        if (totalChannels < 2) 
+            totalChannels = 2;
 
-        safeChannel = Mathf.Clamp(safeChannel, 0, totalChannels - 1);
+        int maxChannel = overrideKnobSteps ? totalChannels : (knob != null ? knob.Steps : totalChannels);
+
+        // Clamp 1-indexed values (1 to maxChannel, or 0 for auto)
+        if (safeChannel > maxChannel) safeChannel = maxChannel;
+        else if (safeChannel < 0) safeChannel = 0;
+
+        if (startingChannel > maxChannel) startingChannel = maxChannel;
+        else if (startingChannel < 0) startingChannel = 0;
+
+        // Apply to knob in editor if override is enabled
+        if (knob != null && overrideKnobSteps)
+            knob.Steps = totalChannels;
     }
+
+    #region Getters
+    /// <summary>Current channel (1-indexed, 1 to TotalChannels)</summary>
+    public int CurrentChannel => currentChannelInternal + 1;
+
+    /// <summary>Current channel with prefix (e.g., 89, 90, 91...)</summary>
+    public int CurrentFrequency => channelPrefix + CurrentChannel;
+
+    /// <summary>Total number of channels</summary>
+    public int TotalChannels => overrideKnobSteps ? totalChannels : (knob != null ? knob.Steps : 0);
+
+    /// <summary>The safe channel (1-indexed)</summary>
+    public int SafeChannel => resolvedSafeChannelInternal + 1;
+
+    /// <summary>The channel that corresponds to angle 0 on the knob (1-indexed)</summary>
+    public int CenterChannel => knob != null ? knob.StepAtAngleZero + 1 : 1;
+    #endregion
 }

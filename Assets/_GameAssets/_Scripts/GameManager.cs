@@ -160,6 +160,7 @@ public class GameManager : PersistenSingleton<GameManager> {
     {
         SpawnMonster,
         SpawnFood,
+        DisruptRadio,
     }
     
     [System.Serializable]

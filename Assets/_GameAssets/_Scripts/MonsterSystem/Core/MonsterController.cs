@@ -43,31 +43,37 @@ namespace MonsterSystem
             // Auto-collect sensors from this GO and children
             sensors = GetComponentsInChildren<MonsterSensor>(true);
 
-            // Disable all states and initialize for caching controller
+            // Disable all state GameObjects immediately
             for (int i = states.Length - 1; i >= 0; i--)
             {
-                var state = states[i];
-                state.Initialize(this);
-                state.gameObject.SetActive(false);
+                states[i].gameObject.SetActive(false);
+            }
+        }
+
+        private void Start()
+        {
+            // Initialize states and sensors in Start so all Awake methods have completed
+            // (e.g., Radio registering itself in RuntimeReferences)
+            for (int i = states.Length - 1; i >= 0; i--)
+            {
+                states[i].Initialize(this);
             }
 
-            // Initialize sensors
             for (int i = sensors.Length - 1; i >= 0; i--)
             {
-                var sensor = sensors[i];
-                sensor.Initialize(this);
+                sensors[i].Initialize(this);
+            }
+
+            // Enter initial state after initialization
+            if (initialState != null && CurrentState == null)
+            {
+                TransitionTo(initialState);
             }
         }
 
         private void OnEnable()
         {
             MonsterStateManager.Register(this);
-
-            // Enter initial state
-            if (initialState != null && CurrentState == null)
-            {
-                TransitionTo(initialState);
-            }
         }
 
         private void OnDisable()
