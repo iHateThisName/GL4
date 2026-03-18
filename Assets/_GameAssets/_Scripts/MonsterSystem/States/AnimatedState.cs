@@ -88,7 +88,13 @@ namespace MonsterSystem
 
             // Transition to the next state if one is assigned
             if (this.nextState != null)
+            {
                 this.controller.TransitionTo(this.nextState);
+            }
+            else
+            {
+                Debug.LogWarning($"[{GetType().Name}] Animation finished but no nextState configured!", this);
+            }
         }
 
         /// <summary>
