@@ -39,12 +39,13 @@ public class VRLever : MonoBehaviour {
     [SerializeField] private bool invertOpenClosedState = false;
 
     [Header("State")]
-    [SerializeField] private EnumLeverState currentState = EnumLeverState.None;
+    [field: SerializeField] public EnumLeverState CurrentState { get; private set; } = EnumLeverState.None;
+    public Action<EnumLeverState> OnLeverStateChanged;
     private EnumLeverState previousState = EnumLeverState.None;
 
     private JointSpring originalSpring;
     private bool isGrabbed = false; // Flag to track if the lever is currently grabbed by the player.
-    private enum EnumLeverState { None, Closed, LeaningClosed, LeaningOpen, Open }
+    public enum EnumLeverState { None, Closed, LeaningClosed, LeaningOpen, Open }
 
     #region Grab Event Listeners
     private void OnEnable() {
@@ -89,7 +90,7 @@ public class VRLever : MonoBehaviour {
 
     private void FixedUpdate() {
         if (this.optimizeUpdate) { //If true, skips updates when lever is in stable state(Open/ Closed) and not grabbed.
-            if (!isGrabbed & (this.currentState == EnumLeverState.Open || this.currentState == EnumLeverState.Closed)) return;
+            if (!isGrabbed & (this.CurrentState == EnumLeverState.Open || this.CurrentState == EnumLeverState.Closed)) return;
         }
         UpdateSpringBehaviour();
     }
@@ -101,8 +102,11 @@ public class VRLever : MonoBehaviour {
 
         // Adjust the spring settings based on the current angle percentage.
         // Tipping the lever to the angle that its leaning towards and when close to limits making it snap to the limit.
-        this.currentState = CheckCurrentLeverState(normalizedAngle);
-        if (this.currentState != this.previousState) this.joint.spring = GetSpring(this.currentState);
+        this.CurrentState = CheckCurrentLeverState(normalizedAngle);
+        if (this.CurrentState != this.previousState) {
+            this.OnLeverStateChanged?.Invoke(this.CurrentState);
+            this.joint.spring = GetSpring(this.CurrentState);
+        }
     }
 
     private EnumLeverState CheckCurrentLeverState(float normalizedAngle) {
@@ -124,7 +128,7 @@ public class VRLever : MonoBehaviour {
     }
 
     private JointSpring GetSpring(EnumLeverState currentState) {
-        this.previousState = this.currentState; // Update the previous state before returning the new spring settings.
+        this.previousState = this.CurrentState; // Update the previous state before returning the new spring settings.
 
         float targetClosed = this.invertOpenClosedState ? this.joint.limits.max : this.joint.limits.min;
         float targetOpen = this.invertOpenClosedState ? this.joint.limits.min : this.joint.limits.max;
@@ -135,31 +139,4 @@ public class VRLever : MonoBehaviour {
             targetPosition = (currentState == EnumLeverState.Closed || currentState == EnumLeverState.LeaningClosed) ? targetClosed : targetOpen
         };
     }
-
-    #region Unused Code
-    private IEnumerator UpdateSpringBehaviourIEnumerator() {
-        while (true) {
-            UpdateSpringBehaviour();
-            yield return new WaitForSeconds(2f);
-        }
-    }
-    private void ApplySpringBehaviour(float normalizedAngle) {
-        if (normalizedAngle < 0.50f) {
-            this.joint.spring = new JointSpring {
-                spring = normalizedAngle < 0.20f ? 100f : this.originalSpring.spring,
-                damper = this.originalSpring.damper,
-                targetPosition = this.joint.limits.min
-            };
-
-        } else {
-            this.joint.spring = new JointSpring {
-                spring = normalizedAngle > 0.80f ? 100f : this.originalSpring.spring,
-                damper = this.originalSpring.damper,
-                targetPosition = this.joint.limits.max
-            };
-        }
-
-        this.previousState = this.currentState;
-    }
-    #endregion 
 }
