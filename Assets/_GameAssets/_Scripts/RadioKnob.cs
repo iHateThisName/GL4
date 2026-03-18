@@ -99,4 +99,8 @@ public class RadioKnob : MonoBehaviour
         Vector3 localDir = transform.InverseTransformDirection(interactor.forward);
         return Mathf.Atan2(localDir.y, localDir.x) * Mathf.Rad2Deg;
     }
+
+    #region Getters
+    public int GetCurrentChannel() => currentChannel;
+    #endregion
 }

@@ -224,16 +224,14 @@ MonoBehaviour:
   agent: {fileID: 0}
   baseSpeed: 3.5
   mode: 0
-  target: {fileID: 1660053587}
-  arrivalThreshold: 0.5
-  repositionThreshold: 1
+  targetThreshold: 0.5
+  arrivalState: {fileID: 108249378}
   fleeDistance: 20
-  points: []
+  moveConfig: {fileID: 0}
   selectionStrategy: 0
   stateAudio: {fileID: 0}
   loopAudio: 1
   audioVolume: 1
-  arrivalState: {fileID: 108249378}
 --- !u!1 &80027915
 GameObject:
   m_ObjectHideFlags: 0
@@ -697,7 +695,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.MunchRejectFoodState
   blocksTransitions: 1
-  animTrigger: Reject
+  paramType: 1
+  paramName: 
+  boolValue: 0
+  floatValue: 0
+  intValue: 0
   nextState: {fileID: 1137205691}
   satietyLoss: 5
   throwForce: 5
@@ -1367,16 +1369,14 @@ MonoBehaviour:
   agent: {fileID: 0}
   baseSpeed: 3.5
   mode: 1
-  target: {fileID: 0}
-  arrivalThreshold: 0.5
-  repositionThreshold: 1
+  targetThreshold: 0.5
+  arrivalState: {fileID: 1527229083}
   fleeDistance: 20
-  points: []
+  moveConfig: {fileID: 0}
   selectionStrategy: 0
   stateAudio: {fileID: 0}
   loopAudio: 1
   audioVolume: 1
-  arrivalState: {fileID: 1527229083}
 --- !u!1 &471865344
 GameObject:
   m_ObjectHideFlags: 0
@@ -1424,9 +1424,7 @@ MonoBehaviour:
   blocksTransitions: 1
   interval: 0.1
   duration: 0
-  player: {fileID: 0}
   behindDistance: 1.5
-  killDelay: 1
 --- !u!1 &484327448
 GameObject:
   m_ObjectHideFlags: 0
@@ -1594,6 +1592,220 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 499089894}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1001 &499549701
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2473867385210188031, guid: 4bbd58b68c718450997ee3a16e216430, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 3.69768
+      objectReference: {fileID: 0}
+    - target: {fileID: 2473867385210188031, guid: 4bbd58b68c718450997ee3a16e216430, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.46024
+      objectReference: {fileID: 0}
+    - target: {fileID: 2473867385210188031, guid: 4bbd58b68c718450997ee3a16e216430, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -3.57786
+      objectReference: {fileID: 0}
+    - target: {fileID: 2473867385210188031, guid: 4bbd58b68c718450997ee3a16e216430, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 2473867385210188031, guid: 4bbd58b68c718450997ee3a16e216430, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 2473867385210188031, guid: 4bbd58b68c718450997ee3a16e216430, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2473867385210188031, guid: 4bbd58b68c718450997ee3a16e216430, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2473867385210188031, guid: 4bbd58b68c718450997ee3a16e216430, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 2473867385210188031, guid: 4bbd58b68c718450997ee3a16e216430, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2473867385210188031, guid: 4bbd58b68c718450997ee3a16e216430, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3729358585939260251, guid: 4bbd58b68c718450997ee3a16e216430, type: 3}
+      propertyPath: Knob
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4188991452946805470, guid: 4bbd58b68c718450997ee3a16e216430, type: 3}
+      propertyPath: m_Name
+      value: RadioV2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4188991452946805470, guid: 4bbd58b68c718450997ee3a16e216430, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 3796615734635562449, guid: 4bbd58b68c718450997ee3a16e216430, type: 3}
+    - {fileID: 3729358585939260251, guid: 4bbd58b68c718450997ee3a16e216430, type: 3}
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4188991452946805470, guid: 4bbd58b68c718450997ee3a16e216430, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 499549704}
+    - targetCorrespondingSourceObject: {fileID: 6726757031818945974, guid: 4bbd58b68c718450997ee3a16e216430, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 499549705}
+  m_SourcePrefab: {fileID: 100100000, guid: 4bbd58b68c718450997ee3a16e216430, type: 3}
+--- !u!1 &499549702 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4188991452946805470, guid: 4bbd58b68c718450997ee3a16e216430, type: 3}
+  m_PrefabInstance: {fileID: 499549701}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &499549703 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6726757031818945974, guid: 4bbd58b68c718450997ee3a16e216430, type: 3}
+  m_PrefabInstance: {fileID: 499549701}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &499549704
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 499549702}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73691e7509b745aea84f8963537c1152, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Radio
+  knob: {fileID: 499549705}
+  totalChannels: 10
+  safeChannel: 3
+  channelPrefix: 100
+  debugChannelText: {fileID: 499549706}
+  showDebugUI: 1
+  OnChannelChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  OnTunedToSafeChannel:
+    m_PersistentCalls:
+      m_Calls: []
+  OnTunedAwayFromSafeChannel:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &499549705
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 499549703}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0fe1700f82fa064eb596e242218b001, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ClampedKnob
+  m_InteractionManager: {fileID: 0}
+  m_Colliders:
+  - {fileID: 534476199}
+  m_InteractionLayers:
+    m_Bits: 1
+  m_DistanceCalculationMode: 1
+  m_SelectMode: 0
+  m_FocusMode: 1
+  m_CustomReticle: {fileID: 0}
+  m_AllowGazeInteraction: 0
+  m_AllowGazeSelect: 0
+  m_OverrideGazeTimeToSelect: 0
+  m_GazeTimeToSelect: 0.5
+  m_OverrideTimeToAutoDeselectGaze: 0
+  m_TimeToAutoDeselectGaze: 3
+  m_AllowGazeAssistance: 0
+  m_FirstHoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_LastHoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_HoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_HoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FirstSelectEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_LastSelectExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_SelectEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_SelectExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FirstFocusEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_LastFocusExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FocusEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FocusExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Activated:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Deactivated:
+    m_PersistentCalls:
+      m_Calls: []
+  m_StartingHoverFilters: []
+  m_StartingSelectFilters: []
+  m_StartingInteractionStrengthFilters: []
+  m_AutoFindParentInteractableInHierarchy: 0
+  m_ParentInteractableObject: {fileID: 0}
+  handle: {fileID: 534476198}
+  minAngle: -135
+  maxAngle: 135
+  startingValue: 0.5
+  snapPositions: 0
+  onValueChanged:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &499549706 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1550725641035457555, guid: 4bbd58b68c718450997ee3a16e216430, type: 3}
+  m_PrefabInstance: {fileID: 499549701}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!4 &534476198 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 832506145650207909, guid: 4bbd58b68c718450997ee3a16e216430, type: 3}
+  m_PrefabInstance: {fileID: 499549701}
+  m_PrefabAsset: {fileID: 0}
+--- !u!136 &534476199 stripped
+CapsuleCollider:
+  m_CorrespondingSourceObject: {fileID: 6700118785716224481, guid: 4bbd58b68c718450997ee3a16e216430, type: 3}
+  m_PrefabInstance: {fileID: 499549701}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &537648917
 GameObject:
   m_ObjectHideFlags: 0
@@ -1640,7 +1852,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.PlayerProximitySensor
   stateToTransitionTo: {fileID: 0}
-  playerTag: Player
+  detectionRange: 10
 --- !u!135 &537648920
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -2036,9 +2248,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.MunchAcceptFoodState
   blocksTransitions: 1
-  animTrigger: Munch
+  paramType: 1
+  paramName: 
+  boolValue: 0
+  floatValue: 0
+  intValue: 0
   nextState: {fileID: 909962997}
-  satiatyGain: 25
+  satietyGain: 25
 --- !u!1 &909962996
 GameObject:
   m_ObjectHideFlags: 0
@@ -2069,7 +2285,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.MunchRelocateState
   blocksTransitions: 1
-  animTrigger: Return
   nextState: {fileID: 1927743376}
 --- !u!4 &909962998
 Transform:
@@ -2617,7 +2832,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.MunchFeedableState
   blocksTransitions: 0
-  animTrigger: Munch
+  paramType: 1
+  paramName: 
+  boolValue: 0
+  floatValue: 0
+  intValue: 0
   nextState: {fileID: 0}
   loopingSound: {fileID: 0}
   feedZone: {fileID: 1020275433}
@@ -3317,16 +3536,14 @@ MonoBehaviour:
   agent: {fileID: 0}
   baseSpeed: 3.5
   mode: 2
-  target: {fileID: 0}
-  arrivalThreshold: 0.5
-  repositionThreshold: 1
+  targetThreshold: 0.5
+  arrivalState: {fileID: 0}
   fleeDistance: 20
-  points: []
+  moveConfig: {fileID: 0}
   selectionStrategy: 3
   stateAudio: {fileID: 0}
   loopAudio: 1
   audioVolume: 1
-  arrivalState: {fileID: 0}
 --- !u!1001 &1545931492
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3473,7 +3690,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.MunchFeedableState
   blocksTransitions: 0
-  animTrigger: Munch
+  paramType: 1
+  paramName: 
+  boolValue: 0
+  floatValue: 0
+  intValue: 0
   nextState: {fileID: 0}
   loopingSound: {fileID: 0}
   feedZone: {fileID: 1020275433}
@@ -3965,7 +4186,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.IdleState
   blocksTransitions: 0
-  idleAnimTrigger: Return
+  interval: 0.1
+  duration: 0
+  nextState: {fileID: 0}
 --- !u!1 &1904301673
 GameObject:
   m_ObjectHideFlags: 0
@@ -4034,7 +4257,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.IdleState
   blocksTransitions: 0
-  idleAnimTrigger: Return
+  interval: 0.1
+  duration: 0
+  nextState: {fileID: 0}
 --- !u!4 &1927743377
 Transform:
   m_ObjectHideFlags: 0
@@ -5731,6 +5956,7 @@ SceneRoots:
   - {fileID: 25724216}
   - {fileID: 2126377047}
   - {fileID: 746322122}
+  - {fileID: 499549701}
   - {fileID: 4830234094877419172}
   - {fileID: 408821140}
   - {fileID: 1364352823}
