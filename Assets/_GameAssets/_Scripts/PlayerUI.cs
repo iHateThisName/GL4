@@ -24,6 +24,7 @@ public class PlayerUI : MonoBehaviour {
     private const float DEFAULT_HIGH_EFFECT_ALPHA = 0.25f;
 
     private bool useDebugInfo = false;
+    private float uiUpdateTimer;
     private Coroutine currentWarmFadeCoroutine;
     private Coroutine currentColdFadeCoroutine;
 
@@ -64,6 +65,9 @@ public class PlayerUI : MonoBehaviour {
 
     private void Update() {
         if (this.nightTimeText == null) return;
+        this.uiUpdateTimer += Time.deltaTime;
+        if (this.uiUpdateTimer < 1f) return;
+        this.uiUpdateTimer = 0f;
         this.nightTimeText.text = "Time: " + GameManager.Instance.NightTime.ToString("F2");
     }
 

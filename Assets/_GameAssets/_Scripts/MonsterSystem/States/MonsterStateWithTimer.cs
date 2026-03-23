@@ -11,31 +11,45 @@ public class MonsterStateWithTimer : MonsterState
     [SerializeField] private float interval = 0.1f; // Seconds between each timer tick
     [SerializeField] private float duration = 0f; // Total timer duration; 0 means infinite
 
-    private Timer timer; // The managed Timer instance created each time the state is entered
+    private Timer timer; // The managed Timer instance, created once in Initialize and reused across state entries
+    private bool timerRegistered; // Tracks whether the timer has been registered with TimerManager
 
     /// <summary>
-    /// Creates a new Timer with the configured interval and duration,
-    /// subscribes to its events, and starts it.
+    /// Creates the Timer once during initialization and wires up event callbacks.
     /// </summary>
-    public override void OnStateEnter()
+    public override void Initialize(MonsterController owningController)
     {
-        // Instantiate a fresh timer and wire up event callbacks
+        base.Initialize(owningController);
         this.timer = new Timer(this.interval, this.duration);
         this.timer.OnTimerTick += this.OnTimerTick;
         this.timer.OnTimerFinished += this.OnTimerFinished;
-        this.timer.Start();
     }
 
     /// <summary>
-    /// Pauses and disposes the timer when exiting this state to prevent leaked subscriptions.
+    /// Resets and starts/resumes the existing timer when entering this state.
+    /// First entry calls Start() to register with TimerManager; subsequent entries just reset and resume.
+    /// </summary>
+    public override void OnStateEnter()
+    {
+        if (!this.timerRegistered)
+        {
+            this.timer.Start();
+            this.timerRegistered = true;
+        }
+        else
+        {
+            this.timer.ResetTimer();
+            this.timer.Resume();
+        }
+    }
+
+    /// <summary>
+    /// Pauses the timer when exiting this state.
     /// </summary>
     public override void OnStateExit()
     {
-        // Guard against double-disposal if the timer was never created
         if (this.timer == null) return;
         this.timer.Pause();
-        this.timer.Dispose();
-        this.timer = null;
     }
 
     /// <summary>
