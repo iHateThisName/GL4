@@ -158,7 +158,7 @@ public class GameManager : PersistenSingleton<GameManager> {
 
     public List<WindowController> GetClosedWindows() { 
         List<WindowController> closedWindows = new List<WindowController>();
-        foreach (var kvp in this.WindowsDictonary) {
+        foreach (KeyValuePair<WindowController, VRLever.EnumLeverState> kvp in this.WindowsDictonary) {
             if (kvp.Value == VRLever.EnumLeverState.Closed) {
                 closedWindows.Add(kvp.Key);
             }

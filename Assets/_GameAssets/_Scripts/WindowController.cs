@@ -5,7 +5,7 @@ public class WindowController : MonoBehaviour
 {
     [SerializeField] private VRLever windowJoint;
     [SerializeField] private SO_RuntimeReferences runtimeReferences;
-    public Transform targetPosition; // The position the intruder will go
+    public Transform TargetPosition; // The position the intruder will go
 
     private void OnEnable() {
         windowJoint.OnLeverStateChanged += HandleWindowStateChanged;
