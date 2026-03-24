@@ -90,7 +90,7 @@ public class VRLever : MonoBehaviour {
 
     private void FixedUpdate() {
         if (this.optimizeUpdate) { //If true, skips updates when lever is in stable state(Open/ Closed) and not grabbed.
-            if (!isGrabbed & (this.CurrentState == EnumLeverState.Open || this.CurrentState == EnumLeverState.Closed)) return;
+            if (!isGrabbed && (this.CurrentState == EnumLeverState.Open || this.CurrentState == EnumLeverState.Closed)) return;
         }
         UpdateSpringBehaviour();
     }
