@@ -13,20 +13,13 @@ public class FireplaceController : MonoBehaviour {
     [field: SerializeField] public bool HasFuel { get; private set; } = false; // Indicates if there is any fuel left in the fireplace.
 
     [SerializeField] private Firewood currentBurningFuel; // The firewood currently being burned, null if none.
-    private bool hasNewFuel = false; // Flag to indicate if new fuel has been added since last burn. 
+    private bool hasNewFuel = false; // Flag to indicate if new fuel has been added since last burn.
+    private float cachedFuelAmount; // Cached total fuel to avoid iterating the stack every frame.
 
     /// <summary>
     /// Total remaining fuel across all firewood currently in the fireplace
     /// </summary>
-    public float CurrentFuelAmount {
-        get {
-            float total = 0f;
-            foreach (Firewood wood in fuelQueue) {
-                total += Mathf.Max(wood.RemainingFuel, 0f);
-            }
-            return total;
-        }
-    }
+    public float CurrentFuelAmount => cachedFuelAmount;
 
     /// <summary>
     /// Gets the current fuel level as a percentage (0-1) relative to the maximum fuel required for full heat output. Normalized value.
@@ -75,6 +68,7 @@ public class FireplaceController : MonoBehaviour {
         }
 
         this.currentBurningFuel.RemainingFuel -= burnAmount; // Reduce its remaining fuel
+        this.cachedFuelAmount -= burnAmount;
 
         // Check if fuel has run out
         if (this.currentBurningFuel.RemainingFuel <= 0) {
@@ -87,6 +81,7 @@ public class FireplaceController : MonoBehaviour {
 
             if (this.fuelQueue.Count == 0) {
                 // No more fuel left, extinguish fire
+                this.cachedFuelAmount = 0f;
                 this.HasFuel = false;
                 this.IsLit = false;
                 this.fireVFX.SetActive(false);
@@ -136,6 +131,7 @@ public class FireplaceController : MonoBehaviour {
 
         // Adding the fuel
         this.fuelQueue.Push(wood);
+        this.cachedFuelAmount += amount;
         this.hasNewFuel = true;
         //this.IsLit = true; // Currently, adding fuel always lights the fire
 
@@ -161,6 +157,7 @@ public class FireplaceController : MonoBehaviour {
         }
         // Adding the fuel
         this.fuelQueue.Push(wood);
+        this.cachedFuelAmount += wood.RemainingFuel;
         this.hasNewFuel = true;
         //this.IsLit = true; // Currently, adding fuel always lights the fire
 
@@ -184,14 +181,15 @@ public class FireplaceController : MonoBehaviour {
 
         // Determine target volume: if not lit, it's 0. If lit, it's based on fuel.
         //0.1f minimum volume while still "Lit"
-        float targetVolume = IsLit ? Mathf.Max(FuelPercentage * maxVolume, 0.1f) : 0f;
+        float fuelPct = FuelPercentage;
+        float targetVolume = IsLit ? Mathf.Max(fuelPct * maxVolume, 0.1f) : 0f;
 
         // Smoothly transition volume of fireplace
         fireAudioSource.volume = Mathf.MoveTowards(fireAudioSource.volume, targetVolume, Time.fixedDeltaTime * 0.5f);
 
         if (IsLit)
         {
-            fireAudioSource.pitch = Mathf.Lerp(1.1f, 0.85f, FuelPercentage);
+            fireAudioSource.pitch = Mathf.Lerp(1.1f, 0.85f, fuelPct);
         }
     }
 }
