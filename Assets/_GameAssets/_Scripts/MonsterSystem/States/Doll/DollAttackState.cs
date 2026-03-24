@@ -1,6 +1,7 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
-using System.Collections;
+using static UnityEngine.XR.Interaction.Toolkit.Inputs.Haptics.HapticsUtility;
 
 namespace MonsterSystem
 {
@@ -18,30 +19,38 @@ namespace MonsterSystem
 
         // References
         private DollSensor sensor;
-        private NavMeshAgent navAgent;
+        //private NavMeshAgent navAgent;
+
+        [SerializeField] private SO_RuntimeReferences runtimeReferences;
+
+        private Transform playerTransform;
+        private Transform rootParent;
 
         public override void Initialize(MonsterController controller)
         {
             base.Initialize(controller);
-            sensor = controller.GetSensor<DollSensor>();
-            navAgent = controller.GetComponent<NavMeshAgent>();
+            this.sensor = controller.GetSensor<DollSensor>();
+            //navAgent = controller.GetComponent<NavMeshAgent>();
+            this.playerTransform = this.runtimeReferences?.Player;
+            this.rootParent = controller.transform;
         }
 
         public override void OnStateEnter()
         {
+            this.playerTransform = this.runtimeReferences?.Player;
             Debug.Log("THEDOLLHASYOU.");
 
             // 1. Stop all movement on the root object
-            if (navAgent != null)
-            {
-                navAgent.isStopped = true;
-                navAgent.enabled = false; // Completely disable to stop interference
-            }
+            //if (navAgent != null)
+            //{
+            //    navAgent.isStopped = true;
+            //    navAgent.enabled = false; // Completely disable to stop interference
+            //}
 
             // 2. Attach to player's face
-            if (sensor != null && sensor.playerTransform != null)
+            if (this.runtimeReferences != null)
             {
-                AttachToPlayerFace(sensor.playerTransform);
+                AttachToPlayerFace();
             }
             else
             {
@@ -58,26 +67,24 @@ namespace MonsterSystem
             StartCoroutine(DeathSequence());
         }
 
-        private void AttachToPlayerFace(Transform playerHead)
+        private void AttachToPlayerFace()
         {
+            Debug.Log("attach");
             // IMPORTANT: In VR, parenting to the 'head' transform can cause slight latency jitter.
             // For a jumpscare, it's often better to disable the visual mesh renderer of the 
             // walking doll and enable a specific 'jumpscare mesh' that is ALREADY a child of the VR Camera.
             //
             // However, to keep it simple and fulfill the specific request:
 
-            // Remove from current parent (the root monster GO)
-            transform.SetParent(null);
-
             // Make the doll object a child of the player's camera
-            transform.SetParent(playerHead);
+            this.rootParent.SetParent(this.playerTransform);
 
             // Position it exactly in front of the "eyes"
             // Vector3.forward is relative to the player's view direction
-            transform.localPosition = (Vector3.forward * faceProximity) + (Vector3.up * verticalOffset);
+            this.rootParent.localPosition = (Vector3.forward * faceProximity) + (Vector3.up * verticalOffset);
 
             // Rotate it to look directly back at the player
-            transform.localRotation = Quaternion.Euler(0, 180, 0);
+            this.rootParent.localRotation = Quaternion.Euler(0, 180, 0);
 
             // Note: Depending on your doll model's pivot point, you may need to tweak localRotation or verticalOffset.
         }

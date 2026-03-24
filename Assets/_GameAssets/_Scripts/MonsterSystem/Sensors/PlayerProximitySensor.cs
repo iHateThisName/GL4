@@ -10,7 +10,8 @@ namespace MonsterSystem
     public class PlayerProximitySensor : MonsterSensor
     {
         [SerializeField] private float detectionRange = 10f; // Maximum distance at which the player is considered "in range"
-
+        [SerializeField] private MonsterState impatient;
+        [SerializeField] private MonsterState resetPatience;
         /// <summary>
         /// Whether the player is currently within the detection range.
         /// </summary>
@@ -58,11 +59,11 @@ namespace MonsterSystem
             this.IsPlayerInRange = this.DistanceToPlayer <= this.detectionRange;
 
             // Fire entry event when player transitions from out-of-range to in-range
-            if (this.IsPlayerInRange && !wasInRange)
-                this.OnPlayerEntered?.Invoke();
+            if (this.IsPlayerInRange)
+                TriggerStateTransition(resetPatience);
             // Fire exit event when player transitions from in-range to out-of-range
-            else if (!this.IsPlayerInRange && wasInRange)
-                this.OnPlayerExited?.Invoke();
+            //else if (!this.IsPlayerInRange && wasInRange)
+            //    TriggerStateTransition(impatient);
         }
     }
 }

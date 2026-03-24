@@ -14,9 +14,6 @@ namespace MonsterSystem
         [Header("=== Debug UI ===")]
         [SerializeField] private TMP_Text debugText;
 
-        [HideInInspector]
-        public Transform playerTransform;
-
         private float neglectTimer = 0f;
         private DollConfig config;
         private MonsterState lastTriggeredState;
@@ -26,44 +23,36 @@ namespace MonsterSystem
             base.Initialize(owningMonster);
             config = owningMonster.GetConfig<DollConfig>();
             lastTriggeredState = patientState;
-
-            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-            if (playerObj != null)
-            {
-                playerTransform = playerObj.transform;
-            }
-            else
-            {
-                Debug.LogWarning("DollSensor: Could not find any GameObject with the 'Player' tag!");
-            }
         }
 
         public override void OnTick(float tickDelta)
         {
             base.OnTick(tickDelta);
+            this.neglectTimer += this.TickDelta;
+            //base.OnTick(tickDelta);
 
-            if (playerTransform == null || config == null) return;
+            //if (playerTransform == null || config == null) return;
 
-            float distance = Vector3.Distance(transform.position, playerTransform.position);
+            //float distance = Vector3.Distance(transform.position, playerTransform.position);
 
             // 1. Check for immediate kill condition if already aggressive
-            if (controller.CurrentState == aggressiveState && distance <= config.attackDistance)
-            {
-                HandleStateTransition(attackState);
-            }
-            // 2. Handle Attention and Calming
-            else if (distance <= config.attentionRadius)
-            {
-                neglectTimer = 0f; // Reset patience
+            //if (controller.CurrentState == aggressiveState && distance <= config.attackDistance)
+            //{
+            //    HandleStateTransition(attackState);
+            //}
+            //// 2. Handle Attention and Calming
+            //else if (distance <= config.attentionRadius)
+            //{
+            //    neglectTimer = 0f; // Reset patience
 
-                if (controller.CurrentState == impatientState)
-                {
-                    HandleStateTransition(patientState);
-                }
-            }
+            //    if (controller.CurrentState == impatientState)
+            //    {
+            //        HandleStateTransition(patientState);
+            //    }
+            //}
             // 3. Player is outside radius, build up neglect
-            else
-            {
+            //else
+            //{
                 if (controller.CurrentState == patientState || controller.CurrentState == impatientState)
                 {
                     neglectTimer += this.TickDelta;
@@ -77,10 +66,16 @@ namespace MonsterSystem
                         HandleStateTransition(impatientState);
                     }
                 }
-            }
+            //}
+
 
             // Update the text at the end of the tick
             UpdateDebugUI();
+        }
+
+        public void ReducePatience(float delta)
+        {
+            this.neglectTimer += delta;
         }
 
         private void HandleStateTransition(MonsterState targetState)
@@ -131,8 +126,8 @@ namespace MonsterSystem
             }
             else if (controller.CurrentState == aggressiveState)
             {
-                float dist = Vector3.Distance(transform.position, playerTransform.position);
-                timerText = $"\nChasing! Dist: {dist:F1}m";
+                //float dist = Vector3.Distance(transform.position, playerTransform.position);
+                //timerText = $"\nChasing! Dist: {dist:F1}m";
                 debugText.color = Color.red;
             }
             else if (controller.CurrentState == attackState)
