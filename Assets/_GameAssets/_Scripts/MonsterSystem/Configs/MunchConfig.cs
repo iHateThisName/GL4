@@ -18,9 +18,6 @@ namespace MonsterSystem
         [Tooltip("Satiety lost when an item is rejected.")]
         public float rejectPenalty = 5f;
 
-        [Header("Munch - Shadow Positions")]
-        public Vector3[] shadowPositions;
-
         [Header("Munch - Audio")]
         public AudioClip hungrySound;
         public AudioClip angryWarningSound;

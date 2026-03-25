@@ -4,190 +4,132 @@ using UnityEngine.AI;
 namespace MonsterSystem
 {
     /// <summary>
-    /// State for NavMesh-based movement with multiple modes.
-    /// Implements IStateWithContext&lt;Transform&gt; to receive a target dynamically during transitions.
+    /// Generic NavMesh movement state. Delegates destination selection to a DestinationStrategy.
+    /// Handles agent control, arrival detection, speed scaling, and audio.
     /// </summary>
     public class NavMeshMoveState : MonsterState, IStateWithContext<Transform>
     {
-        public enum MoveMode
-        {
-            FollowTarget,
-            AwayFromTarget,
-            GoToPoint
-        }
-
-        public enum PointSelection
-        {
-            ClosestToSelf,
-            FurthestFromTarget,
-            Random
-        }
-
         [SerializeField] private NavMeshAgent agent;
         [SerializeField] private float baseSpeed = 3.5f;
-        [SerializeField] private MoveMode mode;
 
-        [Header("Target")]
-        [SerializeField] private Transform target;
-        [SerializeField] private float arrivalThreshold = 0.5f;
+        [Header("Destination")]
+        [SerializeReference] private DestinationStrategy strategy;
+        [SerializeField] private SO_NavMeshMoveConfig moveConfig;
+        [SerializeField] private SO_RuntimeReferences runtimeReferences;
 
-        [Header("FollowTarget")]
-        [SerializeField] private float repositionThreshold = 1f;
+        [Header("Arrival")]
+        [SerializeField] private float targetThreshold = 0.5f;
+        [SerializeField] private MonsterState arrivalState;
 
-        [Header("AwayFromTarget")]
-        [SerializeField] private float fleeDistance = 20f;
+        [Header("Audio")]
+        [SerializeField] private AudioClip stateAudio;
+        [SerializeField] private bool loopAudio = true;
+        [SerializeField] [Range(0f, 1f)] private float audioVolume = 1f;
 
-        [Header("GoToPoint")]
-        [SerializeField] private Transform[] points;
-        [SerializeField] private PointSelection selectionStrategy;
-
+        private Transform target;
+        private Vector3[] resolvedPoints;
         private Vector3 lastSetDestination;
+        private DestinationResult lastResult;
 
-        public Transform Target { get => target; set => target = value; }
         public bool HasArrived { get; private set; }
 
-        /// <summary>
-        /// Receives a target Transform during transition.
-        /// Used for dynamic target assignment (e.g., flee from light source).
-        /// </summary>
         public void ReceiveContext(Transform context)
         {
             this.target = context;
         }
 
+        public override void Initialize(MonsterController owningController)
+        {
+            base.Initialize(owningController);
+            CachePoints();
+        }
+
         public override void OnStateEnter()
         {
-            HasArrived = false;
-            lastSetDestination = Vector3.positiveInfinity;
+            this.HasArrived = false;
+            this.lastSetDestination = Vector3.positiveInfinity;
 
-            if (agent != null)
-                agent.isStopped = false;
+            if (this.agent != null)
+                this.agent.isStopped = false;
 
-            if (mode == MoveMode.GoToPoint)
-                SelectAndSetPointDestination(controller);
+            // Default to player if no context target was provided
+            if (this.target == null)
+                this.target = this.controller.Config.PlayerTarget;
+
+            // Resolve and set initial destination
+            SetDestinationFromStrategy();
+
+            if (this.stateAudio != null && this.controller.Audio != null)
+                MonsterAudio.Play(this.controller.Audio, this.stateAudio, this.loopAudio, this.audioVolume);
         }
 
         public override void OnStateTick(float tickDelta)
         {
-            if (agent == null) return;
+            if (this.agent == null) return;
 
-            var nightOverride = controller.Config.GetOverrideForNight(controller.CurrentNight);
-            agent.speed = baseSpeed * nightOverride.speedMultiplier;
+            // Apply night scaling
+            var nightOverride = this.controller.Config.GetOverrideForNight(this.controller.CurrentNight);
+            this.agent.speed = this.baseSpeed * nightOverride.speedMultiplier;
 
-            switch (mode)
+            // Only re-resolve destination for FollowTarget (tracks a moving target).
+            // Other strategies resolve once on enter — their destination is fixed.
+            if (this.strategy is FollowTargetStrategy && this.target != null)
             {
-                case MoveMode.FollowTarget:
-                    TickFollowTarget();
-                    break;
-                case MoveMode.AwayFromTarget:
-                    TickAwayFromTarget(controller);
-                    break;
-                case MoveMode.GoToPoint:
-                    TickGoToPoint();
-                    break;
+                Vector3 targetPos = this.target.position;
+                if (Vector3.Distance(this.lastSetDestination, targetPos) > this.targetThreshold)
+                {
+                    this.agent.SetDestination(targetPos);
+                    this.lastSetDestination = targetPos;
+                }
+            }
+
+            // Check arrival
+            this.HasArrived = !this.agent.pathPending && this.agent.remainingDistance <= this.targetThreshold;
+
+            if (this.HasArrived)
+            {
+                // Apply arrival rotation if the strategy provided one
+                if (this.lastResult.HasRotation)
+                    this.controller.transform.rotation = this.lastResult.Rotation;
+
+                if (this.arrivalState != null)
+                    RequestTransition(this.arrivalState);
             }
         }
 
         public override void OnStateExit()
         {
-            if (agent != null)
-                agent.ResetPath();
+            if (this.stateAudio != null && this.controller.Audio != null)
+                MonsterAudio.Stop(this.controller.Audio);
+
+            if (this.agent != null)
+                this.agent.ResetPath();
+
+            this.target = null;
         }
 
-        private void TickFollowTarget()
+        private void SetDestinationFromStrategy()
         {
-            if (target == null) return;
+            if (this.strategy == null || this.agent == null) return;
 
-            Vector3 targetPos = target.position;
+            var ctx = new DestinationContext(this.controller, this.target, this.resolvedPoints, this.runtimeReferences);
+            this.lastResult = this.strategy.ResolveDestination(in ctx);
 
-            if (Vector3.Distance(lastSetDestination, targetPos) > repositionThreshold)
+            this.agent.SetDestination(this.lastResult.Position);
+            this.lastSetDestination = this.lastResult.Position;
+        }
+
+        private void CachePoints()
+        {
+            // Check strategy for its own config first, fall back to state-level config
+            SO_NavMeshMoveConfig config = this.moveConfig;
+
+            if (config != null && config.points != null && config.points.Length > 0)
             {
-                agent.SetDestination(targetPos);
-                lastSetDestination = targetPos;
+                this.resolvedPoints = new Vector3[config.points.Length];
+                for (int i = 0; i < config.points.Length; i++)
+                    this.resolvedPoints[i] = config.points[i].position;
             }
-
-            HasArrived = !agent.pathPending && agent.remainingDistance <= arrivalThreshold;
-        }
-
-        private void TickAwayFromTarget(MonsterController controller)
-        {
-            if (target == null) return;
-
-            Vector3 fleeDir = (controller.transform.position - target.position).normalized;
-            Vector3 fleeTarget = controller.transform.position + fleeDir * fleeDistance;
-
-            if (NavMesh.SamplePosition(fleeTarget, out NavMeshHit hit, fleeDistance, NavMesh.AllAreas))
-            {
-                agent.SetDestination(hit.position);
-            }
-        }
-
-        private void TickGoToPoint()
-        {
-            HasArrived = !agent.pathPending && agent.remainingDistance <= arrivalThreshold;
-        }
-
-        private void SelectAndSetPointDestination(MonsterController controller)
-        {
-            if (points == null || points.Length == 0) return;
-
-            Transform selected = null;
-
-            switch (selectionStrategy)
-            {
-                case PointSelection.ClosestToSelf:
-                    selected = GetClosestToSelf(controller);
-                    break;
-                case PointSelection.FurthestFromTarget:
-                    selected = GetFurthestFromTarget();
-                    break;
-                case PointSelection.Random:
-                    selected = points[Random.Range(0, points.Length)];
-                    break;
-            }
-
-            if (selected != null)
-                agent.SetDestination(selected.position);
-        }
-
-        private Transform GetClosestToSelf(MonsterController controller)
-        {
-            Transform closest = null;
-            float closestDist = float.MaxValue;
-
-            for (int i = 0; i < points.Length; i++)
-            {
-                if (points[i] == null) continue;
-                float dist = Vector3.Distance(controller.transform.position, points[i].position);
-                if (dist < closestDist)
-                {
-                    closestDist = dist;
-                    closest = points[i];
-                }
-            }
-
-            return closest;
-        }
-
-        private Transform GetFurthestFromTarget()
-        {
-            if (target == null) return points[0];
-
-            Transform furthest = null;
-            float furthestDist = float.MinValue;
-
-            for (int i = 0; i < points.Length; i++)
-            {
-                if (points[i] == null) continue;
-                float dist = Vector3.Distance(target.position, points[i].position);
-                if (dist > furthestDist)
-                {
-                    furthestDist = dist;
-                    furthest = points[i];
-                }
-            }
-
-            return furthest;
         }
     }
 }

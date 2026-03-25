@@ -2,17 +2,24 @@ using UnityEngine;
 
 namespace MonsterSystem
 {
-    public class IdleState : MonsterState
+    /// <summary>
+    /// A timed idle state that waits for the timer to finish,
+    /// then transitions to the configured next state.
+    /// </summary>
+    public class IdleState : MonsterStateWithTimer
     {
-        [SerializeField] private string idleAnimTrigger;
+        [SerializeField] private MonsterState nextState; // State to transition to when the idle timer expires
 
-        public override void OnStateEnter()
+        /// <summary>
+        /// Called when the idle timer completes. Transitions to the next state if one is assigned.
+        /// </summary>
+        protected override void OnTimerFinished()
         {
-            MonsterAnimation.SetTrigger(controller.Animator, idleAnimTrigger);
-        }
+            base.OnTimerFinished();
 
-        public override void OnStateTick(float tickDelta)
-        {
+            // Only transition if a next state has been configured in the Inspector
+            if (this.nextState != null)
+                this.controller.TransitionTo(this.nextState);
         }
     }
 }

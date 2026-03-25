@@ -3,45 +3,67 @@ using UnityEngine;
 
 namespace MonsterSystem
 {
-    [RequireComponent(typeof(SphereCollider))]
+    /// <summary>
+    /// Sensor that monitors the distance between the monster and the player,
+    /// raising events when the player enters or exits the detection range.
+    /// </summary>
     public class PlayerProximitySensor : MonsterSensor
     {
-        [SerializeField] private string playerTag = "Player";
-
+        [SerializeField] private float detectionRange = 10f; // Maximum distance at which the player is considered "in range"
+        [SerializeField] private MonsterState impatient;
+        [SerializeField] private MonsterState resetPatience;
+        /// <summary>
+        /// Whether the player is currently within the detection range.
+        /// </summary>
         public bool IsPlayerInRange { get; private set; }
+
+        /// <summary>
+        /// The current world-space distance from this sensor to the player.
+        /// Defaults to float.MaxValue when no player is present.
+        /// </summary>
         public float DistanceToPlayer { get; private set; } = float.MaxValue;
-        public Transform PlayerTransform { get; private set; }
 
-        public event Action OnPlayerEntered;
-        public event Action OnPlayerExited;
+        /// <summary>
+        /// Convenience accessor for the player's transform from the monster configuration.
+        /// </summary>
+        public Transform PlayerTransform => this.controller.Config.PlayerTarget;
 
-        private void OnTriggerEnter(Collider other)
-        {
-            if (!other.CompareTag(playerTag)) return;
+        /// <summary>
+        /// Raised once when the player first enters the detection range.
+        /// </summary>
+        public event Action OnPlayerEntered; // Event fired on range entry
 
-            IsPlayerInRange = true;
-            PlayerTransform = other.transform;
-            OnPlayerEntered?.Invoke();
-        }
+        /// <summary>
+        /// Raised once when the player first exits the detection range.
+        /// </summary>
+        public event Action OnPlayerExited; // Event fired on range exit
 
-        private void OnTriggerExit(Collider other)
-        {
-            if (!other.CompareTag(playerTag)) return;
-
-            IsPlayerInRange = false;
-            PlayerTransform = null;
-            DistanceToPlayer = float.MaxValue;
-            OnPlayerExited?.Invoke();
-        }
-
+        /// <summary>
+        /// Called each sensor tick. Calculates the distance to the player and
+        /// raises enter/exit events when the player crosses the detection boundary.
+        /// </summary>
+        /// <param name="tickDelta">Time elapsed since the last tick.</param>
         public override void OnTick(float tickDelta)
         {
             base.OnTick(tickDelta);
 
-            if (IsPlayerInRange && PlayerTransform != null)
-            {
-                DistanceToPlayer = Vector3.Distance(transform.position, PlayerTransform.position);
-            }
+            // Retrieve the player transform; bail out if unavailable
+            Transform player = this.PlayerTransform;
+            if (player == null) return;
+
+            // Calculate the current distance from the monster to the player
+            this.DistanceToPlayer = Vector3.Distance(this.transform.position, player.position);
+
+            // Store previous state for edge detection
+            bool wasInRange = this.IsPlayerInRange;
+            this.IsPlayerInRange = this.DistanceToPlayer <= this.detectionRange;
+
+            // Fire entry event when player transitions from out-of-range to in-range
+            if (this.IsPlayerInRange)
+                TriggerStateTransition(resetPatience);
+            // Fire exit event when player transitions from in-range to out-of-range
+            //else if (!this.IsPlayerInRange && wasInRange)
+            //    TriggerStateTransition(impatient);
         }
     }
 }

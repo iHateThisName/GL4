@@ -1,5 +1,7 @@
 using Assets.Scripts.Singleton;
 using Gaskellgames;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,7 +11,11 @@ public class GameManager : PersistenSingleton<GameManager> {
     [SerializeField, AssetsOnly] private GameObject FireAdaptationVolumePrefab;
     [HideInInspector] public FireAdaptationController FireAdaptationController { get; private set; }
 
-    [Header("=== Night Configuration ===")] 
+    [Header("=== Runtime References ===")]
+    [SerializeField] private SO_RuntimeReferences runtimeRefs;
+    [SerializeField] private Transform player;
+
+    [Header("=== Night Configuration ===")]
     [SerializeField] private SO_NightSettings nightSettings;
 
     // Event invoked whenever a scheduled night event becomes available.
@@ -21,7 +27,9 @@ public class GameManager : PersistenSingleton<GameManager> {
     private int eventsFired = 0;
 
     private NightEventData[] eventsToFire;
-    
+
+    public Dictionary<WindowController, VRLever.EnumLeverState> WindowsDictonary { get; private set; } = new Dictionary<WindowController, VRLever.EnumLeverState>();
+
     public float NightTime => this.nightTimer != null && this.nightTimer.IsRunning ? this.nightTimer.Elapsed : this.nightSettings.GetNightTimeInSeconds();
 
     /// <summary>
@@ -45,6 +53,13 @@ public class GameManager : PersistenSingleton<GameManager> {
     }
     
     private void Start() {
+        // Register player reference
+        if (this.runtimeRefs != null)
+        {
+            if (player != null)
+                this.runtimeRefs.Player = player;
+        }
+
         // use the existing instance if it exists in the scene
         this.FireAdaptationController = FindFirstObjectByType<FireAdaptationController>();
         if (this.FireAdaptationController == null) {
@@ -135,6 +150,22 @@ public class GameManager : PersistenSingleton<GameManager> {
     
     public int GetCurrentNight() => this.night;
 
+    public void UpdateWindowState(WindowController windowController, VRLever.EnumLeverState newSate) {
+        // update the dictionary with the new state and remove the old refrence
+        this.WindowsDictonary.Remove(windowController);
+        this.WindowsDictonary.Add(windowController, newSate);
+    }
+
+    public List<WindowController> GetClosedWindows() { 
+        List<WindowController> closedWindows = new List<WindowController>();
+        foreach (KeyValuePair<WindowController, VRLever.EnumLeverState> kvp in this.WindowsDictonary) {
+            if (kvp.Value == VRLever.EnumLeverState.Closed) {
+                closedWindows.Add(kvp.Key);
+            }
+        }
+        return closedWindows;
+    }
+
     /// <summary>
     /// Debug helper method that logs when an event fires and when the next one is scheduled.
     /// Useful for verifying timing behavior during development.
@@ -144,11 +175,14 @@ public class GameManager : PersistenSingleton<GameManager> {
         //Debug.Log($"Event fired at {eventData}"); Yes is working relax.
     }
 
+
+
     [System.Serializable]
     public enum EventType
     {
         SpawnMonster,
         SpawnFood,
+        DisruptRadio,
     }
     
     [System.Serializable]

@@ -6,14 +6,14 @@ namespace MonsterSystem
     {
         [SerializeField] private Transform target;
 
-        public Transform Target { get => target; set => target = value; }
+        public Transform Target { get => this.target; set => this.target = value; }
 
         public override void OnStateEnter()
         {
-            if (target != null)
+            if (this.target != null)
             {
-                controller.transform.position = target.position;
-                controller.transform.rotation = target.rotation;
+                this.controller.transform.position = this.target.position;
+                this.controller.transform.rotation = this.target.rotation;
             }
         }
     }

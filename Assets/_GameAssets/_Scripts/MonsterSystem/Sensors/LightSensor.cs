@@ -9,7 +9,7 @@ namespace MonsterSystem
         [SerializeField] private SO_FlashlightSettings flashlightSettings;
 
         [Header("=== Flee State ===")]
-        [SerializeField] private NavMeshMoveState fleeState;
+        [SerializeField] private MonsterState fleeState;
 
         [Header("=== Configuration ===")]
         [SerializeField] private float exposureBuildSpeed = 3f;
@@ -20,17 +20,33 @@ namespace MonsterSystem
         [Header("=== Audio ===")]
         [SerializeField] private AudioClip flashedSound;
 
-        private DetectionConeData detectionData;
-        private Transform flashlightTransform;
+        private DetectionConeData cachedCone;
         private Transform sensorTransform;
         private float remainingCooldownTime;
         private float exposure;
+        private Transform FlashlightTransform => this.flashlightSettings != null ? this.flashlightSettings.FlashlightTransform : null;
 
         public override void Initialize(MonsterController owningMonster)
         {
             base.Initialize(owningMonster);
-            this.flashlightTransform = this.flashlightSettings.GetFlashlightTransform();
             this.sensorTransform = owningMonster.transform;
+
+            if (this.flashlightSettings != null)
+            {
+                this.flashlightSettings.OnRuntimeDataChanged += RefreshCachedData;
+                RefreshCachedData();
+            }
+        }
+
+        private void OnDestroy()
+        {
+            if (this.flashlightSettings != null)
+                this.flashlightSettings.OnRuntimeDataChanged -= RefreshCachedData;
+        }
+
+        private void RefreshCachedData()
+        {
+            this.cachedCone = this.flashlightSettings.DetectionCone;
         }
 
         public override void OnTick(float tickDelta)
@@ -45,29 +61,26 @@ namespace MonsterSystem
             }
 
             // No valid flashlight or flashlight is off
-            if (this.flashlightTransform == null)
+            if (FlashlightTransform == null)
             {
                 AdjustExposure(-this.exposureDecaySpeed);
                 return;
             }
 
-            // Get detection cone from flashlight (uses runtime range)
-            this.detectionData = flashlightSettings.GetDetectionCone();
-
-            Vector3 flashLightPos = this.flashlightTransform.position;
+            Vector3 flashLightPos = FlashlightTransform.position;
             Vector3 sensorPos = this.sensorTransform.position;
             Vector3 toSensor = sensorPos - flashLightPos;
             float distanceSquared = toSensor.sqrMagnitude;
 
             // Sensor is outside flashlight range
-            if (distanceSquared > this.detectionData.RangeSquared)
+            if (distanceSquared > this.cachedCone.RangeSquared)
             {
                 AdjustExposure(-this.exposureDecaySpeed);
                 return;
             }
 
             // Flatten to XZ plane (ignore vertical angle)
-            Vector3 flashlightForward = this.flashlightTransform.forward;
+            Vector3 flashlightForward = FlashlightTransform.forward;
             flashlightForward.y = 0f;
             flashlightForward.Normalize();
 
@@ -85,7 +98,7 @@ namespace MonsterSystem
 
             // Sensor is outside the flashlight cone angle (horizontal only)
             // Uses squared comparison to avoid sqrt: (dot)^2 < (cosThreshold)^2 * dist^2
-            if (rawDot * rawDot < this.detectionData.CosineThresholdSquared * flatDistanceSquared)
+            if (rawDot * rawDot < this.cachedCone.CosineThresholdSquared * flatDistanceSquared)
             {
                 AdjustExposure(-this.exposureDecaySpeed);
                 return;
@@ -102,7 +115,7 @@ namespace MonsterSystem
             // Intensity is higher when closer to the center of the cone
             float flatDistance = Mathf.Sqrt(flatDistanceSquared);
             float dot = rawDot / flatDistance;
-            float intensity = (dot - this.detectionData.CosineThreshold) * this.detectionData.InverseConeRange;
+            float intensity = (dot - this.cachedCone.CosineThreshold) * this.cachedCone.InverseConeRange;
 
             // Build exposure based on intensity
             AdjustExposure(intensity * this.exposureBuildSpeed);
@@ -133,21 +146,12 @@ namespace MonsterSystem
             this.exposure = 0f;
 
             // Play stun audio
-            if (flashedSound != null && controller.Audio != null)
-                MonsterAudio.PlayOneShot(controller.Audio, flashedSound);
+            if (this.flashedSound != null && this.controller.Audio != null)
+                MonsterAudio.PlayOneShot(this.controller.Audio, this.flashedSound);
 
             // Transition to flee state with flashlight as target (NavMeshMoveState.AwayFromTarget mode)
-            if (fleeState != null && flashlightTransform != null)
-                TriggerTransitionTo(fleeState, flashlightTransform);
-        }
-
-        /// <summary>                                                                                                                                                            
-        /// Assigns the flashlight reference for this sensor to track.                                                                                                           
-        /// Should be called when the player spawns or when the flashlight becomes available.                                                                                    
-        /// </summary>
-        public void SetFlashLight(Transform flashlight)
-        {
-            this.flashlightTransform = flashlight.transform;
+            if (this.fleeState != null && FlashlightTransform != null)
+                TriggerTransitionTo(this.fleeState, FlashlightTransform);
         }
 
         /// <summary>                                                                                                                                                            
@@ -156,8 +160,8 @@ namespace MonsterSystem
         /// </summary>
         private void OnDrawGizmosSelected()
         {
-            Gizmos.color = Color.Lerp(Color.green, Color.red, exposure);
-            Gizmos.DrawWireSphere(transform.position, 0.15f);
+            Gizmos.color = Color.Lerp(Color.green, Color.red, this.exposure);
+            Gizmos.DrawWireSphere(this.transform.position, 0.15f);
         }
     }
 }

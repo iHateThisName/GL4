@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -12,7 +13,7 @@ public class BaseNavAIMonster : MonoBehaviour {
     [SerializeField] private Transform player;
     [SerializeField] private Transform[] patrolPoints;
 
-    [Header("Sound")] 
+    [Header("Sound")]
     [SerializeField] private AudioSource MonsterAudioSource;
     [SerializeField] private AudioClip killAudio;
     [SerializeField] private AudioClip flashedAudio;
@@ -30,6 +31,7 @@ public class BaseNavAIMonster : MonoBehaviour {
     private Vector3 spawnPoint;
     private int currentPatrolIndex = 0;
     private PlayerTemperatureSimulator.EnumLocationType currentLocation;
+    private WindowController target; // For intruder behavior, the window the monster is trying to enter through.
 
     // Delegate for monster behavior logic. This will point to the appropriate function based on the monster type.
     private Action monsterNavigationLogic;
@@ -43,7 +45,7 @@ public class BaseNavAIMonster : MonoBehaviour {
     private Vector3 fleeDestination;
 
     [System.Serializable]
-    public enum MonsterTypeEnum { None, Stalker, Munch }
+    public enum MonsterTypeEnum { None, Stalker, Munch, Intruder }
 
     #region Unity Lifecycle
     /// <summary>
@@ -136,23 +138,52 @@ public class BaseNavAIMonster : MonoBehaviour {
         switch (monsterType) {
             case MonsterTypeEnum.Stalker:
                 return StalkerNavigationLogic;
+            case MonsterTypeEnum.Intruder:
+                return IntruderNavigationLogic;
             default:
                 return () => { Debug.LogWarning($"The logic for the selected monster {this.monsterType} is missing."); };
         }
     }
 
-    private void AttackPlayer() {
-        if (this.isPlayerKilled) return; // Prevent multiple attack triggers if the player is already killed.
-        this.isPlayerKilled = true;
+    private void IntruderNavigationLogic() {
+        // Select a window to target if we don't have one or if the current target window is already open
+        if (this.target == null || this.target.GetCurrentWindowState() == VRLever.EnumLeverState.Open) {
+            // Get all windows that has the state closed
+            List<WindowController> closedWindows = GameManager.Instance.GetClosedWindows();
+            if (closedWindows.Count == 0) {
+                Debug.LogWarning("Intruder monster cannot find any closed windows to target.");
+                return;
+            }
+            // Randomly select one of the closed windows as the new target
+            this.target = closedWindows[UnityEngine.Random.Range(0, closedWindows.Count)];
+            // Start moving towards the target window's position
+            //agent.SetDestination(this.target.TargetPosition.position);
 
-        //Audio
-        SoundEffectManager.Instance.PlaySoundFXClip(this.killAudio, transform, 0.75f);
+            Vector3 approachePoint = this.target.TargetPosition.position - (-this.target.TargetPosition.right * 5f);
+            Debug.Log($"Intruder monster is targeting a new window at {this.target.TargetPosition.position}. Moving towards approache point at {approachePoint}");
+            agent.SetDestination(approachePoint);
+        }
 
-        this.DebugInformation = "Monster is attacking the player!";
-        // Implement attack logic here. trigger animation, reduce player health, etc.
-        Debug.Log("Monster is attacking the player!");
-        DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Monster, completelyRestart: false);
+
+        // Check if target as been reached.
+        if (!agent.pathPending && agent.velocity.sqrMagnitude == 0f) {
+            if (this.agent.pathEndPosition == this.target.TargetPosition.position) {
+
+                // Reached Window target
+                //this.agent.gameObject.transform.rotation = this.target.TargetPosition.rotation;
+                this.agent.Warp(this.target.TargetPosition.position);
+
+                this.agent.gameObject.transform.rotation = this.target.TargetPosition.rotation;
+                // debug the rotation
+            } else {
+                // Reached approache point, now set destination to the window target position to move directly towards it.
+                // This is to make sure the rotation of the monster is correct when it reaches the window, since the approache point is offset from the window position.
+                this.agent.SetDestination(this.target.TargetPosition.position);
+            }
+        }
+
     }
+
 
     /// <summary>
     /// Implements the stalker behavior pattern for the monster.
@@ -193,6 +224,18 @@ public class BaseNavAIMonster : MonoBehaviour {
             }
             this.DebugInformation = $"Stalker is idle moving towards {this.agent.destination}";
         }
+    }
+    private void AttackPlayer() {
+        if (this.isPlayerKilled) return; // Prevent multiple attack triggers if the player is already killed.
+        this.isPlayerKilled = true;
+
+        //Audio
+        SoundEffectManager.Instance.PlaySoundFXClip(this.killAudio, transform, 0.75f);
+
+        this.DebugInformation = "Monster is attacking the player!";
+        // Implement attack logic here. trigger animation, reduce player health, etc.
+        Debug.Log("Monster is attacking the player!");
+        DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Monster, completelyRestart: false);
     }
 
     private void UpdateStalkingAudio(bool isStalking) {
