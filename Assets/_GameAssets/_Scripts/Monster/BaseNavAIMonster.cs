@@ -1,3 +1,4 @@
+using MonsterSystem;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ public class BaseNavAIMonster : MonoBehaviour {
 
     [Header("References")]
     [SerializeField] private NavMeshAgent agent;
+    [SerializeField] private MonsterController monsterController;
     [SerializeField] private Transform player;
     [SerializeField] private Transform[] patrolPoints;
 
@@ -19,7 +21,7 @@ public class BaseNavAIMonster : MonoBehaviour {
     [SerializeField] private AudioClip flashedAudio;
 
     [Header("Config")]
-    [SerializeField] private MonsterTypeEnum monsterType;
+    [SerializeField] private EnumMonsterType monsterType;
     [SerializeField] private float tickRate = 2f; // How often the monster updates its behavior (in seconds)
     [SerializeField] private float attackRange = 0.5f;
 
@@ -45,7 +47,7 @@ public class BaseNavAIMonster : MonoBehaviour {
     private Vector3 fleeDestination;
 
     [System.Serializable]
-    public enum MonsterTypeEnum { None, Stalker, Munch, Intruder }
+    public enum EnumMonsterType { None, Stalker, Munch, Intruder }
 
     #region Unity Lifecycle
     /// <summary>
@@ -136,9 +138,9 @@ public class BaseNavAIMonster : MonoBehaviour {
     /// </summary>
     private Action MonsterLogicSelector() {
         switch (monsterType) {
-            case MonsterTypeEnum.Stalker:
+            case EnumMonsterType.Stalker:
                 return StalkerNavigationLogic;
-            case MonsterTypeEnum.Intruder:
+            case EnumMonsterType.Intruder:
                 return IntruderNavigationLogic;
             default:
                 return () => { Debug.LogWarning($"The logic for the selected monster {this.monsterType} is missing."); };
@@ -173,6 +175,12 @@ public class BaseNavAIMonster : MonoBehaviour {
                 this.agent.Warp(targetPosition); // Making sure the monster is exactly at the target position.
                 this.agent.gameObject.transform.rotation = this.target.TargetPosition.rotation; // Make sure the monster is rotated to match the window's rotation.
                 this.agent.ResetPath(); // stop navigating while the animation plays.
+
+                if (this.monsterController.CurrentState == this.monsterController.GetMonsterState<IntruderOpenWindowState>()) {
+                    // Tell the monster controller to start a diffrent animation state for opening the window.
+                    this.monsterController.TransitionTo(this.monsterController.GetMonsterState<IntruderOpenWindowState>());
+                }
+
             } else {
                 // Reached approache point, now set destination to the window target position to move directly towards it.
                 // This is to make sure the rotation of the monster is correct when it reaches the window, since the approache point is offset from the window position.

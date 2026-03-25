@@ -400,7 +400,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3793825480316588878}
-  - component: {fileID: 3074972708704782809}
+  - component: {fileID: 6893837462578570359}
   m_Layer: 0
   m_Name: Walk
   m_TagString: Untagged
@@ -423,7 +423,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6303827022862854503}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3074972708704782809
+--- !u!114 &6893837462578570359
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -432,15 +432,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 3458592905161940793}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a6207b717ce4f9418089b19aec41ca4, type: 3}
+  m_Script: {fileID: 11500000, guid: 6f08c3cd27d143ca9e3451a050c9022e, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::IntruderWalkState
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimatedState
   blocksTransitions: 0
-  paramType: 1
-  paramName: 
-  boolValue: 0
-  floatValue: 0
-  intValue: 0
+  AnimationState: 2
   nextState: {fileID: 0}
 --- !u!1 &3807162221386724574
 GameObject:
@@ -629,8 +625,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a0f28e82ba282747a3ad3dd8aea0f9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.MonsterController
-  config: {fileID: 0}
-  initialState: {fileID: 3074972708704782809}
+  config: {fileID: 11400000, guid: 2a7b4617fe6a2294ba46a36255cfd512, type: 2}
+  initialState: {fileID: 6893837462578570359}
   <Animator>k__BackingField: {fileID: 6482822105953925923}
   <Audio>k__BackingField: {fileID: 3600620484907467236}
   sensorRoot: {fileID: 8218312588842223076}
@@ -714,6 +710,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BaseNavAIMonster
   <DebugInformation>k__BackingField: 
   agent: {fileID: 6856695336247606016}
+  monsterController: {fileID: 832584143380676345}
   player: {fileID: 0}
   patrolPoints: []
   MonsterAudioSource: {fileID: 3600620484907467236}
@@ -733,6 +730,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 601370847512379146}
+  - component: {fileID: 4368580913843473736}
   m_Layer: 0
   m_Name: Window
   m_TagString: Untagged
@@ -755,6 +753,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6303827022862854503}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4368580913843473736
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8898604334208933820}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a6207b717ce4f9418089b19aec41ca4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::IntruderWalkState
+  blocksTransitions: 0
+  AnimationState: 4
+  nextState: {fileID: 0}
+  offsetFromWindow: 0.5
+  agent: {fileID: 6856695336247606016}
 --- !u!1001 &5804665307699812350
 PrefabInstance:
   m_ObjectHideFlags: 0

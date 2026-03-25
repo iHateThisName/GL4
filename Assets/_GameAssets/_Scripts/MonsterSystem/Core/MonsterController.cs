@@ -106,6 +106,17 @@ namespace MonsterSystem
 
         public T GetConfig<T>() where T : MonsterConfig => config as T;
 
+
+        public T GetMonsterState<T>() where T : MonsterState
+        {
+            for (int i = 0; i < states.Length; i++)
+            {
+                if (states[i] is T typed)
+                    return typed;
+            }
+            return null;
+        }
+
         // --- State Machine ---
 
         /// Tick all sensors with the elapsed time since last tick.
