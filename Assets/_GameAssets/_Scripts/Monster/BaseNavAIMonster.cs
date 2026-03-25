@@ -160,25 +160,23 @@ public class BaseNavAIMonster : MonoBehaviour {
             //agent.SetDestination(this.target.TargetPosition.position);
 
             Vector3 approachePoint = this.target.TargetPosition.position - (-this.target.TargetPosition.right * 5f);
-            Debug.Log($"Intruder monster is targeting a new window at {this.target.TargetPosition.position}. Moving towards approache point at {approachePoint}");
             agent.SetDestination(approachePoint);
         }
 
 
         // Check if target as been reached.
         if (!agent.pathPending && agent.velocity.sqrMagnitude == 0f) {
-            if (this.agent.pathEndPosition == this.target.TargetPosition.position) {
-
+            // debug log the current position the pathendposition and the target position
+            Vector3 targetPosition = this.target.TargetPosition.position;
+            if (this.agent.pathEndPosition.x == targetPosition.x && this.agent.pathEndPosition.z == targetPosition.z) {
                 // Reached Window target
-                //this.agent.gameObject.transform.rotation = this.target.TargetPosition.rotation;
-                this.agent.Warp(this.target.TargetPosition.position);
-
-                this.agent.gameObject.transform.rotation = this.target.TargetPosition.rotation;
-                // debug the rotation
+                this.agent.Warp(targetPosition); // Making sure the monster is exactly at the target position.
+                this.agent.gameObject.transform.rotation = this.target.TargetPosition.rotation; // Make sure the monster is rotated to match the window's rotation.
+                this.agent.ResetPath(); // stop navigating while the animation plays.
             } else {
                 // Reached approache point, now set destination to the window target position to move directly towards it.
                 // This is to make sure the rotation of the monster is correct when it reaches the window, since the approache point is offset from the window position.
-                this.agent.SetDestination(this.target.TargetPosition.position);
+                this.agent.SetDestination(targetPosition);
             }
         }
 

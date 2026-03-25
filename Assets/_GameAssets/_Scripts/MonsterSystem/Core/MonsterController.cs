@@ -17,8 +17,9 @@ namespace MonsterSystem
         private Dictionary<System.Type, MonsterSensor> sensorCache;
 
         // Auto-collected component refs
-        public Animator Animator { get; private set; }
-        public AudioSource Audio { get; private set; }
+        [field:SerializeField] public Animator Animator { get; private set; }
+        [field: SerializeField] public AudioSource Audio { get; private set; }
+        [SerializeField] private Transform sensorRoot;
 
         // Runtime
         public MonsterState CurrentState { get; private set; }
@@ -28,20 +29,20 @@ namespace MonsterSystem
 
         private void Awake()
         {
-            sensorCache = new Dictionary<System.Type, MonsterSensor>();
+            this.sensorCache = new Dictionary<System.Type, MonsterSensor>();
 
-            Animator = GetComponentInChildren<Animator>();
-            Audio = GetComponentInChildren<AudioSource>();
+            if (this.Animator == null) this.Animator = GetComponentInChildren<Animator>();
+            if (this.Audio == null) this.Audio = GetComponentInChildren<AudioSource>();
 
             // Auto-collect states from "States" child
-            Transform statesRoot = transform.Find("States");
+            Transform statesRoot = this.initialState == null ? transform.root.Find("States") : this.initialState.transform.parent;
             if (statesRoot != null)
                 states = statesRoot.GetComponentsInChildren<MonsterState>(true);
             else
                 states = GetComponentsInChildren<MonsterState>(true);
 
-            // Auto-collect sensors from this GO and children
-            sensors = GetComponentsInChildren<MonsterSensor>(true);
+            Transform sensorRoot = this.sensorRoot != null ? this.sensorRoot : transform.root.Find("Sensors");
+            this.sensors = sensorRoot.GetComponentsInChildren<MonsterSensor>(true);
 
             // Disable all state GameObjects immediately
             for (int i = states.Length - 1; i >= 0; i--)
