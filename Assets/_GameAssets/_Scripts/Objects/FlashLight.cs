@@ -114,7 +114,7 @@ public class Flashlight : Singleton<Flashlight>
             this.lightSource.intensity = this.targetLightIntensity;
             this.lightSource.range = this.targetLightRange;
         }
-        this.flashlightSettings.FlashlightTransform = this.transform;
+        this.flashlightSettings.Value = this.transform;
         this.flashlightSettings.CalculateDetectionCone(this.targetLightRange);
 
         // Ensure flashlight starts off

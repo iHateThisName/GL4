@@ -18,7 +18,7 @@ public struct DetectionConeData
 }
 
 [CreateAssetMenu(fileName = "FlashlightSettings", menuName = "TeamSuperSimple/Flashlight Settings", order = 0)]
-public class SO_FlashlightSettings : SO_Transform
+public class SO_FlashlightSettings : SO_TransformRef
 {
     [Header("=== Light Settings ===")]
     [SerializeField] private float startingLightPower = 40f;
@@ -44,16 +44,6 @@ public class SO_FlashlightSettings : SO_Transform
     [SerializeField] private int maxRotations = 10;
 
     [System.NonSerialized] private DetectionConeData detectionConeData;
-
-    /// <summary>
-    /// The flashlight's runtime Transform. Inherited from SO_TransformRef as .Value.
-    /// This property provides backward-compatible access.
-    /// </summary>
-    public Transform FlashlightTransform
-    {
-        get => Value;
-        set => Value = value;
-    }
 
     public DetectionConeData DetectionCone => detectionConeData;
 

@@ -24,7 +24,7 @@ namespace MonsterSystem
         private Transform sensorTransform;
         private float remainingCooldownTime;
         private float exposure;
-        private Transform FlashlightTransform => this.flashlightSettings != null ? this.flashlightSettings.FlashlightTransform : null;
+        private Transform FlashlightTransform => this.flashlightSettings != null ? this.flashlightSettings.Value : null;
 
         public override void Initialize(MonsterController owningMonster)
         {
