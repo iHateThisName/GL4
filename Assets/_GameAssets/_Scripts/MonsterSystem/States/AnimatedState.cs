@@ -2,15 +2,15 @@ using UnityEngine;
 
 namespace MonsterSystem {
     /// <summary>
-    /// State that sets an animation parameter on enter and waits for completion.
+    /// State that triggers affordances on enter and waits for animation completion.
     /// Works with AnimationStateChange (StateMachineBehaviour) to detect when the animation finishes.
-    /// Supports Trigger, Bool, Float, Int, or None parameter types.
+    /// Use AnimationAffordance to configure which animation to trigger.
     /// </summary>
     public class AnimatedState : MonsterState {
-        [SerializeField] private EnumAnimationStates AnimationState;
+        [SerializeField] private EnumAnimationStates animationState;
 
         [Header("Transition")]
-        [SerializeField] protected MonsterState nextState; // State to transition to after animation completes
+        [SerializeField] protected MonsterState nextState;
 
         /// <summary>
         /// True from OnStateEnter until OnAnimationComplete is called by AnimationStateChange.
@@ -29,21 +29,22 @@ namespace MonsterSystem {
         }
 
         /// <summary>
-        /// Sets the configured animation parameter on enter and begins waiting for completion.
-        /// If no parameter is configured, completes immediately.
+        /// Triggers all affordances and begins waiting for animation completion.
         /// </summary>
         public override void OnStateEnter() {
             // No animation to play — complete immediately
-            if (AnimationTriggers.GetTriggerHash(this.AnimationState) == 0) {
+            if (AnimationTriggers.GetTriggerHash(this.animationState) == 0) {
                 this.IsAnimating = false;
                 this.OnAnimationComplete();
                 return;
             }
-
+            
+            TriggerAffordances<AnimationAffordance>();
             this.IsAnimating = true; // Flag
-            Animator animator = this.controller.Animator; // Cache the Animator reference for the switch block
-            MonsterAnimation.SetTrigger(animator, AnimationTriggers.GetTriggerHash(this.AnimationState));
-
+            if (this.animationState != EnumAnimationStates.None)
+            {
+                MonsterAnimation.SetTrigger(this.controller.Animator, AnimationTriggers.GetTriggerHash(this.animationState));
+            }
         }
 
         /// <summary>
@@ -56,7 +57,7 @@ namespace MonsterSystem {
 
             // Transition to the next state if one is assigned
             if (this.nextState != null) {
-                this.controller.TransitionTo(this.nextState);
+                RequestTransition(this.nextState);
             } else {
                 Debug.LogWarning($"[{GetType().Name}] Animation finished but no nextState configured!", this);
             }

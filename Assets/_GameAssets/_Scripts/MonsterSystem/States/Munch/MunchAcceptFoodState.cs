@@ -52,9 +52,7 @@ namespace MonsterSystem
             this.satietySensor.AddSatiety(this.satietyGain);
 
             // Play the eat sound effect if a MunchConfig and AudioSource are available
-            var config = this.controller.GetConfig<MunchConfig>();
-            if (config != null && this.controller.Audio != null)
-                MonsterAudio.PlayOneShot(this.controller.Audio, config.eatSound);
+           TriggerAffordances<AudioAffordance>();
 
             // Destroy the food game object now that it has been consumed
             if (this.foodObject != null)

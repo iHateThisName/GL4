@@ -147,8 +147,8 @@ namespace MonsterSystem
             this.exposure = 0f;
 
             // Play stun audio
-            if (this.flashedSound != null && this.controller.Audio != null)
-                MonsterAudio.PlayOneShot(this.controller.Audio, this.flashedSound);
+            if (this.flashedSound != null && this.controller.GetComponent<AudioSource>() != null)
+                MonsterAudio.PlayOneShot(this.controller.GetComponent<AudioSource>(), this.flashedSound);
 
             // Transition to flee state with flashlight as target (NavMeshMoveState.AwayFromTarget mode)
             if (this.fleeState != null && FlashlightTransform != null)

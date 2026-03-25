@@ -40,7 +40,7 @@ namespace Refactored
                     return;
                 }
                 
-                var monsterController = monster.GetComponent<MonsterController>();
+                var monsterController = monster.GetComponentInChildren<MonsterController>();
                 if (monsterController == null)
                 {
                     Debug.LogError("Monster Controller is null, cannot spawn monster.");

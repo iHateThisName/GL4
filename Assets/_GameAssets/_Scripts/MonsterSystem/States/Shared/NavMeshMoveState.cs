@@ -7,11 +7,11 @@ namespace MonsterSystem
     /// Generic NavMesh movement state. Delegates destination selection to a DestinationStrategy.
     /// Handles agent control, arrival detection, speed scaling, and audio.
     /// </summary>
-    public class NavMeshMoveState : MonsterState, IStateWithContext<Transform>
+    public class NavMeshMoveState : MonsterStateWithTimer, IStateWithContext<Transform>
     {
         [SerializeField] private NavMeshAgent agent;
         [SerializeField] private float baseSpeed = 3.5f;
-
+        
         [Header("Destination")]
         [SerializeReference] private DestinationStrategy strategy;
         [SerializeField] private SO_NavMeshMoveConfig moveConfig;
@@ -19,11 +19,6 @@ namespace MonsterSystem
         [Header("Arrival")]
         [SerializeField] private float targetThreshold = 0.5f;
         [SerializeField] private MonsterState arrivalState;
-
-        [Header("Audio")]
-        [SerializeField] private AudioClip stateAudio;
-        [SerializeField] private bool loopAudio = true;
-        [SerializeField] [Range(0f, 1f)] private float audioVolume = 1f;
 
         private Transform target;
         private Vector3[] resolvedPoints;
@@ -45,6 +40,10 @@ namespace MonsterSystem
 
         public override void OnStateEnter()
         {
+            base.OnStateEnter();
+            
+            TriggerAffordances<AnimationAffordance>();
+            
             this.HasArrived = false;
             this.lastSetDestination = Vector3.positiveInfinity;
 
@@ -54,19 +53,17 @@ namespace MonsterSystem
             // Default to player if no context target was provided
             if (this.target == null)
                 this.target = this.controller.Config.PlayerTarget;
-
-            if (this.target == null)
-                Debug.LogWarning($"[NavMeshMoveState] No target on '{gameObject.name}'. Is SO_TransformRef (PlayerRef) assigned on MonsterConfig?");
-
+            
             // Resolve and set initial destination
             SetDestinationFromStrategy();
 
-            if (this.stateAudio != null && this.controller.Audio != null)
-                MonsterAudio.Play(this.controller.Audio, this.stateAudio, this.loopAudio, this.audioVolume);
+            TriggerAffordances<AudioAffordance>();
         }
 
-        public override void OnStateTick(float tickDelta)
+        protected override void OnTimerTick()
         {
+            base.OnTimerTick();
+
             if (this.agent == null) return;
 
             // Apply night scaling
@@ -84,12 +81,12 @@ namespace MonsterSystem
                     this.lastSetDestination = targetPos;
                 }
             }
-
+            
             // Check arrival — only when the agent has a valid, computed path.
             // remainingDistance is 0 before the path is computed, which would false-trigger arrival.
             this.HasArrived = !this.agent.pathPending
-                && this.agent.hasPath
-                && this.agent.remainingDistance <= this.targetThreshold;
+                              && this.agent.hasPath
+                              && this.agent.remainingDistance <= this.targetThreshold;
 
             if (this.HasArrived)
             {
@@ -98,14 +95,17 @@ namespace MonsterSystem
                     this.controller.transform.rotation = this.lastResult.Rotation;
 
                 if (this.arrivalState != null)
+                {
                     RequestTransition(this.arrivalState);
+                }
             }
         }
 
         public override void OnStateExit()
         {
-            if (this.stateAudio != null && this.controller.Audio != null)
-                MonsterAudio.Stop(this.controller.Audio);
+            base.OnStateExit();
+            
+            StopAffordances();
 
             if (this.agent != null)
                 this.agent.ResetPath();

@@ -51,8 +51,7 @@ namespace MonsterSystem
             elapsed = 0f;
 
             if (activeCount == 0) return;
-
-            // Only copy when the list actually changed
+            
             if (isDirty)
             {
                 if (sweep.Length < activeCount)
@@ -67,20 +66,12 @@ namespace MonsterSystem
 
             for (int i = start; i < end; i++)
             {
-                var c = sweep[i];
-                if (c != null && c.isActiveAndEnabled)
-                    TickMonster(c, tickDelta);
+                var controller = sweep[i];
+                if (controller != null && controller.isActiveAndEnabled)
+                    controller.TickSensors(tickDelta);
             }
 
             batchIndex = (end >= sweepCount) ? 0 : end;
-        }
-
-        static void TickMonster(MonsterController controller, float tickDelta)
-        {
-            controller.TickSensors(tickDelta);
-
-            if (controller.CurrentState != null)
-                controller.CurrentState.OnStateTick(tickDelta);
         }
 
         /// Immediate imperative transition (called by states for event-driven changes).
