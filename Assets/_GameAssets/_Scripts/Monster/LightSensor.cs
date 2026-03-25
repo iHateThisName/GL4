@@ -18,7 +18,7 @@ public class LightSensor : MonoBehaviour
     [SerializeField] private float sensorCooldownDuration = 5f; // Seconds of immunity after being stunned
     
     [System.Obsolete("temporary internal timer")]
-    private Timer performanceTimer;
+    private TimerHandle performanceTimerHandle;
     private DetectionConeData detectionData;
     private Transform flashlightTransform;
     private Transform sensorTransform;
@@ -36,17 +36,13 @@ public class LightSensor : MonoBehaviour
     /// </summary>
     private void Start()
     {
-        this.performanceTimer = new Timer(tickInterval, 0);
-        this.performanceTimer.OnTimerTick += Sense;
-        this.performanceTimer.Start();
+        this.performanceTimerHandle = TimerManager.Create(tickInterval);
+        TimerManager.SetCallbacks(this.performanceTimerHandle, Sense, null);
     }
 
-    /// <summary>                                                                                                                                                            
-    /// Cleans up the timer to prevent memory leaks.                                                                                                                         
-    /// </summary>
     private void OnDestroy()
     {
-        this.performanceTimer?.Dispose();
+        TimerManager.Release(ref this.performanceTimerHandle);
     }
 
     /// <summary>                                                                                                                                                            

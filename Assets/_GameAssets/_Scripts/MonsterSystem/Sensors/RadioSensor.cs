@@ -5,7 +5,7 @@ namespace MonsterSystem
     public class RadioSensor : MonsterSensor
     {
         [Header("References")]
-        [SerializeField] private SO_RuntimeReferences runtimeReferences;
+        [SerializeField] private SO_RadioRef radioRef;
 
         [Header("State Transitions")]
         [Tooltip("State to transition to when radio is on a dangerous (non-safe) channel")]
@@ -28,7 +28,7 @@ namespace MonsterSystem
         /// <summary>Current aggression modifier based on radio state</summary>
         public float CurrentAggressionModifier { get; private set; } = 1f;
 
-        private Radio radio => runtimeReferences?.Radio;
+        private Radio radio => this.radioRef?.Value;
 
         protected override void Subscribe()
         {

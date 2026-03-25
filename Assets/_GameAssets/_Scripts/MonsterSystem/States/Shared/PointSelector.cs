@@ -92,10 +92,11 @@ namespace MonsterSystem
     public class ClosestClosedWindowSelector : PointSelector
     {
         [SerializeField] private float excludeRadius = 1.5f;
+        [SerializeField] private SO_WindowRegistryRef windowsRef;
 
         public override DestinationResult SelectPoint(Vector3[] points, in DestinationContext ctx)
         {
-            var closedWindows = ctx.RuntimeReferences?.ClosedWindows;
+            var closedWindows = this.windowsRef?.ClosedWindows;
             if (closedWindows == null || closedWindows.Length == 0)
             {
                 Debug.LogWarning("[ClosestClosedWindowSelector] No closed windows found!");
@@ -108,9 +109,9 @@ namespace MonsterSystem
 
             for (int i = 0; i < closedWindows.Length; i++)
             {
-                if (closedWindows[i].targetPosition == null) continue;
+                if (closedWindows[i].TargetPosition == null) continue;
 
-                float dist = Vector3.Distance(selfPos, closedWindows[i].targetPosition.position);
+                float dist = Vector3.Distance(selfPos, closedWindows[i].TargetPosition.position);
                 if (dist < excludeRadius) continue;
 
                 if (dist < closestDist)
@@ -123,10 +124,10 @@ namespace MonsterSystem
             if (closest == null)
                 closest = closedWindows[0];
 
-            if (closest.targetPosition == null)
+            if (closest.TargetPosition == null)
                 return DestinationResult.At(selfPos);
 
-            return DestinationResult.At(closest.targetPosition.position, closest.targetPosition.rotation);
+            return DestinationResult.At(closest.TargetPosition.position, closest.TargetPosition.rotation);
         }
     }
 
@@ -134,10 +135,11 @@ namespace MonsterSystem
     public class RandomClosedWindowSelector : PointSelector
     {
         [SerializeField] private float excludeRadius = 1.5f;
+        [SerializeField] private SO_WindowRegistryRef windowsRef;
 
         public override DestinationResult SelectPoint(Vector3[] points, in DestinationContext ctx)
         {
-            var closedWindows = ctx.RuntimeReferences?.ClosedWindows;
+            var closedWindows = this.windowsRef?.ClosedWindows;
             if (closedWindows == null || closedWindows.Length == 0)
             {
                 Debug.LogWarning("[RandomClosedWindowSelector] No closed windows found!");
@@ -150,8 +152,8 @@ namespace MonsterSystem
 
             for (int i = 0; i < closedWindows.Length; i++)
             {
-                if (closedWindows[i].targetPosition == null) continue;
-                if (Vector3.Distance(selfPos, closedWindows[i].targetPosition.position) < excludeRadius) continue;
+                if (closedWindows[i].TargetPosition == null) continue;
+                if (Vector3.Distance(selfPos, closedWindows[i].TargetPosition.position) < excludeRadius) continue;
                 candidateCount++;
             }
 
@@ -159,8 +161,8 @@ namespace MonsterSystem
             if (candidateCount == 0)
             {
                 var fallback = closedWindows[0];
-                return fallback.targetPosition != null
-                    ? DestinationResult.At(fallback.targetPosition.position, fallback.targetPosition.rotation)
+                return fallback.TargetPosition != null
+                    ? DestinationResult.At(fallback.TargetPosition.position, fallback.TargetPosition.rotation)
                     : DestinationResult.At(selfPos);
             }
 
@@ -169,12 +171,12 @@ namespace MonsterSystem
             int seen = 0;
             for (int i = 0; i < closedWindows.Length; i++)
             {
-                if (closedWindows[i].targetPosition == null) continue;
-                if (Vector3.Distance(selfPos, closedWindows[i].targetPosition.position) < excludeRadius) continue;
+                if (closedWindows[i].TargetPosition == null) continue;
+                if (Vector3.Distance(selfPos, closedWindows[i].TargetPosition.position) < excludeRadius) continue;
 
                 if (seen == pick)
                 {
-                    return DestinationResult.At(closedWindows[i].targetPosition.position, closedWindows[i].targetPosition.rotation);
+                    return DestinationResult.At(closedWindows[i].TargetPosition.position, closedWindows[i].TargetPosition.rotation);
                 }
                 seen++;
             }

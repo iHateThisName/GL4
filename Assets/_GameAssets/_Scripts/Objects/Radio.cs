@@ -6,7 +6,7 @@ public class Radio : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private ClampedKnob knob;
-    [SerializeField] private SO_RuntimeReferences runtimeReferences;
+    [SerializeField] private SO_RadioRef radioRef;
     [SerializeField] private TextMeshProUGUI channelText;
 
     [Header("Channel Settings")]
@@ -35,9 +35,8 @@ public class Radio : MonoBehaviour
     
     private void Awake()
     {
-        // Register this Radio in RuntimeReferences
-        if (runtimeReferences != null)
-            runtimeReferences.Radio = this;
+        if (this.radioRef != null)
+            this.radioRef.Value = this;
 
         // Set knob steps before anything else initializes
         if (knob != null && overrideKnobSteps)

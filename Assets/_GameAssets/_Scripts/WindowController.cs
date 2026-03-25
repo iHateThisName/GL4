@@ -4,19 +4,23 @@ using UnityEngine;
 public class WindowController : MonoBehaviour
 {
     [SerializeField] private VRLever windowJoint;
-    [SerializeField] private SO_RuntimeReferences runtimeReferences;
-    public Transform TargetPosition; // The position the intruder will go
+    [SerializeField] private SO_WindowRegistryRef windowsRef;
+    public Transform TargetPosition;
 
-    private void OnEnable() {
+    private void OnEnable()
+    {
         windowJoint.OnLeverStateChanged += HandleWindowStateChanged;
-        runtimeReferences?.RegisterWindow(this);
+        windowsRef?.Add(this);
     }
 
-    private void OnDisable() {
+    private void OnDisable()
+    {
         windowJoint.OnLeverStateChanged -= HandleWindowStateChanged;
-        runtimeReferences?.DeregisterWindow(this);
+        windowsRef?.Remove(this);
     }
-    private void HandleWindowStateChanged(VRLever.EnumLeverState state) {
+
+    private void HandleWindowStateChanged(VRLever.EnumLeverState state)
+    {
         GameManager.Instance.UpdateWindowState(this, state);
         Debug.Log($"Window state changed to {state}");
     }

@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
@@ -10,7 +9,7 @@ public class SlotManager : MonoBehaviour
     public Transform[] attachPoints;
 
     private int currentSlotIndex = 0;
-    private bool isProcessing = false; // Prevents the "Double Snap" bug
+    private bool isProcessing = false;
 
     void OnEnable()
     {
@@ -26,34 +25,30 @@ public class SlotManager : MonoBehaviour
     private void OnObjectSnapped(SelectEnterEventArgs args)
     {
         if (isProcessing) return;
-        StartCoroutine(ProcessSnap(args.interactableObject));
+        _ = ProcessSnapAsync(args.interactableObject);
     }
 
-    private IEnumerator ProcessSnap(IXRSelectInteractable interactable)
+    private async Awaitable ProcessSnapAsync(IXRSelectInteractable interactable)
     {
         isProcessing = true;
 
-        // 1. Physics Safety: Stop the wood from moving/bouncing
         if (interactable.transform.TryGetComponent<Rigidbody>(out Rigidbody rb))
         {
             rb.isKinematic = true;
             rb.useGravity = false;
         }
 
-        // 2. Parent to the current slot
         interactable.transform.SetParent(attachPoints[currentSlotIndex]);
         interactable.transform.localPosition = Vector3.zero;
         interactable.transform.localRotation = Quaternion.identity;
 
-        // 3. Force the socket to release the wood
         socket.interactionManager.SelectExit((IXRSelectInteractor)socket, interactable);
 
-        // 4. Advance to the next slot
         currentSlotIndex++;
 
         if (currentSlotIndex >= attachPoints.Length)
         {
-            socket.socketActive = false; // Basket is full
+            socket.socketActive = false;
             Debug.Log("Basket Full!");
         }
         else
@@ -61,16 +56,14 @@ public class SlotManager : MonoBehaviour
             UpdateAttachTransform();
         }
 
-        // 5. Small cooldown so the socket doesn't re-grab the log we just released
-        yield return new WaitForSeconds(0.1f);
+        // Small cooldown so the socket doesn't re-grab the log we just released
+        await Awaitable.WaitForSecondsAsync(0.1f, destroyCancellationToken);
         isProcessing = false;
     }
 
     private void UpdateAttachTransform()
     {
         if (attachPoints.Length > 0 && currentSlotIndex < attachPoints.Length)
-        {
             socket.attachTransform = attachPoints[currentSlotIndex];
-        }
     }
 }

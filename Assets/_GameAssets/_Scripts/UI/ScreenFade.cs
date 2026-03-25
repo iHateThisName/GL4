@@ -1,11 +1,10 @@
 using System;
-using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
 /// Configuration for a single image within a screen fade.
-/// Defines sprite, tint color, and rotation.
 /// </summary>
 [Serializable]
 public struct ImageConfig
@@ -16,15 +15,9 @@ public struct ImageConfig
     [Tooltip("Tint color for the image. White = no tint (use sprite's original colors).")]
     public Color color;
 
-    [Tooltip("Rotation of the image in euler angles.")]
+    [Tooltip("Index into the images array.")]
     public int imageIndex;
 
-    /// <summary>
-    /// Creates a new image configuration.
-    /// </summary>
-    /// <param name="sprite">The sprite to display (null for solid color).</param>
-    /// <param name="color">Tint color (white = no tint).</param>
-    /// <param name="rotation">Rotation in euler angles.</param>
     public ImageConfig(Sprite sprite, Color color, int imageIndex)
     {
         this.sprite = sprite;
@@ -32,11 +25,9 @@ public struct ImageConfig
         this.imageIndex = imageIndex;
     }
 
-    /// <summary>Creates a solid color config with no sprite.</summary>
     public static ImageConfig SolidColor(Color color) =>
         new ImageConfig(null, color, 0);
 
-    /// <summary>Creates a config with a sprite and no tint (white).</summary>
     public static ImageConfig WithSprite(Sprite sprite, int imageIndex = 0) =>
         new ImageConfig(sprite, Color.white, imageIndex);
 }
@@ -56,14 +47,9 @@ public struct FadeConfig
 
     [Tooltip("Image configurations. Null/empty = use existing setup unchanged.")]
     public ImageConfig[] imageConfigs;
+    
+    private const float DEFAULT_FADE_DURATION = 2f;
 
-    /// <summary>
-    /// Creates a new fade configuration.
-    /// </summary>
-    /// <param name="targetOpacity">Target opacity (0-1).</param>
-    /// <param name="duration">Fade duration in seconds.</param>
-    /// <param name="deactivateOnComplete">Whether to deactivate canvas when fading to 0.</param>
-    /// <param name="images">Optional image configurations.</param>
     public FadeConfig(float targetOpacity, float duration, ImageConfig[] imageConfigs = null)
     {
         this.targetOpacity = Mathf.Clamp01(targetOpacity);
@@ -71,51 +57,39 @@ public struct FadeConfig
         this.imageConfigs = imageConfigs;
     }
 
-    /// <summary>Creates a simple fade to black.</summary>
-    public static FadeConfig FadeToBlack(float duration = 2f) =>
-        new FadeConfig(1f, duration, new[] { ImageConfig.SolidColor(Color.black) });
+    // Cached static arrays — no allocation per call
+    private static readonly ImageConfig[] BlackImage = { ImageConfig.SolidColor(Color.black) };
+    private static readonly ImageConfig[] WhiteImage = { ImageConfig.SolidColor(Color.white) };
 
-    /// <summary>Creates a simple fade to white.</summary>
-    public static FadeConfig FadeToWhite(float duration = 2f) =>
-        new FadeConfig(1f, duration, new[] { ImageConfig.SolidColor(Color.white) });
+    public static FadeConfig FadeToBlack(float duration = DEFAULT_FADE_DURATION) =>
+        new FadeConfig(1f, duration, BlackImage);
 
-    /// <summary>Creates a fade to transparent (no image changes).</summary>
-    public static FadeConfig FadeOut(float duration = 1f) =>
+    public static FadeConfig FadeToWhite(float duration = DEFAULT_FADE_DURATION) =>
+        new FadeConfig(1f, duration, WhiteImage);
+
+    public static FadeConfig FadeOut(float duration = DEFAULT_FADE_DURATION) =>
         new FadeConfig(0f, duration, null);
 }
 
 /// <summary>
-/// Reusable screen fade component that animates a CanvasGroup's opacity.
-/// Supports multiple images with different sprites, colors, and rotations.
-/// Images are created dynamically as needed based on FadeConfig.
+/// Reusable screen fade component using async Awaitable. Zero coroutine/timer allocations.
 /// </summary>
 public class ScreenFade : MonoBehaviour
 {
     [Header("=== References ===")]
-    [Tooltip("The CanvasGroup controlling the fade overlay opacity.")]
+    [SerializeField] private SO_ScreenFadeRef screenFadeRef;
     [SerializeField] private CanvasGroup fadeCanvasGroup;
-    
     [SerializeField] private Image[] images;
 
     [Header("=== Default Configuration ===")]
-    [Tooltip("Default fade configuration used when StartFade() is called without parameters.")]
     [SerializeField] private FadeConfig defaultConfig = new FadeConfig(1f, 2f, null);
 
-    [Header("=== Performance ===")]
-    [Tooltip("Seconds between fade updates. Higher = better performance, lower = smoother fade.")]
-    [SerializeField] private float tickInterval = 0.05f;
-
-    /// <summary>Fired when the fade animation completes.</summary>
+    /// <summary>Fired when the fade animation completes. Kept for backward compatibility.</summary>
     public event Action OnFadeComplete;
 
-    private Timer fadeTimer;
-    private float startOpacity;
-    private FadeConfig activeConfig;
+    private CancellationTokenSource fadeCts;
 
-    /// <summary>Returns true if a fade is currently in progress.</summary>
-    public bool IsFading => this.fadeTimer != null && this.fadeTimer.IsRunning;
-
-    /// <summary>Current opacity of the fade overlay.</summary>
+    public bool IsFading { get; private set; }
     public float CurrentOpacity => this.fadeCanvasGroup != null ? this.fadeCanvasGroup.alpha : 0f;
 
     private void Awake()
@@ -125,6 +99,9 @@ public class ScreenFade : MonoBehaviour
 
         if (this.images == null)
             this.images = GetComponentsInChildren<Image>();
+
+        if (this.screenFadeRef != null)
+            this.screenFadeRef.Value = this;
     }
 
     private void Start()
@@ -138,54 +115,113 @@ public class ScreenFade : MonoBehaviour
 
     private void OnDestroy()
     {
-        CleanupTimer();
+        CancelFade();
+        if (this.screenFadeRef != null && this.screenFadeRef.Value == this)
+            this.screenFadeRef.Value = null;
     }
 
     /// <summary>
-    /// Starts a fade using the default configuration.
+    /// Starts a fade using the default configuration. Fire-and-forget.
     /// </summary>
-    public void StartFade()
-    {
-        StartFadeWithConfig(this.defaultConfig);
-    }
+    public void StartFade() => StartFadeWithConfig(this.defaultConfig);
 
     /// <summary>
-    /// Starts a fade with the specified configuration.
+    /// Starts a fade with the specified configuration. Fire-and-forget.
     /// </summary>
-    /// <param name="config">The fade configuration to use.</param>
     public void StartFadeWithConfig(FadeConfig config)
     {
         if (this.fadeCanvasGroup == null) return;
 
-        CleanupTimer();
+        CancelFade();
 
-        this.activeConfig = config;
-        this.startOpacity = this.fadeCanvasGroup.alpha;
-
-        // Configure images if provided
         if (config.imageConfigs != null && config.imageConfigs.Length > 0)
             ConfigureImages(config.imageConfigs);
 
-        this.fadeTimer = new Timer(this.tickInterval, config.duration);
-        this.fadeTimer.OnTimerTick += UpdateFade;
-        this.fadeTimer.OnTimerFinished += CompleteFade;
-        this.fadeTimer.Start();
+        this.fadeCts = new CancellationTokenSource();
+        _ = RunFadeAsync(config, this.fadeCts.Token);
     }
 
     /// <summary>
-    /// Configures images based on the provided image configurations.
-    /// Creates new images if needed, hides excess images.
+    /// Awaitable version — callers can directly await completion. Zero allocation.
     /// </summary>
-    /// <param name="imageConfigs">Array of image configurations.</param>
+    public async Awaitable FadeAsync(FadeConfig config, CancellationToken ct = default)
+    {
+        if (this.fadeCanvasGroup == null)
+        {
+            Debug.LogWarning($"[ScreenFade] FadeAsync aborted — fadeCanvasGroup is null on '{gameObject.name}'");
+            return;
+        }
+
+        Debug.Log($"[ScreenFade] FadeAsync: {this.fadeCanvasGroup.alpha} → {config.targetOpacity} over {config.duration}s on '{gameObject.name}'");
+
+        CancelFade();
+
+        if (config.imageConfigs != null && config.imageConfigs.Length > 0)
+            ConfigureImages(config.imageConfigs);
+
+        await RunFadeAsync(config, ct);
+    }
+
+    private async Awaitable RunFadeAsync(FadeConfig config, CancellationToken ct)
+    {
+        IsFading = true;
+        float startOpacity = this.fadeCanvasGroup.alpha;
+        float elapsed = 0f;
+
+        // DIAGNOSTIC: log first frame to verify the loop is running
+        bool loggedFirstFrame = false;
+
+        while (elapsed < config.duration)
+        {
+            if (ct.IsCancellationRequested) break;
+
+            elapsed += Time.unscaledDeltaTime;
+            float t = Mathf.Clamp01(elapsed / config.duration);
+            this.fadeCanvasGroup.alpha = Mathf.Lerp(startOpacity, config.targetOpacity, t);
+
+            if (!loggedFirstFrame)
+            {
+                Debug.Log($"[ScreenFade] RunFadeAsync first frame: deltaTime={Time.deltaTime}, unscaledDeltaTime={Time.unscaledDeltaTime}, alpha={this.fadeCanvasGroup.alpha}, elapsed={elapsed}, canvasGroup.alpha actually={this.fadeCanvasGroup.alpha}, gameObject.activeInHierarchy={gameObject.activeInHierarchy}");
+                loggedFirstFrame = true;
+            }
+
+            await Awaitable.NextFrameAsync(ct);
+        }
+
+        if (!ct.IsCancellationRequested)
+        {
+            this.fadeCanvasGroup.alpha = config.targetOpacity;
+            IsFading = false;
+            OnFadeComplete?.Invoke();
+        }
+    }
+
+    public void SetOpacityImmediate(float opacity)
+    {
+        if (this.fadeCanvasGroup == null) return;
+        CancelFade();
+        this.fadeCanvasGroup.alpha = Mathf.Clamp01(opacity);
+    }
+
+    public void StopFade(bool resetToTransparent = false)
+    {
+        CancelFade();
+        if (resetToTransparent) SetOpacityImmediate(0f);
+    }
+
+    private void CancelFade()
+    {
+        if (this.fadeCts != null)
+        {
+            this.fadeCts.Cancel();
+            this.fadeCts.Dispose();
+            this.fadeCts = null;
+        }
+        IsFading = false;
+    }
+
     private void ConfigureImages(ImageConfig[] imageConfigs)
     {
-        // Hide all images
-        for (int i = images.Length; i > this.images.Length; i--)
-        {
-            this.images[i].enabled = false;
-        }
-        
-        // Configure each image
         foreach (var imageConfig in imageConfigs)
         {
             var image = this.images[imageConfig.imageIndex];
@@ -196,70 +232,5 @@ public class ScreenFade : MonoBehaviour
                 image.color = imageConfig.color;
             }
         }
-    }
-
-    /// <summary>
-    /// Immediately sets the opacity without animation.
-    /// </summary>
-    /// <param name="opacity">Target opacity (0-1).</param>
-    public void SetOpacityImmediate(float opacity)
-    {
-        if (this.fadeCanvasGroup == null) return;
-
-        CleanupTimer();
-
-        opacity = Mathf.Clamp01(opacity);
-        this.fadeCanvasGroup.alpha = opacity;
-    }
-
-    /// <summary>
-    /// Stops the current fade and optionally resets to transparent.
-    /// </summary>
-    /// <param name="resetToTransparent">If true, immediately sets opacity to 0.</param>
-    public void StopFade(bool resetToTransparent = false)
-    {
-        CleanupTimer();
-
-        if (resetToTransparent)
-            SetOpacityImmediate(0f);
-    }
-
-    /// <summary>
-    /// Updates the fade opacity each tick based on elapsed time.
-    /// </summary>
-    private void UpdateFade()
-    {
-        if (this.fadeCanvasGroup == null || this.fadeTimer == null) return;
-
-        float progress = Mathf.Clamp01(this.fadeTimer.Elapsed / this.activeConfig.duration);
-        this.fadeCanvasGroup.alpha = Mathf.Lerp(this.startOpacity, this.activeConfig.targetOpacity, progress);
-    }
-
-    /// <summary>
-    /// Called when the fade animation completes.
-    /// Ensures final opacity is exact and fires the completion event.
-    /// </summary>
-    private void CompleteFade()
-    {
-        if (this.fadeCanvasGroup != null)
-        {
-            this.fadeCanvasGroup.alpha = this.activeConfig.targetOpacity;
-        }
-
-        CleanupTimer();
-        OnFadeComplete?.Invoke();
-    }
-
-    /// <summary>
-    /// Disposes the timer and removes event subscriptions.
-    /// </summary>
-    private void CleanupTimer()
-    {
-        if (this.fadeTimer == null) return;
-
-        this.fadeTimer.OnTimerTick -= UpdateFade;
-        this.fadeTimer.OnTimerFinished -= CompleteFade;
-        this.fadeTimer.Dispose();
-        this.fadeTimer = null;
     }
 }

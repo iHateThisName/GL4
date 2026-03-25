@@ -9,23 +9,35 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Runtime/References")]
 public class SO_RuntimeReferences : SO_RuntimeScriptableObject
 {
-    // Cached reference to the player's Transform, set at runtime by the GameManager
+    private static SO_RuntimeReferences instance;
+
+    /// <summary>
+    /// Static accessor. Set in OnReset (BeforeSceneLoad) and lazily found as fallback.
+    /// </summary>
+    public static SO_RuntimeReferences Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                // Fallback: find it if OnReset hasn't run yet (e.g., AfterSceneLoad timing)
+                var found = Resources.FindObjectsOfTypeAll<SO_RuntimeReferences>();
+                if (found.Length > 0)
+                    instance = found[0];
+            }
+            return instance;
+        }
+        private set => instance = value;
+    }
+
     [System.NonSerialized] private Transform player;
-
-    // Cached reference to the Radio, set at runtime
     [System.NonSerialized] private Radio radio;
-
+    [System.NonSerialized] private ScreenFade screenFade;
     [System.NonSerialized] private List<WindowController> windows = new();
 
-    /// <summary>
-    /// Gets or sets the runtime reference to the player's Transform.
-    /// </summary>
     public Transform Player { get => this.player; set => this.player = value; }
-
-    /// <summary>
-    /// Gets or sets the runtime reference to the Radio.
-    /// </summary>
     public Radio Radio { get => this.radio; set => this.radio = value; }
+    public ScreenFade ScreenFade { get => this.screenFade; set => this.screenFade = value; }
 
     /// <summary>
     /// Gets the runtime reference to the windows.
@@ -68,8 +80,10 @@ public class SO_RuntimeReferences : SO_RuntimeScriptableObject
     /// </summary>
     protected override void OnReset()
     {
+        Instance = this;
         this.player = null;
         this.radio = null;
+        this.screenFade = null;
         if (this.windows == null)
             this.windows = new List<WindowController>();
         else

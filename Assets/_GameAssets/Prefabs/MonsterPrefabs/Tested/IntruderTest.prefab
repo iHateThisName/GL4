@@ -50,7 +50,6 @@ MonoBehaviour:
   strategy:
     rid: 1560563707155841112
   moveConfig: {fileID: 11400000, guid: 15b4e26f9ed107b47a5e0c1dbf577210, type: 2}
-  runtimeReferences: {fileID: 11400000, guid: 749d29c376c8d334990efac3993877c0, type: 2}
   targetThreshold: 0.5
   arrivalState: {fileID: 949972736871824448}
   stateAudio: {fileID: 0}
@@ -576,7 +575,6 @@ MonoBehaviour:
   strategy:
     rid: 1560563707155841114
   moveConfig: {fileID: 0}
-  runtimeReferences: {fileID: 11400000, guid: 749d29c376c8d334990efac3993877c0, type: 2}
   targetThreshold: 0.5
   arrivalState: {fileID: 3696263003542454338}
   stateAudio: {fileID: 0}
@@ -594,6 +592,7 @@ MonoBehaviour:
       type: {class: RandomClosedWindowSelector, ns: MonsterSystem, asm: Assembly-CSharp}
       data:
         excludeRadius: 1.5
+        windowsRef: {fileID: 11400000, guid: 710b2a43d96baa5479a6a2e173d6385c, type: 2}
 --- !u!1 &8022162253996209157
 GameObject:
   m_ObjectHideFlags: 0

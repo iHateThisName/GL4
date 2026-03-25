@@ -12,14 +12,12 @@ namespace MonsterSystem
         public readonly MonsterController Controller;
         public readonly Transform Target;
         public readonly Vector3[] Points;
-        public readonly SO_RuntimeReferences RuntimeReferences;
 
-        public DestinationContext(MonsterController controller, Transform target, Vector3[] points, SO_RuntimeReferences runtimeReferences)
+        public DestinationContext(MonsterController controller, Transform target, Vector3[] points)
         {
             Controller = controller;
             Target = target;
             Points = points;
-            RuntimeReferences = runtimeReferences;
         }
     }
 

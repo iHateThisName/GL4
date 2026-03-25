@@ -15,7 +15,6 @@ namespace MonsterSystem
         [Header("Destination")]
         [SerializeReference] private DestinationStrategy strategy;
         [SerializeField] private SO_NavMeshMoveConfig moveConfig;
-        [SerializeField] private SO_RuntimeReferences runtimeReferences;
 
         [Header("Arrival")]
         [SerializeField] private float targetThreshold = 0.5f;
@@ -56,6 +55,9 @@ namespace MonsterSystem
             if (this.target == null)
                 this.target = this.controller.Config.PlayerTarget;
 
+            if (this.target == null)
+                Debug.LogWarning($"[NavMeshMoveState] No target on '{gameObject.name}'. Is SO_TransformRef (PlayerRef) assigned on MonsterConfig?");
+
             // Resolve and set initial destination
             SetDestinationFromStrategy();
 
@@ -83,8 +85,11 @@ namespace MonsterSystem
                 }
             }
 
-            // Check arrival
-            this.HasArrived = !this.agent.pathPending && this.agent.remainingDistance <= this.targetThreshold;
+            // Check arrival — only when the agent has a valid, computed path.
+            // remainingDistance is 0 before the path is computed, which would false-trigger arrival.
+            this.HasArrived = !this.agent.pathPending
+                && this.agent.hasPath
+                && this.agent.remainingDistance <= this.targetThreshold;
 
             if (this.HasArrived)
             {
@@ -112,7 +117,7 @@ namespace MonsterSystem
         {
             if (this.strategy == null || this.agent == null) return;
 
-            var ctx = new DestinationContext(this.controller, this.target, this.resolvedPoints, this.runtimeReferences);
+            var ctx = new DestinationContext(this.controller, this.target, this.resolvedPoints);
             this.lastResult = this.strategy.ResolveDestination(in ctx);
 
             this.agent.SetDestination(this.lastResult.Position);

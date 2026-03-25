@@ -12,7 +12,8 @@ public class GameManager : PersistenSingleton<GameManager> {
     [HideInInspector] public FireAdaptationController FireAdaptationController { get; private set; }
 
     [Header("=== Runtime References ===")]
-    [SerializeField] private SO_RuntimeReferences runtimeRefs;
+    [SerializeField] private SO_ScreenFadeRef screenFadeRef;
+    [SerializeField] private SO_TransformRef playerRef;
     [SerializeField] private Transform player;
 
     [Header("=== Night Configuration ===")]
@@ -22,7 +23,7 @@ public class GameManager : PersistenSingleton<GameManager> {
     // Other systems can subscribe to react (e.g., spawning enemies, triggering sounds).
     public static event System.Action<NightEvent> OnEventAvailable = delegate { };
     
-    private Timer nightTimer;
+    private TimerHandle nightTimerHandle;
     private int night = 1;
     private int eventsFired = 0;
 
@@ -30,7 +31,9 @@ public class GameManager : PersistenSingleton<GameManager> {
 
     public Dictionary<WindowController, VRLever.EnumLeverState> WindowsDictonary { get; private set; } = new Dictionary<WindowController, VRLever.EnumLeverState>();
 
-    public float NightTime => this.nightTimer != null && this.nightTimer.IsRunning ? this.nightTimer.Elapsed : this.nightSettings.GetNightTimeInSeconds();
+    public float NightTime => TimerManager.Validate(this.nightTimerHandle) && TimerManager.GetRef(this.nightTimerHandle).IsRunning == 1
+        ? TimerManager.GetRef(this.nightTimerHandle).Elapsed
+        : this.nightSettings.GetNightTimeInSeconds();
 
     /// <summary>
     /// Unity callback invoked when the object becomes enabled.
@@ -53,12 +56,8 @@ public class GameManager : PersistenSingleton<GameManager> {
     }
     
     private void Start() {
-        // Register player reference
-        if (this.runtimeRefs != null)
-        {
-            if (player != null)
-                this.runtimeRefs.Player = player;
-        }
+        if (this.playerRef != null && this.player != null)
+            this.playerRef.Value = this.player;
 
         // use the existing instance if it exists in the scene
         this.FireAdaptationController = FindFirstObjectByType<FireAdaptationController>();
@@ -71,35 +70,26 @@ public class GameManager : PersistenSingleton<GameManager> {
         this.eventsToFire = this.nightSettings.GetEventsForNight(this.night);
     }
     
-    /// <summary>
-    /// Clean up the timer when this component is destroyed.
-    /// </summary>
     protected override void OnDestroy()
     {
         base.OnDestroy();
-        
-        if (this.nightTimer != null)
-        {
-            this.nightTimer.Dispose();
-            this.nightTimer = null;
-        }
+        TimerManager.Release(ref this.nightTimerHandle);
     }
 
     public void ContinueGame() {
         Debug.Log("Continuing Game...");
         // Add logic to continue the game from the game over scene
         
-        SceneManager.LoadScene("CabinLayoutFinal");
+        SceneTransition.LoadScene(0, this.screenFadeRef);
         InstantiateTimer();
     }
 
     private void InstantiateTimer()
     {
         Debug.Log("Instantiating Timer...");
-        this.nightTimer = new Timer(this.nightSettings.GetNewNightEventTime(), this.nightSettings.GetNightTimeInSeconds());
-        this.nightTimer.OnTimerTick += HandleNightTick;
-        this.nightTimer.OnTimerFinished += HandleNightEnd;
-        this.nightTimer.Start();
+        TimerManager.Release(ref this.nightTimerHandle);
+        this.nightTimerHandle = TimerManager.Create(this.nightSettings.GetNewNightEventTime(), this.nightSettings.GetNightTimeInSeconds());
+        TimerManager.SetCallbacks(this.nightTimerHandle, HandleNightTick, HandleNightEnd);
         this.eventsFired = 0;
     }
     
@@ -109,40 +99,46 @@ public class GameManager : PersistenSingleton<GameManager> {
     /// </summary>
     private void HandleNightTick()
     {
-        // No need to fire any new events if we have fired of configured events
         if (this.eventsFired + 1 > this.eventsToFire.Length)
         {
-            if (this.nightTimer != null && this.nightSettings != null)
-                this.nightTimer.SetInterval(this.nightSettings.GetNightTimeInSeconds() + 10);
+            if (this.nightSettings != null && TimerManager.Validate(this.nightTimerHandle))
+            {
+                ref var t = ref TimerManager.GetRef(this.nightTimerHandle);
+                t.Interval = this.nightSettings.GetNightTimeInSeconds() + 10;
+                t.NextInterval = t.Elapsed + t.Interval;
+            }
             return;
         }
-        
-        Debug.Log($"Night event fired at: {this.night}: {this.nightTimer.Elapsed}s");
+
+        float elapsed = TimerManager.Validate(this.nightTimerHandle) ? TimerManager.GetRef(this.nightTimerHandle).Elapsed : 0f;
+        Debug.Log($"Night event fired at: {this.night}: {elapsed}s");
         this.eventsFired++;
-        
-        OnEventAvailable.Invoke(new NightEvent(this.eventsToFire[this.eventsFired - 1], this.eventsFired, this.night)); // Notify subscribers
-        if (this.nightTimer != null && this.nightSettings != null)
-            this.nightTimer.SetInterval(this.nightSettings.GetNewNightEventTime()); // Schedule the next event
+
+        OnEventAvailable.Invoke(new NightEvent(this.eventsToFire[this.eventsFired - 1], this.eventsFired, this.night));
+        if (this.nightSettings != null && TimerManager.Validate(this.nightTimerHandle))
+        {
+            ref var t = ref TimerManager.GetRef(this.nightTimerHandle);
+            t.Interval = this.nightSettings.GetNewNightEventTime();
+            t.NextInterval = t.Elapsed + t.Interval;
+        }
     }
 
     private void HandleNightEnd()
     {
         Debug.Log("Night Survived");
         this.night++;
-        
-        if (this.nightTimer != null)
-            this.nightTimer.Dispose();
-        
+
+        TimerManager.Release(ref this.nightTimerHandle);
+
         DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Survived, false);
-        
+
         if (this.night == this.nightSettings.GetFinalNight())
             DeathSystem.WinGame();
     }
 
     private void HandleNightEarlyEnd()
     {
-        if (this.nightTimer != null)
-            this.nightTimer.Dispose();
+        TimerManager.Release(ref this.nightTimerHandle);
 
         if (DeathSystem.deathEvent.Reason != DeathSystem.DeathEvent.DeathReason.Survived)
             this.night = 1;

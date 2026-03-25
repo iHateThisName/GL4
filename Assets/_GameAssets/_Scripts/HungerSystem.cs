@@ -32,7 +32,7 @@ public class HungerSystem : MonoBehaviour
     [Header("=== Configuration ====")]
     [SerializeField] private SO_HungerSettings hungerSettings;
     
-    private Timer hungerTimer;
+    private TimerHandle hungerHandle;
     
     // current state of hunger
     private EnumHungerState hungerState;
@@ -64,11 +64,9 @@ public class HungerSystem : MonoBehaviour
         {
             this.hunger = this.MaxHunger;
             this.hungerState = EnumHungerState.Full;
-            
-            // setup internal timer
-            this.hungerTimer = new Timer(this.hungerSettings.GetHungerDecayTick(), 0);
-            this.hungerTimer.OnTimerTick += HandleHungerTick;
-            this.hungerTimer.Start();
+
+            this.hungerHandle = TimerManager.Create(this.hungerSettings.GetHungerDecayTick());
+            TimerManager.SetCallbacks(this.hungerHandle, HandleHungerTick, null);
         }
     }
 
@@ -92,16 +90,9 @@ public class HungerSystem : MonoBehaviour
         this.mouthCollider.OnTriggerEntered -= this.tryEatFood;
     }
     
-    /// <summary>
-    /// Clean up the timer when this component is destroyed.
-    /// </summary>
     private void OnDestroy()
     {
-        if (this.hungerTimer != null)
-        {
-            this.hungerTimer.Dispose();
-            this.hungerTimer = null;
-        }
+        TimerManager.Release(ref this.hungerHandle);
     }
 
     /// <summary>
@@ -158,11 +149,10 @@ public class HungerSystem : MonoBehaviour
         
         ClampHunger(-this.hungerSettings.GetHungerDecayRate());
             
-        // Kill player if starved
         if (this.hunger <= 0)
         {
             Debug.Log("You are starving!");
-            this.hungerTimer.Dispose();
+            TimerManager.Release(ref this.hungerHandle);
             DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Hunger, false);
         }
     }
