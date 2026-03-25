@@ -7,7 +7,7 @@ namespace MonsterSystem
     {
         [Header("Jumpscare Positioning")]
         [Tooltip("How close the doll's center is to the player's eyes.")]
-        [SerializeField] private float faceProximity = 0.2f;
+        [SerializeField] private float faceProximity = 2f;
         [Tooltip("Slight vertical offset if the doll is too high/low relative to its pivot.")]
         [SerializeField] private float verticalOffset = -0.1f;
 

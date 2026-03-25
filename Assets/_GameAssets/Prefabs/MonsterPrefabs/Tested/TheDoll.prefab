@@ -50,7 +50,6 @@ MonoBehaviour:
   strategy:
     rid: 4379705012694286430
   moveConfig: {fileID: 0}
-  runtimeReferences: {fileID: 0}
   targetThreshold: 0.5
   arrivalState: {fileID: 7030186266804405750}
   stateAudio: {fileID: 0}
@@ -355,56 +354,8 @@ Transform:
   - {fileID: 2442952966761367298}
   - {fileID: 2960709231442033900}
   - {fileID: 6540810932976416326}
-  - {fileID: 2720013015445380808}
   m_Father: {fileID: 3584912247854795726}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &5462124008333890497
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2720013015445380808}
-  - component: {fileID: 9168734851712038063}
-  m_Layer: 0
-  m_Name: TouchSensor
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2720013015445380808
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5462124008333890497}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 5624446739809958843}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &9168734851712038063
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5462124008333890497}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 90df47e5a5a1e44458b6ade06028a0d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.TouchSensor
-  stateToTransitionTo: {fileID: 0}
-  touchArea: {fileID: 811780173967117261}
-  patientState: {fileID: 1708653840634344366}
 --- !u!1 &6155275669562670096
 GameObject:
   m_ObjectHideFlags: 0
@@ -451,7 +402,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.DollSensor
   stateToTransitionTo: {fileID: 0}
   patientState: {fileID: 1708653840634344366}
-  impatientState: {fileID: 0}
+  impatientState: {fileID: 8855592562008256410}
   aggressiveState: {fileID: 855308936384652440}
   attackState: {fileID: 7030186266804405750}
   debugText: {fileID: 6955278685709727320}
@@ -486,8 +437,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 3011288430990936915}
   - {fileID: 5028797612979446905}
@@ -509,6 +460,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.MonsterController
   config: {fileID: 11400000, guid: 26c77c681f4a38d4fa35515f8c2f2753, type: 2}
   initialState: {fileID: 1708653840634344366}
+  <Animator>k__BackingField: {fileID: 0}
+  <Audio>k__BackingField: {fileID: 0}
+  sensorRoot: {fileID: 0}
 --- !u!195 &1758525936543291132
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -574,10 +528,10 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 2
+  m_IsKinematic: 1
+  m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 3
+  m_CollisionDetection: 2
 --- !u!114 &8027403955597932307
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -703,7 +657,7 @@ MonoBehaviour:
   m_StartingSingleGrabTransformers: []
   m_StartingMultipleGrabTransformers: []
   m_AddDefaultGrabTransformers: 1
-  m_FarAttachMode: 0
+  m_FarAttachMode: 1
   m_LimitLinearVelocity: 0
   m_LimitAngularVelocity: 0
   m_MaxLinearVelocityDelta: 10
@@ -747,15 +701,15 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7019795739777843337}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0d5a24857d6d966428f560adb558c615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.PlayerProximitySensor
-  stateToTransitionTo: {fileID: 4571321375470877033}
+  stateToTransitionTo: {fileID: 0}
   detectionRange: 5
   impatient: {fileID: 0}
-  resetPatience: {fileID: 4571321375470877033}
+  resetPatience: {fileID: 0}
 --- !u!1 &7079660608194877710
 GameObject:
   m_ObjectHideFlags: 0
@@ -802,7 +756,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.DollPatientState
   blocksTransitions: 0
   pettingArea: {fileID: 811780173967117261}
-  maxAcceptableVelocity: 2
+  maxAcceptableVelocity: 4
+  timeBeforeDeathCall: 1
 --- !u!1 &7602594095530111932
 GameObject:
   m_ObjectHideFlags: 0
@@ -814,7 +769,7 @@ GameObject:
   - component: {fileID: 7988349694387619830}
   - component: {fileID: 8511063167836570867}
   - component: {fileID: 811780173967117261}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: PetArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -846,10 +801,10 @@ BoxCollider:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 1024
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 887
+    m_Bits: 0
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
@@ -1077,10 +1032,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.DollAttackState
   blocksTransitions: 1
-  faceProximity: 0.2
+  faceProximity: 2
   verticalOffset: -0.1
   timeBeforeDeathCall: 1
-  runtimeReferences: {fileID: 11400000, guid: 749d29c376c8d334990efac3993877c0, type: 2}
+  playerRef: {fileID: 11400000, guid: 8aa04a6520205384e9477b4745bd7d4b, type: 2}
 --- !u!1 &8704326584610175551
 GameObject:
   m_ObjectHideFlags: 0
@@ -1127,7 +1082,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.DollPatientState
   blocksTransitions: 0
   pettingArea: {fileID: 811780173967117261}
-  maxAcceptableVelocity: 3
+  maxAcceptableVelocity: 2
+  timeBeforeDeathCall: 1
 --- !u!1 &8772031545931181964
 GameObject:
   m_ObjectHideFlags: 0

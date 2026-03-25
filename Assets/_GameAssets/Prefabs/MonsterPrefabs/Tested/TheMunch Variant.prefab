@@ -138,7 +138,7 @@ MonoBehaviour:
   nextState: {fileID: 0}
   loopingSound: {fileID: 0}
   feedZone: {fileID: 7146271881563414096}
-  maxAcceptableVelocity: 1.5
+  maxAcceptableVelocity: 10
   rejectState: {fileID: 4550038304486667008}
   acceptState: {fileID: 1124015477162281980}
 --- !u!1 &2296687331529582161
@@ -194,7 +194,7 @@ MonoBehaviour:
   nextState: {fileID: 0}
   loopingSound: {fileID: 0}
   feedZone: {fileID: 7146271881563414096}
-  maxAcceptableVelocity: 2
+  maxAcceptableVelocity: 10
   rejectState: {fileID: 4550038304486667008}
   acceptState: {fileID: 1124015477162281980}
 --- !u!1 &2354261712479914936
@@ -327,7 +327,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.RadioSensor
   stateToTransitionTo: {fileID: 0}
-  runtimeReferences: {fileID: 11400000, guid: 749d29c376c8d334990efac3993877c0, type: 2}
+  radioRef: {fileID: 0}
   frenzyState: {fileID: 710727004609936139}
   normalState: {fileID: 5946285856578261012}
   safeAggressionModifier: 0.5
@@ -599,3 +599,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.MonsterController
   config: {fileID: 11400000, guid: ff306d00d63e5704e88d2e7c1f8e5e7d, type: 2}
   initialState: {fileID: 3198911293393157017}
+  <Animator>k__BackingField: {fileID: 0}
+  <Audio>k__BackingField: {fileID: 0}
+  sensorRoot: {fileID: 0}
