@@ -146,8 +146,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 163220789952355970}
-  - {fileID: 8313404461506052405}
   - {fileID: 2802168573129993983}
+  - {fileID: 8313404461506052405}
   - {fileID: 3050903971964825631}
   - {fileID: 6303827022862854503}
   - {fileID: 8218312588842223076}
@@ -185,7 +185,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3645684759878816719}
   m_Layer: 0
-  m_Name: Fleeing
+  m_Name: Flashed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -391,6 +391,53 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!1 &1821472748401317281
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4386152443229987308}
+  - component: {fileID: 3916010817815147298}
+  m_Layer: 0
+  m_Name: WindowIdle
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4386152443229987308
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1821472748401317281}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6303827022862854503}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3916010817815147298
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1821472748401317281}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f08c3cd27d143ca9e3451a050c9022e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimatedState
+  blocksTransitions: 0
+  <animationState>k__BackingField: 5
+  nextState: {fileID: 0}
 --- !u!1 &3458592905161940793
 GameObject:
   m_ObjectHideFlags: 0
@@ -436,7 +483,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimatedState
   blocksTransitions: 0
-  AnimationState: 2
+  <animationState>k__BackingField: 0
   nextState: {fileID: 0}
 --- !u!1 &3807162221386724574
 GameObject:
@@ -581,6 +628,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 8138255586992897016}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5945511514549207258
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3722531115129396874}
+  m_Layer: 0
+  m_Name: OpenWindow
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3722531115129396874
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5945511514549207258}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6303827022862854503}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6357655911396399998
 GameObject:
   m_ObjectHideFlags: 0
@@ -626,10 +704,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.MonsterController
   config: {fileID: 11400000, guid: 2a7b4617fe6a2294ba46a36255cfd512, type: 2}
-  initialState: {fileID: 6893837462578570359}
-  <Animator>k__BackingField: {fileID: 6482822105953925923}
-  <Audio>k__BackingField: {fileID: 3600620484907467236}
+  animator: {fileID: 6482822105953925923}
+  audioSource: {fileID: 3600620484907467236}
   sensorRoot: {fileID: 8218312588842223076}
+  initialState: {fileID: 6893837462578570359}
 --- !u!1 &7133513761916476144
 GameObject:
   m_ObjectHideFlags: 0
@@ -661,6 +739,8 @@ Transform:
   m_Children:
   - {fileID: 3793825480316588878}
   - {fileID: 601370847512379146}
+  - {fileID: 4386152443229987308}
+  - {fileID: 3722531115129396874}
   - {fileID: 3645684759878816719}
   m_Father: {fileID: 8138255586992897016}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -730,7 +810,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 601370847512379146}
-  - component: {fileID: 4368580913843473736}
+  - component: {fileID: 359053292061219951}
   m_Layer: 0
   m_Name: Window
   m_TagString: Untagged
@@ -753,7 +833,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6303827022862854503}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4368580913843473736
+--- !u!114 &359053292061219951
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -762,14 +842,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 8898604334208933820}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a6207b717ce4f9418089b19aec41ca4, type: 3}
+  m_Script: {fileID: 11500000, guid: 08003ec6fcfc1fe4594ba2add25a1a9b, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::IntruderWalkState
+  m_EditorClassIdentifier: Assembly-CSharp::IntruderApproachWindowState
   blocksTransitions: 0
-  AnimationState: 4
-  nextState: {fileID: 0}
-  offsetFromWindow: 0.5
+  <animationState>k__BackingField: 4
+  nextState: {fileID: 3916010817815147298}
   agent: {fileID: 6856695336247606016}
+  monsterNavigation: {fileID: 132277432202858881}
 --- !u!1001 &5804665307699812350
 PrefabInstance:
   m_ObjectHideFlags: 0

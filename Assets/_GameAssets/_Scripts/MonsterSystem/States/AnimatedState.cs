@@ -7,7 +7,7 @@ namespace MonsterSystem {
     /// Use AnimationAffordance to configure which animation to trigger.
     /// </summary>
     public class AnimatedState : MonsterState {
-        [SerializeField] private EnumAnimationStates animationState;
+        [field: SerializeField] public EnumAnimationStates animationState { private set; get; }
 
         [Header("Transition")]
         [SerializeField] protected MonsterState nextState;

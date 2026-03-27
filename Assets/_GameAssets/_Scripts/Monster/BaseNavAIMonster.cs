@@ -27,7 +27,7 @@ public class BaseNavAIMonster : MonoBehaviour {
 
     [Header("Flee Behaviour")]
     [SerializeField] private float fleeDuration = 35f; // How long the monster flees after being hit by flashlight
-    [SerializeField] private float fleeDistance = 20f; // How far the monster tries to flee
+    [SerializeField] private float fleeDistance = 20f; // How far the monster tries to flee 
 
     // Nav
     private Vector3 spawnPoint;
@@ -148,6 +148,13 @@ public class BaseNavAIMonster : MonoBehaviour {
     }
 
     private void IntruderNavigationLogic() {
+        MonsterState currentState = this.monsterController.CurrentState;
+
+        // Get the animation state in the class AnimatedState, filed is called animationState.
+        if (currentState is AnimatedState animatedState) {
+            EnumAnimationStates currentAnimationState = animatedState.animationState;
+        }
+
         // Select a window to target if we don't have one or if the current target window is already open
         if (this.target == null || this.target.GetCurrentWindowState() == VRLever.EnumLeverState.Open) {
             // Get all windows that has the state closed
@@ -163,6 +170,7 @@ public class BaseNavAIMonster : MonoBehaviour {
 
             Vector3 approachePoint = this.target.TargetPosition.position - (-this.target.TargetPosition.right * 5f);
             agent.SetDestination(approachePoint);
+            this.DebugInformation = $"Intruder is targeting a window at {this.target.TargetPosition.position} and moving towards approache point at {approachePoint}";
         }
 
 
@@ -171,20 +179,20 @@ public class BaseNavAIMonster : MonoBehaviour {
             // debug log the current position the pathendposition and the target position
             Vector3 targetPosition = this.target.TargetPosition.position;
             if (this.agent.pathEndPosition.x == targetPosition.x && this.agent.pathEndPosition.z == targetPosition.z) {
+                DisableNavigation();
                 // Reached Window target
                 this.agent.Warp(targetPosition); // Making sure the monster is exactly at the target position.
                 this.agent.gameObject.transform.rotation = this.target.TargetPosition.rotation; // Make sure the monster is rotated to match the window's rotation.
-                this.agent.ResetPath(); // stop navigating while the animation plays.
 
-                if (this.monsterController.CurrentState == this.monsterController.GetMonsterState<IntruderOpenWindowState>()) {
-                    // Tell the monster controller to start a diffrent animation state for opening the window.
-                    this.monsterController.TransitionTo(this.monsterController.GetMonsterState<IntruderOpenWindowState>());
-                }
+                // Tell the monster controller to start a diffrent animation state for opening the window.
+                this.monsterController.TransitionTo(this.monsterController.GetMonsterState<IntruderApproachWindowState>());
+                this.DebugInformation = "Intruder has reached the window and is now transitioning to open window state.";
 
             } else {
                 // Reached approache point, now set destination to the window target position to move directly towards it.
                 // This is to make sure the rotation of the monster is correct when it reaches the window, since the approache point is offset from the window position.
                 this.agent.SetDestination(targetPosition);
+                this.DebugInformation = $"Intruder has reached the approach point and is now moving directly towards the window at {targetPosition}";
             }
         }
 
@@ -295,5 +303,19 @@ public class BaseNavAIMonster : MonoBehaviour {
 
     public void SetPatrolPoints(Transform[] points) {
         this.patrolPoints = points;
+    }
+
+    public void DisableNavigation() {
+            this.agent.isStopped = true;
+            this.agent.ResetPath();
+            
+            this.agent.updatePosition = false;
+            this.agent.updateRotation = false;
+    }
+
+    public void EnableNavigation() {
+            this.agent.isStopped = false;
+            this.agent.updatePosition = true;
+            this.agent.updateRotation = true;
     }
 }
