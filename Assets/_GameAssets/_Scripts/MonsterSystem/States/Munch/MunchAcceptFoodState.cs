@@ -31,32 +31,33 @@ namespace MonsterSystem
         {
             this.foodRb = context;
             this.foodObject = context != null ? context.gameObject : null;
+            Destroy(this.foodObject);
         }
 
         /// <summary>
         /// Called when the accept/eat animation finishes. Releases the food from any grab,
         /// adds satiety, plays the eat sound, and destroys the food object.
         /// </summary>
-        protected override void OnAnimationFinished()
+        public override void OnAnimationComplete()
         {
-            base.OnAnimationFinished();
-
             // Force-release the food from any XR grab interaction before consuming it
             if (this.foodRb != null)
             {
                 var grab = this.foodRb.GetComponent<XRGrabInteractable>();
                 ForceRelease(grab);
             }
+            Debug.Log("MunchAcceptFoodState: Animation complete");
 
             // Increase the monster's satiety by the configured gain amount
             this.satietySensor.AddSatiety(this.satietyGain);
 
             // Play the eat sound effect if a MunchConfig and AudioSource are available
            TriggerAffordances<AudioAffordance>();
-
+           
             // Destroy the food game object now that it has been consumed
-            if (this.foodObject != null)
-                Destroy(this.foodObject);
+            if (this.foodObject != null) Destroy(this.foodObject);
+            
+            base.OnAnimationComplete();
         }
 
         /// <summary>

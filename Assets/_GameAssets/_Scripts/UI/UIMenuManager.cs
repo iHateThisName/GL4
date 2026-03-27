@@ -7,7 +7,7 @@ using UnityEngine;
 public class UIMenuManager : MonoBehaviour
 {
     [Header("=== Menu References ===")]
-    [SerializeField] private Transform uiMenus;
+    [SerializeField] private Transform[] uiMenus;
     [SerializeField] private Transform currentMenu;
 
     [Header("=== Scene Transition ===")]
@@ -32,20 +32,17 @@ public class UIMenuManager : MonoBehaviour
         this.currentMenu = null;
     }
 
+    public void OpenSettingsMenu()
+    {
+        ShowMenu(uiMenus[1]);
+    }
+
     /// <summary>
     /// Called by UI buttons to load a scene by build index through SceneTransition.
     /// </summary>
     public void LoadScene(int buildIndex)
     {
         SceneTransition.LoadScene(buildIndex, this.screenFadeRef);
-    }
-
-    /// <summary>
-    /// Called by UI buttons to load a scene by name through SceneTransition.
-    /// </summary>
-    public void LoadScene(string sceneName)
-    {
-        SceneTransition.LoadScene(sceneName, this.screenFadeRef);
     }
 
     public void QuitGame()

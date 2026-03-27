@@ -20,10 +20,10 @@ namespace Refactored
             GameManager.OnEventAvailable -= SpawnMonsterWithEvent;
         }
 
-        private void SpawnMonsterWithEvent(GameManager.NightEvent evt)
+        private void SpawnMonsterWithEvent(NightEvent evt)
         {
             var eventData = evt.GetPayload();
-            if (eventData.GetEventType() != GameManager.EventType.SpawnMonster)
+            if (eventData.GetEventType() != NightEventType.SpawnMonster)
             {
                 Debug.LogError("Event is not a SpawnMonster event.");
                 return;

@@ -11,6 +11,10 @@ namespace MonsterSystem {
 
         [Header("Transition")]
         [SerializeField] protected MonsterState nextState;
+        [SerializeField] private bool exitOnComplete = true;
+
+        [Tooltip("When true, wait for AnimationStateChange callback even if animationState is None (use with AnimationAffordance)")]
+        [SerializeField] private bool waitForAffordanceAnimation;
 
         /// <summary>
         /// True from OnStateEnter until OnAnimationComplete is called by AnimationStateChange.
@@ -32,18 +36,25 @@ namespace MonsterSystem {
         /// Triggers all affordances and begins waiting for animation completion.
         /// </summary>
         public override void OnStateEnter() {
-            // No animation to play — complete immediately
-            if (AnimationTriggers.GetTriggerHash(this.animationState) == 0) {
-                this.IsAnimating = false;
-                this.OnAnimationComplete();
-                return;
-            }
-            
+            // Always trigger affordances first (they may set animator parameters)
             TriggerAffordances<AnimationAffordance>();
-            this.IsAnimating = true; // Flag
+
+            // If using enum-based animation state, set the trigger
             if (this.animationState != EnumAnimationStates.None)
             {
+                this.IsAnimating = true;
                 MonsterAnimation.SetTrigger(this.controller.Animator, AnimationTriggers.GetTriggerHash(this.animationState));
+            }
+            // If using affordance-based animation, wait for callback
+            else if (this.waitForAffordanceAnimation)
+            {
+                this.IsAnimating = true;
+            }
+            // No animation configured — complete immediately
+            else
+            {
+                this.IsAnimating = false;
+                this.OnAnimationComplete();
             }
         }
 
@@ -56,7 +67,7 @@ namespace MonsterSystem {
             this.OnAnimationFinished();
 
             // Transition to the next state if one is assigned
-            if (this.nextState != null) {
+            if (this.nextState != null && exitOnComplete) {
                 RequestTransition(this.nextState);
             } else {
                 Debug.LogWarning($"[{GetType().Name}] Animation finished but no nextState configured!", this);

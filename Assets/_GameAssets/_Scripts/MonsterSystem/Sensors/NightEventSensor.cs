@@ -5,11 +5,11 @@ namespace MonsterSystem
     /// <summary>
     /// A sensor that listens for GameManager events and triggers state transitions.
     /// </summary>
-    public class TimedSensor : MonsterSensor
+    public class NightEventSensor : MonsterSensor
     {
         [Header("Event Settings")]
         [Tooltip("The event type this sensor responds to")]
-        [SerializeField] private GameManager.EventType respondToEventType = GameManager.EventType.DisruptRadio;
+        [SerializeField] private NightEventType respondToEventType = NightEventType.DisruptRadio;
 
         protected override void Subscribe()
         {
@@ -23,9 +23,8 @@ namespace MonsterSystem
             GameManager.OnEventAvailable -= OnGameManagerEvent;
         }
 
-        private void OnGameManagerEvent(GameManager.NightEvent evt)
+        private void OnGameManagerEvent(NightEvent evt)
         {
-            Debug.Log("Hello radio should switch");
             var eventPayload = evt.GetPayload();
             if (eventPayload.GetEventType() != respondToEventType) return;
 

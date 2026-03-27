@@ -1,9 +1,7 @@
 using Assets.Scripts.Singleton;
 using Gaskellgames;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class GameManager : PersistenSingleton<GameManager> {
 
@@ -41,7 +39,6 @@ public class GameManager : PersistenSingleton<GameManager> {
     /// </summary>
     private void OnEnable()
     {
-        OnEventAvailable += DebugEventTimeWorking;
         DeathSystem.OnPlayerDied += HandleNightEarlyEnd;
     }
 
@@ -51,7 +48,6 @@ public class GameManager : PersistenSingleton<GameManager> {
     /// </summary>
     private void OnDisable()
     {
-        OnEventAvailable -= DebugEventTimeWorking;
         DeathSystem.OnPlayerDied -= HandleNightEarlyEnd;
     }
     
@@ -160,57 +156,5 @@ public class GameManager : PersistenSingleton<GameManager> {
             }
         }
         return closedWindows;
-    }
-
-    /// <summary>
-    /// Debug helper method that logs when an event fires and when the next one is scheduled.
-    /// Useful for verifying timing behavior during development.
-    /// </summary>
-    private void DebugEventTimeWorking(NightEvent eventData)
-    {
-        //Debug.Log($"Event fired at {eventData}"); Yes is working relax.
-    }
-
-
-
-    [System.Serializable]
-    public enum EventType
-    {
-        SpawnMonster,
-        SpawnFood,
-        DisruptRadio,
-    }
-    
-    [System.Serializable]
-    public struct NightEventData
-    {
-        [SerializeField] private GameManager.EventType eventType;
-        [SerializeField] private GameObject monster;
-        [SerializeField] private int monsterCount;
-        
-        public GameManager.EventType GetEventType() => this.eventType;
-        public GameObject GetMonsterPrefab() => this.monster;
-        public int GetMonsterCount() => this.monsterCount;
-    }
-    
-    [System.Serializable]
-    public struct NightEvent
-    {
-        [SerializeField] private int eventIdx;
-        [SerializeField] private int night;
-        [SerializeField] private NightEventData eventData;
-        
-        public NightEvent(NightEventData eventData, int idx, int night) 
-        {
-            this.eventIdx = idx;
-            this.night = night;
-            this.eventData = eventData;
-        }
-        
-        public int Index => this.eventIdx;
-
-        public int Night => this.night;
-
-        public NightEventData GetPayload() => this.eventData;
     }
 }
