@@ -80,6 +80,10 @@ public class GameManager : PersistenSingleton<GameManager> {
         InstantiateTimer();
     }
 
+    public void DestroyGameObject(GameObject obj) {
+        Destroy(obj);
+    }
+
     private void InstantiateTimer()
     {
         Debug.Log("Instantiating Timer...");

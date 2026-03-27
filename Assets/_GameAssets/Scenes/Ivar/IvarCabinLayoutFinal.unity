@@ -16459,13 +16459,9 @@ PrefabInstance:
       propertyPath: AnimationState
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 6856695336247606016, guid: 870cddaf024873949b5a9c910b920081, type: 3}
-      propertyPath: m_Speed
-      value: 0.7
-      objectReference: {fileID: 0}
-    - target: {fileID: 6856695336247606016, guid: 870cddaf024873949b5a9c910b920081, type: 3}
-      propertyPath: m_AutoBraking
-      value: 0
+    - target: {fileID: 6075446766147847021, guid: 870cddaf024873949b5a9c910b920081, type: 3}
+      propertyPath: countdownDuration
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 8138255586992897016, guid: 870cddaf024873949b5a9c910b920081, type: 3}
       propertyPath: m_LocalPosition.x
@@ -16507,7 +16503,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3916010817815147298, guid: 870cddaf024873949b5a9c910b920081, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

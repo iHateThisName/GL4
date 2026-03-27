@@ -41,6 +41,7 @@ public class BaseNavAIMonster : MonoBehaviour {
     // Flags
     private bool isPlayerKilled = false;
     private bool isFleeing = false;
+    private bool isNavigationDisabled = false;
 
     // Flee
     private float fleeTimer = 0f;
@@ -118,7 +119,7 @@ public class BaseNavAIMonster : MonoBehaviour {
         while (true) {
             if (!this.isFleeing) CheckAttackRange();
 
-            this.monsterNavigationLogic?.Invoke();
+            if (!this.isNavigationDisabled) this.monsterNavigationLogic?.Invoke();
 
             yield return new WaitForSeconds(this.tickRate);
         }
@@ -306,16 +307,20 @@ public class BaseNavAIMonster : MonoBehaviour {
     }
 
     public void DisableNavigation() {
-            this.agent.isStopped = true;
-            this.agent.ResetPath();
-            
-            this.agent.updatePosition = false;
-            this.agent.updateRotation = false;
+        this.agent.isStopped = true;
+        this.agent.ResetPath();
+
+        this.agent.updatePosition = false;
+        this.agent.updateRotation = false;
+
+        this.isNavigationDisabled = true;
     }
 
     public void EnableNavigation() {
-            this.agent.isStopped = false;
-            this.agent.updatePosition = true;
-            this.agent.updateRotation = true;
+        this.agent.isStopped = false;
+        this.agent.updatePosition = true;
+        this.agent.updateRotation = true;
+
+        this.isNavigationDisabled = false;
     }
 }

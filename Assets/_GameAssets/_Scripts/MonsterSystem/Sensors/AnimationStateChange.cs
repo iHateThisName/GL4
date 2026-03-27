@@ -24,7 +24,8 @@ namespace MonsterSystem
         {
             base.OnStateEnter(animator, stateInfo, layerIndex);
             this.hasCompleted = false;
-            this.owningController = animator.GetComponentInParent<MonsterController>();
+            //this.owningController = animator.GetComponentInParent<MonsterController>();
+            this.owningController = animator.transform.root.GetComponentInChildren<MonsterController>();
         }
 
         public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

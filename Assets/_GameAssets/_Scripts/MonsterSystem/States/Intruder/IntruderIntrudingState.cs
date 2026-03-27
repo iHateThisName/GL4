@@ -2,7 +2,7 @@ using MonsterSystem;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class IntruderIntruding : AnimatedState {
+public class IntruderIntrudingState : AnimatedState {
     [SerializeField] private BaseNavAIMonster monsterNavigation;
 
     private void Awake() {

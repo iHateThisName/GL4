@@ -163,13 +163,13 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: -334000983
   m_Radius: 0.5
-  m_Speed: 2.5
+  m_Speed: 0.7
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
+  m_AutoBraking: 0
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
@@ -184,6 +184,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3645684759878816719}
+  - component: {fileID: 8581784409638178010}
   m_Layer: 0
   m_Name: Flashed
   m_TagString: Untagged
@@ -206,6 +207,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6303827022862854503}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8581784409638178010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 738339366660153081}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b51e6dc2430dad54b9d1f511a98bc9ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::IntruderFlashedState
+  blocksTransitions: 0
+  <animationState>k__BackingField: 5
+  nextState: {fileID: 0}
+  exitOnComplete: 1
+  waitForAffordanceAnimation: 0
+  monsterNavigation: {fileID: 132277432202858881}
 --- !u!1 &771940631241205751
 GameObject:
   m_ObjectHideFlags: 0
@@ -400,7 +419,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4386152443229987308}
-  - component: {fileID: 3916010817815147298}
+  - component: {fileID: 6075446766147847021}
   m_Layer: 0
   m_Name: WindowIdle
   m_TagString: Untagged
@@ -423,7 +442,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6303827022862854503}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3916010817815147298
+--- !u!114 &6075446766147847021
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -432,12 +451,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1821472748401317281}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f08c3cd27d143ca9e3451a050c9022e, type: 3}
+  m_Script: {fileID: 11500000, guid: 2c7559e9c339d2f49ba186b3cc8c5d90, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimatedState
+  m_EditorClassIdentifier: Assembly-CSharp::IntruderIdleState
   blocksTransitions: 0
-  <animationState>k__BackingField: 5
-  nextState: {fileID: 0}
+  <animationState>k__BackingField: 7
+  nextState: {fileID: 6234756195703914020}
+  exitOnComplete: 1
+  waitForAffordanceAnimation: 0
+  countdownDuration: 20
 --- !u!1 &3458592905161940793
 GameObject:
   m_ObjectHideFlags: 0
@@ -483,8 +505,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimatedState
   blocksTransitions: 0
-  <animationState>k__BackingField: 0
+  <animationState>k__BackingField: 2
   nextState: {fileID: 0}
+  exitOnComplete: 1
+  waitForAffordanceAnimation: 0
 --- !u!1 &3807162221386724574
 GameObject:
   m_ObjectHideFlags: 0
@@ -637,6 +661,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3722531115129396874}
+  - component: {fileID: 6234756195703914020}
   m_Layer: 0
   m_Name: OpenWindow
   m_TagString: Untagged
@@ -659,6 +684,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6303827022862854503}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6234756195703914020
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5945511514549207258}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9e2dac7b9d6e284098540ab5a6da867, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::IntruderIntruding
+  blocksTransitions: 0
+  <animationState>k__BackingField: 8
+  nextState: {fileID: 6893837462578570359}
+  exitOnComplete: 1
+  waitForAffordanceAnimation: 0
+  monsterNavigation: {fileID: 132277432202858881}
 --- !u!1 &6357655911396399998
 GameObject:
   m_ObjectHideFlags: 0
@@ -846,8 +889,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::IntruderApproachWindowState
   blocksTransitions: 0
-  <animationState>k__BackingField: 4
-  nextState: {fileID: 3916010817815147298}
+  <animationState>k__BackingField: 6
+  nextState: {fileID: 6075446766147847021}
+  exitOnComplete: 1
+  waitForAffordanceAnimation: 0
   agent: {fileID: 6856695336247606016}
   monsterNavigation: {fileID: 132277432202858881}
 --- !u!1001 &5804665307699812350
