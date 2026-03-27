@@ -52,9 +52,28 @@ namespace MonsterSystem
 
         private void AttachToPlayerFace()
         {
-            Debug.Log("attach");
-            this.rootParent.SetParent(this.playerTransform);
-            this.rootParent.localPosition = (Vector3.forward * faceProximity) + (Vector3.up * verticalOffset);
+            Debug.Log("Attaching to headset...");
+
+            // Shut down navMesh and Physics
+            if (this.rootParent.TryGetComponent<UnityEngine.AI.NavMeshAgent>(out var agent))
+                agent.enabled = false;
+
+            if (this.rootParent.TryGetComponent<Rigidbody>(out var rb))
+            {
+                rb.isKinematic = true;
+                rb.detectCollisions = false;
+            }
+
+            // Find the main Camera of the player
+            Transform headTransform = Camera.main != null ? Camera.main.transform : this.playerTransform;
+
+            // Make the doll a child of the main camera
+            this.rootParent.SetParent(headTransform);
+
+            // Position the doll in front of the camera (Adjustable height and dept distance)
+            this.rootParent.localPosition = new Vector3(0, this.verticalOffset, this.faceProximity);
+
+            // Make the doll look at you.
             this.rootParent.localRotation = Quaternion.Euler(0, 180, 0);
         }
 

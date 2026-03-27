@@ -14,9 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.DollConfig
   baseTickRate: 0.2
   playerRef: {fileID: 11400000, guid: 8aa04a6520205384e9477b4745bd7d4b, type: 2}
-  spawnPoints: []
+  spawnPoints:
+  - position: {x: 2.548, y: 0.758, z: 6.64}
+    rotation: {x: 0, y: 0, z: 0}
   nightOverrides: []
   attentionRadius: 3
-  attackDistance: 1.5
-  timeToImpatient: 20
-  timeToAggressive: 5
+  attackDistance: 2
+  timeToImpatient: 10
+  timeToAggressive: 30

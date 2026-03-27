@@ -5,6 +5,7 @@ namespace MonsterSystem
 {
     public class DollPatientState : MonsterState
     {
+        // Pasta :D
         [SerializeField] private TriggerArea pettingArea;
         [SerializeField] private float maxAcceptableVelocity = 2f;
 
@@ -13,53 +14,60 @@ namespace MonsterSystem
 
         public override void OnStateEnter()
         {
+            //Reset timer
+            var petSensor = this.controller.GetSensor<DollSensor>();
+            petSensor.ResetTimer();
+
             Debug.Log("Doll is Patient (Slouched).");
             // Controller.Animator.SetTrigger("Slouch");
-            this.pettingArea.OnTriggerEntered += PetDoll;
+            //this.pettingArea.OnTriggerEntered += PettingDoll;
         }
 
         public override void OnStateExit()
         {
-            this.pettingArea.OnTriggerEntered -= PetDoll;
+            //this.pettingArea.OnTriggerEntered -= PettingDoll;
         }
 
-        public void PetDoll(Collider collider)
-        {
-            // 2. If there is no Rigidbody, stop right here.
-            Rigidbody rb = collider.GetComponent<Rigidbody>();
-            if (rb == null) return;
+        //    public void PettingDoll(Collider collider)
+        //    {
+        //        // 1. Get the attached rigidbody (the parent), just like your Axe script!
+        //        Rigidbody rb = collider.attachedRigidbody;
+        //        if (rb == null) return;
 
-            // Cache the velocity magnitude so Unity only calculates it once
-            Vector3 velocityAtPoint = rb.GetPointVelocity(collider.transform.position);
+        //        // 2. Cache the velocity magnitude
+        //        Vector3 velocityAtPoint = rb.GetPointVelocity(collider.transform.position);
 
-            // Check if you are gentle enough.
-            if (velocityAtPoint.magnitude <= this.maxAcceptableVelocity)
-            {
-                Debug.Log(velocityAtPoint.magnitude);
-                Debug.Log("Doll petted, doll happy");
-                var petSensor = this.controller.GetSensor<DollSensor>();
-                petSensor.ReducePatience(-20f);
-            }
-            else
-            {
-                Debug.Log("Petting too hard!");
-                Debug.Log(velocityAtPoint.magnitude);
-                this.deathCts = new CancellationTokenSource();
-                _ = DeathSequenceAsync(this.deathCts.Token);
-            }
-        }
+        //        // Check if you are gentle enough.
+        //        if (velocityAtPoint.magnitude <= this.maxAcceptableVelocity)
+        //        {
+        //            Debug.Log(velocityAtPoint.magnitude);
+        //            Debug.Log("Doll petted, doll happy");
 
-        private async Awaitable DeathSequenceAsync(CancellationToken ct)
-        {
-            await Awaitable.WaitForSecondsAsync(this.timeBeforeDeathCall, ct);
+        //            // Just call the sensor's native pet method instead of doing math
+        //            var petSensor = this.controller.GetSensor<DollSensor>();
+        //            petSensor.PetDoll();
+        //        }
+        //        else
+        //        {
+        //            Debug.Log("Petting too hard!");
+        //            Debug.Log(velocityAtPoint.magnitude);
+        //            this.deathCts = new CancellationTokenSource();
+        //            _ = DeathSequenceAsync(this.deathCts.Token);
+        //        }
+        //    }
 
-            if (!ct.IsCancellationRequested)
-                TriggerImmediateKill();
-        }
+        //    private async Awaitable DeathSequenceAsync(CancellationToken ct)
+        //    {
+        //        await Awaitable.WaitForSecondsAsync(this.timeBeforeDeathCall, ct);
 
-        private void TriggerImmediateKill()
-        {
-            DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Monster);
-        }
+        //        if (!ct.IsCancellationRequested)
+        //            TriggerImmediateKill();
+        //    }
+
+        //    private void TriggerImmediateKill()
+        //    {
+        //        DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Monster);
+        //    }
+        //}
     }
 }

@@ -11,7 +11,7 @@ namespace MonsterSystem
         public float attackDistance = 1.5f;
 
         [Header("Timers")]
-        public float timeToImpatient = 5.0f;
+        public float timeToHiding = 5.0f;
         public float timeToAggressive = 5.0f;
     }
 }
