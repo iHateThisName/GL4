@@ -176,6 +176,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ae8a45b9d38012f4089dd386600cd6ee, type: 3}
+--- !u!114 &72645520 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3198911293393157017, guid: 822a905c380ed8c46aecdfe71bd873d0, type: 3}
+  m_PrefabInstance: {fileID: 810681617}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 513fa1049bb9a2945b332b0e415000ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.MunchRelocateState
 --- !u!1001 &74368220
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1014,6 +1025,11 @@ MonoBehaviour:
   m_LimitAngularVelocity: 0
   m_MaxLinearVelocityDelta: 10
   m_MaxAngularVelocityDelta: 20
+--- !u!95 &319572295 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 2984454646786910488, guid: 822a905c380ed8c46aecdfe71bd873d0, type: 3}
+  m_PrefabInstance: {fileID: 810681617}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &348434897
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1850,10 +1866,14 @@ PrefabInstance:
       propertyPath: radioRef
       value: 
       objectReference: {fileID: 11400000, guid: b7444bc83e7e01742ad9851020aa5b6f, type: 2}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1589709046127975439, guid: 822a905c380ed8c46aecdfe71bd873d0, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3801629742082641489, guid: 822a905c380ed8c46aecdfe71bd873d0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1496008511}
     - targetCorrespondingSourceObject: {fileID: 8222644661268075659, guid: 822a905c380ed8c46aecdfe71bd873d0, type: 3}
       insertIndex: -1
       addedObject: {fileID: 0}
@@ -2357,6 +2377,11 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!4 &1208104184 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2343827092994151497, guid: 822a905c380ed8c46aecdfe71bd873d0, type: 3}
+  m_PrefabInstance: {fileID: 810681617}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1224421688
 GameObject:
   m_ObjectHideFlags: 0
@@ -2837,6 +2862,28 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1428011502}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1496008509 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3801629742082641489, guid: 822a905c380ed8c46aecdfe71bd873d0, type: 3}
+  m_PrefabInstance: {fileID: 810681617}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1496008511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1496008509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a0f28e82ba282747a3ad3dd8aea0f9b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.MonsterController
+  config: {fileID: 11400000, guid: ff306d00d63e5704e88d2e7c1f8e5e7d, type: 2}
+  animator: {fileID: 319572295}
+  audioSource: {fileID: 1994587230}
+  sensorRoot: {fileID: 1208104184}
+  initialState: {fileID: 72645520}
 --- !u!1 &1514537067
 GameObject:
   m_ObjectHideFlags: 0
@@ -3907,6 +3954,11 @@ MonoBehaviour:
   m_LimitAngularVelocity: 0
   m_MaxLinearVelocityDelta: 10
   m_MaxAngularVelocityDelta: 20
+--- !u!82 &1994587230 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 8610362843901164458, guid: 822a905c380ed8c46aecdfe71bd873d0, type: 3}
+  m_PrefabInstance: {fileID: 810681617}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2023205054
 GameObject:
   m_ObjectHideFlags: 0

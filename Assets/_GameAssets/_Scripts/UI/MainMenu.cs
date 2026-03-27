@@ -40,6 +40,6 @@ public class MainMenu : MonoBehaviour
     
     private void OnQuitClicked()
     {
-        Application.Quit();
+        this.UIMenuManager.QuitGame();
     }
 }

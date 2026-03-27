@@ -37,14 +37,6 @@ public class UIMenuManager : MonoBehaviour
         ShowMenu(uiMenus[1]);
     }
 
-    /// <summary>
-    /// Called by UI buttons to load a scene by build index through SceneTransition.
-    /// </summary>
-    public void LoadScene(int buildIndex)
-    {
-        SceneTransition.LoadScene(buildIndex, this.screenFadeRef);
-    }
-
     public void QuitGame()
     {
         #if UNITY_EDITOR
