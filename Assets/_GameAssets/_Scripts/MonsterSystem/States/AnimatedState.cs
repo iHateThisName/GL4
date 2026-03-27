@@ -64,7 +64,6 @@ namespace MonsterSystem {
         /// </summary>
         public virtual void OnAnimationComplete() {
             this.IsAnimating = false;
-            this.OnAnimationFinished();
 
             // Transition to the next state if one is assigned
             if (this.nextState != null && exitOnComplete) {
@@ -73,11 +72,5 @@ namespace MonsterSystem {
                 Debug.LogWarning($"[{GetType().Name}] Animation finished but no nextState configured!", this);
             }
         }
-
-        /// <summary>
-        /// Override to perform work when the animation finishes.
-        /// Called before transitioning to the next state.
-        /// </summary>
-        protected virtual void OnAnimationFinished() { }
     }
 }
