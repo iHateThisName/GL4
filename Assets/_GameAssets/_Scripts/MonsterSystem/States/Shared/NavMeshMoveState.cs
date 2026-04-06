@@ -3,15 +3,11 @@ using UnityEngine.AI;
 
 namespace MonsterSystem
 {
-    /// <summary>
-    /// Generic NavMesh movement state. Delegates destination selection to a DestinationStrategy.
-    /// Handles agent control, arrival detection, speed scaling, and audio.
-    /// </summary>
     public class NavMeshMoveState : MonsterStateWithTimer, IStateWithContext<Transform>
     {
         [SerializeField] private NavMeshAgent agent;
         [SerializeField] private float baseSpeed = 3.5f;
-        
+
         [Header("Destination")]
         [SerializeReference] private DestinationStrategy strategy;
         [SerializeField] private SO_NavMeshMoveConfig moveConfig;
@@ -41,20 +37,21 @@ namespace MonsterSystem
         public override void OnStateEnter()
         {
             base.OnStateEnter();
-            
+
             TriggerAffordances<AnimationAffordance>();
-            
+
             this.HasArrived = false;
             this.lastSetDestination = Vector3.positiveInfinity;
 
-            if (this.agent != null)
+            // SAFETY CHECK ADDED: Only resume if the agent is ready
+            if (this.agent != null && this.agent.isActiveAndEnabled && this.agent.isOnNavMesh)
+            {
                 this.agent.isStopped = false;
+            }
 
-            // Default to player if no context target was provided
             if (this.target == null)
                 this.target = this.controller.Config.PlayerTarget;
-            
-            // Resolve and set initial destination
+
             SetDestinationFromStrategy();
 
             TriggerAffordances<AudioAffordance>();
@@ -64,14 +61,18 @@ namespace MonsterSystem
         {
             base.OnTimerTick();
 
-            if (this.agent == null) return;
+            // SAFETY CHECK: Ensure the agent is active and on the grid before doing anything
+            if (this.agent == null || !this.agent.isActiveAndEnabled || !this.agent.isOnNavMesh) return;
 
-            // Apply night scaling
+            // THE FIX: Take the brakes off if they were stuck on from the frame delay
+            if (this.agent.isStopped)
+            {
+                this.agent.isStopped = false;
+            }
+
             var nightOverride = this.controller.Config.GetOverrideForNight(this.controller.CurrentNight);
             this.agent.speed = this.baseSpeed * nightOverride.speedMultiplier;
 
-            // Only re-resolve destination for FollowTarget (tracks a moving target).
-            // Other strategies resolve once on enter — their destination is fixed.
             if (this.strategy is FollowTargetStrategy && this.target != null)
             {
                 Vector3 targetPos = this.target.position;
@@ -81,16 +82,17 @@ namespace MonsterSystem
                     this.lastSetDestination = targetPos;
                 }
             }
-            
-            // Check arrival — only when the agent has a valid, computed path.
-            // remainingDistance is 0 before the path is computed, which would false-trigger arrival.
+            else if (!this.agent.hasPath && !this.agent.pathPending && this.lastSetDestination != Vector3.positiveInfinity)
+            {
+                this.agent.SetDestination(this.lastResult.Position);
+            }
+
             this.HasArrived = !this.agent.pathPending
                               && this.agent.hasPath
                               && this.agent.remainingDistance <= this.targetThreshold;
 
             if (this.HasArrived)
             {
-                // Apply arrival rotation if the strategy provided one
                 if (this.lastResult.HasRotation)
                     this.controller.transform.rotation = this.lastResult.Rotation;
 
@@ -104,10 +106,10 @@ namespace MonsterSystem
         public override void OnStateExit()
         {
             base.OnStateExit();
-            
+
             StopAffordances();
 
-            if (this.agent != null)
+            if (this.agent != null && this.agent.isActiveAndEnabled && this.agent.isOnNavMesh)
                 this.agent.ResetPath();
 
             this.target = null;
@@ -120,13 +122,16 @@ namespace MonsterSystem
             var ctx = new DestinationContext(this.controller, this.target, this.resolvedPoints);
             this.lastResult = this.strategy.ResolveDestination(in ctx);
 
-            this.agent.SetDestination(this.lastResult.Position);
-            this.lastSetDestination = this.lastResult.Position;
+            // SAFETY CHECK ADDED
+            if (this.agent.isActiveAndEnabled && this.agent.isOnNavMesh)
+            {
+                this.agent.SetDestination(this.lastResult.Position);
+                this.lastSetDestination = this.lastResult.Position;
+            }
         }
 
         private void CachePoints()
         {
-            // Check strategy for its own config first, fall back to state-level config
             SO_NavMeshMoveConfig config = this.moveConfig;
 
             if (config != null && config.points != null && config.points.Length > 0)

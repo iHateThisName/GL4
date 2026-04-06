@@ -513,7 +513,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 983
+    m_Bits: 3031
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -2068,6 +2068,7 @@ RectTransform:
   - {fileID: 2233082279395735758}
   - {fileID: 4011203469236676619}
   - {fileID: 7839122330777192344}
+  - {fileID: 2136434117530376734}
   m_Father: {fileID: 1767192434}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -3211,6 +3212,58 @@ CanvasGroup:
   m_Interactable: 0
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
+--- !u!1 &6849311952094506383
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2136434117530376734}
+  - component: {fileID: 573279354380084653}
+  m_Layer: 5
+  m_Name: DeathFade
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2136434117530376734
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6849311952094506383}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 176491800250263426}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &573279354380084653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6849311952094506383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d9fccc5668f1184198e1f83368c470a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DeathFadeHandler
+  screenFadeRef: {fileID: 11400000, guid: 15754612ba4d523469df3bfe55c508cc, type: 2}
+  deathColor: {r: 0, g: 0, b: 0, a: 1}
+  survivalColor: {r: 1, g: 1, b: 1, a: 1}
+  fadeDuration: 2
 --- !u!1 &7096109177368432820
 GameObject:
   m_ObjectHideFlags: 0
@@ -4401,7 +4454,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 130500635472496801, guid: b200f6587d118224eba8467281481800, type: 3}
       propertyPath: m_PhysicsLayerMask.m_Bits
-      value: 769
+      value: 2817
       objectReference: {fileID: 0}
     - target: {fileID: 2447424620550846319, guid: b200f6587d118224eba8467281481800, type: 3}
       propertyPath: m_Name
@@ -4461,7 +4514,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8229381180640938747, guid: b200f6587d118224eba8467281481800, type: 3}
       propertyPath: m_RaycastMask.m_Bits
-      value: 2147484449
+      value: 2147486497
       objectReference: {fileID: 0}
     - target: {fileID: 8408429868716997126, guid: b200f6587d118224eba8467281481800, type: 3}
       propertyPath: m_UseManipulationInput
@@ -4502,7 +4555,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1255647619390271626, guid: 3df3e1220f2164f448701a6de8084f92, type: 3}
       propertyPath: m_RaycastMask.m_Bits
-      value: 2147484449
+      value: 2147486497
       objectReference: {fileID: 0}
     - target: {fileID: 1722882099693224055, guid: 3df3e1220f2164f448701a6de8084f92, type: 3}
       propertyPath: m_UseManipulationInput
@@ -4562,7 +4615,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7104419533170684624, guid: 3df3e1220f2164f448701a6de8084f92, type: 3}
       propertyPath: m_PhysicsLayerMask.m_Bits
-      value: 769
+      value: 2817
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

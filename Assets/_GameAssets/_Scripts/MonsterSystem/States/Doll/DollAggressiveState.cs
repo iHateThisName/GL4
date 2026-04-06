@@ -1,40 +1,60 @@
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 namespace MonsterSystem
 {
-    public class DollAggressiveState : MonsterState
+    public class DollAggressiveState : NavMeshMoveState
     {
-        private NavMeshAgent navAgent;
-        private DollSensor sensor;
-
-        public override void Initialize(MonsterController controller)
-        {
-            base.Initialize(controller);
-            navAgent = controller.GetComponent<NavMeshAgent>();
-            sensor = controller.GetSensor<DollSensor>();
-        }
+        [Header("=== Doll Specifics ===")]
+        [SerializeField] private Rigidbody rb;
+        [SerializeField] private XRGrabInteractable grabInteractable;
 
         public override void OnStateEnter()
         {
-            Debug.Log("Doll is Aggressive! Standing and Chasing!");
-            navAgent.isStopped = false;
-            // Controller.Animator.SetTrigger("StandUp");
-        }
+            if (this.grabInteractable != null)
+            {
+                this.grabInteractable.enabled = false;
+            }
 
-        //private void Update()
-        //{
-        //    // The state purely handles movement. 
-        //    // The Sensor is simultaneously running OnTick() to check if distance <= attackDistance.
-        //    if (sensor != null && sensor.playerTransform != null)
-        //    {
-        //        navAgent.SetDestination(sensor.playerTransform.position);
-        //    }
-        //}
+            if (this.rb != null)
+            {
+                this.rb.linearVelocity = Vector3.zero;
+                this.rb.angularVelocity = Vector3.zero;
+                this.rb.isKinematic = true;
+            }
+
+            var agent = GetComponent<NavMeshAgent>();
+            if (agent != null)
+            {
+                agent.enabled = true; // MUST be enabled for Warp to function
+
+                NavMeshHit hit;
+                if (NavMesh.SamplePosition(transform.position, out hit, 10.0f, NavMesh.AllAreas))
+                {
+                    agent.Warp(hit.position);
+                }
+                else
+                {
+                    Debug.LogWarning("[DollAggressiveState] Could not find a NavMesh close enough to snap to!");
+                }
+            }
+
+            base.OnStateEnter();
+            Debug.Log("Doll is Aggressive! Snapped to NavMesh and hunting the player.");
+        }
 
         public override void OnStateExit()
         {
-            navAgent.isStopped = true;
+            base.OnStateExit();
+
+            var agent = GetComponent<NavMeshAgent>();
+            if (agent != null && agent.isOnNavMesh)
+            {
+                agent.isStopped = true;
+                agent.enabled = false;
+            }
         }
     }
 }
