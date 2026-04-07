@@ -7474,10 +7474,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 176491800250263426, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1292597981}
+    m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
 --- !u!114 &915951108 stripped
@@ -8399,11 +8396,6 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 5778276979453880543, guid: 76354365ea865ea48aaa23e635c5c74e, type: 3}
   m_PrefabInstance: {fileID: 979654787}
-  m_PrefabAsset: {fileID: 0}
---- !u!224 &990007808 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 176491800250263426, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
-  m_PrefabInstance: {fileID: 915951107}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &998295052
 PrefabInstance:
@@ -10459,58 +10451,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7337840954984458489, guid: 3ad53678de7ffbe42b0f6528f6e00912, type: 3}
   m_PrefabInstance: {fileID: 1290496846}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1292597980
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1292597981}
-  - component: {fileID: 1292597982}
-  m_Layer: 5
-  m_Name: DeathFade
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1292597981
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1292597980}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 990007808}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1292597982
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1292597980}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0d9fccc5668f1184198e1f83368c470a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DeathFadeHandler
-  screenFadeRef: {fileID: 11400000, guid: 15754612ba4d523469df3bfe55c508cc, type: 2}
-  deathColor: {r: 0, g: 0, b: 0, a: 1}
-  survivalColor: {r: 1, g: 1, b: 1, a: 1}
-  fadeDuration: 2
 --- !u!1 &1295325272
 GameObject:
   m_ObjectHideFlags: 0

@@ -3,11 +3,15 @@ using UnityEngine.AI;
 
 namespace MonsterSystem
 {
+    /// <summary>
+    /// Generic NavMesh movement state. Delegates destination selection to a DestinationStrategy.
+    /// Handles agent control, arrival detection, speed scaling, and audio.
+    /// </summary>
     public class NavMeshMoveState : MonsterStateWithTimer, IStateWithContext<Transform>
     {
         [SerializeField] private NavMeshAgent agent;
         [SerializeField] private float baseSpeed = 3.5f;
-
+        
         [Header("Destination")]
         [SerializeReference] private DestinationStrategy strategy;
         [SerializeField] private SO_NavMeshMoveConfig moveConfig;
@@ -20,8 +24,8 @@ namespace MonsterSystem
         private Vector3[] resolvedPoints;
         private Vector3 lastSetDestination;
         private DestinationResult lastResult;
-
-        public bool HasArrived { get; private set; }
+        private bool hasDestination;
+        private bool hasArrived;
 
         public void ReceiveContext(Transform context)
         {
@@ -37,23 +41,28 @@ namespace MonsterSystem
         public override void OnStateEnter()
         {
             base.OnStateEnter();
-
+            
+            // Trigger animation
             TriggerAffordances<AnimationAffordance>();
+            
+            this.hasArrived = false;
+            this.hasDestination = false;
 
-            this.HasArrived = false;
-            this.lastSetDestination = Vector3.positiveInfinity;
-
-            // SAFETY CHECK ADDED: Only resume if the agent is ready
-            if (this.agent != null && this.agent.isActiveAndEnabled && this.agent.isOnNavMesh)
+            if (this.agent != null && this.agent.isOnNavMesh)
             {
                 this.agent.isStopped = false;
+                if (!this.agent.stoppingDistance.Equals(this.targetThreshold))
+                    this.agent.stoppingDistance = this.targetThreshold;
             }
 
+            // Default to player if no context target was provided
             if (this.target == null)
                 this.target = this.controller.Config.PlayerTarget;
-
+            
+            // Resolve and set initial destination
             SetDestinationFromStrategy();
 
+            // Trigger audio
             TriggerAffordances<AudioAffordance>();
         }
 
@@ -61,18 +70,14 @@ namespace MonsterSystem
         {
             base.OnTimerTick();
 
-            // SAFETY CHECK: Ensure the agent is active and on the grid before doing anything
-            if (this.agent == null || !this.agent.isActiveAndEnabled || !this.agent.isOnNavMesh) return;
+            if (this.agent == null) return;
 
-            // THE FIX: Take the brakes off if they were stuck on from the frame delay
-            if (this.agent.isStopped)
-            {
-                this.agent.isStopped = false;
-            }
-
+            // Apply night scaling
             var nightOverride = this.controller.Config.GetOverrideForNight(this.controller.CurrentNight);
             this.agent.speed = this.baseSpeed * nightOverride.speedMultiplier;
 
+            // Only re-resolve destination for FollowTarget (tracks a moving target).
+            // Other strategies resolve once on enter — their destination is fixed.
             if (this.strategy is FollowTargetStrategy && this.target != null)
             {
                 Vector3 targetPos = this.target.position;
@@ -82,17 +87,18 @@ namespace MonsterSystem
                     this.lastSetDestination = targetPos;
                 }
             }
-            else if (!this.agent.hasPath && !this.agent.pathPending && this.lastSetDestination != Vector3.positiveInfinity)
-            {
-                this.agent.SetDestination(this.lastResult.Position);
-            }
+            
+            // Arrival: agent.stoppingDistance is driven from targetThreshold on enter, so the
+            // agent's own "reached destination" condition is simply remainingDistance <= stoppingDistance
+            // once a path is computed. The hasDestination flag guards against the first tick before
+            // SetDestination has been issued (where remainingDistance is 0 with no path).
+            this.hasArrived = this.hasDestination
+                              && !this.agent.pathPending
+                              && this.agent.remainingDistance <= this.agent.stoppingDistance;
 
-            this.HasArrived = !this.agent.pathPending
-                              && this.agent.hasPath
-                              && this.agent.remainingDistance <= this.targetThreshold;
-
-            if (this.HasArrived)
+            if (this.hasArrived)
             {
+                // Apply arrival rotation if the strategy provided one
                 if (this.lastResult.HasRotation)
                     this.controller.transform.rotation = this.lastResult.Rotation;
 
@@ -106,10 +112,10 @@ namespace MonsterSystem
         public override void OnStateExit()
         {
             base.OnStateExit();
-
+            
             StopAffordances();
 
-            if (this.agent != null && this.agent.isActiveAndEnabled && this.agent.isOnNavMesh)
+            if (this.agent != null)
                 this.agent.ResetPath();
 
             this.target = null;
@@ -122,16 +128,14 @@ namespace MonsterSystem
             var ctx = new DestinationContext(this.controller, this.target, this.resolvedPoints);
             this.lastResult = this.strategy.ResolveDestination(in ctx);
 
-            // SAFETY CHECK ADDED
-            if (this.agent.isActiveAndEnabled && this.agent.isOnNavMesh)
-            {
-                this.agent.SetDestination(this.lastResult.Position);
-                this.lastSetDestination = this.lastResult.Position;
-            }
+            this.agent.SetDestination(this.lastResult.Position);
+            this.lastSetDestination = this.lastResult.Position;
+            this.hasDestination = true;
         }
 
         private void CachePoints()
         {
+            // Check strategy for its own config first, fall back to state-level config
             SO_NavMeshMoveConfig config = this.moveConfig;
 
             if (config != null && config.points != null && config.points.Length > 0)
