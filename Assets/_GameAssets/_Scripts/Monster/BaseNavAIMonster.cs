@@ -1,3 +1,4 @@
+using MonsterSystem;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ public class BaseNavAIMonster : MonoBehaviour {
 
     [Header("References")]
     [SerializeField] private NavMeshAgent agent;
+    [SerializeField] private MonsterController monsterController;
     [SerializeField] private Transform player;
     [SerializeField] private Transform[] patrolPoints;
 
@@ -19,13 +21,13 @@ public class BaseNavAIMonster : MonoBehaviour {
     [SerializeField] private AudioClip flashedAudio;
 
     [Header("Config")]
-    [SerializeField] private MonsterTypeEnum monsterType;
+    [SerializeField] private EnumMonsterType monsterType;
     [SerializeField] private float tickRate = 2f; // How often the monster updates its behavior (in seconds)
     [SerializeField] private float attackRange = 0.5f;
 
     [Header("Flee Behaviour")]
     [SerializeField] private float fleeDuration = 35f; // How long the monster flees after being hit by flashlight
-    [SerializeField] private float fleeDistance = 20f; // How far the monster tries to flee
+    [SerializeField] private float fleeDistance = 20f; // How far the monster tries to flee 
 
     // Nav
     private Vector3 spawnPoint;
@@ -39,13 +41,14 @@ public class BaseNavAIMonster : MonoBehaviour {
     // Flags
     private bool isPlayerKilled = false;
     private bool isFleeing = false;
+    private bool isNavigationDisabled = false;
 
     // Flee
     private float fleeTimer = 0f;
     private Vector3 fleeDestination;
 
     [System.Serializable]
-    public enum MonsterTypeEnum { None, Stalker, Munch, Intruder }
+    public enum EnumMonsterType { None, Stalker, Munch, Intruder }
 
     #region Unity Lifecycle
     /// <summary>
@@ -116,7 +119,7 @@ public class BaseNavAIMonster : MonoBehaviour {
         while (true) {
             if (!this.isFleeing) CheckAttackRange();
 
-            this.monsterNavigationLogic?.Invoke();
+            if (!this.isNavigationDisabled) this.monsterNavigationLogic?.Invoke();
 
             yield return new WaitForSeconds(this.tickRate);
         }
@@ -136,9 +139,9 @@ public class BaseNavAIMonster : MonoBehaviour {
     /// </summary>
     private Action MonsterLogicSelector() {
         switch (monsterType) {
-            case MonsterTypeEnum.Stalker:
+            case EnumMonsterType.Stalker:
                 return StalkerNavigationLogic;
-            case MonsterTypeEnum.Intruder:
+            case EnumMonsterType.Intruder:
                 return IntruderNavigationLogic;
             default:
                 return () => { Debug.LogWarning($"The logic for the selected monster {this.monsterType} is missing."); };
@@ -146,6 +149,13 @@ public class BaseNavAIMonster : MonoBehaviour {
     }
 
     private void IntruderNavigationLogic() {
+        MonsterState currentState = this.monsterController.CurrentState;
+
+        // Get the animation state in the class AnimatedState, filed is called animationState.
+        if (currentState is AnimatedState animatedState) {
+            EnumAnimationStates currentAnimationState = animatedState.animationState;
+        }
+
         // Select a window to target if we don't have one or if the current target window is already open
         if (this.target == null || this.target.GetCurrentWindowState() == VRLever.EnumLeverState.Open) {
             // Get all windows that has the state closed
@@ -160,25 +170,30 @@ public class BaseNavAIMonster : MonoBehaviour {
             //agent.SetDestination(this.target.TargetPosition.position);
 
             Vector3 approachePoint = this.target.TargetPosition.position - (-this.target.TargetPosition.right * 5f);
-            Debug.Log($"Intruder monster is targeting a new window at {this.target.TargetPosition.position}. Moving towards approache point at {approachePoint}");
             agent.SetDestination(approachePoint);
+            this.DebugInformation = $"Intruder is targeting a window at {this.target.TargetPosition.position} and moving towards approache point at {approachePoint}";
         }
 
 
         // Check if target as been reached.
         if (!agent.pathPending && agent.velocity.sqrMagnitude == 0f) {
-            if (this.agent.pathEndPosition == this.target.TargetPosition.position) {
-
+            // debug log the current position the pathendposition and the target position
+            Vector3 targetPosition = this.target.TargetPosition.position;
+            if (this.agent.pathEndPosition.x == targetPosition.x && this.agent.pathEndPosition.z == targetPosition.z) {
+                DisableNavigation();
                 // Reached Window target
-                //this.agent.gameObject.transform.rotation = this.target.TargetPosition.rotation;
-                this.agent.Warp(this.target.TargetPosition.position);
+                this.agent.Warp(targetPosition); // Making sure the monster is exactly at the target position.
+                this.agent.gameObject.transform.rotation = this.target.TargetPosition.rotation; // Make sure the monster is rotated to match the window's rotation.
 
-                this.agent.gameObject.transform.rotation = this.target.TargetPosition.rotation;
-                // debug the rotation
+                // Tell the monster controller to start a diffrent animation state for opening the window.
+                this.monsterController.TransitionTo(this.monsterController.GetMonsterState<IntruderApproachWindowState>());
+                this.DebugInformation = "Intruder has reached the window and is now transitioning to open window state.";
+
             } else {
                 // Reached approache point, now set destination to the window target position to move directly towards it.
                 // This is to make sure the rotation of the monster is correct when it reaches the window, since the approache point is offset from the window position.
-                this.agent.SetDestination(this.target.TargetPosition.position);
+                this.agent.SetDestination(targetPosition);
+                this.DebugInformation = $"Intruder has reached the approach point and is now moving directly towards the window at {targetPosition}";
             }
         }
 
@@ -289,5 +304,23 @@ public class BaseNavAIMonster : MonoBehaviour {
 
     public void SetPatrolPoints(Transform[] points) {
         this.patrolPoints = points;
+    }
+
+    public void DisableNavigation() {
+        this.agent.isStopped = true;
+        this.agent.ResetPath();
+
+        this.agent.updatePosition = false;
+        this.agent.updateRotation = false;
+
+        this.isNavigationDisabled = true;
+    }
+
+    public void EnableNavigation() {
+        this.agent.isStopped = false;
+        this.agent.updatePosition = true;
+        this.agent.updateRotation = true;
+
+        this.isNavigationDisabled = false;
     }
 }

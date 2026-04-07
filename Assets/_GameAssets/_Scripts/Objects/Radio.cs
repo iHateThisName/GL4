@@ -6,8 +6,12 @@ public class Radio : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private ClampedKnob knob;
-    [SerializeField] private SO_RuntimeReferences runtimeReferences;
+    [SerializeField] private SO_RadioRef radioRef;
     [SerializeField] private TextMeshProUGUI channelText;
+
+    [SerializeField] private AudioClip staticSound;
+    [SerializeField] private AudioClip[] tips;
+    [SerializeField] private AudioSource audioSource;
 
     [Header("Channel Settings")]
     [Tooltip("If true, Radio sets the knob's steps to match totalChannels. If false, uses the knob's existing steps.")]
@@ -35,9 +39,8 @@ public class Radio : MonoBehaviour
     
     private void Awake()
     {
-        // Register this Radio in RuntimeReferences
-        if (runtimeReferences != null)
-            runtimeReferences.Radio = this;
+        if (this.radioRef != null)
+            this.radioRef.Value = this;
 
         // Set knob steps before anything else initializes
         if (knob != null && overrideKnobSteps)
@@ -48,12 +51,16 @@ public class Radio : MonoBehaviour
     {
         if (knob != null)
             knob.OnStepChanged.AddListener(OnKnobStepChanged);
+        
+        GameManager.OnEventAvailable += OnNightEvent;
     }
 
     private void OnDisable()
     {
         if (knob != null)
             knob.OnStepChanged.RemoveListener(OnKnobStepChanged);
+
+        GameManager.OnEventAvailable -= OnNightEvent;
     }
 
     private void Start()
@@ -89,6 +96,21 @@ public class Radio : MonoBehaviour
 
         UpdateDebugUI();
     }
+    
+    private void OnNightEvent(NightEvent evt)
+    {
+        var eventData = evt.GetPayload();
+        if (eventData.GetEventType() != NightEventType.RadioBroadcast) return;
+        Debug.Log("Radio received broadcast event and is safe: " + isOnSafeChannel);
+        
+        if (!isOnSafeChannel) return;
+        
+        int tipIndex = UnityEngine.Random.Range(0, tips.Length);
+        Debug.Log("Playing tip: " + tipIndex + " for " + tips[tipIndex].name + " with audiosource: " + this.audioSource);
+        this.audioSource.clip = tips[tipIndex];
+        this.audioSource.loop = false;
+        this.audioSource.Play();
+    }
 
     private void OnKnobStepChanged(int step)
     {
@@ -116,6 +138,19 @@ public class Radio : MonoBehaviour
         currentChannelInternal = stepInternal;
         isOnSafeChannel = IsOnChannel(SafeChannel);
 
+        if (!isOnSafeChannel && staticSound != null)
+        {
+            this.audioSource.clip = this.staticSound;
+            this.audioSource.loop = true;
+            this.audioSource.Play();
+        }
+        else
+        {
+            Debug.Log("Radio stopped playing static sound");
+            this.audioSource.Stop();
+            this.audioSource.loop = false;
+            this.audioSource.clip = null;
+        }
         OnChannelChanged?.Invoke(CurrentChannel, isOnSafeChannel);
         UpdateDebugUI();
     }

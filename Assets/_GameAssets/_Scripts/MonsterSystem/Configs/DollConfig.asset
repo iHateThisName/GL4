@@ -13,10 +13,12 @@ MonoBehaviour:
   m_Name: DollConfig
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.DollConfig
   baseTickRate: 0.2
-  runtimeRefs: {fileID: 11400000, guid: 749d29c376c8d334990efac3993877c0, type: 2}
-  spawnPoints: []
+  playerRef: {fileID: 11400000, guid: 8aa04a6520205384e9477b4745bd7d4b, type: 2}
+  spawnPoints:
+  - position: {x: 2.548, y: 0.758, z: 6.64}
+    rotation: {x: 0, y: 0, z: 0}
   nightOverrides: []
   attentionRadius: 3
-  attackDistance: 1.5
-  timeToImpatient: 5
-  timeToAggressive: 5
+  attackDistance: 2
+  timeToHiding: 20
+  timeToAggressive: 60

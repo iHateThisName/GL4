@@ -24,7 +24,7 @@ namespace MonsterSystem
         private Transform sensorTransform;
         private float remainingCooldownTime;
         private float exposure;
-        private Transform FlashlightTransform => this.flashlightSettings != null ? this.flashlightSettings.FlashlightTransform : null;
+        private Transform FlashlightTransform => this.flashlightSettings != null ? this.flashlightSettings.Value : null;
 
         public override void Initialize(MonsterController owningMonster)
         {
@@ -79,14 +79,21 @@ namespace MonsterSystem
                 return;
             }
 
-            // Flatten to XZ plane (ignore vertical angle)
+            // Flatten to XZ plane (ignore vertical difference between flashlight and sensor)
             Vector3 flashlightForward = FlashlightTransform.forward;
             flashlightForward.y = 0f;
-            flashlightForward.Normalize();
 
             Vector3 toSensorFlat = toSensor;
             toSensorFlat.y = 0f;
             float flatDistanceSquared = toSensorFlat.sqrMagnitude;
+
+            // Flashlight is aimed nearly straight up/down — no meaningful horizontal direction
+            if (flashlightForward.sqrMagnitude < 0.001f || flatDistanceSquared < 0.001f)
+            {
+                AdjustExposure(-this.exposureDecaySpeed);
+                return;
+            }
+            flashlightForward.Normalize();
 
             float rawDot = Vector3.Dot(flashlightForward, toSensorFlat);
             // Sensor is behind the flashlight (horizontally)
@@ -111,14 +118,8 @@ namespace MonsterSystem
                 return;
             }
 
-            // Sensor is in the light - calculate exposure intensity based on cone position (horizontal)
-            // Intensity is higher when closer to the center of the cone
-            float flatDistance = Mathf.Sqrt(flatDistanceSquared);
-            float dot = rawDot / flatDistance;
-            float intensity = (dot - this.cachedCone.CosineThreshold) * this.cachedCone.InverseConeRange;
-
-            // Build exposure based on intensity
-            AdjustExposure(intensity * this.exposureBuildSpeed);
+            // Sensor is inside the cone — apply full exposure build rate
+            AdjustExposure(this.exposureBuildSpeed);
 
             // Check for stun threshold
             if (this.exposure >= this.stunThreshold)
@@ -146,8 +147,8 @@ namespace MonsterSystem
             this.exposure = 0f;
 
             // Play stun audio
-            if (this.flashedSound != null && this.controller.Audio != null)
-                MonsterAudio.PlayOneShot(this.controller.Audio, this.flashedSound);
+            if (this.flashedSound != null && this.controller.GetComponent<AudioSource>() != null)
+                MonsterAudio.PlayOneShot(this.controller.GetComponent<AudioSource>(), this.flashedSound);
 
             // Transition to flee state with flashlight as target (NavMeshMoveState.AwayFromTarget mode)
             if (this.fleeState != null && FlashlightTransform != null)

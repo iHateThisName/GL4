@@ -33,8 +33,7 @@ public class Flashlight : Singleton<Flashlight>
     [System.Obsolete("Only for testing purposes.")]
     [SerializeField] private bool startEnabled = false;
 
-    // Timer used to track battery life
-    private Timer batteryTimer;
+    private TimerHandle batteryHandle;
     
     // Target intensity we smoothly move toward
     private float targetLightIntensity;
@@ -115,7 +114,7 @@ public class Flashlight : Singleton<Flashlight>
             this.lightSource.intensity = this.targetLightIntensity;
             this.lightSource.range = this.targetLightRange;
         }
-        this.flashlightSettings.FlashlightTransform = this.transform;
+        this.flashlightSettings.Value = this.transform;
         this.flashlightSettings.CalculateDetectionCone(this.targetLightRange);
 
         // Ensure flashlight starts off
@@ -127,13 +126,9 @@ public class Flashlight : Singleton<Flashlight>
         SetupActiveFlashlightTimer();
     }
 
-    /// <summary>
-    /// Clean up the timer when this component is destroyed.
-    /// </summary>
     private void OnDestroy()
     {
-        this.batteryTimer?.Dispose();
-        this.batteryTimer = null;
+        TimerManager.Release(ref this.batteryHandle);
     }
     #endregion
 
@@ -235,36 +230,35 @@ public class Flashlight : Singleton<Flashlight>
         ToggleFlashLight(flickeredLastFrame);
     }
     
-    /// <summary>
-    /// Timer setups
-    /// </summary>
     private void SetupActiveFlashlightTimer()
     {
-        this.batteryTimer = new Timer(this.flashlightSettings.GetLightDecayTick(), 0);
-        this.batteryTimer.OnTimerTick += OnFlashlightDecay;
-        this.batteryTimer.Start();
+        if (!TimerManager.Validate(this.batteryHandle))
+            this.batteryHandle = TimerManager.Create(this.flashlightSettings.GetLightDecayTick());
+        else
+            TimerManager.Reconfigure(this.batteryHandle, this.flashlightSettings.GetLightDecayTick());
+
+        TimerManager.SetCallbacks(this.batteryHandle, OnFlashlightDecay, null);
     }
 
     private void SetupDroppedFlashlightTimer()
     {
-        this.batteryTimer?.Pause();
-        this.batteryTimer?.Dispose();
-        
-        this.batteryTimer = new Timer(0, 5);
-        this.batteryTimer.OnTimerFinished += SetupFlashlightFlickerTimer;
-        this.batteryTimer.Start();
+        if (!TimerManager.Validate(this.batteryHandle))
+            this.batteryHandle = TimerManager.Create(0, 5);
+        else
+            TimerManager.Reconfigure(this.batteryHandle, 0, 5);
+
+        // Timer with interval 0 won't tick — it just waits for duration to finish
+        TimerManager.SetCallbacks(this.batteryHandle, null, SetupFlashlightFlickerTimer);
     }
 
     private void SetupFlashlightFlickerTimer()
     {
-        this.batteryTimer?.Pause();
-        this.batteryTimer?.Dispose();
-        
-        // setup the timer for flickering
-        this.batteryTimer = new Timer(this.flashlightSettings.GetFlickerInterval(), this.flashlightSettings.GetFlickerTime());
-        this.batteryTimer.OnTimerTick += OnFlashlightFlicker;
-        this.batteryTimer.OnTimerFinished += ResumeFlashlightAfterFlicker;
-        this.batteryTimer.Start();
+        if (!TimerManager.Validate(this.batteryHandle))
+            this.batteryHandle = TimerManager.Create(this.flashlightSettings.GetFlickerInterval(), this.flashlightSettings.GetFlickerTime());
+        else
+            TimerManager.Reconfigure(this.batteryHandle, this.flashlightSettings.GetFlickerInterval(), this.flashlightSettings.GetFlickerTime());
+
+        TimerManager.SetCallbacks(this.batteryHandle, OnFlashlightFlicker, ResumeFlashlightAfterFlicker);
     }
 
     private void ResumeFlashlightAfterFlicker()
@@ -285,18 +279,13 @@ public class Flashlight : Singleton<Flashlight>
     private void ToggleOnFlashlight()
     {
         ToggleFlashLight(true);
-        if (this.batteryTimer != null)
-            this.batteryTimer.Resume();
+        TimerManager.Resume(this.batteryHandle);
     }
 
-    /// <summary>
-    /// Turns flashlight off when released.
-    /// </summary>
     private void ToggleOffFlashlight()
     {
         ToggleFlashLight(false);
-        if (this.batteryTimer != null)
-            this.batteryTimer.Pause();
+        TimerManager.Pause(this.batteryHandle);
     }
     
     /// <summary>

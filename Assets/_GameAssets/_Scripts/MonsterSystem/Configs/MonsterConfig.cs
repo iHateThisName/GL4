@@ -12,12 +12,9 @@ namespace MonsterSystem
         public float baseTickRate = 0.2f; // Interval in seconds between monster AI ticks
 
         [Header("Runtime References")]
-        [SerializeField] private SO_RuntimeReferences runtimeRefs; // Shared runtime reference container providing access to the player transform
+        [SerializeField] private SO_TransformRef playerRef;
 
-        /// <summary>
-        /// Gets the player's transform from runtime references, or null if unavailable.
-        /// </summary>
-        public Transform PlayerTarget => this.runtimeRefs != null ? this.runtimeRefs.Player : null;
+        public Transform PlayerTarget => this.playerRef != null ? this.playerRef.Value : null;
 
         [Header("Spawn Points")]
         public SpawnPoint[] spawnPoints; // Array of predefined world-space spawn locations for this monster

@@ -9,7 +9,7 @@ namespace MonsterSystem
     public class DisruptRadioFrequencyState : MonsterStateWithTimer
     {
         [Header("References")]
-        [SerializeField] private SO_RuntimeReferences runtimeReferences;
+        [SerializeField] private SO_RadioRef radioRef;
 
         [Header("Disruption Settings")]
         [Tooltip("State to transition to when radio is set back to safe channel")]
@@ -20,7 +20,7 @@ namespace MonsterSystem
         public override void Initialize(MonsterController owningController)
         {
             base.Initialize(owningController);
-            radio = runtimeReferences?.Radio;
+            radio = this.radioRef?.Value;
         }
 
         public override void OnStateEnter()

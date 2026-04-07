@@ -11,9 +11,10 @@ using UnityEngine.UI;
 /// </remarks>
 public class DeathFade : MonoBehaviour
 {
-    [Header("=== UI References ===")]
+    [Header("=== References ===")]
     [Tooltip("The CanvasGroup controlling the fade overlay opacity.")]
     [SerializeField] private CanvasGroup fadeCanvasGroup;
+    [SerializeField] private SO_ScreenFadeRef screenFadeRef;
 
     [Header("=== Fade Settings ===")]
     [Tooltip("The color used for the fade overlay.")]
@@ -25,7 +26,7 @@ public class DeathFade : MonoBehaviour
     [Tooltip("Duration to hold at full opacity before transitioning.")]
     [SerializeField] private float fadeWaitDuration = 0.5f;
 
-    private Timer fadeTimer;
+    private TimerHandle fadeTimerHandle;
     private Image fadeImage;
 
     /// <summary>Fired when the fade animation completes, before scene transition.</summary>
@@ -76,10 +77,7 @@ public class DeathFade : MonoBehaviour
     /// </summary>
     private void OnDestroy()
     {
-        if (this.fadeTimer == null) return;
-        this.fadeTimer.OnTimerTick -= TickFade;
-        this.fadeTimer.OnTimerFinished -= FinishFade;
-        this.fadeTimer.Dispose();
+        TimerManager.Release(ref this.fadeTimerHandle);
     }
 
     /// <summary>
@@ -93,11 +91,9 @@ public class DeathFade : MonoBehaviour
         // Activate and show the fade canvas
         this.fadeCanvasGroup.gameObject.SetActive(true);
 
-        // Create timer for fade animation (tick every 0.1s, total duration = fade + wait)
-        this.fadeTimer = new Timer(0.1f, this.fadeDuration + this.fadeWaitDuration);
-        this.fadeTimer.OnTimerTick += TickFade;
-        this.fadeTimer.OnTimerFinished += FinishFade;
-        this.fadeTimer.Start();
+        TimerManager.Release(ref this.fadeTimerHandle);
+        this.fadeTimerHandle = TimerManager.Create(0.1f, this.fadeDuration + this.fadeWaitDuration);
+        TimerManager.SetCallbacks(this.fadeTimerHandle, TickFade, FinishFade);
 
         // Use white fade for survival (win condition)
         if (DeathSystem.deathEvent.Reason == DeathSystem.DeathEvent.DeathReason.Survived)
@@ -111,8 +107,8 @@ public class DeathFade : MonoBehaviour
     {
         if (this.fadeCanvasGroup == null || !this.fadeCanvasGroup.gameObject.activeInHierarchy) return;
 
-        // Calculate alpha based on progress through fade duration (not including wait time)
-        this.fadeCanvasGroup.alpha = Mathf.Clamp01(this.fadeTimer.Elapsed / this.fadeDuration);
+        float elapsed = TimerManager.Validate(this.fadeTimerHandle) ? TimerManager.GetRef(this.fadeTimerHandle).Elapsed : 0f;
+        this.fadeCanvasGroup.alpha = Mathf.Clamp01(elapsed / this.fadeDuration);
     }
 
     /// <summary>
@@ -122,6 +118,6 @@ public class DeathFade : MonoBehaviour
     private void FinishFade()
     {
         this.OnFadeFinished?.Invoke();
-        DeathSystem.deathEvent.LoadScene();
+        DeathSystem.deathEvent.LoadScene(this.screenFadeRef);
     }
 }

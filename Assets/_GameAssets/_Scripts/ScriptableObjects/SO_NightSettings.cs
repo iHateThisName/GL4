@@ -36,7 +36,7 @@ public class SO_NightSettings : ScriptableObject
         return Mathf.Min(newEventTime, GetNightTimeInSeconds() + 5f);
     }
 
-    public GameManager.NightEventData[] GetEventsForNight(int night)
+    public NightEventData[] GetEventsForNight(int night)
     {
         return this.nightEvents[night - 1].GetEventData();
     }

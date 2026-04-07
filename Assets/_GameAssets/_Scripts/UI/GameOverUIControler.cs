@@ -16,7 +16,7 @@ public class GameOverUIControler : MonoBehaviour
     [Header("=== Settings ===")]
     [SerializeField] private float sceneDuration = 5f; // Seconds before auto-restart
 
-    private Timer reloadSceneTimer;
+    private TimerHandle reloadHandle;
 
     /// <summary>
     /// Initializes the UI with death information and starts the auto-restart countdown.
@@ -28,27 +28,14 @@ public class GameOverUIControler : MonoBehaviour
         // Display appropriate message based on death reason
         UpdateDeathUI(DeathSystem.deathEvent);
 
-        // Start countdown timer for auto-restart
-        this.reloadSceneTimer = new Timer(0.1f, this.sceneDuration);
-        this.reloadSceneTimer.OnTimerTick += OnResetTimerTicked;
-        this.reloadSceneTimer.OnTimerFinished += ReloadGameScene;
-        this.reloadSceneTimer.Start();
+        this.reloadHandle = TimerManager.Create(0.1f, this.sceneDuration);
+        TimerManager.SetCallbacks(this.reloadHandle, OnResetTimerTicked, ReloadGameScene);
     }
 
-    /// <summary>
-    /// Cleans up button listeners and disposes the timer to prevent memory leaks.
-    /// </summary>
     private void OnDestroy()
     {
         this.continueButton.onClick.RemoveListener(OnContinueClicked);
-
-        if (this.reloadSceneTimer != null)
-        {
-            this.reloadSceneTimer.OnTimerTick -= OnResetTimerTicked;
-            this.reloadSceneTimer.OnTimerFinished -= ReloadGameScene;
-            this.reloadSceneTimer.Dispose();
-            this.reloadSceneTimer = null;
-        }
+        TimerManager.Release(ref this.reloadHandle);
     }
 
     /// <summary>
@@ -59,28 +46,20 @@ public class GameOverUIControler : MonoBehaviour
         GameManager.Instance.ContinueGame();
     }
 
-    /// <summary>
-    /// Called when the countdown timer expires. Disposes timer and restarts the game.
-    /// </summary>
     public void ReloadGameScene()
     {
-        this.reloadSceneTimer.Dispose();
+        TimerManager.Release(ref this.reloadHandle);
         GameManager.Instance.ContinueGame();
     }
 
-    /// <summary>
-    /// Updates the countdown display each timer tick.
-    /// Shows remaining time in MM:SS format.
-    /// </summary>
     private void OnResetTimerTicked()
     {
-        if (this.resetTimerText == null) return;
+        if (this.resetTimerText == null || !TimerManager.Validate(this.reloadHandle)) return;
 
-        // Calculate remaining seconds
-        var timeRemaining = Mathf.CeilToInt(this.reloadSceneTimer.Duration - this.reloadSceneTimer.Elapsed);
+        ref var t = ref TimerManager.GetRef(this.reloadHandle);
+        var timeRemaining = Mathf.CeilToInt(t.Duration - t.Elapsed);
         timeRemaining = Mathf.Max(0, timeRemaining);
 
-        // Convert to minutes and seconds for display
         float minutesRemaining = timeRemaining / 60;
         float secondsRemaining = timeRemaining % 60;
 

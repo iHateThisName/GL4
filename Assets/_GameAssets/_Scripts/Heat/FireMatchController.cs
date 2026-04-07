@@ -1,22 +1,18 @@
-using System;
-using System.Collections;
 using UnityEngine;
 
-public class FireMatchController : MonoBehaviour 
+public class FireMatchController : MonoBehaviour
 {
-    //Time before the match despawns
     [SerializeField] private float despawnTimer;
 
     public void StartDespawnTimer()
     {
-        StartCoroutine(DespawnMatch());
+        _ = DespawnMatchAsync();
     }
 
-    //The coroutine that despawns the match after a set time
-    IEnumerator DespawnMatch()
+    private async Awaitable DespawnMatchAsync()
     {
         Debug.Log("Start match despawn");
-        yield return new WaitForSeconds(despawnTimer);
+        await Awaitable.WaitForSecondsAsync(despawnTimer, destroyCancellationToken);
         Destroy(this.transform.parent.gameObject);
     }
 }

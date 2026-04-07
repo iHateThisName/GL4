@@ -16,7 +16,13 @@ public class TriggerArea : MonoBehaviour
 
     // Event fired when another collider exits this trigger.
     public event Action<Collider> OnTriggerExited;
-
+    
+    public int GetTriggerEnteredCount() => OnTriggerEntered?.GetInvocationList().Length ?? 0;
+    
+    public int GetTriggerStayedCount() => OnTriggerStayed?.GetInvocationList().Length ?? 0;
+    
+    public int GetTriggerExitedCount() => OnTriggerExited?.GetInvocationList().Length ?? 0;
+    
     /// <summary>
     /// Unity callback invoked when a collider enters this trigger.
     /// Forwards the event to any subscribed listeners.

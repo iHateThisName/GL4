@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 /// <summary>
@@ -97,9 +98,13 @@ public static class DeathSystem
         /// Loads the GameOver scene.
         /// Called by listeners after handling death effects, or automatically if no listeners exist.
         /// </summary>
-        public void LoadScene()
+        public void LoadScene(SO_ScreenFadeRef fadeRef = null)
         {
-            SceneManager.LoadScene("GameOver");
+            var config = reason == DeathReason.Survived
+                ? FadeConfig.FadeToWhite()
+                : FadeConfig.FadeToBlack();
+            
+            SceneTransition.LoadScene(1, config, fadeRef);
         }
     }
 }

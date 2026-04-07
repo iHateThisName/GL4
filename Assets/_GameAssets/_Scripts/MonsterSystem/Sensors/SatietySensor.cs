@@ -64,11 +64,6 @@ namespace MonsterSystem
                 this.rate *= nightOverride.aggressionMultiplier;
             }
 
-            // Apply radio sensor aggression modifier if available
-            var radioSensor = this.controller.GetSensor<RadioSensor>();
-            if (radioSensor != null)
-                this.rate *= radioSensor.CurrentAggressionModifier;
-
             // Apply external drain multiplier
             this.rate *= this.DrainMultiplier;
 

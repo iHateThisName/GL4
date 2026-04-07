@@ -157,9 +157,12 @@ MonoBehaviour:
   handle: {fileID: 7747894186105722724}
   minAngle: -135
   maxAngle: 135
-  startingValue: 0.5
-  snapPositions: 0
-  onValueChanged:
+  invertRotation: 0
+  maxDeltaPerFrame: 45
+  steps: 10
+  debugRotationStep: 30
+  gizmoForwardOffset: 0.1
+  onStepChanged:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1 &6496973336225024287 stripped
@@ -180,20 +183,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Radio
   knob: {fileID: 166082116949846459}
+  radioRef: {fileID: 11400000, guid: b7444bc83e7e01742ad9851020aa5b6f, type: 2}
+  channelText: {fileID: 8470958203166269394}
+  overrideKnobSteps: 1
   totalChannels: 10
   safeChannel: 3
   channelPrefix: 100
-  debugChannelText: {fileID: 8470958203166269394}
-  showDebugUI: 1
-  OnChannelChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  OnTunedToSafeChannel:
-    m_PersistentCalls:
-      m_Calls: []
-  OnTunedAwayFromSafeChannel:
-    m_PersistentCalls:
-      m_Calls: []
+  startingChannel: 0
 --- !u!4 &7747894186105722724 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 832506145650207909, guid: 4bbd58b68c718450997ee3a16e216430, type: 3}

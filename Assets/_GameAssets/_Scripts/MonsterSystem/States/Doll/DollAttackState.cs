@@ -1,7 +1,5 @@
-using System.Collections;
+using System.Threading;
 using UnityEngine;
-using UnityEngine.AI;
-using static UnityEngine.XR.Interaction.Toolkit.Inputs.Haptics.HapticsUtility;
 
 namespace MonsterSystem
 {
@@ -9,7 +7,7 @@ namespace MonsterSystem
     {
         [Header("Jumpscare Positioning")]
         [Tooltip("How close the doll's center is to the player's eyes.")]
-        [SerializeField] private float faceProximity = 0.2f;
+        [SerializeField] private float faceProximity = 2f;
         [Tooltip("Slight vertical offset if the doll is too high/low relative to its pivot.")]
         [SerializeField] private float verticalOffset = -0.1f;
 
@@ -17,38 +15,27 @@ namespace MonsterSystem
         [Tooltip("Seconds the doll is attached to the face before the final death screen fades in.")]
         [SerializeField] private float timeBeforeDeathCall = 1.0f;
 
-        // References
+        [SerializeField] private SO_TransformRef playerRef;
+
         private DollSensor sensor;
-        //private NavMeshAgent navAgent;
-
-        [SerializeField] private SO_RuntimeReferences runtimeReferences;
-
         private Transform playerTransform;
         private Transform rootParent;
+        private CancellationTokenSource deathCts;
 
         public override void Initialize(MonsterController controller)
         {
             base.Initialize(controller);
             this.sensor = controller.GetSensor<DollSensor>();
-            //navAgent = controller.GetComponent<NavMeshAgent>();
-            this.playerTransform = this.runtimeReferences?.Player;
+            this.playerTransform = this.playerRef?.Value;
             this.rootParent = controller.transform;
         }
 
         public override void OnStateEnter()
         {
-            this.playerTransform = this.runtimeReferences?.Player;
+            this.playerTransform = this.playerRef?.Value;
             Debug.Log("THEDOLLHASYOU.");
 
-            // 1. Stop all movement on the root object
-            //if (navAgent != null)
-            //{
-            //    navAgent.isStopped = true;
-            //    navAgent.enabled = false; // Completely disable to stop interference
-            //}
-
-            // 2. Attach to player's face
-            if (this.runtimeReferences != null)
+            if (this.playerTransform != null)
             {
                 AttachToPlayerFace();
             }
@@ -59,53 +46,58 @@ namespace MonsterSystem
                 return;
             }
 
-            // 3. Optional: Trigger attack animation/screamer sound here
-            // Controller.Animator.SetTrigger("Jumpscare");
-            // Controller.Audio.PlayOneShot(jumpscareSound);
-
-            // 4. Start the countdown to the actual Game Over screen
-            StartCoroutine(DeathSequence());
+            this.deathCts = new CancellationTokenSource();
+            _ = DeathSequenceAsync(this.deathCts.Token);
         }
 
         private void AttachToPlayerFace()
         {
-            Debug.Log("attach");
-            // IMPORTANT: In VR, parenting to the 'head' transform can cause slight latency jitter.
-            // For a jumpscare, it's often better to disable the visual mesh renderer of the 
-            // walking doll and enable a specific 'jumpscare mesh' that is ALREADY a child of the VR Camera.
-            //
-            // However, to keep it simple and fulfill the specific request:
+            Debug.Log("Attaching to headset...");
 
-            // Make the doll object a child of the player's camera
-            this.rootParent.SetParent(this.playerTransform);
+            // Shut down navMesh and Physics
+            if (this.rootParent.TryGetComponent<UnityEngine.AI.NavMeshAgent>(out var agent))
+                agent.enabled = false;
 
-            // Position it exactly in front of the "eyes"
-            // Vector3.forward is relative to the player's view direction
-            this.rootParent.localPosition = (Vector3.forward * faceProximity) + (Vector3.up * verticalOffset);
+            if (this.rootParent.TryGetComponent<Rigidbody>(out var rb))
+            {
+                rb.isKinematic = true;
+                rb.detectCollisions = false;
+            }
 
-            // Rotate it to look directly back at the player
+            // Find the main Camera of the player
+            Transform headTransform = Camera.main != null ? Camera.main.transform : this.playerTransform;
+
+            // Make the doll a child of the main camera
+            this.rootParent.SetParent(headTransform);
+
+            // Position the doll in front of the camera (Adjustable height and dept distance)
+            this.rootParent.localPosition = new Vector3(0, this.verticalOffset, this.faceProximity);
+
+            // Make the doll look at you.
             this.rootParent.localRotation = Quaternion.Euler(0, 180, 0);
-
-            // Note: Depending on your doll model's pivot point, you may need to tweak localRotation or verticalOffset.
         }
 
-        private IEnumerator DeathSequence()
+        private async Awaitable DeathSequenceAsync(CancellationToken ct)
         {
-            yield return new WaitForSeconds(timeBeforeDeathCall);
-            TriggerImmediateKill();
+            await Awaitable.WaitForSecondsAsync(this.timeBeforeDeathCall, ct);
+
+            if (!ct.IsCancellationRequested)
+                TriggerImmediateKill();
         }
 
         private void TriggerImmediateKill()
         {
-            // Call your static external death system
             DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Monster);
         }
 
         public override void OnStateExit()
         {
-            // Since the player is dead, OnStateExit isn't strictly necessary, 
-            // but for cleanup if you test in editor without restarting:
-            StopAllCoroutines();
+            if (this.deathCts != null)
+            {
+                this.deathCts.Cancel();
+                this.deathCts.Dispose();
+                this.deathCts = null;
+            }
         }
     }
 }

@@ -1,30 +1,40 @@
+using MonsterSystem;
 using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 namespace MonsterSystem
 {
     public class DollPatientState : MonsterState
     {
-        [SerializeField] private TriggerArea pettingArea;
-        [SerializeField] private float maxAcceptableVelocity = 2f;
+        [Header("=== Components ===")]
+        [SerializeField] private Rigidbody rb;
+        [SerializeField] private XRGrabInteractable grabInteractable;
 
         public override void OnStateEnter()
         {
-            Debug.Log("Doll is Patient (Slouched).");
-            // Controller.Animator.SetTrigger("Slouch");
+            base.OnStateEnter();
 
-            this.pettingArea.OnTriggerEntered += PetDoll;
+            if (rb != null)
+            {
+                rb.isKinematic = false;
 
+                // Instantly kill all throwing momentum/gravity from the drop
+                rb.linearVelocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+            }
+
+            if (grabInteractable != null) grabInteractable.enabled = false;
+
+            var petSensor = this.controller.GetSensor<DollSensor>();
+            if (petSensor != null) petSensor.ResetTimer();
+
+            Debug.Log("Doll is Patient (Slouched). Physics ON. Momentum killed. Grabbing OFF.");
         }
 
-        public void PetDoll(Collider collider)
+        public override void OnStateExit()
         {
-            Rigidbody rb = collider.GetComponent<Rigidbody>();
-            if (rb == null) return;
-            if (rb.linearVelocity.magnitude > this.maxAcceptableVelocity)
-            {
-                var petSensor = this.controller.GetSensor<DollSensor>();
-                petSensor.ReducePatience(-float.MaxValue);
-            }
+            base.OnStateExit();
         }
     }
 }

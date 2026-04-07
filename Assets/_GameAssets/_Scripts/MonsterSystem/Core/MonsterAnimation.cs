@@ -11,6 +11,11 @@ namespace MonsterSystem
             animator.SetTrigger(param);
         }
 
+        public static void SetTrigger(Animator animator, int hash) {
+            if (animator == null || hash == 0) return;
+            animator.SetTrigger(hash);
+        }
+
         public static void SetBool(Animator animator, string param, bool value)
         {
             if (animator == null || string.IsNullOrEmpty(param)) return;

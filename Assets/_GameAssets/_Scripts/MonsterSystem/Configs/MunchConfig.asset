@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MunchConfig
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.MunchConfig
   baseTickRate: 0.2
-  runtimeRefs: {fileID: 11400000, guid: 749d29c376c8d334990efac3993877c0, type: 2}
+  playerRef: {fileID: 11400000, guid: 8aa04a6520205384e9477b4745bd7d4b, type: 2}
   spawnPoints:
   - position: {x: -3.3654964, y: 0.37, z: -0.98531127}
     rotation: {x: -0, y: 0.9333154, z: 0}
@@ -29,5 +29,5 @@ MonoBehaviour:
   hungrySound: {fileID: 8300000, guid: 2fe0804fafdc86140b8104dc9ee18ee8, type: 3}
   angryWarningSound: {fileID: 8300000, guid: 44627079fb43bdd408145cafd3660382, type: 3}
   killJumpscareSound: {fileID: 8300000, guid: 502eb3c9c43bfe54a9c5cac70163ddfe, type: 3}
-  rejectSound: {fileID: 0}
-  eatSound: {fileID: 0}
+  rejectSound: {fileID: 8300000, guid: 25ab6fb1ed368f74b8f1d37cb9448878, type: 3}
+  eatSound: {fileID: 8300000, guid: b7524718948beb3418d5f11f0fe56417, type: 3}

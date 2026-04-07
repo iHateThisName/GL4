@@ -1,26 +1,20 @@
 using UnityEngine;
 
-namespace MonsterSystem
-{
+namespace MonsterSystem {
     /// <summary>
-    /// State that sets an animation parameter on enter and waits for completion.
+    /// State that triggers affordances on enter and waits for animation completion.
     /// Works with AnimationStateChange (StateMachineBehaviour) to detect when the animation finishes.
-    /// Supports Trigger, Bool, Float, Int, or None parameter types.
+    /// Use AnimationAffordance to configure which animation to trigger.
     /// </summary>
-    public class AnimatedState : MonsterState
-    {
-        // Defines which Animator parameter type this state will set on enter
-        public enum AnimParamType { None, Trigger, Bool, Float, Int }
-
-        [Header("Animation")]
-        [SerializeField] private AnimParamType paramType = AnimParamType.Trigger; // The type of animation parameter to set
-        [SerializeField] private string paramName; // Name of the Animator parameter to set
-        [SerializeField] private bool boolValue; // Value used when paramType is Bool
-        [SerializeField] private float floatValue; // Value used when paramType is Float
-        [SerializeField] private int intValue; // Value used when paramType is Int
+    public class AnimatedState : MonsterState {
+        [field: SerializeField] public EnumAnimationStates animationState { private set; get; }
 
         [Header("Transition")]
-        [SerializeField] protected MonsterState nextState; // State to transition to after animation completes
+        [SerializeField] protected MonsterState nextState;
+        [SerializeField] private bool exitOnComplete = true;
+
+        [Tooltip("When true, wait for AnimationStateChange callback even if animationState is None (use with AnimationAffordance)")]
+        [SerializeField] private bool waitForAffordanceAnimation;
 
         /// <summary>
         /// True from OnStateEnter until OnAnimationComplete is called by AnimationStateChange.
@@ -30,10 +24,8 @@ namespace MonsterSystem
         /// <summary>
         /// Normalized animation progress (0-1) of the current Animator state on layer 0.
         /// </summary>
-        public float AnimationProgress
-        {
-            get
-            {
+        public float AnimationProgress {
+            get {
                 // Return zero if no Animator is available
                 if (this.controller.Animator == null) return 0f;
                 return Mathf.Clamp01(this.controller.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime);
@@ -41,39 +33,28 @@ namespace MonsterSystem
         }
 
         /// <summary>
-        /// Sets the configured animation parameter on enter and begins waiting for completion.
-        /// If no parameter is configured, completes immediately.
+        /// Triggers all affordances and begins waiting for animation completion.
         /// </summary>
-        public override void OnStateEnter()
-        {
-            // No animation to play — complete immediately
-            if (this.paramType == AnimParamType.None || string.IsNullOrEmpty(this.paramName))
+        public override void OnStateEnter() {
+            // Always trigger affordances first (they may set animator parameters)
+            TriggerAffordances<AnimationAffordance>();
+
+            // If using enum-based animation state, set the trigger
+            if (this.animationState != EnumAnimationStates.None)
+            {
+                this.IsAnimating = true;
+                MonsterAnimation.SetTrigger(this.controller.Animator, AnimationTriggers.GetTriggerHash(this.animationState));
+            }
+            // If using affordance-based animation, wait for callback
+            else if (this.waitForAffordanceAnimation)
+            {
+                this.IsAnimating = true;
+            }
+            // No animation configured — complete immediately
+            else
             {
                 this.IsAnimating = false;
                 this.OnAnimationComplete();
-                return;
-            }
-
-            this.IsAnimating = true;
-
-            // Cache the Animator reference for the switch block
-            var animator = this.controller.Animator;
-
-            // Set the appropriate Animator parameter based on the configured type
-            switch (this.paramType)
-            {
-                case AnimParamType.Trigger:
-                    MonsterAnimation.SetTrigger(animator, this.paramName);
-                    break;
-                case AnimParamType.Bool:
-                    MonsterAnimation.SetBool(animator, this.paramName, this.boolValue);
-                    break;
-                case AnimParamType.Float:
-                    MonsterAnimation.SetFloat(animator, this.paramName, this.floatValue);
-                    break;
-                case AnimParamType.Int:
-                    MonsterAnimation.SetInt(animator, this.paramName, this.intValue);
-                    break;
             }
         }
 
@@ -81,26 +62,15 @@ namespace MonsterSystem
         /// Called by AnimationStateChange when the animation completes.
         /// Calls OnAnimationFinished for subclass cleanup, then transitions to nextState.
         /// </summary>
-        public virtual void OnAnimationComplete()
-        {
+        public virtual void OnAnimationComplete() {
             this.IsAnimating = false;
-            this.OnAnimationFinished();
 
             // Transition to the next state if one is assigned
-            if (this.nextState != null)
-            {
-                this.controller.TransitionTo(this.nextState);
-            }
-            else
-            {
+            if (this.nextState != null && exitOnComplete) {
+                RequestTransition(this.nextState);
+            } else {
                 Debug.LogWarning($"[{GetType().Name}] Animation finished but no nextState configured!", this);
             }
         }
-
-        /// <summary>
-        /// Override to perform work when the animation finishes.
-        /// Called before transitioning to the next state.
-        /// </summary>
-        protected virtual void OnAnimationFinished() { }
     }
 }

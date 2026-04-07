@@ -20,11 +20,9 @@ namespace MonsterSystem
                 this.controller.transform.LookAt(player);
             }
 
-            MonsterAudio.Stop(this.controller.Audio);
-
-            var config = this.controller.GetConfig<MunchConfig>();
-            if (config != null)
-                MonsterAudio.PlayOneShot(this.controller.Audio, config.killJumpscareSound, 0.5f);
+            StopAffordances<AudioAffordance>();
+            TriggerAffordances<AudioAffordance>();
+            TriggerAffordances<AnimationAffordance>();
         }
 
         protected override void OnTimerFinished()

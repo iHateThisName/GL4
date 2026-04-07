@@ -44,7 +44,7 @@ public class TheMunch : MonoBehaviour
     public Vector3 ThrowDirection = new Vector3(0, 1, 1);
 
     private EnumMunchState currentState;
-    private BaseNavAIMonster.MonsterTypeEnum monsterType = BaseNavAIMonster.MonsterTypeEnum.Munch;
+    private BaseNavAIMonster.EnumMonsterType monsterType = BaseNavAIMonster.EnumMonsterType.Munch;
 
     public enum EnumMunchState
     {
@@ -107,7 +107,7 @@ public class TheMunch : MonoBehaviour
     public float GetMaxAcceptableVelocity() => this.maxAcceptableVelocity;
     public void SetMaxAcceptableVelocity(float velocity) => this.maxAcceptableVelocity = velocity;
     public EnumMunchState GetCurrentState() => this.currentState;
-    public BaseNavAIMonster.MonsterTypeEnum GetMonsterType() => this.monsterType;
+    public BaseNavAIMonster.EnumMonsterType GetMonsterType() => this.monsterType;
     #endregion
 
     private void UpdateDebugText()

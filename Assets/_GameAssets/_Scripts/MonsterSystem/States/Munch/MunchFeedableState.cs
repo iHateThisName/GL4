@@ -9,9 +9,6 @@ namespace MonsterSystem
     /// </summary>
     public class MunchFeedableState : AnimatedState
     {
-        [Header("Audio")]
-        [SerializeField] private AudioClip loopingSound; // Looping audio clip played while in this state
-
         [Header("Feed Zone")]
         [SerializeField] private TriggerArea feedZone;                  // Trigger area where food must enter to be detected
         [SerializeField] private float maxAcceptableVelocity = 2f;      // Maximum food speed to be accepted (above this, food is rejected)
@@ -30,10 +27,11 @@ namespace MonsterSystem
             // Subscribe to the feed zone trigger so we are notified when food enters
             if (this.feedZone != null)
                 this.feedZone.OnTriggerEntered += HandleFeedTrigger;
-
+            
+            TriggerAffordances<AnimationAffordance>();
+            
             // Start playing the looping sound for this feedable state
-            if (this.loopingSound != null)
-                MonsterAudio.Play(this.controller.Audio, this.loopingSound, loop: true);
+           TriggerAffordances<AudioAffordance>();
         }
 
         /// <summary>
@@ -46,7 +44,7 @@ namespace MonsterSystem
                 this.feedZone.OnTriggerEntered -= HandleFeedTrigger;
 
             // Stop any looping audio that was started on enter
-            MonsterAudio.Stop(this.controller.Audio);
+            StopAffordances<AudioAffordance>();
         }
 
         /// <summary>
@@ -55,12 +53,18 @@ namespace MonsterSystem
         /// </summary>
         private void HandleFeedTrigger(Collider other)
         {
+            Debug.Log("Triggered Feed trigger");
             // Ignore non-food objects and guard against missing controller
-            if (this.controller == null || !other.CompareTag("Food")) return;
+            if (!other.CompareTag("Food")) return;
 
             // Retrieve the food's rigidbody; bail out if none is attached
             Rigidbody foodRb = other.attachedRigidbody;
             if (foodRb == null) return;
+            
+            Debug.Log("Food was found");
+            
+            RequestTransition(this.acceptState, foodRb);
+            return;
 
             // Accept food if it is moving slowly enough; otherwise reject it
             if (foodRb.linearVelocity.magnitude <= this.maxAcceptableVelocity)

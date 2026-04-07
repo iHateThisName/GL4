@@ -18,7 +18,7 @@ public struct DetectionConeData
 }
 
 [CreateAssetMenu(fileName = "FlashlightSettings", menuName = "TeamSuperSimple/Flashlight Settings", order = 0)]
-public class SO_FlashlightSettings : SO_RuntimeScriptableObject
+public class SO_FlashlightSettings : SO_TransformRef
 {
     [Header("=== Light Settings ===")]
     [SerializeField] private float startingLightPower = 40f;
@@ -43,19 +43,8 @@ public class SO_FlashlightSettings : SO_RuntimeScriptableObject
     [SerializeField] private float lowPowerThreshold = 5f;
     [SerializeField] private int maxRotations = 10;
 
-    // Runtime-only data — cleared on play mode exit via OnDisable
-    [System.NonSerialized] private Transform flashlightTransform;
     [System.NonSerialized] private DetectionConeData detectionConeData;
 
-    public Transform FlashlightTransform
-    {
-        get => flashlightTransform;
-        set
-        {
-            flashlightTransform = value;
-            NotifyDataChanged();
-        }
-    }
     public DetectionConeData DetectionCone => detectionConeData;
 
     public float GetStartingLightPower() => this.startingLightPower;
@@ -89,7 +78,7 @@ public class SO_FlashlightSettings : SO_RuntimeScriptableObject
 
     protected override void OnReset()
     {
-        flashlightTransform = null;
+        base.OnReset(); // Clears Value (flashlight transform)
         detectionConeData = default;
     }
 }

@@ -7,9 +7,11 @@ namespace MonsterSystem
     {
         [Header("=== State Transitions ===")]
         [SerializeField] private MonsterState patientState;
-        [SerializeField] private MonsterState impatientState;
+        [SerializeField] private MonsterState relocateState;
+        [SerializeField] private MonsterState hidingState;
         [SerializeField] private MonsterState aggressiveState;
         [SerializeField] private MonsterState attackState;
+
 
         [Header("=== Debug UI ===")]
         [SerializeField] private TMP_Text debugText;
@@ -28,48 +30,24 @@ namespace MonsterSystem
         public override void OnTick(float tickDelta)
         {
             base.OnTick(tickDelta);
-            this.neglectTimer += this.TickDelta;
-            //base.OnTick(tickDelta);
 
-            //if (playerTransform == null || config == null) return;
+            // Only tick the timer if she is in one of these three states
+            if (controller.CurrentState == patientState || controller.CurrentState == relocateState || controller.CurrentState == hidingState)
+            {
+                neglectTimer += this.TickDelta;
 
-            //float distance = Vector3.Distance(transform.position, playerTransform.position);
-
-            // 1. Check for immediate kill condition if already aggressive
-            //if (controller.CurrentState == aggressiveState && distance <= config.attackDistance)
-            //{
-            //    HandleStateTransition(attackState);
-            //}
-            //// 2. Handle Attention and Calming
-            //else if (distance <= config.attentionRadius)
-            //{
-            //    neglectTimer = 0f; // Reset patience
-
-            //    if (controller.CurrentState == impatientState)
-            //    {
-            //        HandleStateTransition(patientState);
-            //    }
-            //}
-            // 3. Player is outside radius, build up neglect
-            //else
-            //{
-                if (controller.CurrentState == patientState || controller.CurrentState == impatientState)
+                // 1. Check for Aggressive first (Timer has reached the absolute maximum)
+                if (neglectTimer >= (config.timeToHiding + config.timeToAggressive))
                 {
-                    neglectTimer += this.TickDelta;
-
-                    if (neglectTimer >= (config.timeToImpatient + config.timeToAggressive))
-                    {
-                        HandleStateTransition(aggressiveState);
-                    }
-                    else if (neglectTimer >= config.timeToImpatient)
-                    {
-                        HandleStateTransition(impatientState);
-                    }
+                    HandleStateTransition(aggressiveState);
                 }
-            //}
+                // 2. Check for Relocate (Timer hit the first threshold, AND she is still in bed)
+                else if (neglectTimer >= config.timeToHiding && controller.CurrentState == patientState)
+                {
+                    HandleStateTransition(relocateState);
+                }
+            }
 
-
-            // Update the text at the end of the tick
             UpdateDebugUI();
         }
 
@@ -93,7 +71,7 @@ namespace MonsterSystem
             lastTriggeredState = controller.CurrentState;
         }
 
-        public void PetDoll()
+        public void ResetTimer()
         {
             neglectTimer = 0f;
 
@@ -107,22 +85,24 @@ namespace MonsterSystem
         {
             if (debugText == null || controller.CurrentState == null) return;
 
-            // Strip "Doll" and "State" from the class name for cleaner display (e.g., "DollPatientState" -> "Patient")
+            // Strip "Doll" and "State" from the class name for cleaner display
             string cleanStateName = controller.CurrentState.GetType().Name.Replace("Doll", "").Replace("State", "");
             string stateText = $"State: {cleanStateName}";
             string timerText = "";
 
             if (controller.CurrentState == patientState)
             {
-                float timeLeft = config.timeToImpatient - neglectTimer;
-                timerText = $"\nLosing Patience: {Mathf.Max(0, timeLeft):F1}s";
+                float timeLeft = config.timeToHiding - neglectTimer;
+                timerText = $"\nHiding In: {Mathf.Max(0, timeLeft):F1}s";
                 debugText.color = Color.green;
             }
-            else if (controller.CurrentState == impatientState)
+            else if (controller.CurrentState == relocateState || controller.CurrentState == hidingState)
             {
-                float timeLeft = (config.timeToImpatient + config.timeToAggressive) - neglectTimer;
+                float timeLeft = (config.timeToHiding + config.timeToAggressive) - neglectTimer;
                 timerText = $"\nAttacking In: {Mathf.Max(0, timeLeft):F1}s";
-                debugText.color = Color.yellow;
+
+                // Use an orange color for the hiding phase to show rising tension
+                debugText.color = new Color(1f, 0.5f, 0f);
             }
             else if (controller.CurrentState == aggressiveState)
             {

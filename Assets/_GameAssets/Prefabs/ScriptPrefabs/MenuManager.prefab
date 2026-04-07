@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6637277130243773550
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 603952761261769020}
+  - component: {fileID: 1909054095353481168}
+  m_Layer: 0
+  m_Name: MenuManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &603952761261769020
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6637277130243773550}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 9.89915, y: -0, z: 9.16702}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1909054095353481168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6637277130243773550}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 477812b4633010842971f73efacd352a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIMenuManager
+  uiMenus: {fileID: 0}
+  currentMenu: {fileID: 0}
+  runtimeReferences: {fileID: 11400000, guid: 749d29c376c8d334990efac3993877c0, type: 2}
+  sceneToLoadIndex: 0
+  sceneToLoadName: 
+  loadingScreenSceneIndex: 0
+  loadingScreenFade: {fileID: 0}
+  loadingProgressBar: {fileID: 0}
+  fadeDuration: 2
+  progressUpdateInterval: 3
+  asyncLoadPriority: 0
+  minimumLoadingDisplayTime: 1
