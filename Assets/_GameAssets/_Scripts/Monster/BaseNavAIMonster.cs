@@ -10,7 +10,7 @@ public class BaseNavAIMonster : MonoBehaviour {
     [field: SerializeField] public string DebugInformation { get; private set; }
 
     [Header("References")]
-    [SerializeField] private NavMeshAgent agent;
+    [field: SerializeField] public NavMeshAgent Agent { get; private set; }
     [SerializeField] private MonsterController monsterController;
     [SerializeField] private Transform player;
     [SerializeField] private Transform[] patrolPoints;
@@ -75,7 +75,7 @@ public class BaseNavAIMonster : MonoBehaviour {
         }
 
         // Validate NavMeshAgent reference
-        if (this.agent == null) {
+        if (this.Agent == null) {
             Debug.LogError("NavMeshAgent reference is missing on BaseNavAIMonster. Please assign it in the inspector.");
         }
 
@@ -151,9 +151,11 @@ public class BaseNavAIMonster : MonoBehaviour {
     private void IntruderNavigationLogic() {
         MonsterState currentState = this.monsterController.CurrentState;
 
-        // Get the animation state in the class AnimatedState, filed is called animationState.
-        if (currentState is AnimatedState animatedState) {
-            EnumAnimationStates currentAnimationState = animatedState.animationState;
+        // check if the current animation state is the ChasingPlayerState then navigate towards the player directly. Skip other logic.
+        if (currentState is ChasingPlayerState) {
+            this.Agent.SetDestination(this.player.position);
+            this.DebugInformation = $"Intruder is chasing the player at {this.player.position}";
+            return; // Skip the window targeting logic
         }
 
         // Select a window to target if we don't have one or if the current target window is already open
@@ -170,20 +172,20 @@ public class BaseNavAIMonster : MonoBehaviour {
             //agent.SetDestination(this.target.TargetPosition.position);
 
             Vector3 approachePoint = this.target.TargetPosition.position - (-this.target.TargetPosition.right * 5f);
-            agent.SetDestination(approachePoint);
+            Agent.SetDestination(approachePoint);
             this.DebugInformation = $"Intruder is targeting a window at {this.target.TargetPosition.position} and moving towards approache point at {approachePoint}";
         }
 
 
         // Check if target as been reached.
-        if (!agent.pathPending && agent.velocity.sqrMagnitude == 0f) {
+        if (!Agent.pathPending && Agent.velocity.sqrMagnitude == 0f) {
             // debug log the current position the pathendposition and the target position
             Vector3 targetPosition = this.target.TargetPosition.position;
-            if (this.agent.pathEndPosition.x == targetPosition.x && this.agent.pathEndPosition.z == targetPosition.z) {
+            if (this.Agent.pathEndPosition.x == targetPosition.x && this.Agent.pathEndPosition.z == targetPosition.z) {
                 DisableNavigation();
                 // Reached Window target
-                this.agent.Warp(targetPosition); // Making sure the monster is exactly at the target position.
-                this.agent.gameObject.transform.rotation = this.target.TargetPosition.rotation; // Make sure the monster is rotated to match the window's rotation.
+                this.Agent.Warp(targetPosition); // Making sure the monster is exactly at the target position.
+                this.Agent.gameObject.transform.rotation = this.target.TargetPosition.rotation; // Make sure the monster is rotated to match the window's rotation.
 
                 // Tell the monster controller to start a diffrent animation state for opening the window.
                 this.monsterController.TransitionTo(this.monsterController.GetMonsterState<IntruderApproachWindowState>());
@@ -192,7 +194,7 @@ public class BaseNavAIMonster : MonoBehaviour {
             } else {
                 // Reached approache point, now set destination to the window target position to move directly towards it.
                 // This is to make sure the rotation of the monster is correct when it reaches the window, since the approache point is offset from the window position.
-                this.agent.SetDestination(targetPosition);
+                this.Agent.SetDestination(targetPosition);
                 this.DebugInformation = $"Intruder has reached the approach point and is now moving directly towards the window at {targetPosition}";
             }
         }
@@ -214,7 +216,7 @@ public class BaseNavAIMonster : MonoBehaviour {
 
         // Check if player is outside.
         if (currentLocation == PlayerTemperatureSimulator.EnumLocationType.Cold) {
-            this.agent.SetDestination(this.player.position);
+            this.Agent.SetDestination(this.player.position);
             this.DebugInformation = $"Stalker is pursuing the player at {this.player.position}";
 
             //Audio
@@ -227,17 +229,17 @@ public class BaseNavAIMonster : MonoBehaviour {
 
             // Back off the player. Move towards spawn point.
             if (this.patrolPoints.Length == 0) {
-                this.agent.SetDestination(this.spawnPoint);
+                this.Agent.SetDestination(this.spawnPoint);
 
             } else if (Vector3.Distance(this.transform.position, this.patrolPoints[this.currentPatrolIndex].position) < this.attackRange) {
                 // If the monster is close to the point, start patrolling between points.
                 currentPatrolIndex = (currentPatrolIndex + 1) % this.patrolPoints.Length;
-                this.agent.SetDestination(this.patrolPoints[currentPatrolIndex].position);
+                this.Agent.SetDestination(this.patrolPoints[currentPatrolIndex].position);
 
             } else {
-                this.agent.SetDestination(this.patrolPoints[currentPatrolIndex].position);
+                this.Agent.SetDestination(this.patrolPoints[currentPatrolIndex].position);
             }
-            this.DebugInformation = $"Stalker is idle moving towards {this.agent.destination}";
+            this.DebugInformation = $"Stalker is idle moving towards {this.Agent.destination}";
         }
     }
     private void AttackPlayer() {
@@ -291,7 +293,7 @@ public class BaseNavAIMonster : MonoBehaviour {
         this.fleeTimer = this.fleeDuration;
 
         // Immediately set destination to flee
-        this.agent.SetDestination(this.fleeDestination);
+        this.Agent.SetDestination(this.fleeDestination);
 
         //Audio - stop stalking audio when hit by flashlight
         UpdateStalkingAudio(false);
@@ -307,19 +309,19 @@ public class BaseNavAIMonster : MonoBehaviour {
     }
 
     public void DisableNavigation() {
-        this.agent.isStopped = true;
-        this.agent.ResetPath();
+        this.Agent.isStopped = true;
+        this.Agent.ResetPath();
 
-        this.agent.updatePosition = false;
-        this.agent.updateRotation = false;
+        this.Agent.updatePosition = false;
+        this.Agent.updateRotation = false;
 
         this.isNavigationDisabled = true;
     }
 
     public void EnableNavigation() {
-        this.agent.isStopped = false;
-        this.agent.updatePosition = true;
-        this.agent.updateRotation = true;
+        this.Agent.isStopped = false;
+        this.Agent.updatePosition = true;
+        this.Agent.updateRotation = true;
 
         this.isNavigationDisabled = false;
     }

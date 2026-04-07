@@ -2298,6 +2298,57 @@ Transform:
   - {fileID: 1952830447}
   m_Father: {fileID: 998342023}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &300939802
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 300939803}
+  - component: {fileID: 300939804}
+  m_Layer: 0
+  m_Name: ChasingPlayer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &300939803
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 300939802}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1092670439}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &300939804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 300939802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7c5bc151f390a145b4e896ee318f733, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChasingPlayerState
+  blocksTransitions: 0
+  <AnimationState>k__BackingField: 3
+  nextState: {fileID: 0}
+  exitOnComplete: 1
+  waitForAffordanceAnimation: 0
+  monsterNavigation: {fileID: 1622076817}
+  entryMoveDistance: 2
 --- !u!1 &313820893
 GameObject:
   m_ObjectHideFlags: 0
@@ -6017,6 +6068,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4171317076666714497, guid: d41608558d67b05418e1420990d3975c, type: 3}
   m_PrefabInstance: {fileID: 746537346}
   m_PrefabAsset: {fileID: 0}
+--- !u!195 &759903951 stripped
+NavMeshAgent:
+  m_CorrespondingSourceObject: {fileID: 6856695336247606016, guid: 870cddaf024873949b5a9c910b920081, type: 3}
+  m_PrefabInstance: {fileID: 1265009063867809655}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &798966444
 GameObject:
   m_ObjectHideFlags: 0
@@ -8933,6 +8989,11 @@ Transform:
   - {fileID: 1288972486}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &1092670439 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6303827022862854503, guid: 870cddaf024873949b5a9c910b920081, type: 3}
+  m_PrefabInstance: {fileID: 1265009063867809655}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1106720532
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12259,6 +12320,17 @@ Transform:
   - {fileID: 1783889586}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 180.933, z: 0}
+--- !u!114 &1622076817 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 132277432202858881, guid: 870cddaf024873949b5a9c910b920081, type: 3}
+  m_PrefabInstance: {fileID: 1265009063867809655}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80a8fa31f219f5e4c87eb522b972bbe1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BaseNavAIMonster
 --- !u!1001 &1634371981
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16451,6 +16523,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 132277432202858881, guid: 870cddaf024873949b5a9c910b920081, type: 3}
+      propertyPath: <agent>k__BackingField
+      value: 
+      objectReference: {fileID: 759903951}
     - target: {fileID: 187740070976333615, guid: 870cddaf024873949b5a9c910b920081, type: 3}
       propertyPath: m_Name
       value: IntruderPrefab
@@ -16461,7 +16537,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6075446766147847021, guid: 870cddaf024873949b5a9c910b920081, type: 3}
       propertyPath: countdownDuration
-      value: 30
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6234756195703914020, guid: 870cddaf024873949b5a9c910b920081, type: 3}
+      propertyPath: nextState
+      value: 
+      objectReference: {fileID: 300939804}
+    - target: {fileID: 6234756195703914020, guid: 870cddaf024873949b5a9c910b920081, type: 3}
+      propertyPath: postAnimationMoveDistance
+      value: 3.5
       objectReference: {fileID: 0}
     - target: {fileID: 8138255586992897016, guid: 870cddaf024873949b5a9c910b920081, type: 3}
       propertyPath: m_LocalPosition.x
@@ -16506,7 +16590,10 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 3916010817815147298, guid: 870cddaf024873949b5a9c910b920081, type: 3}
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 6303827022862854503, guid: 870cddaf024873949b5a9c910b920081, type: 3}
+      insertIndex: 4
+      addedObject: {fileID: 300939803}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 870cddaf024873949b5a9c910b920081, type: 3}
 --- !u!1001 &1289918053980674315
