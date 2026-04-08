@@ -15,6 +15,6 @@ public class IntruderFlashedState : AnimatedState {
     public override void OnAnimationComplete() {
         //base.OnAnimationComplete();
         GameObject go = transform.root.gameObject;
-        GameManager.Instance.DestroyGameObject(go);
+        Destroy(go);
     }
 }

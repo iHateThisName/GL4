@@ -1,13 +1,8 @@
 using Assets.Scripts.Singleton;
-using Gaskellgames;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : PersistenSingleton<GameManager> {
-
-    [Header("Prefab Refrences")]
-    [SerializeField, AssetsOnly] private GameObject FireAdaptationVolumePrefab;
-    [HideInInspector] public FireAdaptationController FireAdaptationController { get; private set; }
 
     [Header("=== Runtime References ===")]
     [SerializeField] private SO_ScreenFadeRef screenFadeRef;
@@ -50,12 +45,6 @@ public class GameManager : PersistenSingleton<GameManager> {
     }
     
     private void Start() {
-        // use the existing instance if it exists in the scene
-        this.FireAdaptationController = FindFirstObjectByType<FireAdaptationController>();
-        if (this.FireAdaptationController == null) {
-            // otherwise instantiate a new one from the prefab
-            this.FireAdaptationController = Instantiate(this.FireAdaptationVolumePrefab).GetComponent<FireAdaptationController>();
-        }
 
         InstantiateTimer();
         this.eventsToFire = this.nightSettings.GetEventsForNight(this.night);
@@ -73,10 +62,6 @@ public class GameManager : PersistenSingleton<GameManager> {
         
         SceneTransition.LoadScene(0, this.screenFadeRef);
         InstantiateTimer();
-    }
-
-    public void DestroyGameObject(GameObject obj) {
-        Destroy(obj);
     }
 
     private void InstantiateTimer()
