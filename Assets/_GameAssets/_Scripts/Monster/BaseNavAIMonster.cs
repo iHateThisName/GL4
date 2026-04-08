@@ -32,7 +32,7 @@ public class BaseNavAIMonster : MonoBehaviour {
     // Nav
     private Vector3 spawnPoint;
     private int currentPatrolIndex = 0;
-    private PlayerTemperatureSimulator.EnumLocationType currentLocation;
+    private PlayerTemperatureSimulator.EnumLocationType currentPlayerLocation;
     private WindowController target; // For intruder behavior, the window the monster is trying to enter through.
 
     // Delegate for monster behavior logic. This will point to the appropriate function based on the monster type.
@@ -102,7 +102,7 @@ public class BaseNavAIMonster : MonoBehaviour {
     /// Updates the location type when the environment changes.
     /// </summary>
     private void HandleLocationChange(PlayerTemperatureSimulator.EnumLocationType type) {
-        this.currentLocation = type;
+        this.currentPlayerLocation = type;
 
         // If the player is no longer in the Cold, stop the stalking audio.
         if (type != PlayerTemperatureSimulator.EnumLocationType.Cold) {
@@ -128,7 +128,12 @@ public class BaseNavAIMonster : MonoBehaviour {
     private void CheckAttackRange() {
         // Check if the monster is in attack range of the player.
         float distanceToPlayer = Vector3.Distance(this.transform.position, this.player.position);
-        if (distanceToPlayer <= this.attackRange) {
+
+        // Check if the monster type requires the player to be in a cold location for the attack to be valid.
+        bool requiresCold = this.monsterType == EnumMonsterType.Stalker;
+        bool isLocationValid = !requiresCold || this.currentPlayerLocation == PlayerTemperatureSimulator.EnumLocationType.Cold;
+
+        if (distanceToPlayer <= this.attackRange && isLocationValid) {
             AttackPlayer();
         }
     }
@@ -215,7 +220,7 @@ public class BaseNavAIMonster : MonoBehaviour {
         }
 
         // Check if player is outside.
-        if (currentLocation == PlayerTemperatureSimulator.EnumLocationType.Cold) {
+        if (currentPlayerLocation == PlayerTemperatureSimulator.EnumLocationType.Cold) {
             this.Agent.SetDestination(this.player.position);
             this.DebugInformation = $"Stalker is pursuing the player at {this.player.position}";
 
