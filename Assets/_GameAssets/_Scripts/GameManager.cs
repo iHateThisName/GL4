@@ -11,8 +11,6 @@ public class GameManager : PersistenSingleton<GameManager> {
 
     [Header("=== Runtime References ===")]
     [SerializeField] private SO_ScreenFadeRef screenFadeRef;
-    [SerializeField] private SO_TransformRef playerRef;
-    [SerializeField] private Transform player;
 
     [Header("=== Night Configuration ===")]
     [SerializeField] private SO_NightSettings nightSettings;
@@ -52,9 +50,6 @@ public class GameManager : PersistenSingleton<GameManager> {
     }
     
     private void Start() {
-        if (this.playerRef != null && this.player != null)
-            this.playerRef.Value = this.player;
-
         // use the existing instance if it exists in the scene
         this.FireAdaptationController = FindFirstObjectByType<FireAdaptationController>();
         if (this.FireAdaptationController == null) {
