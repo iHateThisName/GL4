@@ -2,12 +2,12 @@ using UnityEngine;
 
 public class TransformRefSaver : MonoBehaviour
 {
-    [SerializeField] private SO_TransformRef playerRef;
+    [SerializeField] private SO_TransformRef transformRef;
     [SerializeField] private Transform transformObject;
 
     private void Start()
     {
-        if (this.playerRef != null && this.transformObject != null)
-            this.playerRef.Value = this.transformObject;
+        if (this.transformRef != null && this.transformObject != null)
+            this.transformRef.Value = this.transformObject;
     }
 }

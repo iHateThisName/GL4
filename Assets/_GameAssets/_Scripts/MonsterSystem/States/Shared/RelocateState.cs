@@ -9,7 +9,7 @@ namespace MonsterSystem
     public class RelocateState : MonsterState
     {
         [SerializeField] private MonsterState nextState; // State to transition to after relocation is complete
-        [SerializeField] private SO_NavMeshMoveConfig transforms;
+        [SerializeField] private SO_TransformCollection transforms;
         [SerializeField] private bool useConfig = true;
         [SerializeField] private bool killMomentum = false;
 

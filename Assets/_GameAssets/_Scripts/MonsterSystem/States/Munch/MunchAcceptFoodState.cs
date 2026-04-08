@@ -27,8 +27,8 @@ namespace MonsterSystem
 
         protected override void RegisterAnimationEvents()
         {
-            base.RegisterAnimationEvents();        // index 0: OnAnimationComplete (transition)
-            this.animationEvents.Add(HandleEatMoment); // index 1: mid-animation eat moment
+            base.RegisterAnimationEvents();          // index 0: OnAnimationComplete (transition)
+            RegisterAnimationEvent(HandleEatMoment); // index 1: mid-animation eat moment
         }
 
         /// <summary>

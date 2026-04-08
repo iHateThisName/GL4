@@ -19,6 +19,8 @@ public class GameManager : PersistenSingleton<GameManager> {
     private int eventsFired = 0;
 
     private NightEventData[] eventsToFire;
+    private ScheduledNightEvent[] schedule;
+    private int scheduleCursor;
 
     public Dictionary<WindowController, VRLever.EnumLeverState> WindowsDictonary { get; private set; } = new Dictionary<WindowController, VRLever.EnumLeverState>();
 
@@ -46,8 +48,8 @@ public class GameManager : PersistenSingleton<GameManager> {
     
     private void Start() {
 
-        InstantiateTimer();
         this.eventsToFire = this.nightSettings.GetEventsForNight(this.night);
+        InstantiateTimer();
     }
     
     protected override void OnDestroy()
@@ -68,39 +70,73 @@ public class GameManager : PersistenSingleton<GameManager> {
     {
         Debug.Log("Instantiating Timer...");
         TimerManager.Release(ref this.nightTimerHandle);
-        this.nightTimerHandle = TimerManager.Create(this.nightSettings.GetNewNightEventTime(), this.nightSettings.GetNightTimeInSeconds());
-        TimerManager.SetCallbacks(this.nightTimerHandle, HandleNightTick, HandleNightEnd);
+
+        // Resolve every event's per-event timing into an absolute schedule for this night.
+        this.schedule = this.nightSettings.BuildScheduleForNight(this.night);
+        this.scheduleCursor = 0;
         this.eventsFired = 0;
+
+        float nightSeconds = this.nightSettings.GetNightTimeInSeconds();
+        float firstInterval = this.schedule.Length > 0
+            ? Mathf.Max(0.0001f, this.schedule[0].TimeSeconds)
+            : nightSeconds + 10f;
+
+        this.nightTimerHandle = TimerManager.Create(firstInterval, nightSeconds);
+        TimerManager.SetCallbacks(this.nightTimerHandle, HandleNightTick, HandleNightEnd);
     }
-    
+
     /// <summary>
-    /// Updates the night timer and checks whether an event should fire.
-    /// Stops updating once the night duration has been reached.
+    /// Fires every scheduled event whose time has been reached on this tick (so events
+    /// sharing the same resolved time fire together), then schedules the next tick to
+    /// land on the next pending event.
     /// </summary>
     private void HandleNightTick()
     {
-        if (this.eventsFired + 1 > this.eventsToFire.Length)
+        if (this.schedule == null || this.scheduleCursor >= this.schedule.Length)
         {
-            if (this.nightSettings != null && TimerManager.Validate(this.nightTimerHandle))
-            {
-                ref var t = ref TimerManager.GetRef(this.nightTimerHandle);
-                t.Interval = this.nightSettings.GetNightTimeInSeconds() + 10;
-                t.NextInterval = t.Elapsed + t.Interval;
-            }
+            ParkTimerUntilNightEnd();
             return;
         }
 
-        float elapsed = TimerManager.Validate(this.nightTimerHandle) ? TimerManager.GetRef(this.nightTimerHandle).Elapsed : 0f;
-        Debug.Log($"Night event fired at: {this.night}: {elapsed}s");
-        this.eventsFired++;
+        float elapsed = TimerManager.Validate(this.nightTimerHandle)
+            ? TimerManager.GetRef(this.nightTimerHandle).Elapsed
+            : 0f;
 
-        OnEventAvailable.Invoke(new NightEvent(this.eventsToFire[this.eventsFired - 1], this.eventsFired, this.night));
-        if (this.nightSettings != null && TimerManager.Validate(this.nightTimerHandle))
+        // Fire all events whose scheduled time has been reached this tick.
+        while (this.scheduleCursor < this.schedule.Length
+               && this.schedule[this.scheduleCursor].TimeSeconds <= elapsed + 0.0001f)
+        {
+            var scheduled = this.schedule[this.scheduleCursor];
+            this.scheduleCursor++;
+            this.eventsFired++;
+
+            Debug.Log($"Night event fired at night {this.night}: {elapsed:F2}s (scheduled {scheduled.TimeSeconds:F2}s)");
+            OnEventAvailable.Invoke(new NightEvent(scheduled.Data, this.eventsFired, this.night));
+        }
+
+        // Schedule the next tick to land exactly on the next pending event, or park
+        // the timer past the end of the night if everything has fired.
+        if (this.scheduleCursor >= this.schedule.Length)
+        {
+            ParkTimerUntilNightEnd();
+            return;
+        }
+
+        if (TimerManager.Validate(this.nightTimerHandle))
         {
             ref var t = ref TimerManager.GetRef(this.nightTimerHandle);
-            t.Interval = this.nightSettings.GetNewNightEventTime();
-            t.NextInterval = t.Elapsed + t.Interval;
+            float delta = Mathf.Max(0.0001f, this.schedule[this.scheduleCursor].TimeSeconds - elapsed);
+            t.Interval = delta;
+            t.NextInterval = t.Elapsed + delta;
         }
+    }
+
+    private void ParkTimerUntilNightEnd()
+    {
+        if (this.nightSettings == null || !TimerManager.Validate(this.nightTimerHandle)) return;
+        ref var t = ref TimerManager.GetRef(this.nightTimerHandle);
+        t.Interval = this.nightSettings.GetNightTimeInSeconds() + 10f;
+        t.NextInterval = t.Elapsed + t.Interval;
     }
 
     private void HandleNightEnd()

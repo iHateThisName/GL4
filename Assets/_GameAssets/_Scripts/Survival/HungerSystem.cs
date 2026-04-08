@@ -41,8 +41,8 @@ public class HungerSystem : MonoBehaviour
     [SerializeField] private float hunger;
 
     private const float SLIGHTY_HUNGRY_THRESHOLD = 0.8f;
-    private const float HUNGER_THRESHOLD = .5f;
-    private const float STARVING_THRESHOLD = .25f;
+    private const float HUNGER_THRESHOLD = 0.5f;
+    private const float STARVING_THRESHOLD = 0.25f;
 
     // Event fired whenever the starvation state changes.
     // The bool parameter is true when starving, false when no longer starving.
@@ -121,12 +121,15 @@ public class HungerSystem : MonoBehaviour
     /// <param name="food">food being processed.</param>
     private void eatFood(Food foodObject)
     {
-        if (foodObject == null) return;
-        
-        // Increase hunger by the food's value
-        ClampHunger(this.hungerSettings.GetFoodFillValue());
+        if (foodObject == null || foodObject.Value < 1) return;
         
         foodObject.Eat();
+
+        float foodDelta = foodObject.FillValue.Equals(-1)
+            ? this.hungerSettings.GetFoodFillValue()
+            : foodObject.FillValue;
+        
+        ClampHunger(foodDelta); // Increase hunger by the food's value
 
         //Play eatSFX
         if (eatSFX != null)

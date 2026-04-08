@@ -5,11 +5,11 @@ using UnityEngine;
 namespace MonsterSystem
 {
     /// <summary>
-    /// Custom inspector for <see cref="SO_NavMeshMoveConfig"/>.
+    /// Custom inspector for <see cref="SO_TransformCollection"/>.
     /// Provides a drag-and-drop helper to populate the navigation points array from scene transforms.
     /// </summary>
-    [CustomEditor(typeof(SO_NavMeshMoveConfig))]
-    public class NavMeshMoveConfigEditor : Editor
+    [CustomEditor(typeof(SO_TransformCollection))]
+    public class TransformCollectionReferenceEditor : Editor
     {
         // Working list of scene transforms staged for capture into the points array
         private List<Transform> transforms = new();

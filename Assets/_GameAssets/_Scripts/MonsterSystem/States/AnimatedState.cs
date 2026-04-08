@@ -16,6 +16,7 @@ namespace MonsterSystem {
     /// </summary>
     public class AnimatedState : MonsterState
     {
+        [System.Obsolete("Pending removal?")]
         [SerializeField] private EnumAnimationStates animationState;
 
         [Header("Transition")]
@@ -43,14 +44,20 @@ namespace MonsterSystem {
 
         /// <summary>
         /// Ordered callbacks invoked by AnimationStateChange behaviours, by index.
-        /// Index 0 is reserved for <see cref="OnAnimationComplete"/>.
+        /// Built once during <see cref="Initialize"/> via <see cref="RegisterAnimationEvents"/>
+        /// and then frozen as an array for runtime dispatch.
         /// </summary>
-        protected readonly List<Action> animationEvents = new List<Action>();
+        private Action[] animationEvents;
+
+        // Registration buffer used only during Initialize. Cleared once frozen.
+        private List<Action> registrationBuffer;
 
         public override void Initialize(MonsterController owningController) {
             base.Initialize(owningController);
-            this.animationEvents.Clear();
+            this.registrationBuffer = new List<Action>();
             RegisterAnimationEvents();
+            this.animationEvents = this.registrationBuffer.ToArray();
+            this.registrationBuffer = null;
         }
 
         /// <summary>
@@ -58,7 +65,18 @@ namespace MonsterSystem {
         /// so index 0 remains the default end-of-animation handler.
         /// </summary>
         protected virtual void RegisterAnimationEvents() {
-            this.animationEvents.Add(OnAnimationComplete);
+            RegisterAnimationEvent(OnAnimationComplete);
+        }
+
+        /// <summary>
+        /// Called from <see cref="RegisterAnimationEvents"/> to add a callback at the next index.
+        /// </summary>
+        protected void RegisterAnimationEvent(Action callback) {
+            if (this.registrationBuffer == null) {
+                Debug.LogError($"[{GetType().Name}] RegisterAnimationEvent called outside of RegisterAnimationEvents()", this);
+                return;
+            }
+            this.registrationBuffer.Add(callback);
         }
 
         /// <summary>
@@ -66,8 +84,9 @@ namespace MonsterSystem {
         /// (or when the state exits early, if the SMB has fireOnEarlyExit enabled).
         /// </summary>
         public void InvokeAnimationEvent(int index) {
-            if (index < 0 || index >= this.animationEvents.Count) {
-                Debug.LogWarning($"[{GetType().Name}] No animation event registered at index {index} (have {this.animationEvents.Count})", this);
+            if (this.animationEvents == null || index < 0 || index >= this.animationEvents.Length) {
+                int have = this.animationEvents?.Length ?? 0;
+                Debug.LogWarning($"[{GetType().Name}] No animation event registered at index {index} (have {have})", this);
                 return;
             }
             this.animationEvents[index]?.Invoke();

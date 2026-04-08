@@ -14,7 +14,7 @@ namespace MonsterSystem
         
         [Header("Destination")]
         [SerializeReference] private DestinationStrategy strategy;
-        [SerializeField] private SO_NavMeshMoveConfig moveConfig;
+        [SerializeField] private SO_TransformCollection moveConfig;
 
         [Header("Arrival")]
         [SerializeField] private float targetThreshold = 0.5f;
@@ -136,7 +136,7 @@ namespace MonsterSystem
         private void CachePoints()
         {
             // Check strategy for its own config first, fall back to state-level config
-            SO_NavMeshMoveConfig config = this.moveConfig;
+            SO_TransformCollection config = this.moveConfig;
 
             if (config != null && config.points != null && config.points.Length > 0)
             {

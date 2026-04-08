@@ -23,4 +23,8 @@ public class Food : MonoBehaviour
         if (this.value == -1 && destroyOnEaten) 
             Destroy(this.gameObject, 0.1f);
     }
+    
+    public float FillValue => overrideFoodValue;
+    
+    public int Value => this.value;
 }

@@ -36,7 +36,7 @@ namespace MonsterSystem
     {
         [Header("Config")]
         public NightOverride[] nightOverrides; // Per-night difficulty multipliers for scaling monster behaviour
-        [SerializeField] private SO_NavMeshMoveConfig spawnPoints;
+        [SerializeField] private SO_TransformCollection spawnPoints;
         [SerializeField] private SO_TransformRef playerRef;
 
         [Header("References")] 
@@ -209,7 +209,7 @@ namespace MonsterSystem
         
         public AudioSource Audio => this.audioSource;
         
-        public SO_NavMeshMoveConfig SpawnPoints => this.spawnPoints;
+        public SO_TransformCollection SpawnPoints => this.spawnPoints;
         
         public int CurrentNight => GameManager.Instance != null ? GameManager.Instance.GetCurrentNight() : 1;
         

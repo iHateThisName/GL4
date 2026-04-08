@@ -16,7 +16,7 @@ namespace MonsterSystem
         [Tooltip("If true, snaps to the nearest point. If false, picks a random non-repeating point.")]
         [SerializeField] private bool findNearest = true;
         //[SerializeField] private Transform[] spawnPoints;
-        [SerializeField] SO_NavMeshMoveConfig spawnPoints;
+        [SerializeField] SO_TransformCollection spawnPoints;
 
         [Header("=== Horror Elements ===")]
         [Tooltip("How long she waits in the dark before the chase begins.")]
