@@ -267,6 +267,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3662960028798784414}
   - component: {fileID: 3121626272259508856}
+  - component: {fileID: 2987720582210339999}
   m_Layer: 11
   m_Name: DollRelocate
   m_TagString: Untagged
@@ -303,9 +304,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.MunchRelocateState
   blocksTransitions: 1
   nextState: {fileID: 5312942356579680233}
+  transitionDelay: 2
+  grabInteractable: {fileID: 8213382684775212631}
   transforms: {fileID: 11400000, guid: c857e95225c5e6545989108d853e456d, type: 2}
   useConfig: 0
-  killMomentum: 0
+  killMomentum: 1
+--- !u!114 &2987720582210339999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1666760154419829998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4702ac2b4be5cd141a1c9c87889c9abc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AudioAffordance
+  clip: {fileID: 8300000, guid: e13ed7eaed9aa394683b8dcb19bbb599, type: 3}
+  loop: 0
+  volume: 1
 --- !u!1 &2215229423872836330
 GameObject:
   m_ObjectHideFlags: 0
