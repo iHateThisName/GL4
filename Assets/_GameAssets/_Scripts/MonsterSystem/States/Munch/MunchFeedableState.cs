@@ -55,7 +55,7 @@ namespace MonsterSystem
         {
             Debug.Log("Triggered Feed trigger");
             // Ignore non-food objects and guard against missing controller
-            if (!other.CompareTag("Food")) return;
+            if (HungerSystem.TryGetFood(other) == null) return;
 
             // Retrieve the food's rigidbody; bail out if none is attached
             Rigidbody foodRb = other.attachedRigidbody;
@@ -67,10 +67,11 @@ namespace MonsterSystem
             return;
 
             // Accept food if it is moving slowly enough; otherwise reject it
+            /*
             if (foodRb.linearVelocity.magnitude <= this.maxAcceptableVelocity)
                 this.controller.TransitionTo(this.acceptState, foodRb);
             else
-                this.controller.TransitionTo(this.rejectState, foodRb);
+                this.controller.TransitionTo(this.rejectState, foodRb);*/
         }
     }
 }

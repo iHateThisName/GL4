@@ -103,12 +103,7 @@ public class HungerSystem : MonoBehaviour
     /// <param name="other">The collider that entered the mouth trigger.</param>
     private void tryEatFood(Collider other)
     {
-        Transform foodObject = other.transform.parent;
-        if (!foodObject || !foodObject.CompareTag("Food"))
-        {
-            Debug.LogWarning("You can't eat that!");
-            return;
-        }
+        var foodObject = TryGetFood(other);
 
         if (this.hunger + this.hungerSettings.GetFoodFillValue() >= this.MaxHunger)
         {
@@ -116,7 +111,7 @@ public class HungerSystem : MonoBehaviour
             return;
         }
         
-        eatFood(foodObject.gameObject);
+        eatFood(foodObject);
     }
 
     /// <summary>
@@ -124,20 +119,18 @@ public class HungerSystem : MonoBehaviour
     /// adding saturation to the player's hunger. and checks for state changes'
     /// </summary>
     /// <param name="food">food being processed.</param>
-    private bool eatFood(GameObject foodObject)
+    private void eatFood(Food foodObject)
     {
-        if (foodObject == null) return false;
+        if (foodObject == null) return;
         
         // Increase hunger by the food's value
         ClampHunger(this.hungerSettings.GetFoodFillValue());
+        
+        foodObject.Eat();
 
         //Play eatSFX
-        if (eatSFX == null) return true;
-        SoundEffectManager.Instance.PlaySoundFXClip(this.eatSFX, transform, 1f);
-
-        // Destroy the food object shortly after being eaten
-        Destroy(foodObject, 0.1f);
-        return true;
+        if (eatSFX != null)
+            SoundEffectManager.Instance.PlaySoundFXClip(this.eatSFX, transform, 1f);
     }
 
     /// <summary>
@@ -183,6 +176,17 @@ public class HungerSystem : MonoBehaviour
         EnumHungerState previousState = this.hungerState;
         this.hungerState = newHungerState;
         HungerStateChangedEvent?.Invoke(previousState, this.hungerState);
+    }
+    
+    public static Food TryGetFood(Collider other)
+    {
+        var foodObject = other.GetComponentInParent<Food>();
+        if (foodObject == null)
+        {
+            Debug.LogWarning("That is not food!");
+            return null;
+        };
+        return foodObject;
     }
     
     #region DEPRECATED_HELPER

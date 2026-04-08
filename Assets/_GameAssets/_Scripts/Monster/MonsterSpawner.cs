@@ -23,12 +23,7 @@ namespace Refactored
         private void SpawnMonsterWithEvent(NightEvent evt)
         {
             var eventData = evt.GetPayload();
-            if (eventData.GetEventType() != NightEventType.SpawnMonster)
-            {
-                Debug.LogError("Event is not a SpawnMonster event.");
-                return;
-            }
-            Debug.Log("Spawning Monster");
+            if (eventData.GetEventType() != NightEventType.SpawnMonster) return;
 
             for (int i = 0; i < eventData.GetMonsterCount(); i++)
             {
