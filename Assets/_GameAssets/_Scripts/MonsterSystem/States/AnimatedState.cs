@@ -7,7 +7,7 @@ namespace MonsterSystem {
     /// Use AnimationAffordance to configure which animation to trigger.
     /// </summary>
     public class AnimatedState : MonsterState {
-        [field: SerializeField] public EnumAnimationStates animationState { private set; get; }
+        [field: SerializeField] public EnumAnimationStates AnimationState { private set; get; }
 
         [Header("Transition")]
         [SerializeField] protected MonsterState nextState;
@@ -40,10 +40,10 @@ namespace MonsterSystem {
             TriggerAffordances<AnimationAffordance>();
 
             // If using enum-based animation state, set the trigger
-            if (this.animationState != EnumAnimationStates.None)
+            if (this.AnimationState != EnumAnimationStates.None)
             {
                 this.IsAnimating = true;
-                MonsterAnimation.SetTrigger(this.controller.Animator, AnimationTriggers.GetTriggerHash(this.animationState));
+                MonsterAnimation.SetTrigger(this.controller.Animator, AnimationTriggers.GetTriggerHash(this.AnimationState));
             }
             // If using affordance-based animation, wait for callback
             else if (this.waitForAffordanceAnimation)

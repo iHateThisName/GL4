@@ -2,8 +2,9 @@ using UnityEngine;
 
 public static class AnimationTriggers {
     public static readonly int Flashed = Animator.StringToHash("FlashlightTrigger");
-    public static class Intruder {
+    public static readonly int Chasing = Animator.StringToHash("ChasingTrigger");
         public static readonly int Walk = Animator.StringToHash("WalkTrigger");
+    public static class Intruder {
         public static readonly int ApproachWindow = Animator.StringToHash("IntruderApproachWindowTrigger");
         public static readonly int IdleWindow = Animator.StringToHash("WindowIdleTrigger");
         public static readonly int OpenWindow = Animator.StringToHash("OpenWindowTrigger");
@@ -19,8 +20,9 @@ public static class AnimationTriggers {
 
     public static int GetTriggerHash(EnumAnimationStates state) {
         int selecteState = state switch {
-            EnumAnimationStates.Walk => Intruder.Walk,
-            EnumAnimationStates.Flashed => Flashed,
+            EnumAnimationStates.Walk => AnimationTriggers.Walk,
+            EnumAnimationStates.Chasing => AnimationTriggers.Chasing,
+            EnumAnimationStates.Flashed => AnimationTriggers.Flashed,
             EnumAnimationStates.IntruderApproachWindow => Intruder.ApproachWindow,
             EnumAnimationStates.IntruderIdleWindow => Intruder.IdleWindow,
             EnumAnimationStates.IntruderOpenWindow => Intruder.OpenWindow,
@@ -36,6 +38,7 @@ public enum EnumAnimationStates {
     None,
     Idle,
     Walk,
+    Chasing,
     Attack,
     Death,
     Flashed,

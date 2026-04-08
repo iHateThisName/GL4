@@ -220,7 +220,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::IntruderFlashedState
   blocksTransitions: 0
-  <animationState>k__BackingField: 5
+  <AnimationState>k__BackingField: 6
   nextState: {fileID: 0}
   exitOnComplete: 1
   waitForAffordanceAnimation: 0
@@ -455,7 +455,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::IntruderIdleState
   blocksTransitions: 0
-  <animationState>k__BackingField: 7
+  <AnimationState>k__BackingField: 8
   nextState: {fileID: 6234756195703914020}
   exitOnComplete: 1
   waitForAffordanceAnimation: 0
@@ -505,7 +505,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimatedState
   blocksTransitions: 0
-  <animationState>k__BackingField: 2
+  <AnimationState>k__BackingField: 2
   nextState: {fileID: 0}
   exitOnComplete: 1
   waitForAffordanceAnimation: 0
@@ -697,11 +697,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::IntruderIntruding
   blocksTransitions: 0
-  <animationState>k__BackingField: 8
+  <AnimationState>k__BackingField: 9
   nextState: {fileID: 6893837462578570359}
   exitOnComplete: 1
   waitForAffordanceAnimation: 0
   monsterNavigation: {fileID: 132277432202858881}
+  postAnimationMoveDistance: 0.5
 --- !u!1 &6357655911396399998
 GameObject:
   m_ObjectHideFlags: 0
@@ -832,7 +833,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BaseNavAIMonster
   <DebugInformation>k__BackingField: 
-  agent: {fileID: 6856695336247606016}
+  <Agent>k__BackingField: {fileID: 6856695336247606016}
   monsterController: {fileID: 832584143380676345}
   player: {fileID: 0}
   patrolPoints: []
@@ -889,7 +890,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::IntruderApproachWindowState
   blocksTransitions: 0
-  <animationState>k__BackingField: 6
+  <AnimationState>k__BackingField: 7
   nextState: {fileID: 6075446766147847021}
   exitOnComplete: 1
   waitForAffordanceAnimation: 0

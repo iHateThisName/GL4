@@ -10,7 +10,5 @@ public class IntruderIntrudingState : AnimatedState {
     }
     public override void OnAnimationComplete() {
         base.OnAnimationComplete();
-
-        monsterNavigation.EnableNavigation();
     }
 }
