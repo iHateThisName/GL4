@@ -3,10 +3,41 @@ using UnityEngine;
 
 namespace MonsterSystem
 {
+    /// <summary>
+    /// Represents a world-space spawn location defined by position and rotation.
+    /// </summary>
+    [System.Serializable]
+    public struct SpawnPoint
+    {
+        public Vector3 position; // World-space position of the spawn point
+        public Vector3 rotation; // Euler angles defining the spawn orientation
+    }
+    
+    /// <summary>
+    /// Defines per-night multipliers for patience, aggression, and speed,
+    /// allowing the monster's difficulty to scale across successive nights.
+    /// </summary>
+    [System.Serializable]
+    public struct NightOverride
+    {
+        public int nightNumber; // The night index this override applies to
+
+        [Tooltip("1.0 = normal, 0.5 = half patience (harder)")]
+        public float patienceMultiplier; // Scales how long the monster waits before acting; lower values increase difficulty
+
+        [Tooltip("1.0 = normal, 2.0 = double aggression")]
+        public float aggressionMultiplier; // Scales monster aggression; higher values increase difficulty
+
+        [Tooltip("1.0 = normal speed")]
+        public float speedMultiplier; // Scales monster movement speed; higher values make the monster faster
+    }
+    
     public class MonsterController : MonoBehaviour
     {
         [Header("Config")]
-        [SerializeField] private MonsterConfig config;
+        public NightOverride[] nightOverrides; // Per-night difficulty multipliers for scaling monster behaviour
+        [SerializeField] private SO_NavMeshMoveConfig spawnPoints;
+        [SerializeField] private SO_TransformRef playerRef;
 
         [Header("References")] 
         [SerializeField] protected Animator animator;
@@ -144,13 +175,6 @@ namespace MonsterSystem
             }
         }
 
-        // --- Setters ---
-        /// Swap the active config at runtime (for Mimic or night changes).
-        public void SetConfig(MonsterConfig newConfig)
-        {
-            this.config = newConfig;
-        }
-
         // --- Getters ---
         public T GetSensor<T>() where T : MonsterSensor
         {
@@ -169,8 +193,6 @@ namespace MonsterSystem
             return null;
         }
         
-        public T GetConfig<T>() where T : MonsterConfig => config as T;
-        
         public T GetMonsterState<T>() where T : MonsterState
         {
             for (int i = 0; i < states.Length; i++)
@@ -183,11 +205,11 @@ namespace MonsterSystem
         
         public MonsterState CurrentState => this.currentState;
         
-        public MonsterConfig Config => this.config;
-        
         public Animator Animator => this.animator;
         
         public AudioSource Audio => this.audioSource;
+        
+        public SO_NavMeshMoveConfig SpawnPoints => this.spawnPoints;
         
         public int CurrentNight => GameManager.Instance != null ? GameManager.Instance.GetCurrentNight() : 1;
         
@@ -195,5 +217,35 @@ namespace MonsterSystem
         /// Returns true if the current state is blocking external transitions (e.g., from sensors).
         /// </summary>
         public bool IsBlockingTransitions => this.currentState != null && this.currentState.BlocksTransitions;
+        
+        public Transform PlayerTarget => this.playerRef != null ? this.playerRef.Value : null;
+        
+        /// <summary>
+        /// Searches the night overrides array for a matching night number and returns it.
+        /// If no override is defined for the given night, returns a neutral override with all multipliers set to 1.
+        /// </summary>
+        /// <param name="night">The night number to look up.</param>
+        /// <returns>The <see cref="NightOverride"/> for the specified night, or a default neutral override.</returns>
+        public NightOverride GetOverrideForNight(int night)
+        {
+            // Search configured overrides for a matching night number
+            if (this.nightOverrides != null)
+            {
+                for (int i = 0; i < this.nightOverrides.Length; i++)
+                {
+                    if (this.nightOverrides[i].nightNumber == night)
+                        return this.nightOverrides[i];
+                }
+            }
+
+            // No override found; return neutral multipliers (no scaling)
+            return new NightOverride
+            {
+                nightNumber = night,
+                patienceMultiplier = 1f,
+                aggressionMultiplier = 1f,
+                speedMultiplier = 1f
+            };
+        }
     }
 }

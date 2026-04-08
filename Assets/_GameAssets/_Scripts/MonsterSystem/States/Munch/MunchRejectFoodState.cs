@@ -40,11 +40,8 @@ namespace MonsterSystem
         public override void OnStateEnter()
         {
             base.OnStateEnter();
-
-            // Play the reject sound effect if a MunchConfig is available
-            var config = this.controller.GetConfig<MunchConfig>();
-            if (config != null)
-                MonsterAudio.PlayOneShot(this.controller.Audio, config.rejectSound);
+            
+            TriggerAffordances<AudioAffordance>();
 
             // Release the food from any XR grab and throw it away from the monster
             if (this.foodRb != null)

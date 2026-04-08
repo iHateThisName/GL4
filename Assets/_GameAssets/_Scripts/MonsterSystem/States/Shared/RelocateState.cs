@@ -31,17 +31,17 @@ namespace MonsterSystem
             if (this.useConfig)
             {
                 // Retrieve the spawn points from the monster's shared config
-                var config = this.controller.Config;
-                if (config != null && config.spawnPoints != null && config.spawnPoints.Length > 0)
+                var spawnPoints = this.controller.SpawnPoints;
+                if (spawnPoints != null && spawnPoints.points != null && spawnPoints.points.Length > 0)
                 {
                     int index;
 
                     // If only one spawn point exists, use it directly
-                    if (config.spawnPoints.Length == 1) index = 0;
+                    if (spawnPoints.points.Length == 1) index = 0;
                     else
                     {
                         // Pick a random index that differs from the last used index
-                        do { index = Random.Range(0, config.spawnPoints.Length); }
+                        do { index = Random.Range(0, spawnPoints.points.Length); }
                         while (index == this.lastIndex);
                     }
 
@@ -49,7 +49,7 @@ namespace MonsterSystem
                     this.lastIndex = index;
 
                     // Teleport the monster to the selected spawn point's position and rotation
-                    var point = config.spawnPoints[index];
+                    var point = spawnPoints.points[index];
                     this.controller.transform.SetPositionAndRotation(point.position, Quaternion.Euler(point.rotation));
                 }
             }

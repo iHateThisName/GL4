@@ -1,5 +1,5 @@
 using UnityEngine;
-using TMPro; // Required for TextMeshPro
+using TMPro;
 
 namespace MonsterSystem
 {
@@ -16,17 +16,19 @@ namespace MonsterSystem
         [SerializeField] private MonsterState aggressiveState; // The actual chase state
         [SerializeField] private MonsterState attackState;
 
+        [Header("=== Config ===")] 
+        [SerializeField] private float timeToAggressive = 20f;
+        [SerializeField] private float timeToHiding = 20f;
+
         [Header("=== Debug UI ===")]
         [SerializeField] private TMP_Text debugText;
 
         private float neglectTimer = 0f;
-        private DollConfig config;
         private MonsterState lastTriggeredState;
 
         public override void Initialize(MonsterController owningMonster)
         {
             base.Initialize(owningMonster);
-            config = owningMonster.GetConfig<DollConfig>();
             lastTriggeredState = patientState;
         }
 
@@ -40,13 +42,13 @@ namespace MonsterSystem
                 neglectTimer += this.TickDelta;
 
                 // 1. Check for Aggressive first (Timer has reached the absolute maximum)
-                if (neglectTimer >= (config.timeToHiding + config.timeToAggressive))
+                if (neglectTimer >= (this.timeToHiding + this.timeToAggressive))
                 {
                     // Trigger the Setup/Jump Scare state instead of the direct chase!
                     HandleStateTransition(aggressiveSetupState);
                 }
                 // 2. Check for Relocate (Timer hit the first threshold, AND she is still in bed)
-                else if (neglectTimer >= config.timeToHiding && controller.CurrentState == patientState)
+                else if (neglectTimer >= this.timeToHiding && controller.CurrentState == patientState)
                 {
                     HandleStateTransition(relocateState);
                 }
@@ -96,13 +98,13 @@ namespace MonsterSystem
 
             if (controller.CurrentState == patientState)
             {
-                float timeLeft = config.timeToHiding - neglectTimer;
+                float timeLeft = this.timeToHiding - neglectTimer;
                 timerText = $"\nHiding In: {Mathf.Max(0, timeLeft):F1}s";
                 debugText.color = Color.green;
             }
             else if (controller.CurrentState == relocateState || controller.CurrentState == hidingState)
             {
-                float timeLeft = (config.timeToHiding + config.timeToAggressive) - neglectTimer;
+                float timeLeft = (this.timeToHiding + this.timeToAggressive) - neglectTimer;
                 timerText = $"\nAttacking In: {Mathf.Max(0, timeLeft):F1}s";
 
                 // Use an orange color for the hiding phase to show rising tension

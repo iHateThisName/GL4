@@ -220,7 +220,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::IntruderFlashedState
   blocksTransitions: 0
-  <AnimationState>k__BackingField: 6
+  AnimationState: 0
   nextState: {fileID: 0}
   exitOnComplete: 1
   waitForAffordanceAnimation: 0
@@ -455,7 +455,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::IntruderIdleState
   blocksTransitions: 0
-  <AnimationState>k__BackingField: 8
+  AnimationState: 0
   nextState: {fileID: 6234756195703914020}
   exitOnComplete: 1
   waitForAffordanceAnimation: 0
@@ -505,7 +505,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimatedState
   blocksTransitions: 0
-  <AnimationState>k__BackingField: 2
+  AnimationState: 0
   nextState: {fileID: 0}
   exitOnComplete: 1
   waitForAffordanceAnimation: 0
@@ -697,7 +697,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::IntruderIntruding
   blocksTransitions: 0
-  <AnimationState>k__BackingField: 9
+  AnimationState: 0
   nextState: {fileID: 1535485417224722708}
   exitOnComplete: 1
   waitForAffordanceAnimation: 0
@@ -746,7 +746,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a0f28e82ba282747a3ad3dd8aea0f9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.MonsterController
-  config: {fileID: 11400000, guid: 2a7b4617fe6a2294ba46a36255cfd512, type: 2}
+  nightOverrides: []
+  spawnPoints: {fileID: 11400000, guid: 483723aedf8bf6e4faff13374251e4f6, type: 2}
+  playerRef: {fileID: 11400000, guid: 8aa04a6520205384e9477b4745bd7d4b, type: 2}
   animator: {fileID: 6482822105953925923}
   audioSource: {fileID: 3600620484907467236}
   sensorRoot: {fileID: 8218312588842223076}
@@ -833,7 +835,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChasingPlayerState
   blocksTransitions: 0
-  <AnimationState>k__BackingField: 3
+  AnimationState: 0
   nextState: {fileID: 0}
   exitOnComplete: 1
   waitForAffordanceAnimation: 0
@@ -941,7 +943,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::IntruderApproachWindowState
   blocksTransitions: 0
-  <AnimationState>k__BackingField: 7
+  AnimationState: 0
   nextState: {fileID: 6075446766147847021}
   exitOnComplete: 1
   waitForAffordanceAnimation: 0

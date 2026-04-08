@@ -4,7 +4,7 @@ using UnityEngine;
 namespace MonsterSystem
 {
     [CreateAssetMenu(menuName = "Monsters/Doll Config")]
-    public class DollConfig : MonsterConfig
+    public class DollConfig : ScriptableObject
     {
         [Header("Attention & Distance")]
         public float attentionRadius = 3.0f;

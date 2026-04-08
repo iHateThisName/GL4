@@ -3,69 +3,83 @@ using UnityEngine;
 namespace MonsterSystem
 {
     /// <summary>
-    /// StateMachineBehaviour that notifies the monster state machine when an animation completes.
-    /// Attach this to animation states in the Animator to trigger state transitions.
+    /// StateMachineBehaviour that fires an indexed animation event on the current
+    /// MonsterState (if it is an AnimatedState) when the animation reaches a configured
+    /// normalized time. Multiple of these can be attached to the same Animator state —
+    /// each one's index is auto-derived from its position in the SMB list (top = 0).
     ///
-    /// If the current MonsterState is an AnimatedState, it will call OnAnimationComplete() which
-    /// allows the state to perform cleanup before transitioning to its configured next state.
-    ///
-    /// If a fallback state is configured and the current state is NOT an AnimatedState,
-    /// it will transition directly to the fallback state.
+    /// The default end-of-animation transition is index 0: place a single SMB with
+    /// fireAt = 1 and fireOnEarlyExit = true and AnimatedState.OnAnimationComplete will
+    /// run on either natural completion or early exit. Add more SMBs above/below for
+    /// mid-animation events that route to higher indices.
     /// </summary>
     public class AnimationStateChange : StateMachineBehaviour
     {
-        [Tooltip("Optional fallback state if current state is not an AnimatedState")]
-        [SerializeField] private MonsterState fallbackState;
+        [Tooltip("Normalized time (0-1) at which this event fires. 1 = end of clip.")]
+        [Range(0f, 1f)]
+        [SerializeField] private float fireAt = 1f;
+
+        [Tooltip("If true, also fire on OnStateExit when the event hasn't fired yet. " +
+                 "Leave on for the end-of-animation transition so early exits still notify.")]
+        [SerializeField] private bool fireOnEarlyExit = true;
+
+        /// <summary>Editor-only access to the configured normalized fire time (used by the preview).</summary>
+        public float FireAt => this.fireAt;
 
         private MonsterController owningController;
-        private bool hasCompleted;
+        private int autoIndex;
+        private bool hasFired;
 
         public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
             base.OnStateEnter(animator, stateInfo, layerIndex);
-            this.hasCompleted = false;
-            //this.owningController = animator.GetComponentInParent<MonsterController>();
+            this.hasFired = false;
             this.owningController = animator.transform.root.GetComponentInChildren<MonsterController>();
+
+            // Derive our index from our position among AnimationStateChange SMBs on this state.
+            var siblings = animator.GetBehaviours(stateInfo.fullPathHash, layerIndex);
+            this.autoIndex = 0;
+            int matched = 0;
+            for (int i = 0; i < siblings.Length; i++)
+            {
+                if (siblings[i] is AnimationStateChange other)
+                {
+                    if (other == this) { this.autoIndex = matched; break; }
+                    matched++;
+                }
+            }
         }
 
         public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
             base.OnStateUpdate(animator, stateInfo, layerIndex);
 
-            // Check if animation has finished playing (non-looping animations)
-            if (this.hasCompleted) return;
+            if (this.hasFired) return;
             if (stateInfo.loop) return;
-            if (stateInfo.normalizedTime < 1f) return;
+            if (stateInfo.normalizedTime < this.fireAt) return;
 
-            this.hasCompleted = true;
-            NotifyCompletion();
+            this.hasFired = true;
+            FireEvent();
         }
 
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
             base.OnStateExit(animator, stateInfo, layerIndex);
 
-            // Also notify on exit in case animation transitions early
-            if (!this.hasCompleted)
+            if (!this.hasFired && this.fireOnEarlyExit)
             {
-                this.hasCompleted = true;
-                NotifyCompletion();
+                this.hasFired = true;
+                FireEvent();
             }
         }
 
-        private void NotifyCompletion()
+        private void FireEvent()
         {
             if (this.owningController == null) return;
 
-            // If current state is an AnimatedState, let it handle the transition
             if (this.owningController.CurrentState is AnimatedState animatedState)
             {
-                animatedState.OnAnimationComplete();
-            }
-            // Otherwise use the fallback state if configured
-            else if (this.fallbackState != null)
-            {
-                this.owningController.TransitionTo(this.fallbackState);
+                animatedState.InvokeAnimationEvent(this.autoIndex);
             }
         }
     }

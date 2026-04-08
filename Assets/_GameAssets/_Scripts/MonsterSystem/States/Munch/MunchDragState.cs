@@ -13,7 +13,7 @@ namespace MonsterSystem
         {
             base.OnStateEnter();
 
-            Transform player = this.controller.Config.PlayerTarget;
+            Transform player = this.controller.PlayerTarget;
             if (player != null)
             {
                 this.controller.transform.position = player.position - player.forward * this.behindDistance;

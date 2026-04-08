@@ -4,8 +4,9 @@ using UnityEngine.XR.Interaction.Toolkit.Interactables;
 namespace MonsterSystem
 {
     /// <summary>
-    /// Plays an accept/eat animation, then on completion: consumes food, adds satiety, transitions.
-    /// AnimationStateChange on the animation node calls OnAnimationComplete when the animation finishes.
+    /// Plays an accept/eat animation. Two AnimationStateChange SMBs sit on the animation node:
+    ///   - Index 0 (fireAt = 1, fireOnEarlyExit = true) → OnAnimationComplete → state transition.
+    ///   - Index 1 (fireAt ≈ bite frame, fireOnEarlyExit = false) → HandleEatMoment → consume food.
     /// </summary>
     public class MunchAcceptFoodState : AnimatedState, IStateWithContext<Rigidbody>
     {
@@ -24,6 +25,12 @@ namespace MonsterSystem
             this.satietySensor = owningController.GetSensor<SatietySensor>();
         }
 
+        protected override void RegisterAnimationEvents()
+        {
+            base.RegisterAnimationEvents();        // index 0: OnAnimationComplete (transition)
+            this.animationEvents.Add(HandleEatMoment); // index 1: mid-animation eat moment
+        }
+
         /// <summary>
         /// Receives the food Rigidbody context passed during state transition.
         /// </summary>
@@ -31,33 +38,24 @@ namespace MonsterSystem
         {
             this.foodRb = context;
             this.foodObject = context != null ? context.gameObject : null;
-            Destroy(this.foodObject);
         }
 
         /// <summary>
-        /// Called when the accept/eat animation finishes. Releases the food from any grab,
-        /// adds satiety, plays the eat sound, and destroys the food object.
+        /// Mid-animation: release the food from any XR grab, add satiety, play the eat SFX,
+        /// and destroy the food object.
         /// </summary>
-        public override void OnAnimationComplete()
+        private void HandleEatMoment()
         {
-            // Force-release the food from any XR grab interaction before consuming it
             if (this.foodRb != null)
             {
                 var grab = this.foodRb.GetComponent<XRGrabInteractable>();
                 ForceRelease(grab);
             }
-            Debug.Log("MunchAcceptFoodState: Animation complete");
 
-            // Increase the monster's satiety by the configured gain amount
             this.satietySensor.AddSatiety(this.satietyGain);
+            TriggerAffordances<AudioAffordance>();
 
-            // Play the eat sound effect if a MunchConfig and AudioSource are available
-           TriggerAffordances<AudioAffordance>();
-           
-            // Destroy the food game object now that it has been consumed
             if (this.foodObject != null) Destroy(this.foodObject);
-            
-            base.OnAnimationComplete();
         }
 
         /// <summary>

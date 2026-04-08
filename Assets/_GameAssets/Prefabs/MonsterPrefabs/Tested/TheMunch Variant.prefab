@@ -148,7 +148,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.MunchFeedableState
   blocksTransitions: 0
-  <animationState>k__BackingField: 0
+  AnimationState: 0
   nextState: {fileID: 1124015477162281980}
   exitOnComplete: 0
   waitForAffordanceAnimation: 0
@@ -234,7 +234,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.MunchFeedableState
   blocksTransitions: 0
-  <animationState>k__BackingField: 0
+  AnimationState: 0
   nextState: {fileID: 1124015477162281980}
   exitOnComplete: 0
   waitForAffordanceAnimation: 0
@@ -353,7 +353,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.MunchAcceptFoodState
   blocksTransitions: 1
-  <animationState>k__BackingField: 0
+  AnimationState: 0
   nextState: {fileID: 3198911293393157017}
   exitOnComplete: 1
   waitForAffordanceAnimation: 1
@@ -435,10 +435,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.RadioSensor
   stateToTransitionTo: {fileID: 0}
   radioRef: {fileID: 11400000, guid: b7444bc83e7e01742ad9851020aa5b6f, type: 2}
-  frenzyState: {fileID: 710727004609936139}
   normalState: {fileID: 5946285856578261012}
-  safeAggressionModifier: 0.5
-  dangerAggressionModifier: 1.5
 --- !u!1 &5389320278334512957
 GameObject:
   m_ObjectHideFlags: 0
@@ -487,6 +484,7 @@ MonoBehaviour:
   nextState: {fileID: 5946285856578261012}
   transforms: {fileID: 0}
   useConfig: 1
+  killMomentum: 0
 --- !u!1 &5563555725848977607
 GameObject:
   m_ObjectHideFlags: 0
@@ -534,7 +532,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.MunchRejectFoodState
   blocksTransitions: 1
-  <animationState>k__BackingField: 0
+  AnimationState: 0
   nextState: {fileID: 5946285856578261012}
   exitOnComplete: 1
   waitForAffordanceAnimation: 0
@@ -743,7 +741,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a0f28e82ba282747a3ad3dd8aea0f9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.MonsterController
-  config: {fileID: 11400000, guid: ff306d00d63e5704e88d2e7c1f8e5e7d, type: 2}
+  nightOverrides: []
+  spawnPoints: {fileID: 11400000, guid: 76cdd536e2aa8bb45b0b4c19a2af3932, type: 2}
+  playerRef: {fileID: 11400000, guid: 8aa04a6520205384e9477b4745bd7d4b, type: 2}
   animator: {fileID: 2984454646786910488}
   audioSource: {fileID: 8610362843901164458}
   sensorRoot: {fileID: 2343827092994151497}

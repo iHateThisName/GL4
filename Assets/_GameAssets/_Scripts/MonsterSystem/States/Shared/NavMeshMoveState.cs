@@ -57,7 +57,7 @@ namespace MonsterSystem
 
             // Default to player if no context target was provided
             if (this.target == null)
-                this.target = this.controller.Config.PlayerTarget;
+                this.target = this.controller.PlayerTarget;
             
             // Resolve and set initial destination
             SetDestinationFromStrategy();
@@ -73,7 +73,7 @@ namespace MonsterSystem
             if (this.agent == null) return;
 
             // Apply night scaling
-            var nightOverride = this.controller.Config.GetOverrideForNight(this.controller.CurrentNight);
+            var nightOverride = this.controller.GetOverrideForNight(this.controller.CurrentNight);
             this.agent.speed = this.baseSpeed * nightOverride.speedMultiplier;
 
             // Only re-resolve destination for FollowTarget (tracks a moving target).
