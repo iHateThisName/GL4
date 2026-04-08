@@ -3,15 +3,27 @@ using UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets;
 
 public class SettingsScript : MonoBehaviour
 {
+    public bool snapEnabled = false;
+
+    public static SettingsScript instance;
+
+    private void Awake()
+    {
+        if(instance = null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
+        DontDestroyOnLoad(this);
+    }
+
     [SerializeField]
     private GameObject enableSnapCube;
     [SerializeField]
     private GameObject disableSnapCube;
-
-    [SerializeField]
-    private GameObject enableTunnelingCube;
-    [SerializeField]
-    private GameObject disableTunnelingCube;
 
     [SerializeField]
     private ControllerInputActionManager controllerRefrence;
@@ -19,6 +31,7 @@ public class SettingsScript : MonoBehaviour
     public void EnableSnapTurn()
     {
         controllerRefrence.smoothTurnEnabled = false;
+        snapEnabled = true;
         enableSnapCube.SetActive(false);
         disableSnapCube.SetActive(true);
     }
@@ -26,19 +39,8 @@ public class SettingsScript : MonoBehaviour
     public void DisableSnapTurn()
     {
         controllerRefrence.smoothTurnEnabled = true;
+        snapEnabled = false;
         disableSnapCube.SetActive(false);
         enableSnapCube.SetActive(true);
-    }
-
-    public void EnableTunneling()
-    {
-        enableTunnelingCube.SetActive(false);
-        disableTunnelingCube.SetActive(true);
-    }
-
-    public void DisableTunneling()
-    {
-        disableTunnelingCube.SetActive(false);
-        enableTunnelingCube.SetActive(true);
     }
 }
