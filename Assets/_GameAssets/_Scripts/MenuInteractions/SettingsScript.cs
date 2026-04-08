@@ -1,24 +1,10 @@
+using Assets.Scripts.Singleton;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets;
 
-public class SettingsScript : MonoBehaviour
+public class SettingsScript : PersistenSingleton<SettingsScript>
 {
     public bool snapEnabled = false;
-
-    public static SettingsScript instance;
-
-    private void Awake()
-    {
-        if(instance = null)
-        {
-            instance = this;
-        }
-        else
-        {
-            Destroy(this.gameObject);
-        }
-        DontDestroyOnLoad(this);
-    }
 
     [SerializeField]
     private GameObject enableSnapCube;
