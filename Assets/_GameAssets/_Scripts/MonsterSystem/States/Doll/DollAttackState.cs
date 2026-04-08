@@ -32,6 +32,7 @@ namespace MonsterSystem
 
         public override void OnStateEnter()
         {
+            TriggerAffordances<AudioAffordance>();
             this.playerTransform = this.playerRef?.Value;
             Debug.Log("THEDOLLHASYOU.");
 

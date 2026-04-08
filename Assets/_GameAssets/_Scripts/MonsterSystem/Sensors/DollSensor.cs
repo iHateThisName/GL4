@@ -7,11 +7,14 @@ namespace MonsterSystem
     {
         [Header("=== State Transitions ===")]
         [SerializeField] private MonsterState patientState;
-        [SerializeField] private MonsterState relocateState;
+        [SerializeField] private MonsterState relocateState; // Teleports to hiding spot
         [SerializeField] private MonsterState hidingState;
-        [SerializeField] private MonsterState aggressiveState;
-        [SerializeField] private MonsterState attackState;
 
+        [Tooltip("The setup state that handles the jump scare and NavMesh teleport before chasing.")]
+        [SerializeField] private MonsterState aggressiveSetupState; // NEW: The bridge state!
+
+        [SerializeField] private MonsterState aggressiveState; // The actual chase state
+        [SerializeField] private MonsterState attackState;
 
         [Header("=== Debug UI ===")]
         [SerializeField] private TMP_Text debugText;
@@ -39,7 +42,8 @@ namespace MonsterSystem
                 // 1. Check for Aggressive first (Timer has reached the absolute maximum)
                 if (neglectTimer >= (config.timeToHiding + config.timeToAggressive))
                 {
-                    HandleStateTransition(aggressiveState);
+                    // Trigger the Setup/Jump Scare state instead of the direct chase!
+                    HandleStateTransition(aggressiveSetupState);
                 }
                 // 2. Check for Relocate (Timer hit the first threshold, AND she is still in bed)
                 else if (neglectTimer >= config.timeToHiding && controller.CurrentState == patientState)
@@ -104,10 +108,14 @@ namespace MonsterSystem
                 // Use an orange color for the hiding phase to show rising tension
                 debugText.color = new Color(1f, 0.5f, 0f);
             }
+            else if (controller.CurrentState == aggressiveSetupState)
+            {
+                timerText = "\nTELEPORTING...";
+                debugText.color = Color.yellow;
+            }
             else if (controller.CurrentState == aggressiveState)
             {
-                //float dist = Vector3.Distance(transform.position, playerTransform.position);
-                //timerText = $"\nChasing! Dist: {dist:F1}m";
+                timerText = "\nCHASING!";
                 debugText.color = Color.red;
             }
             else if (controller.CurrentState == attackState)

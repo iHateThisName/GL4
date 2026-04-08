@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8081459201721522103}
   - component: {fileID: 5516808396667445640}
+  - component: {fileID: 1986643422806203072}
   m_Layer: 11
   m_Name: Aggressive
   m_TagString: Untagged
@@ -54,14 +55,27 @@ MonoBehaviour:
   moveConfig: {fileID: 0}
   targetThreshold: 0.5
   arrivalState: {fileID: 7030186266804405750}
-  rb: {fileID: 5593219599415299837}
-  grabInteractable: {fileID: 8213382684775212631}
   references:
     version: 2
     RefIds:
     - rid: 4379705079667097749
       type: {class: FollowTargetStrategy, ns: MonsterSystem, asm: Assembly-CSharp}
       data: 
+--- !u!114 &1986643422806203072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 290783745828222862}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4702ac2b4be5cd141a1c9c87889c9abc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AudioAffordance
+  clip: {fileID: 8300000, guid: 4432f4904f836134eb009fe2cc526804, type: 3}
+  loop: 0
+  volume: 1
 --- !u!1 &1445374913760098245
 GameObject:
   m_ObjectHideFlags: 0
@@ -291,7 +305,7 @@ MonoBehaviour:
   nextState: {fileID: 5312942356579680233}
   transforms: {fileID: 11400000, guid: c857e95225c5e6545989108d853e456d, type: 2}
   useConfig: 0
-  rb: {fileID: 5593219599415299837}
+  killMomentum: 0
 --- !u!1 &2215229423872836330
 GameObject:
   m_ObjectHideFlags: 0
@@ -485,7 +499,8 @@ MonoBehaviour:
   patientState: {fileID: 1708653840634344366}
   relocateState: {fileID: 3121626272259508856}
   hidingState: {fileID: 5312942356579680233}
-  aggressiveState: {fileID: 0}
+  aggressiveSetupState: {fileID: 5591425356144439866}
+  aggressiveState: {fileID: 5516808396667445640}
   attackState: {fileID: 7030186266804405750}
   debugText: {fileID: 6955278685709727320}
 --- !u!1 &6880271366201179141
@@ -501,8 +516,8 @@ GameObject:
   - component: {fileID: 1758525936543291132}
   - component: {fileID: 4777723644521654610}
   - component: {fileID: 5593219599415299837}
-  - component: {fileID: 3846727566840615432}
   - component: {fileID: 8213382684775212631}
+  - component: {fileID: 6429690679860625264}
   m_Layer: 11
   m_Name: TheDoll
   m_TagString: Untagged
@@ -544,7 +559,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.MonsterController
   config: {fileID: 11400000, guid: 26c77c681f4a38d4fa35515f8c2f2753, type: 2}
   animator: {fileID: 0}
-  audioSource: {fileID: 0}
+  audioSource: {fileID: 6190555411854072295}
   sensorRoot: {fileID: 0}
   initialState: {fileID: 1708653840634344366}
 --- !u!195 &1758525936543291132
@@ -616,29 +631,6 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 2
---- !u!136 &3846727566840615432
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6880271366201179141}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.16
-  m_Height: 0.61
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &8213382684775212631
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -768,6 +760,27 @@ MonoBehaviour:
   m_LimitAngularVelocity: 0
   m_MaxLinearVelocityDelta: 10
   m_MaxAngularVelocityDelta: 20
+--- !u!65 &6429690679860625264
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6880271366201179141}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.3, y: 0.6, z: 0.3}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &7019795739777843337
 GameObject:
   m_ObjectHideFlags: 0
@@ -866,7 +879,79 @@ MonoBehaviour:
   rb: {fileID: 5593219599415299837}
   nextState: {fileID: 1708653840634344366}
   bedTriggerArea: {fileID: 0}
-  dollCollider: {fileID: 3846727566840615432}
+  dollCollider: {fileID: 6429690679860625264}
+--- !u!1 &7097070077748286372
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6266036368524755492}
+  - component: {fileID: 5591425356144439866}
+  - component: {fileID: 8703164156901155560}
+  m_Layer: 11
+  m_Name: DollRelocateToNav
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6266036368524755492
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7097070077748286372}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.12571001, y: 0.036329985, z: 0.081830025}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5455919166180357250}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5591425356144439866
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7097070077748286372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d16df36084fd44647b7c05d6ebb6de92, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.DollRelocateState
+  blocksTransitions: 0
+  grabInteractable: {fileID: 8213382684775212631}
+  agent: {fileID: 1758525936543291132}
+  killMomentum: 1
+  findNearest: 1
+  spawnPoints:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  jumpScareDelay: 3
+  dollRenderer: {fileID: 137496443782842635}
+  nextState: {fileID: 5516808396667445640}
+--- !u!114 &8703164156901155560
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7097070077748286372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4702ac2b4be5cd141a1c9c87889c9abc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AudioAffordance
+  clip: {fileID: 8300000, guid: 6f1da88fa6f6e9f4da40c3a16193c354, type: 3}
+  loop: 0
+  volume: 1
 --- !u!1 &7602594095530111932
 GameObject:
   m_ObjectHideFlags: 0
@@ -1212,6 +1297,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6800366008465673256}
   - component: {fileID: 7030186266804405750}
+  - component: {fileID: 5991709083730829472}
   m_Layer: 11
   m_Name: Attack
   m_TagString: Untagged
@@ -1251,6 +1337,21 @@ MonoBehaviour:
   verticalOffset: 0
   timeBeforeDeathCall: 1
   playerRef: {fileID: 11400000, guid: 8aa04a6520205384e9477b4745bd7d4b, type: 2}
+--- !u!114 &5991709083730829472
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8629785099626507080}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4702ac2b4be5cd141a1c9c87889c9abc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AudioAffordance
+  clip: {fileID: 8300000, guid: 4332158888823654b9716151fc259b0b, type: 3}
+  loop: 0
+  volume: 1
 --- !u!1 &8704326584610175551
 GameObject:
   m_ObjectHideFlags: 0
@@ -1333,5 +1434,6 @@ Transform:
   - {fileID: 6800366008465673256}
   - {fileID: 8301271990507033648}
   - {fileID: 3662960028798784414}
+  - {fileID: 6266036368524755492}
   m_Father: {fileID: 3584912247854795726}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
