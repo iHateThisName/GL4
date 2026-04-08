@@ -459,7 +459,7 @@ MonoBehaviour:
   nextState: {fileID: 6234756195703914020}
   exitOnComplete: 1
   waitForAffordanceAnimation: 0
-  countdownDuration: 20
+  countdownDuration: 10
 --- !u!1 &3458592905161940793
 GameObject:
   m_ObjectHideFlags: 0
@@ -698,11 +698,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::IntruderIntruding
   blocksTransitions: 0
   <AnimationState>k__BackingField: 9
-  nextState: {fileID: 6893837462578570359}
+  nextState: {fileID: 1535485417224722708}
   exitOnComplete: 1
   waitForAffordanceAnimation: 0
   monsterNavigation: {fileID: 132277432202858881}
-  postAnimationMoveDistance: 0.5
 --- !u!1 &6357655911396399998
 GameObject:
   m_ObjectHideFlags: 0
@@ -785,9 +784,61 @@ Transform:
   - {fileID: 601370847512379146}
   - {fileID: 4386152443229987308}
   - {fileID: 3722531115129396874}
+  - {fileID: 8332113718619956109}
   - {fileID: 3645684759878816719}
   m_Father: {fileID: 8138255586992897016}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7700209252231293374
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8332113718619956109}
+  - component: {fileID: 1535485417224722708}
+  m_Layer: 0
+  m_Name: ChasingPlayer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8332113718619956109
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700209252231293374}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6303827022862854503}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1535485417224722708
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700209252231293374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7c5bc151f390a145b4e896ee318f733, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChasingPlayerState
+  blocksTransitions: 0
+  <AnimationState>k__BackingField: 3
+  nextState: {fileID: 0}
+  exitOnComplete: 1
+  waitForAffordanceAnimation: 0
+  monsterNavigation: {fileID: 132277432202858881}
+  moveDistance: 1.55347
 --- !u!1 &8082112033680108158
 GameObject:
   m_ObjectHideFlags: 0
@@ -842,7 +893,7 @@ MonoBehaviour:
   flashedAudio: {fileID: 8300000, guid: fc323e27414aadf4095893d373c60c49, type: 3}
   monsterType: 3
   tickRate: 0.5
-  attackRange: 3
+  attackRange: 0.5
   fleeDuration: 35
   fleeDistance: 20
 --- !u!1 &8898604334208933820

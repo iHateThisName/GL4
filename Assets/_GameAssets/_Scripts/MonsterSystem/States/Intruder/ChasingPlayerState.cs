@@ -3,32 +3,38 @@ using UnityEngine;
 
 public class ChasingPlayerState : AnimatedState {
     [SerializeField] private BaseNavAIMonster monsterNavigation;
-    [SerializeField] private float moveDistance = 3.5f;
+    [SerializeField] private float moveDistance = 1.55347f;
 
     private void Awake() {
         if (this.monsterNavigation == null) this.monsterNavigation = this.transform.root.GetComponentInChildren<BaseNavAIMonster>();
     }
 
     public override void OnStateEnter() {
-        //this.monsterNavigation.Agent.updatePosition = true;
-        // Move the agent relative to its forward direction as it enters the chasing state
+        base.OnStateEnter();
         this.monsterNavigation.EnableNavigation();
 
-        // Might not need this anymore, if using the animation approache to fix the position problem, but leaving it here for now just in case.
-        this.monsterNavigation.Agent.Warp(this.monsterNavigation.transform.position + (this.monsterNavigation.transform.forward * this.moveDistance));
+        Animator animator = this.monsterNavigation.transform.root.GetComponentInChildren<Animator>();
 
+        bool prevRootMotion = animator.applyRootMotion;
+        animator.applyRootMotion = false;
 
-        // The position of the animator dose not get change, use an animation instad to fix the problem.
-        Animator animator = this.monsterNavigation.gameObject.transform.root.GetComponentInChildren<Animator>();
-        //animator.gameObject.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
-        animator.gameObject.transform.position = Vector3.zero;
+        this.monsterNavigation.Agent.Warp(
+            this.monsterNavigation.transform.position +
+            (this.monsterNavigation.transform.forward * this.moveDistance)
+        );
+
+        Physics.SyncTransforms();
+
         animator.transform.localPosition = Vector3.zero;
-        animator.gameObject.transform.localPosition = Vector3.zero;
-        animator.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
-        animator.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
+        animator.transform.localRotation = Quaternion.identity;
 
+        StartCoroutine(RestoreRootMotionNextFrame(animator, prevRootMotion));
 
-        base.OnStateEnter();
-        this.monsterNavigation.DisableNavigation(); // Stop moving to check what the position ended up.
+        //this.monsterNavigation.DisableNavigation();
+    }
+
+    private System.Collections.IEnumerator RestoreRootMotionNextFrame(Animator animator, bool prevRootMotion) {
+        yield return null; // wait one frame
+        animator.applyRootMotion = prevRootMotion;
     }
 }
