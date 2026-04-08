@@ -12,12 +12,19 @@ public class HidingState : MonsterState
     [SerializeField] private MonsterState nextState;
 
     [Header("=== Bed Reference ===")]
-    [SerializeField] private TriggerArea bedTriggerArea;
+    [SerializeField] private SO_TransformRef triggerReferanceObject;
 
     [Header("=== Doll Detection ===")]
     [Tooltip("Drag the GameObject containing the Doll's actual collider here.")]
     [SerializeField] private Collider dollCollider;
 
+    private TriggerArea bedTriggerArea;
+
+    public override void Initialize(MonsterController owningController)
+    {
+        base.Initialize(owningController);
+        this.bedTriggerArea = this.triggerReferanceObject.Value.GetComponent<TriggerArea>();
+    }
     public override void OnStateEnter()
     {
         base.OnStateEnter();

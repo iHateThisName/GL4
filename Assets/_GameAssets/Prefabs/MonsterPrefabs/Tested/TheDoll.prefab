@@ -502,6 +502,8 @@ MonoBehaviour:
   aggressiveSetupState: {fileID: 5591425356144439866}
   aggressiveState: {fileID: 5516808396667445640}
   attackState: {fileID: 7030186266804405750}
+  timeToAggressive: 60
+  timeToHiding: 60
   debugText: {fileID: 6955278685709727320}
 --- !u!1 &6880271366201179141
 GameObject:
@@ -557,10 +559,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a0f28e82ba282747a3ad3dd8aea0f9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.MonsterController
-  config: {fileID: 11400000, guid: 26c77c681f4a38d4fa35515f8c2f2753, type: 2}
+  nightOverrides: []
+  spawnPoints: {fileID: 11400000, guid: 5f5594a317da04c41810b8ab7cec5373, type: 2}
+  playerRef: {fileID: 11400000, guid: 8aa04a6520205384e9477b4745bd7d4b, type: 2}
   animator: {fileID: 0}
   audioSource: {fileID: 6190555411854072295}
-  sensorRoot: {fileID: 0}
+  sensorRoot: {fileID: 5624446739809958843}
   initialState: {fileID: 1708653840634344366}
 --- !u!195 &1758525936543291132
 NavMeshAgent:
@@ -878,7 +882,7 @@ MonoBehaviour:
   navMeshAgent: {fileID: 1758525936543291132}
   rb: {fileID: 5593219599415299837}
   nextState: {fileID: 1708653840634344366}
-  bedTriggerArea: {fileID: 0}
+  triggerReferanceObject: {fileID: 11400000, guid: 4a052078915a7594cadb3b3da302cc65, type: 2}
   dollCollider: {fileID: 6429690679860625264}
 --- !u!1 &7097070077748286372
 GameObject:
@@ -930,10 +934,7 @@ MonoBehaviour:
   agent: {fileID: 1758525936543291132}
   killMomentum: 1
   findNearest: 1
-  spawnPoints:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  spawnPoints: {fileID: 11400000, guid: b621c75494b970149b1acb6f9925e93e, type: 2}
   jumpScareDelay: 3
   dollRenderer: {fileID: 137496443782842635}
   nextState: {fileID: 5516808396667445640}

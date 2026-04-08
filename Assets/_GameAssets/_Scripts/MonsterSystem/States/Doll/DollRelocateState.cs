@@ -15,7 +15,8 @@ namespace MonsterSystem
         [Header("=== Relocation Config ===")]
         [Tooltip("If true, snaps to the nearest point. If false, picks a random non-repeating point.")]
         [SerializeField] private bool findNearest = true;
-        [SerializeField] private Transform[] spawnPoints;
+        //[SerializeField] private Transform[] spawnPoints;
+        [SerializeField] SO_NavMeshMoveConfig spawnPoints;
 
         [Header("=== Horror Elements ===")]
         [Tooltip("How long she waits in the dark before the chase begins.")]
@@ -61,14 +62,14 @@ namespace MonsterSystem
             SetVisibility(false);
 
             // 4. Determine Target Spot
-            Transform bestSpot = GetTargetSpawnPoint();
+            var bestSpot = GetTargetSpawnPoint();
 
             // 5. Teleport & Warp
-            if (bestSpot != null)
+            if (bestSpot.position != Vector3.zero)
             {
                 if (NavMesh.SamplePosition(bestSpot.position, out NavMeshHit hit, 5.0f, NavMesh.AllAreas))
                 {
-                    this.controller.transform.SetPositionAndRotation(hit.position, bestSpot.rotation);
+                    this.controller.transform.SetPositionAndRotation(hit.position, Quaternion.Euler(bestSpot.rotation));
 
                     if (agent != null)
                     {
@@ -78,8 +79,8 @@ namespace MonsterSystem
                 }
                 else
                 {
-                    Debug.LogError($"[DollRelocate] FAILED to find NavMesh near {bestSpot.name}! Forcing transform.");
-                    this.controller.transform.SetPositionAndRotation(bestSpot.position, bestSpot.rotation);
+                    Debug.LogError($"[DollRelocate] FAILED to find NavMesh near {bestSpot}! Forcing transform.");
+                    this.controller.transform.SetPositionAndRotation(bestSpot.position, Quaternion.Euler(bestSpot.rotation));
                     if (agent != null) agent.enabled = true;
                 }
             }
@@ -135,17 +136,17 @@ namespace MonsterSystem
             }
         }
 
-        private Transform GetTargetSpawnPoint()
+        private SpawnPoint GetTargetSpawnPoint()
         {
-            if (spawnPoints == null || spawnPoints.Length == 0) return null;
+            if (spawnPoints == null || spawnPoints.points.Length == 0) return new SpawnPoint();
 
             if (findNearest)
             {
-                Transform nearest = null;
+                var nearest = new SpawnPoint();
                 float minDistance = float.MaxValue;
                 Vector3 currentPos = this.controller.transform.position;
 
-                foreach (Transform point in spawnPoints)
+                foreach (var point in spawnPoints.points)
                 {
                     float distance = Vector3.Distance(currentPos, point.position);
                     if (distance < minDistance)
@@ -159,15 +160,15 @@ namespace MonsterSystem
             else
             {
                 int index;
-                if (spawnPoints.Length == 1) index = 0;
+                if (spawnPoints.points.Length == 1) index = 0;
                 else
                 {
-                    do { index = Random.Range(0, spawnPoints.Length); }
+                    do { index = Random.Range(0, spawnPoints.points.Length); }
                     while (index == this.lastIndex);
                 }
 
                 this.lastIndex = index;
-                return spawnPoints[index];
+                return spawnPoints.points[index];
             }
         }
     }
