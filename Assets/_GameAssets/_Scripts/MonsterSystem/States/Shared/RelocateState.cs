@@ -11,10 +11,13 @@ namespace MonsterSystem
         [SerializeField] private float transitionDelay = 2.0f;
 
         [Header("=== VR & Physics Components ===")]
+        [Tooltip("Forces the player to drop her before teleporting.")]
         [SerializeField] private XRGrabInteractable grabInteractable;
 
+        // Notice we completely deleted the mainCollider variable!
+
         [Header("=== Configuration ===")]
-        [SerializeField] private SO_NavMeshMoveConfig transforms;
+        [SerializeField] private SO_TransformCollection transforms;
         [SerializeField] private bool useConfig = true;
         [SerializeField] private bool killMomentum = true;
 
@@ -33,8 +36,11 @@ namespace MonsterSystem
             base.OnStateEnter();
             TriggerAffordances<AudioAffordance>();
 
+            // 1. FORCE DROP: Drop from hands so the VR interaction system lets go.
             if (this.grabInteractable != null) this.grabInteractable.enabled = false;
 
+            // 2. LOCK PHYSICS: Keep her frozen so she doesn't fall through the floor 
+            // or rubber-band while we wait for the 2-second timer.
             if (this.rb != null)
             {
                 this.rb.isKinematic = true;
@@ -46,10 +52,7 @@ namespace MonsterSystem
                 }
             }
 
-            // 3. Handle Relocation (Using STRICT Rigidbody Math)
-            Vector3 targetPos = this.controller.transform.position;
-            Quaternion targetRot = this.controller.transform.rotation;
-
+            // 3. Handle Relocation (Leaving her collider ON so the bed realizes she left!)
             if (this.useConfig)
             {
                 var spawnPoints = this.controller.SpawnPoints;
@@ -64,8 +67,8 @@ namespace MonsterSystem
                     }
 
                     this.lastIndex = index;
-                    targetPos = spawnPoints.points[index].position;
-                    targetRot = Quaternion.Euler(spawnPoints.points[index].rotation);
+                    var point = spawnPoints.points[index];
+                    this.controller.transform.SetPositionAndRotation(point.position, Quaternion.Euler(point.rotation));
                 }
             }
             else
@@ -73,19 +76,13 @@ namespace MonsterSystem
                 if (this.transforms != null && this.transforms.points.Length > 0)
                 {
                     int index = Random.Range(0, this.transforms.points.Length);
-                    targetPos = this.transforms.points[index].position;
-                    targetRot = Quaternion.Euler(this.transforms.points[index].rotation);
+                    Vector3 position = this.transforms.points[index].position;
+                    Vector3 rotation = this.transforms.points[index].rotation;
+                    this.controller.transform.SetPositionAndRotation(position, Quaternion.Euler(rotation));
                 }
             }
 
-            // THE PHYSICS FIX: Tell the Rigidbody exactly where it lives now.
-            if (this.rb != null)
-            {
-                this.rb.position = targetPos;
-                this.rb.rotation = targetRot;
-            }
-            this.controller.transform.SetPositionAndRotation(targetPos, targetRot);
-
+            // 4. Start the suspense timer
             delayRoutine = StartCoroutine(WaitAndTransitionRoutine());
         }
 
