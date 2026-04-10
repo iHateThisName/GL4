@@ -88,7 +88,7 @@ namespace MonsterSystem
 
         private void TriggerImmediateKill()
         {
-            DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Monster);
+            KillPlayer();
         }
 
         public override void OnStateExit()

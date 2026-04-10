@@ -27,7 +27,7 @@ namespace MonsterSystem
 
         protected override void OnTimerFinished()
         {
-            DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Monster);
+            KillPlayer();
         }
     }
 }

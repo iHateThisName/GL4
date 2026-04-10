@@ -16,9 +16,9 @@ namespace MonsterSystem
 
             // Play the one-shot kill sound effect
             TriggerAffordances<AudioAffordance>();
-            
-            // Notify the death system that the player was killed by a monster
-            DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Monster);
+
+            // Kill the player
+            KillPlayer();
         }
     }
 }

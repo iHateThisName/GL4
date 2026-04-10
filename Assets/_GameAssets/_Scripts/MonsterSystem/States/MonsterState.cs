@@ -9,6 +9,15 @@ namespace MonsterSystem
 
         private StateAffordance[] affordances;
         protected MonsterController controller;
+        
+        public virtual void Initialize(MonsterController owningController)
+        {
+            this.controller = owningController;
+            this.affordances = GetComponents<StateAffordance>();
+
+            for (int i = 0; i < this.affordances.Length; i++)
+                this.affordances[i].Initialize(owningController);
+        }
 
         /// Called when this state becomes active.
         public virtual void OnStateEnter() { }
@@ -78,14 +87,14 @@ namespace MonsterSystem
         {
             MonsterStateManager.RequestTransition(controller, targetState, context);
         }
-
-        public virtual void Initialize(MonsterController owningController)
+        
+        protected void KillPlayer()
         {
-            this.controller = owningController;
-            this.affordances = GetComponents<StateAffordance>();
+            string monsterName = this.controller.transform.parent.name;
+            monsterName = monsterName.Replace("(Clone)", "").Replace("Prefab", "");
 
-            for (int i = 0; i < this.affordances.Length; i++)
-                this.affordances[i].Initialize(owningController);
+            // Notify the death system that the player was killed by a monster
+            DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Monster, monsterName);
         }
         
         /// <summary>
