@@ -29,6 +29,9 @@ public class BaseNavAIMonster : MonoBehaviour {
     [SerializeField] private float fleeDuration = 35f; // How long the monster flees after being hit by flashlight
     [SerializeField] private float fleeDistance = 20f; // How far the monster tries to flee 
 
+    // Action events
+    public Action OnAttackPlayer;
+
     // Nav
     private Vector3 spawnPoint;
     private int currentPatrolIndex = 0;
@@ -143,7 +146,7 @@ public class BaseNavAIMonster : MonoBehaviour {
     /// based on the configured monster type.
     /// </summary>
     private Action MonsterLogicSelector() {
-        switch (monsterType) {
+        switch (this.monsterType) {
             case EnumMonsterType.Stalker:
                 return StalkerNavigationLogic;
             case EnumMonsterType.Intruder:
@@ -251,13 +254,18 @@ public class BaseNavAIMonster : MonoBehaviour {
         if (this.isPlayerKilled) return; // Prevent multiple attack triggers if the player is already killed.
         this.isPlayerKilled = true;
 
-        //Audio
-        SoundEffectManager.Instance.PlaySoundFXClip(this.killAudio, transform, 0.75f);
+        this.DebugInformation = $"{this.monsterType} is attacking the player!";
 
-        this.DebugInformation = "Monster is attacking the player!";
+        //Audio
+        //SoundEffectManager.Instance.PlaySoundFXClip(this.killAudio, transform, 0.75f); use a audio affordance instead.
+
+        // Event trigger
+        this.OnAttackPlayer?.Invoke();
+
         // Implement attack logic here. trigger animation, reduce player health, etc.
-        Debug.Log("Monster is attacking the player!");
-        DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Monster, completelyRestart: false);
+        //Debug.Log("Monster is attacking the player!");
+        //DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Monster, completelyRestart: false);
+
     }
 
     private void UpdateStalkingAudio(bool isStalking) {
