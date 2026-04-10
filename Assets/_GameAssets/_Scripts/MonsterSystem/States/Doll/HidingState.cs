@@ -23,7 +23,10 @@ public class HidingState : MonsterState
     public override void Initialize(MonsterController owningController)
     {
         base.Initialize(owningController);
-        this.bedTriggerArea = this.triggerReferanceObject.Value.GetComponent<TriggerArea>();
+        if (bedTriggerArea != null)
+        {
+            this.bedTriggerArea = this.triggerReferanceObject.Value.GetComponent<TriggerArea>();
+        }
     }
     public override void OnStateEnter()
     {
