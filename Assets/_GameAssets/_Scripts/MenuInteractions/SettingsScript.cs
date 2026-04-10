@@ -25,6 +25,8 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
 
     [SerializeField]
     private ControllerInputActionManager rightControllerRefrence;
+    [SerializeField]
+    private ControllerInputActionManager leftControllerRefrence;
 
     [SerializeField]
     private GameObject tunnelingVignette;
@@ -64,5 +66,21 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
         tunnelingEnabled = false;
         enableTunnelingCube.SetActive(false);
         disableTunnelingCube.SetActive(true);
+    }
+
+    public void EnableTeleport()
+    {
+        leftControllerRefrence.smoothMotionEnabled = false;
+        teleportEnabled = true;
+        enableTelportCube.SetActive(false);
+        disableTeleportCube.SetActive(true);
+    }
+
+    public void DisableTeleport()
+    {
+        leftControllerRefrence.smoothMotionEnabled = true;
+        teleportEnabled = false;
+        disableTeleportCube.SetActive(false);
+        enableTelportCube.SetActive(true);
     }
 }

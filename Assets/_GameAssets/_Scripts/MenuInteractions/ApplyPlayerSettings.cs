@@ -10,6 +10,9 @@ public class ApplyPlayerSettings : MonoBehaviour
     private ControllerInputActionManager rightControllerRefrence;
 
     [SerializeField]
+    private ControllerInputActionManager leftControllerRefrence;
+
+    [SerializeField]
     private GameObject tunnelingObject;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -25,6 +28,10 @@ public class ApplyPlayerSettings : MonoBehaviour
             if (settingsToApply.snapEnabled)
             {
                 rightControllerRefrence.smoothTurnEnabled = false;
+            }
+            if (settingsToApply.teleportEnabled)
+            {
+                leftControllerRefrence.smoothMotionEnabled = false;
             }
             if (settingsToApply.tunnelingEnabled)
             {
