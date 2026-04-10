@@ -8,32 +8,30 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
     public bool tunnelingEnabled = false;
     public bool teleportEnabled = false;
 
-    [SerializeField]
-    private GameObject enableSnapCube;
-    [SerializeField]
-    private GameObject disableSnapCube;
+    [SerializeField] private GameObject enableSnapCube;
+    [SerializeField] private GameObject disableSnapCube;
 
-    [SerializeField]
-    private GameObject enableTunnelingCube;
-    [SerializeField]
-    private GameObject disableTunnelingCube;
+    [SerializeField] private GameObject enableTunnelingCube;
+    [SerializeField] private GameObject disableTunnelingCube;
 
-    [SerializeField]
-    private GameObject enableTelportCube;
-    [SerializeField]
-    private GameObject disableTeleportCube;
+    [SerializeField] private GameObject enableTelportCube;
+    [SerializeField] private GameObject disableTeleportCube;
 
-    [SerializeField]
-    private ControllerInputActionManager rightControllerRefrence;
-    [SerializeField]
-    private ControllerInputActionManager leftControllerRefrence;
+    [SerializeField] private GameObject enableNightOneCube;
+    [SerializeField] private GameObject enableNightTwoCube;
 
-    [SerializeField]
-    private GameObject tunnelingVignette;
+    [SerializeField] private ControllerInputActionManager rightControllerRefrence;
+    [SerializeField] private ControllerInputActionManager leftControllerRefrence;
+
+    [SerializeField] private GameObject tunnelingVignette;
+
+    [SerializeField] private SO_NightSettings nightSettings;
 
     private void Start()
     {
         tunnelingVignette.SetActive(false);
+
+        nightSettings.SetDebugStartNight(1);
     }
 
     public void EnableSnapTurn()
@@ -82,5 +80,19 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
         teleportEnabled = false;
         disableTeleportCube.SetActive(false);
         enableTelportCube.SetActive(true);
+    }
+
+    public void EnableNightOne()
+    {
+        nightSettings.SetDebugStartNight(1);
+        enableNightOneCube.SetActive(false);
+        enableNightTwoCube.SetActive(true);
+    }
+
+    public void EnableNightTwo()
+    {
+        nightSettings.SetDebugStartNight(2);
+        enableNightTwoCube.SetActive(false);
+        enableNightOneCube.SetActive(true);
     }
 }
