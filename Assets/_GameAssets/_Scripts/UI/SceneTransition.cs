@@ -19,6 +19,7 @@ public static class SceneTransition
     private static ThreadPriority asyncLoadPriority = ThreadPriority.Low;
     
     public static event Action<float> OnProgress;
+    public static event Action<int> OnTransitionComplete;
 
     public static void LoadScene(string sceneName, SO_ScreenFadeRef fadeRef)
     {
@@ -163,7 +164,6 @@ public static class SceneTransition
 
         // Wait for new scene's Start() to run (timers, UI setup, etc.)
         await Awaitable.NextFrameAsync(ct);
-        await Awaitable.NextFrameAsync(ct);
 
         // New scene's ScreenFade registered in fadeRef during Awake.
         // Set it opaque with matching color BEFORE unloading loading screen.
@@ -186,9 +186,11 @@ public static class SceneTransition
         // All Start() methods have run. Scene is covered by opaque overlay.
         Debug.Log("[SceneTransition] Phase 5: Fade in");
         if (newFade != null) await newFade.FadeAsync(fadeInConfig, ct);
-
+        
         isTransitioning = false;
         Debug.Log("[SceneTransition] Complete");
+        OnTransitionComplete?.Invoke(targetScene.buildIndex);
+        Debug.Log($"[SceneTransition] Transition complete: {targetScene.buildIndex}");
     }
 
     private static void CacheLoadingScreenRefs(int loadingIndex, ref ScreenFade fade)

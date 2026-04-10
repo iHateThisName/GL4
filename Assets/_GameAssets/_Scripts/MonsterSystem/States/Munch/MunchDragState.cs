@@ -19,7 +19,7 @@ namespace MonsterSystem
                 this.controller.transform.position = player.position - player.forward * this.behindDistance;
                 this.controller.transform.LookAt(player);
             }
-
+            
             StopAffordances<AudioAffordance>();
             TriggerAffordances<AudioAffordance>();
             TriggerAffordances<AnimationAffordance>();

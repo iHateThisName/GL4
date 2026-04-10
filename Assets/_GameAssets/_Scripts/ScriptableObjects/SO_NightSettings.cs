@@ -17,7 +17,9 @@ public class SO_NightSettings : ScriptableObject
 
     public NightEventData[] GetEventsForNight(int night)
     {
-        return this.nightEvents[night - 1].GetEventData();
+        int nightIndex = night - 1;
+        if (nightIndex >= this.nightEvents.Length) return new NightEventData[0];
+        return this.nightEvents[nightIndex].GetEventData();
     }
 
     /// <summary>

@@ -35,6 +35,7 @@ public class GameManager : PersistenSingleton<GameManager> {
     private void OnEnable()
     {
         DeathSystem.OnPlayerDied += HandleNightEarlyEnd;
+        SceneTransition.OnTransitionComplete += OnSceneTransitionComplete;
     }
 
     /// <summary>
@@ -44,11 +45,25 @@ public class GameManager : PersistenSingleton<GameManager> {
     private void OnDisable()
     {
         DeathSystem.OnPlayerDied -= HandleNightEarlyEnd;
+        SceneTransition.OnTransitionComplete -= OnSceneTransitionComplete;
     }
-    
-    private void Start() {
 
+    private void Start() {
+        InitializeNight();
+    }
+
+    private void OnSceneTransitionComplete(int sceneIndex)
+    {
+        Debug.Log($"[GameManager] loaded into: {sceneIndex}");
+        if (sceneIndex == 0)
+            InitializeNight();
+    }
+
+    private void InitializeNight()
+    {
+        this.eventsFired = 0;
         this.eventsToFire = this.nightSettings.GetEventsForNight(this.night);
+        this.WindowsDictonary.Clear();
         InstantiateTimer();
     }
     
@@ -60,10 +75,7 @@ public class GameManager : PersistenSingleton<GameManager> {
 
     public void ContinueGame() {
         Debug.Log("Continuing Game...");
-        // Add logic to continue the game from the game over scene
-        
         SceneTransition.LoadScene(0, this.screenFadeRef);
-        InstantiateTimer();
     }
 
     private void InstantiateTimer()
@@ -122,19 +134,19 @@ public class GameManager : PersistenSingleton<GameManager> {
 
         if (TimerManager.Validate(this.nightTimerHandle))
         {
-            ref var t = ref TimerManager.GetRef(this.nightTimerHandle);
+            ref var timer = ref TimerManager.GetRef(this.nightTimerHandle);
             float delta = Mathf.Max(0.0001f, this.schedule[this.scheduleCursor].TimeSeconds - elapsed);
-            t.Interval = delta;
-            t.NextInterval = t.Elapsed + delta;
+            timer.Interval = delta;
+            timer.NextInterval = timer.Elapsed + delta;
         }
     }
 
     private void ParkTimerUntilNightEnd()
     {
         if (this.nightSettings == null || !TimerManager.Validate(this.nightTimerHandle)) return;
-        ref var t = ref TimerManager.GetRef(this.nightTimerHandle);
-        t.Interval = this.nightSettings.GetNightTimeInSeconds() + 10f;
-        t.NextInterval = t.Elapsed + t.Interval;
+        ref var timer = ref TimerManager.GetRef(this.nightTimerHandle);
+        timer.Interval = this.nightSettings.GetNightTimeInSeconds() + 10f;
+        timer.NextInterval = timer.Elapsed + timer.Interval;
     }
 
     private void HandleNightEnd()
