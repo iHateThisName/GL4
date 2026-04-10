@@ -305,6 +305,7 @@ MonoBehaviour:
   blocksTransitions: 1
   nextState: {fileID: 5312942356579680233}
   transitionDelay: 2
+  grabInteractable: {fileID: 8213382684775212631}
   transforms: {fileID: 11400000, guid: c857e95225c5e6545989108d853e456d, type: 2}
   useConfig: 0
   killMomentum: 1
@@ -472,8 +473,8 @@ MonoBehaviour:
   aggressiveSetupState: {fileID: 5591425356144439866}
   aggressiveState: {fileID: 5516808396667445640}
   attackState: {fileID: 7030186266804405750}
-  timeToAggressive: 60
-  timeToHiding: 60
+  timeToAggressive: 10
+  timeToHiding: 20
   debugText: {fileID: 6955278685709727320}
 --- !u!1 &6880271366201179141
 GameObject:
