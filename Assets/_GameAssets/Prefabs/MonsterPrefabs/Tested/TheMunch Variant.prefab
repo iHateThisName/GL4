@@ -149,7 +149,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.MunchFeedableState
   blocksTransitions: 0
-  animationState: 0
   nextState: {fileID: 1124015477162281980}
   exitOnComplete: 0
   waitForAffordanceAnimation: 0
@@ -186,7 +185,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AudioAffordance
   clip: {fileID: 8300000, guid: 44627079fb43bdd408145cafd3660382, type: 3}
-  loop: 0
+  loop: 1
   volume: 1
 --- !u!1 &2296687331529582161
 GameObject:
@@ -235,7 +234,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.MunchFeedableState
   blocksTransitions: 0
-  animationState: 0
   nextState: {fileID: 1124015477162281980}
   exitOnComplete: 0
   waitForAffordanceAnimation: 0
@@ -256,7 +254,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AudioAffordance
   clip: {fileID: 8300000, guid: 2fe0804fafdc86140b8104dc9ee18ee8, type: 3}
-  loop: 0
+  loop: 1
   volume: 1
 --- !u!114 &7890218810431224938
 MonoBehaviour:
@@ -354,7 +352,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.MunchAcceptFoodState
   blocksTransitions: 1
-  animationState: 0
   nextState: {fileID: 3198911293393157017}
   exitOnComplete: 1
   waitForAffordanceAnimation: 1
@@ -532,6 +529,7 @@ MonoBehaviour:
   blocksTransitions: 1
   nextState: {fileID: 5731669701624702447}
   transitionDelay: 2
+  grabInteractable: {fileID: 0}
   transforms: {fileID: 11400000, guid: 76cdd536e2aa8bb45b0b4c19a2af3932, type: 2}
   useConfig: 1
   killMomentum: 0
@@ -582,7 +580,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.MunchRejectFoodState
   blocksTransitions: 1
-  animationState: 0
   nextState: {fileID: 5946285856578261012}
   exitOnComplete: 1
   waitForAffordanceAnimation: 0
