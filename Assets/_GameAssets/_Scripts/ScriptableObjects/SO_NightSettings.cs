@@ -14,7 +14,8 @@ public class SO_NightSettings : ScriptableObject
 
     public int GetFinalNight() => this.nightEvents.Length;
 
-    public int DebugStartNight => Mathf.Max(1, this.debugStartNight);
+    public int DebugStartNight => this.debugStartNight;
+    public void SetDebugStartNight(int night) => this.debugStartNight = Mathf.Max(1, night);
 
     public float GetNightTimeInSeconds() => this.nightTimeMinutes * 60;
 
