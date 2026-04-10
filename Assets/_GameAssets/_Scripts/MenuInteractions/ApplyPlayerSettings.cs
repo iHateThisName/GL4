@@ -7,7 +7,7 @@ public class ApplyPlayerSettings : MonoBehaviour
     private SettingsScript settingsToApply;
 
     [SerializeField]
-    private ControllerInputActionManager controllerRefrence;
+    private ControllerInputActionManager rightControllerRefrence;
 
     [SerializeField]
     private GameObject tunnelingObject;
@@ -24,7 +24,7 @@ public class ApplyPlayerSettings : MonoBehaviour
         {
             if (settingsToApply.snapEnabled)
             {
-                controllerRefrence.smoothTurnEnabled = false;
+                rightControllerRefrence.smoothTurnEnabled = false;
             }
             if (settingsToApply.tunnelingEnabled)
             {

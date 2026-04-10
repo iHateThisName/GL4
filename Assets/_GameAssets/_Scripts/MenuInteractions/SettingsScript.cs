@@ -6,6 +6,7 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
 {
     public bool snapEnabled = false;
     public bool tunnelingEnabled = false;
+    public bool teleportEnabled = false;
 
     [SerializeField]
     private GameObject enableSnapCube;
@@ -18,7 +19,12 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
     private GameObject disableTunnelingCube;
 
     [SerializeField]
-    private ControllerInputActionManager controllerRefrence;
+    private GameObject enableTelportCube;
+    [SerializeField]
+    private GameObject disableTeleportCube;
+
+    [SerializeField]
+    private ControllerInputActionManager rightControllerRefrence;
 
     [SerializeField]
     private GameObject tunnelingVignette;
@@ -30,7 +36,7 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
 
     public void EnableSnapTurn()
     {
-        controllerRefrence.smoothTurnEnabled = false;
+        rightControllerRefrence.smoothTurnEnabled = false;
         snapEnabled = true;
         enableSnapCube.SetActive(false);
         disableSnapCube.SetActive(true);
@@ -38,7 +44,7 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
 
     public void DisableSnapTurn()
     {
-        controllerRefrence.smoothTurnEnabled = true;
+        rightControllerRefrence.smoothTurnEnabled = true;
         snapEnabled = false;
         disableSnapCube.SetActive(false);
         enableSnapCube.SetActive(true);
