@@ -28,10 +28,11 @@ namespace MonsterSystem
             if (this.feedZone != null)
                 this.feedZone.OnTriggerEntered += HandleFeedTrigger;
             
+            // Stop whichever feedable state was active before (may be on a different GameObject)
+            this.controller.PreviousState?.StopAffordances<AudioAffordance>();
+
             TriggerAffordances<AnimationAffordance>();
-            
-            // Start playing the looping sound for this feedable state
-           TriggerAffordances<AudioAffordance>();
+            TriggerAffordances<AudioAffordance>();
         }
 
         /// <summary>
@@ -42,9 +43,6 @@ namespace MonsterSystem
             // Unsubscribe from the feed zone trigger to prevent stale callbacks
             if (this.feedZone != null)
                 this.feedZone.OnTriggerEntered -= HandleFeedTrigger;
-
-            // Stop any looping audio that was started on enter
-            StopAffordances<AudioAffordance>();
         }
 
         /// <summary>

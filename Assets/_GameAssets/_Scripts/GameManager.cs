@@ -9,18 +9,27 @@ public class GameManager : PersistenSingleton<GameManager> {
 
     [Header("=== Night Configuration ===")]
     [SerializeField] private SO_NightSettings nightSettings;
+    [SerializeField] private bool debugSpawn;
 
     // Event invoked whenever a scheduled night event becomes available.
     // Other systems can subscribe to react (e.g., spawning enemies, triggering sounds).
     public static event System.Action<NightEvent> OnEventAvailable = delegate { };
-    
+
     private TimerHandle nightTimerHandle;
     private int night = 1;
     private int eventsFired = 0;
 
-    private NightEventData[] eventsToFire;
-    private ScheduledNightEvent[] schedule;
+    private ScheduledNightEvent[] eventsSchedule;
     private int scheduleCursor;
+
+    [System.Serializable]
+    private struct NightEventDebugView
+    {
+        public NightEventType EventType;
+        public float TimeSeconds;
+        public int OriginalIndex;
+    }
+    [SerializeField] private NightEventDebugView[] scheduleDebugView;
 
     public Dictionary<WindowController, VRLever.EnumLeverState> WindowsDictonary { get; private set; } = new Dictionary<WindowController, VRLever.EnumLeverState>();
 
@@ -49,6 +58,7 @@ public class GameManager : PersistenSingleton<GameManager> {
     }
 
     private void Start() {
+        this.night = this.nightSettings.DebugStartNight;
         InitializeNight();
     }
 
@@ -62,11 +72,15 @@ public class GameManager : PersistenSingleton<GameManager> {
     private void InitializeNight()
     {
         this.eventsFired = 0;
-        this.eventsToFire = this.nightSettings.GetEventsForNight(this.night);
+        this.eventsSchedule = this.debugSpawn
+            ? BuildDebugSpawnSchedule()
+            : this.nightSettings.BuildScheduleForNight(this.night);
+        RefreshScheduleDebugView();
+        
         this.WindowsDictonary.Clear();
         InstantiateTimer();
     }
-    
+
     protected override void OnDestroy()
     {
         base.OnDestroy();
@@ -82,15 +96,13 @@ public class GameManager : PersistenSingleton<GameManager> {
     {
         Debug.Log("Instantiating Timer...");
         TimerManager.Release(ref this.nightTimerHandle);
-
-        // Resolve every event's per-event timing into an absolute schedule for this night.
-        this.schedule = this.nightSettings.BuildScheduleForNight(this.night);
+        
         this.scheduleCursor = 0;
         this.eventsFired = 0;
 
         float nightSeconds = this.nightSettings.GetNightTimeInSeconds();
-        float firstInterval = this.schedule.Length > 0
-            ? Mathf.Max(0.0001f, this.schedule[0].TimeSeconds)
+        float firstInterval = this.eventsSchedule.Length > 0
+            ? Mathf.Max(0.0001f, this.eventsSchedule[0].TimeSeconds)
             : nightSeconds + 10f;
 
         this.nightTimerHandle = TimerManager.Create(firstInterval, nightSeconds);
@@ -104,7 +116,7 @@ public class GameManager : PersistenSingleton<GameManager> {
     /// </summary>
     private void HandleNightTick()
     {
-        if (this.schedule == null || this.scheduleCursor >= this.schedule.Length)
+        if (this.eventsSchedule == null || this.scheduleCursor >= this.eventsSchedule.Length)
         {
             ParkTimerUntilNightEnd();
             return;
@@ -113,10 +125,10 @@ public class GameManager : PersistenSingleton<GameManager> {
         float elapsed = TimerManager.Validate(this.nightTimerHandle) ? TimerManager.GetRef(this.nightTimerHandle).Elapsed : 0f;
 
         // Fire all events whose scheduled time has been reached this tick.
-        while (this.scheduleCursor < this.schedule.Length
-               && this.schedule[this.scheduleCursor].TimeSeconds <= elapsed + 0.0001f)
+        while (this.scheduleCursor < this.eventsSchedule.Length
+               && this.eventsSchedule[this.scheduleCursor].TimeSeconds <= elapsed + 0.0001f)
         {
-            var scheduled = this.schedule[this.scheduleCursor];
+            var scheduled = this.eventsSchedule[this.scheduleCursor];
             this.scheduleCursor++;
             this.eventsFired++;
 
@@ -126,7 +138,7 @@ public class GameManager : PersistenSingleton<GameManager> {
 
         // Schedule the next tick to land exactly on the next pending event, or park
         // the timer past the end of the night if everything has fired.
-        if (this.scheduleCursor >= this.schedule.Length)
+        if (this.scheduleCursor >= this.eventsSchedule.Length)
         {
             ParkTimerUntilNightEnd();
             return;
@@ -135,10 +147,40 @@ public class GameManager : PersistenSingleton<GameManager> {
         if (TimerManager.Validate(this.nightTimerHandle))
         {
             ref var timer = ref TimerManager.GetRef(this.nightTimerHandle);
-            float delta = Mathf.Max(0.0001f, this.schedule[this.scheduleCursor].TimeSeconds - elapsed);
+            float delta = Mathf.Max(0.0001f, this.eventsSchedule[this.scheduleCursor].TimeSeconds - elapsed);
             timer.Interval = delta;
             timer.NextInterval = timer.Elapsed + delta;
         }
+    }
+
+    private void RefreshScheduleDebugView()
+    {
+        this.scheduleDebugView = new NightEventDebugView[this.eventsSchedule.Length];
+        for (int i = 0; i < this.eventsSchedule.Length; i++)
+            this.scheduleDebugView[i] = new NightEventDebugView
+            {
+                EventType = this.eventsSchedule[i].Data.GetEventType(),
+                TimeSeconds = this.eventsSchedule[i].TimeSeconds,
+                OriginalIndex = this.eventsSchedule[i].OriginalIndex
+            };
+    }
+
+    /// <summary>
+    /// Collects every SpawnMonster event from all nights and schedules them all at 0.1 s,
+    /// ignoring their configured timing and which night they belong to.
+    /// </summary>
+    private ScheduledNightEvent[] BuildDebugSpawnSchedule()
+    {
+        var result = new List<ScheduledNightEvent>();
+        int idx = 0;
+
+        this.nightSettings.ForEachEventAcrossAllNights(evt =>
+        {
+            if (evt.GetEventType() == NightEventType.SpawnMonster)
+                result.Add(new ScheduledNightEvent(evt, 0.1f, idx++));
+        });
+
+        return result.ToArray();
     }
 
     private void ParkTimerUntilNightEnd()
@@ -169,7 +211,7 @@ public class GameManager : PersistenSingleton<GameManager> {
         if (DeathSystem.deathEvent.Reason != DeathSystem.DeathEvent.DeathReason.Survived)
             this.night = 1;
     }
-    
+
     public int GetCurrentNight() => this.night;
 
     public void UpdateWindowState(WindowController windowController, VRLever.EnumLeverState newSate) {
@@ -178,7 +220,7 @@ public class GameManager : PersistenSingleton<GameManager> {
         this.WindowsDictonary.Add(windowController, newSate);
     }
 
-    public List<WindowController> GetClosedWindows() { 
+    public List<WindowController> GetClosedWindows() {
         List<WindowController> closedWindows = new List<WindowController>();
         foreach (KeyValuePair<WindowController, VRLever.EnumLeverState> kvp in this.WindowsDictonary) {
             if (kvp.Value == VRLever.EnumLeverState.Closed) {
