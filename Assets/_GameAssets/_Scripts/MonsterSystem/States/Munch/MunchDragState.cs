@@ -20,7 +20,7 @@ namespace MonsterSystem
                 this.controller.transform.LookAt(player);
             }
             
-            StopAffordances<AudioAffordance>();
+            this.controller.PreviousState?.StopAffordances<AudioAffordance>();
             TriggerAffordances<AudioAffordance>();
             TriggerAffordances<AnimationAffordance>();
         }

@@ -53,6 +53,10 @@ namespace MonsterSystem
             }
 
             this.satietySensor.AddSatiety(this.satietyGain);
+
+            // Stop the feedable state's audio at the exact bite frame
+            this.controller.PreviousState?.StopAffordances<AudioAffordance>();
+
             TriggerAffordances<AudioAffordance>();
 
             if (this.foodObject != null) Destroy(this.foodObject);

@@ -204,6 +204,8 @@ namespace MonsterSystem
         }
         
         public MonsterState CurrentState => this.currentState;
+
+        public MonsterState PreviousState => this.previousState;
         
         public Animator Animator => this.animator;
         

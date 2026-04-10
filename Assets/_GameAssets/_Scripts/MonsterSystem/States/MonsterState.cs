@@ -63,7 +63,7 @@ namespace MonsterSystem
         /// Stops only affordances of the specified type.
         /// Example: StopAffordances&lt;AudioAffordance&gt;()
         /// </summary>
-        protected void StopAffordances<T>() where T : StateAffordance
+        public void StopAffordances<T>() where T : StateAffordance
         {
             if (this.affordances == null) return;
             for (int i = 0; i < this.affordances.Length; i++)
