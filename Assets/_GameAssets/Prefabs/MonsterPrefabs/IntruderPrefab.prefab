@@ -633,6 +633,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.KillPlayerState
   blocksTransitions: 0
+  nextState: {fileID: 0}
+  exitOnComplete: 1
+  waitForAffordanceAnimation: 0
+  useAnimation: 1
 --- !u!114 &2524414419004177613
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -806,6 +810,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 9104967759683619838}
+  - {fileID: 8962061027532928975}
   m_Father: {fileID: 8138255586992897016}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5945511514549207258
@@ -858,6 +863,7 @@ MonoBehaviour:
   exitOnComplete: 1
   waitForAffordanceAnimation: 0
   monsterNavigation: {fileID: 132277432202858881}
+  lightSensor: {fileID: 9136556400897258496}
 --- !u!114 &7361673053913975448
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1087,6 +1093,61 @@ MonoBehaviour:
   attackRange: 0.5
   fleeDuration: 35
   fleeDistance: 20
+--- !u!1 &8224333973377401306
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8962061027532928975}
+  - component: {fileID: 9136556400897258496}
+  m_Layer: 0
+  m_Name: Light
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8962061027532928975
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8224333973377401306}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8218312588842223076}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &9136556400897258496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8224333973377401306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ef2f20af44decf4c989e85b90f62cc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.LightSensor
+  stateToTransitionTo: {fileID: 0}
+  occlusionMask:
+    serializedVersion: 2
+    m_Bits: 0
+  flashlightSettings: {fileID: 0}
+  fleeState: {fileID: 8581784409638178010}
+  exposureBuildSpeed: 3
+  exposureDecaySpeed: 2
+  stunThreshold: 1
+  sensorCooldownDuration: 5
+  flashedSound: {fileID: 0}
 --- !u!1 &8898604334208933820
 GameObject:
   m_ObjectHideFlags: 0

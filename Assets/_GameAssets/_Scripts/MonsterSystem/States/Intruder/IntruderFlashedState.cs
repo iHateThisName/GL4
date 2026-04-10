@@ -13,7 +13,12 @@ public class IntruderFlashedState : AnimatedState {
     }
 
     public override void OnAnimationComplete() {
-        //base.OnAnimationComplete();
+        base.OnAnimationComplete();
+        StartCoroutine(DelayedDestroy());
+    }
+
+     private System.Collections.IEnumerator DelayedDestroy() {
+        yield return new WaitForSeconds(0.5f);
         GameObject go = transform.root.gameObject;
         Destroy(go);
     }
