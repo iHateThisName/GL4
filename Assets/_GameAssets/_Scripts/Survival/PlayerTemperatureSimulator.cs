@@ -136,7 +136,7 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
         OnBodyTemperatureStateChanged?.Invoke(new BodyTemperatureStateChange { PreviousState = previousState, CurrentState = currentState });
 
         if (currentState == EnumBodyTemperatureState.Hypothermia || currentState == EnumBodyTemperatureState.Hyperthermia)
-            DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Temperature, false);
+            DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Temperature, "", false);
     }
 
     /// <summary>

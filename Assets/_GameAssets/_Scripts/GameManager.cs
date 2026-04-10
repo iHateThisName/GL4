@@ -98,9 +98,7 @@ public class GameManager : PersistenSingleton<GameManager> {
             return;
         }
 
-        float elapsed = TimerManager.Validate(this.nightTimerHandle)
-            ? TimerManager.GetRef(this.nightTimerHandle).Elapsed
-            : 0f;
+        float elapsed = TimerManager.Validate(this.nightTimerHandle) ? TimerManager.GetRef(this.nightTimerHandle).Elapsed : 0f;
 
         // Fire all events whose scheduled time has been reached this tick.
         while (this.scheduleCursor < this.schedule.Length
@@ -146,10 +144,10 @@ public class GameManager : PersistenSingleton<GameManager> {
 
         TimerManager.Release(ref this.nightTimerHandle);
 
-        DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Survived, false);
+        DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Survived, "", false);
 
-        if (this.night == this.nightSettings.GetFinalNight())
-            DeathSystem.WinGame();
+        // final night finish game
+        if (this.night == this.nightSettings.GetFinalNight()) {}
     }
 
     private void HandleNightEarlyEnd()

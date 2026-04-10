@@ -149,7 +149,7 @@ public class HungerSystem : MonoBehaviour
         {
             Debug.Log("You are starving!");
             TimerManager.Release(ref this.hungerHandle);
-            DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Hunger, false);
+            DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Hunger, "", false);
         }
     }
 

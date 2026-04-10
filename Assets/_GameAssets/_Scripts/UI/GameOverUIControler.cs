@@ -78,9 +78,9 @@ public class GameOverUIControler : MonoBehaviour
         string message = deathEvent.Reason switch
         {
             DeathSystem.DeathEvent.DeathReason.Temperature => "You froze to death!",
-            DeathSystem.DeathEvent.DeathReason.Hunger => "You starved!",
-            DeathSystem.DeathEvent.DeathReason.Monster => "The monster got you!",
-            DeathSystem.DeathEvent.DeathReason.Survived => "Night Survived!",
+            DeathSystem.DeathEvent.DeathReason.Hunger => "You starved to death!",
+            DeathSystem.DeathEvent.DeathReason.Monster => "The " + deathEvent.AdditionalInfo + " got you!",
+            DeathSystem.DeathEvent.DeathReason.Survived => "Congratulations You survived the Night!",
             _ => "Game Over"
         };
 
