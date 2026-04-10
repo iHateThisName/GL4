@@ -9,14 +9,28 @@ public class ApplyPlayerSettings : MonoBehaviour
     [SerializeField]
     private ControllerInputActionManager controllerRefrence;
 
+    [SerializeField]
+    private GameObject tunnelingObject;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         settingsToApply = FindFirstObjectByType<SettingsScript>();
 
+        tunnelingObject = GameObject.Find("TunnelingVignette");
+        tunnelingObject.SetActive(false);
+
         if(settingsToApply.snapEnabled)
         {
             controllerRefrence.smoothTurnEnabled = false;
+        }
+        if (settingsToApply.tunnelingEnabled)
+        {
+            tunnelingObject.SetActive(true);
+        }
+        else
+        {
+            tunnelingObject.SetActive(false);
         }
     }
 }

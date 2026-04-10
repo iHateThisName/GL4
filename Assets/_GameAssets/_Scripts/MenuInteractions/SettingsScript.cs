@@ -5,6 +5,7 @@ using UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets;
 public class SettingsScript : PersistenSingleton<SettingsScript>
 {
     public bool snapEnabled = false;
+    public bool tunnelingEnabled = false;
 
     [SerializeField]
     private GameObject enableSnapCube;
@@ -12,7 +13,20 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
     private GameObject disableSnapCube;
 
     [SerializeField]
+    private GameObject enableTunnelingCube;
+    [SerializeField]
+    private GameObject disableTunnelingCube;
+
+    [SerializeField]
     private ControllerInputActionManager controllerRefrence;
+
+    [SerializeField]
+    private GameObject tunnelingVignette;
+
+    private void Start()
+    {
+        tunnelingVignette.SetActive(false);
+    }
 
     public void EnableSnapTurn()
     {
@@ -28,5 +42,21 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
         snapEnabled = false;
         disableSnapCube.SetActive(false);
         enableSnapCube.SetActive(true);
+    }
+
+    public void EnableTunneling()
+    {
+        tunnelingVignette.SetActive(true);
+        tunnelingEnabled = true;
+        enableTunnelingCube.SetActive(false);
+        disableTunnelingCube.SetActive(true);
+    }
+
+    public void DisableTunneling()
+    {
+        tunnelingVignette.SetActive(false);
+        tunnelingEnabled = false;
+        enableTunnelingCube.SetActive(false);
+        disableTunnelingCube.SetActive(true);
     }
 }
