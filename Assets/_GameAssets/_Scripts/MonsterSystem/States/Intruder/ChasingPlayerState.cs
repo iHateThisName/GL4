@@ -15,26 +15,16 @@ public class ChasingPlayerState : AnimatedState {
 
         Animator animator = this.monsterNavigation.transform.root.GetComponentInChildren<Animator>();
 
-        bool prevRootMotion = animator.applyRootMotion;
         animator.applyRootMotion = false;
-
-        this.monsterNavigation.Agent.Warp(
-            this.monsterNavigation.transform.position +
-            (this.monsterNavigation.transform.forward * this.moveDistance)
-        );
-
-        Physics.SyncTransforms();
-
-        animator.transform.localPosition = Vector3.zero;
-        animator.transform.localRotation = Quaternion.identity;
-
-        StartCoroutine(RestoreRootMotionNextFrame(animator, prevRootMotion));
-
-        //this.monsterNavigation.DisableNavigation();
+        StartCoroutine(NextFrame(animator));
     }
 
-    private System.Collections.IEnumerator RestoreRootMotionNextFrame(Animator animator, bool prevRootMotion) {
+    private System.Collections.IEnumerator NextFrame(Animator animator) {
         yield return null; // wait one frame
-        animator.applyRootMotion = prevRootMotion;
+        this.monsterNavigation.Agent.Warp(this.monsterNavigation.transform.position + (this.monsterNavigation.transform.forward * this.moveDistance));
+        Physics.SyncTransforms();
+        yield return null;
+        animator.applyRootMotion = true;
+
     }
 }

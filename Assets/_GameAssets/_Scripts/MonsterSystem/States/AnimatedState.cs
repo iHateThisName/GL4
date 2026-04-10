@@ -16,8 +16,6 @@ namespace MonsterSystem {
     /// </summary>
     public class AnimatedState : MonsterState
     {
-        [System.Obsolete("Pending removal?")]
-        [SerializeField] private EnumAnimationStates animationState;
 
         [Header("Transition")]
         [SerializeField] protected MonsterState nextState;
@@ -99,23 +97,16 @@ namespace MonsterSystem {
             // Always trigger affordances first (they may set animator parameters)
             TriggerAffordances<AnimationAffordance>();
 
-            // If using enum-based animation state, set the trigger
-            if (this.animationState != EnumAnimationStates.None)
-            {
-                this.IsAnimating = true;
-                MonsterAnimation.SetTrigger(this.controller.Animator, AnimationTriggers.GetTriggerHash(this.animationState));
-            }
-            // If using affordance-based animation, wait for callback
-            else if (this.waitForAffordanceAnimation)
+            if (this.waitForAffordanceAnimation)
             {
                 this.IsAnimating = true;
             }
-            // No animation configured — complete immediately
-            else
-            {
-                this.IsAnimating = false;
-                this.OnAnimationComplete();
-            }
+            //// No animation configured — complete immediately
+            //else
+            //{
+            //    this.IsAnimating = false;
+            //    this.OnAnimationComplete();
+            //}
         }
 
         /// <summary>

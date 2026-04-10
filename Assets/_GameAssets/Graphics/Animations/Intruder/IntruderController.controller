@@ -123,6 +123,55 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
+--- !u!1102 &-6727519204917992532
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: EnteredWindowIdle
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions:
+  - {fileID: -4408239757317179183}
+  m_StateMachineBehaviours: []
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: 7400000, guid: ab6a4f43d768711409b32bc2bc26bed5, type: 2}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
+--- !u!1101 &-4408239757317179183
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_Conditions: []
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: 9151510638508182730}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 3
+  m_TransitionDuration: 0.43401116
+  m_TransitionOffset: 0
+  m_ExitTime: 0.00000007170612
+  m_HasExitTime: 1
+  m_HasFixedDuration: 1
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 1
 --- !u!1107 &-3960435235925293149
 AnimatorStateMachine:
   serializedVersion: 6
@@ -152,17 +201,20 @@ AnimatorStateMachine:
     m_Position: {x: 600, y: 440, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 977924409935552222}
-    m_Position: {x: 380, y: 490, z: 0}
+    m_Position: {x: 380, y: 650, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 9151510638508182730}
-    m_Position: {x: 380, y: 540, z: 0}
+    m_Position: {x: 600, y: 490, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: -6727519204917992532}
+    m_Position: {x: 380, y: 490, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions:
   - {fileID: -7617927670064042299}
   - {fileID: 1507281953093761828}
   - {fileID: 264679671436858883}
   - {fileID: -9063315387277525356}
-  - {fileID: 2521369238582806815}
+  - {fileID: -418865680363820926}
   m_EntryTransitions: []
   m_StateMachineTransitions: {}
   m_StateMachineBehaviours: []
@@ -289,7 +341,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc10de302f6d4b9993e36250149d82fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationStateChange
-  fallbackState: {fileID: 0}
+  fireAt: 1
+  fireOnEarlyExit: 1
 --- !u!114 &-950891610290327865
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -302,7 +355,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc10de302f6d4b9993e36250149d82fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationStateChange
-  fallbackState: {fileID: 0}
+  fireAt: 1
+  fireOnEarlyExit: 1
 --- !u!114 &-858404836114973185
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -315,7 +369,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc10de302f6d4b9993e36250149d82fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationStateChange
-  fallbackState: {fileID: 0}
+  fireAt: 1
+  fireOnEarlyExit: 1
 --- !u!1102 &-466240754630779499
 AnimatorState:
   serializedVersion: 6
@@ -343,6 +398,31 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!1101 &-418865680363820926
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 1
+    m_ConditionEvent: ChasingTrigger
+    m_EventTreshold: 0
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: -6727519204917992532}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 3
+  m_TransitionDuration: 0
+  m_TransitionOffset: 0
+  m_ExitTime: 0.75
+  m_HasExitTime: 0
+  m_HasFixedDuration: 1
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 1
 --- !u!91 &9100000
 AnimatorController:
   m_ObjectHideFlags: 0
@@ -543,31 +623,6 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
---- !u!1101 &2521369238582806815
-AnimatorStateTransition:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_Conditions:
-  - m_ConditionMode: 1
-    m_ConditionEvent: ChasingTrigger
-    m_EventTreshold: 0
-  m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: 9151510638508182730}
-  m_Solo: 0
-  m_Mute: 0
-  m_IsExit: 0
-  serializedVersion: 3
-  m_TransitionDuration: 0
-  m_TransitionOffset: 0.08450713
-  m_ExitTime: 1
-  m_HasExitTime: 0
-  m_HasFixedDuration: 1
-  m_InterruptionSource: 0
-  m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 1
 --- !u!1102 &3020947520484722132
 AnimatorState:
   serializedVersion: 6
@@ -606,7 +661,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc10de302f6d4b9993e36250149d82fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationStateChange
-  fallbackState: {fileID: 0}
+  fireAt: 1
+  fireOnEarlyExit: 1
 --- !u!1102 &9151510638508182730
 AnimatorState:
   serializedVersion: 6

@@ -220,7 +220,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::IntruderFlashedState
   blocksTransitions: 0
-  AnimationState: 0
   nextState: {fileID: 0}
   exitOnComplete: 1
   waitForAffordanceAnimation: 0
@@ -420,6 +419,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4386152443229987308}
   - component: {fileID: 6075446766147847021}
+  - component: {fileID: 2083614844334143239}
   m_Layer: 0
   m_Name: WindowIdle
   m_TagString: Untagged
@@ -455,11 +455,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::IntruderIdleState
   blocksTransitions: 0
-  AnimationState: 0
   nextState: {fileID: 6234756195703914020}
   exitOnComplete: 1
   waitForAffordanceAnimation: 0
   countdownDuration: 10
+--- !u!114 &2083614844334143239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1821472748401317281}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa4759459a2f6df4e8a3af805bf14913, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
+  paramType: 0
+  AnimationState: 8
+  paramName: 
+  boolValue: 1
 --- !u!1 &3458592905161940793
 GameObject:
   m_ObjectHideFlags: 0
@@ -470,6 +485,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3793825480316588878}
   - component: {fileID: 6893837462578570359}
+  - component: {fileID: 5087643316373690665}
   m_Layer: 0
   m_Name: Walk
   m_TagString: Untagged
@@ -505,10 +521,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimatedState
   blocksTransitions: 0
-  AnimationState: 0
   nextState: {fileID: 0}
   exitOnComplete: 1
   waitForAffordanceAnimation: 0
+--- !u!114 &5087643316373690665
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3458592905161940793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa4759459a2f6df4e8a3af805bf14913, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
+  paramType: 0
+  AnimationState: 2
+  paramName: 
+  boolValue: 1
 --- !u!1 &3807162221386724574
 GameObject:
   m_ObjectHideFlags: 0
@@ -662,6 +693,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3722531115129396874}
   - component: {fileID: 6234756195703914020}
+  - component: {fileID: 7361673053913975448}
   m_Layer: 0
   m_Name: OpenWindow
   m_TagString: Untagged
@@ -697,11 +729,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::IntruderIntruding
   blocksTransitions: 0
-  AnimationState: 0
   nextState: {fileID: 1535485417224722708}
   exitOnComplete: 1
   waitForAffordanceAnimation: 0
   monsterNavigation: {fileID: 132277432202858881}
+--- !u!114 &7361673053913975448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5945511514549207258}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa4759459a2f6df4e8a3af805bf14913, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
+  paramType: 0
+  AnimationState: 9
+  paramName: 
+  boolValue: 1
 --- !u!1 &6357655911396399998
 GameObject:
   m_ObjectHideFlags: 0
@@ -800,6 +847,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8332113718619956109}
   - component: {fileID: 1535485417224722708}
+  - component: {fileID: 4036445607456370848}
   m_Layer: 0
   m_Name: ChasingPlayer
   m_TagString: Untagged
@@ -835,12 +883,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChasingPlayerState
   blocksTransitions: 0
-  AnimationState: 0
   nextState: {fileID: 0}
   exitOnComplete: 1
   waitForAffordanceAnimation: 0
   monsterNavigation: {fileID: 132277432202858881}
   moveDistance: 1.55347
+--- !u!114 &4036445607456370848
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700209252231293374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa4759459a2f6df4e8a3af805bf14913, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
+  paramType: 0
+  AnimationState: 3
+  paramName: 
+  boolValue: 1
 --- !u!1 &8082112033680108158
 GameObject:
   m_ObjectHideFlags: 0
@@ -908,6 +971,7 @@ GameObject:
   m_Component:
   - component: {fileID: 601370847512379146}
   - component: {fileID: 359053292061219951}
+  - component: {fileID: 792608987780827113}
   m_Layer: 0
   m_Name: Window
   m_TagString: Untagged
@@ -943,12 +1007,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::IntruderApproachWindowState
   blocksTransitions: 0
-  AnimationState: 0
   nextState: {fileID: 6075446766147847021}
   exitOnComplete: 1
   waitForAffordanceAnimation: 0
   agent: {fileID: 6856695336247606016}
   monsterNavigation: {fileID: 132277432202858881}
+--- !u!114 &792608987780827113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8898604334208933820}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa4759459a2f6df4e8a3af805bf14913, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
+  paramType: 0
+  AnimationState: 7
+  paramName: 
+  boolValue: 1
 --- !u!1001 &5804665307699812350
 PrefabInstance:
   m_ObjectHideFlags: 0
