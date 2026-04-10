@@ -176,8 +176,6 @@ public class BaseNavAIMonster : MonoBehaviour {
             }
             // Randomly select one of the closed windows as the new target
             this.target = closedWindows[UnityEngine.Random.Range(0, closedWindows.Count)];
-            // Start moving towards the target window's position
-            //agent.SetDestination(this.target.TargetPosition.position);
 
             Vector3 approachePoint = this.target.TargetPosition.position - (-this.target.TargetPosition.right * 5f);
             Agent.SetDestination(approachePoint);
