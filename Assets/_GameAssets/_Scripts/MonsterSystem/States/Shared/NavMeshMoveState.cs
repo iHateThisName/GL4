@@ -57,7 +57,11 @@ namespace MonsterSystem
 
             // Default to player if no context target was provided
             if (this.target == null)
+            {
                 this.target = this.controller.PlayerTarget;
+                if (this.target == null)
+                    Debug.LogWarning($"[NavMeshMoveState] {name}: No context target and PlayerTarget is null.");
+            }
             
             // Resolve and set initial destination
             SetDestinationFromStrategy();
