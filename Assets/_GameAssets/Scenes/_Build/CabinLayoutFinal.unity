@@ -7490,6 +7490,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9ac216f0eb04754b1d938aac6380b31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &915951110 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4778211696441940833, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+  m_PrefabInstance: {fileID: 915951107}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9ac216f0eb04754b1d938aac6380b31, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &923596192
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11966,7 +11977,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ApplyPlayerSettings
   settingsToApply: {fileID: 0}
-  controllerRefrence: {fileID: 915951109}
+  rightControllerRefrence: {fileID: 915951109}
+  leftControllerRefrence: {fileID: 915951110}
   tunnelingObject: {fileID: 0}
 --- !u!4 &1520148793
 Transform:
@@ -17317,7 +17329,7 @@ GameObject:
   - component: {fileID: 5029646502138072}
   - component: {fileID: 7982099089785819431}
   - component: {fileID: 5682554965536557067}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cabin Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
