@@ -1960,7 +1960,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5a1805ee2bd43c697ae5edbc91f8dfc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TransformRefSaver
-  playerRef: {fileID: 11400000, guid: 4a052078915a7594cadb3b3da302cc65, type: 2}
+  transformRef: {fileID: 0}
   transformObject: {fileID: 223559086}
 --- !u!1 &232604385
 GameObject:
@@ -11967,6 +11967,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ApplyPlayerSettings
   settingsToApply: {fileID: 0}
   controllerRefrence: {fileID: 915951109}
+  tunnelingObject: {fileID: 0}
 --- !u!4 &1520148793
 Transform:
   m_ObjectHideFlags: 0
