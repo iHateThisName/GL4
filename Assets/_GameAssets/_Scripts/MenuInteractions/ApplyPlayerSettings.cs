@@ -20,17 +20,20 @@ public class ApplyPlayerSettings : MonoBehaviour
         tunnelingObject = GameObject.Find("TunnelingVignette");
         tunnelingObject.SetActive(false);
 
-        if(settingsToApply.snapEnabled)
+        if(settingsToApply != null )
         {
-            controllerRefrence.smoothTurnEnabled = false;
-        }
-        if (settingsToApply.tunnelingEnabled)
-        {
-            tunnelingObject.SetActive(true);
-        }
-        else
-        {
-            tunnelingObject.SetActive(false);
+            if (settingsToApply.snapEnabled)
+            {
+                controllerRefrence.smoothTurnEnabled = false;
+            }
+            if (settingsToApply.tunnelingEnabled)
+            {
+                tunnelingObject.SetActive(true);
+            }
+            else
+            {
+                tunnelingObject.SetActive(false);
+            }
         }
     }
 }
