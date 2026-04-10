@@ -12,7 +12,7 @@ namespace MonsterSystem
 
         [Header("=== VR & Physics Components ===")]
         [Tooltip("Forces the player to drop her before teleporting.")]
-        [SerializeField] private XRGrabInteractable grabInteractable;
+        //[SerializeField] private XRGrabInteractable grabInteractable;
 
         // Notice we completely deleted the mainCollider variable!
 
@@ -37,7 +37,7 @@ namespace MonsterSystem
             TriggerAffordances<AudioAffordance>();
 
             // 1. FORCE DROP: Drop from hands so the VR interaction system lets go.
-            if (this.grabInteractable != null) this.grabInteractable.enabled = false;
+            //if (this.grabInteractable != null) this.grabInteractable.enabled = false;
 
             // 2. LOCK PHYSICS: Keep her frozen so she doesn't fall through the floor 
             // or rubber-band while we wait for the 2-second timer.
@@ -68,7 +68,13 @@ namespace MonsterSystem
 
                     this.lastIndex = index;
                     var point = spawnPoints.points[index];
-                    this.controller.transform.SetPositionAndRotation(point.position, Quaternion.Euler(point.rotation));
+
+                    // USE RB.POSITION FOR RIGIDBODIES
+                    this.rb.position = point.position;
+                    this.rb.rotation = Quaternion.Euler(point.rotation);
+
+                    // FORCE PHYSICS ENGINE TO UPDATE TRIGGERS IMMEDIATELY
+                    //Physics.SyncTransforms();
                 }
             }
             else
@@ -78,7 +84,13 @@ namespace MonsterSystem
                     int index = Random.Range(0, this.transforms.points.Length);
                     Vector3 position = this.transforms.points[index].position;
                     Vector3 rotation = this.transforms.points[index].rotation;
-                    this.controller.transform.SetPositionAndRotation(position, Quaternion.Euler(rotation));
+
+                    // USE RB.POSITION FOR RIGIDBODIES
+                    this.rb.position = position;
+                    this.rb.rotation = Quaternion.Euler(rotation);
+
+                    // FORCE PHYSICS ENGINE TO UPDATE TRIGGERS IMMEDIATELY
+                    //Physics.SyncTransforms();
                 }
             }
 
