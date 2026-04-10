@@ -74,7 +74,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AudioAffordance
   clip: {fileID: 8300000, guid: 4432f4904f836134eb009fe2cc526804, type: 3}
-  loop: 0
+  loop: 1
   volume: 1
 --- !u!1 &1445374913760098245
 GameObject:
@@ -284,7 +284,7 @@ Transform:
   m_GameObject: {fileID: 1666760154419829998}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.12571, y: 0.03633, z: 0.08183}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -473,8 +473,8 @@ MonoBehaviour:
   aggressiveSetupState: {fileID: 5591425356144439866}
   aggressiveState: {fileID: 5516808396667445640}
   attackState: {fileID: 7030186266804405750}
-  timeToAggressive: 60
-  timeToHiding: 60
+  timeToAggressive: 20
+  timeToHiding: 10
   debugText: {fileID: 6955278685709727320}
 --- !u!1 &6880271366201179141
 GameObject:
@@ -882,7 +882,7 @@ Transform:
   m_GameObject: {fileID: 7097070077748286372}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.12571001, y: 0.036329985, z: 0.081830025}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1388,9 +1388,49 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -6497666476242321414, guid: dfa714ae2b06bfc46abeebd042e656ac, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -6167219928631514373, guid: dfa714ae2b06bfc46abeebd042e656ac, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -5894735566588235632, guid: dfa714ae2b06bfc46abeebd042e656ac, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -5078167016547540893, guid: dfa714ae2b06bfc46abeebd042e656ac, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -4633771850437259174, guid: dfa714ae2b06bfc46abeebd042e656ac, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -3736505020703472960, guid: dfa714ae2b06bfc46abeebd042e656ac, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -3689932015235948632, guid: dfa714ae2b06bfc46abeebd042e656ac, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: dfa714ae2b06bfc46abeebd042e656ac, type: 3}
       propertyPath: m_Name
       value: SM_Doll_Fixed (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: dfa714ae2b06bfc46abeebd042e656ac, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 3849660102846682333, guid: dfa714ae2b06bfc46abeebd042e656ac, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 4246033775202154418, guid: dfa714ae2b06bfc46abeebd042e656ac, type: 3}
+      propertyPath: m_Layer
+      value: 11
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
