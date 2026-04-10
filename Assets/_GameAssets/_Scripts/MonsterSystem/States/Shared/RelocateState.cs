@@ -4,6 +4,7 @@ using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 namespace MonsterSystem
 {
+    // Inga loves the Intruder and Munch :3 - They should kiss ^o^
     public class RelocateState : MonsterState
     {
         [Header("=== Transitions ===")]

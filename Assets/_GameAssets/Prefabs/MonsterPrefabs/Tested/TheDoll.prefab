@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8081459201721522103}
   - component: {fileID: 5516808396667445640}
   - component: {fileID: 1986643422806203072}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Aggressive
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 5028797612979446905}
   - component: {fileID: 7250078713549911844}
   - component: {fileID: 6955278685709727320}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: TheDollStateText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -268,7 +268,7 @@ GameObject:
   - component: {fileID: 3662960028798784414}
   - component: {fileID: 3121626272259508856}
   - component: {fileID: 2987720582210339999}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: DollRelocate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -333,7 +333,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3011288430990936915}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -366,7 +366,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1115856912469693177}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: AttachPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -397,7 +397,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5624446739809958843}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Sensors
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -432,7 +432,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2960709231442033900}
   - component: {fileID: 7016655433413782418}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: DollSensor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -491,7 +491,7 @@ GameObject:
   - component: {fileID: 5593219599415299837}
   - component: {fileID: 8213382684775212631}
   - component: {fileID: 6429690679860625264}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: TheDoll
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -536,7 +536,7 @@ MonoBehaviour:
   animator: {fileID: 0}
   audioSource: {fileID: 6190555411854072295}
   sensorRoot: {fileID: 5624446739809958843}
-  initialState: {fileID: 1708653840634344366}
+  initialState: {fileID: 5312942356579680233}
 --- !u!195 &1758525936543291132
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -621,7 +621,7 @@ MonoBehaviour:
   m_InteractionManager: {fileID: 0}
   m_Colliders: []
   m_InteractionLayers:
-    m_Bits: 1
+    m_Bits: 257
   m_DistanceCalculationMode: 1
   m_SelectMode: 0
   m_FocusMode: 1
@@ -766,7 +766,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6540810932976416326}
   - component: {fileID: 2831680520748087539}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: ProximitySensor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -814,7 +814,7 @@ GameObject:
   m_Component:
   - component: {fileID: 285961349528642890}
   - component: {fileID: 5312942356579680233}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Hiding
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -853,8 +853,6 @@ MonoBehaviour:
   navMeshAgent: {fileID: 1758525936543291132}
   rb: {fileID: 5593219599415299837}
   nextState: {fileID: 1708653840634344366}
-  triggerReferanceObject: {fileID: 11400000, guid: 4a052078915a7594cadb3b3da302cc65, type: 2}
-  dollCollider: {fileID: 6429690679860625264}
 --- !u!1 &7097070077748286372
 GameObject:
   m_ObjectHideFlags: 0
@@ -866,7 +864,7 @@ GameObject:
   - component: {fileID: 6266036368524755492}
   - component: {fileID: 5591425356144439866}
   - component: {fileID: 8703164156901155560}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: DollRelocateToNav
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -934,7 +932,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2442952966761367298}
   - component: {fileID: 4168851533175916748}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: LocationSensor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -982,7 +980,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7101289165211502055}
   - component: {fileID: 6190555411854072295}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: AudioSource
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1112,7 +1110,7 @@ GameObject:
   - component: {fileID: 7666043972367397804}
   - component: {fileID: 6787469993830793302}
   - component: {fileID: 137496443782842635}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1202,7 +1200,7 @@ GameObject:
   - component: {fileID: 6800366008465673256}
   - component: {fileID: 7030186266804405750}
   - component: {fileID: 5991709083730829472}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Attack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1255,7 +1253,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AudioAffordance
   clip: {fileID: 8300000, guid: 4332158888823654b9716151fc259b0b, type: 3}
   loop: 0
-  volume: 1
+  volume: 0.7
 --- !u!1 &8704326584610175551
 GameObject:
   m_ObjectHideFlags: 0
@@ -1266,7 +1264,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5120366314018224064}
   - component: {fileID: 1708653840634344366}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Patient
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1312,7 +1310,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5455919166180357250}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: States
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1390,31 +1388,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -6497666476242321414, guid: dfa714ae2b06bfc46abeebd042e656ac, type: 3}
       propertyPath: m_Layer
-      value: 11
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -6167219928631514373, guid: dfa714ae2b06bfc46abeebd042e656ac, type: 3}
       propertyPath: m_Layer
-      value: 11
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -5894735566588235632, guid: dfa714ae2b06bfc46abeebd042e656ac, type: 3}
       propertyPath: m_Layer
-      value: 11
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -5078167016547540893, guid: dfa714ae2b06bfc46abeebd042e656ac, type: 3}
       propertyPath: m_Layer
-      value: 11
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -4633771850437259174, guid: dfa714ae2b06bfc46abeebd042e656ac, type: 3}
       propertyPath: m_Layer
-      value: 11
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -3736505020703472960, guid: dfa714ae2b06bfc46abeebd042e656ac, type: 3}
       propertyPath: m_Layer
-      value: 11
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -3689932015235948632, guid: dfa714ae2b06bfc46abeebd042e656ac, type: 3}
       propertyPath: m_Layer
-      value: 11
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: dfa714ae2b06bfc46abeebd042e656ac, type: 3}
       propertyPath: m_Name
@@ -1422,15 +1420,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: dfa714ae2b06bfc46abeebd042e656ac, type: 3}
       propertyPath: m_Layer
-      value: 11
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3849660102846682333, guid: dfa714ae2b06bfc46abeebd042e656ac, type: 3}
       propertyPath: m_Layer
-      value: 11
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4246033775202154418, guid: dfa714ae2b06bfc46abeebd042e656ac, type: 3}
       propertyPath: m_Layer
-      value: 11
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
