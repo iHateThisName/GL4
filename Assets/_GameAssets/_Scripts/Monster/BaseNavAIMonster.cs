@@ -187,7 +187,15 @@ public class BaseNavAIMonster : MonoBehaviour {
         if (!Agent.pathPending && Agent.velocity.sqrMagnitude == 0f) {
             // debug log the current position the pathendposition and the target position
             Vector3 targetPosition = this.target.TargetPosition.position;
-            if (this.Agent.pathEndPosition.x == targetPosition.x && this.Agent.pathEndPosition.z == targetPosition.z) {
+            targetPosition.y = this.Agent.transform.position.y; // setting the y so its the same when warping.
+
+            // Calculate distance ignoring the Y axis
+            Vector2 pathEnd2D = new Vector2(this.Agent.pathEndPosition.x, this.Agent.pathEndPosition.z);
+            Vector2 target2D = new Vector2(targetPosition.x, targetPosition.z);
+            
+            float stoppingThreshold = 0.1f;
+
+            if (Vector2.Distance(pathEnd2D, target2D) <= stoppingThreshold) {
                 DisableNavigation();
                 // Reached Window target
                 this.Agent.Warp(targetPosition); // Making sure the monster is exactly at the target position.
