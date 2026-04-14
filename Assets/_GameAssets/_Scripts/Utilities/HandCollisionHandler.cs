@@ -1,7 +1,7 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
-using System.Collections.Generic;
 
 public class HandCollisionHandler : MonoBehaviour
 {
@@ -19,7 +19,9 @@ public class HandCollisionHandler : MonoBehaviour
     private void Awake()
     {
         if (this.targetInteractor == null)
-            this.targetInteractor = GetComponentInChildren<XRBaseInteractor>(true);
+        {
+            this.targetInteractor = this.GetComponentInChildren<XRBaseInteractor>(true);
+        }
 
         this.heldItemLayerIndex = LayerMask.NameToLayer(this.heldItemLayerName);
 
@@ -33,8 +35,8 @@ public class HandCollisionHandler : MonoBehaviour
     {
         if (this.targetInteractor != null)
         {
-            this.targetInteractor.selectEntered.AddListener(OnGrabSwapLayer);
-            this.targetInteractor.selectExited.AddListener(OnDropRevertLayer);
+            this.targetInteractor.selectEntered.AddListener(this.OnGrabSwapLayer);
+            this.targetInteractor.selectExited.AddListener(this.OnDropRevertLayer);
         }
     }
 
@@ -42,8 +44,8 @@ public class HandCollisionHandler : MonoBehaviour
     {
         if (this.targetInteractor != null)
         {
-            this.targetInteractor.selectEntered.RemoveListener(OnGrabSwapLayer);
-            this.targetInteractor.selectExited.RemoveListener(OnDropRevertLayer);
+            this.targetInteractor.selectEntered.RemoveListener(this.OnGrabSwapLayer);
+            this.targetInteractor.selectExited.RemoveListener(this.OnDropRevertLayer);
         }
     }
 
@@ -80,7 +82,10 @@ public class HandCollisionHandler : MonoBehaviour
     // Helper method to ensure multi-part items (like models with child colliders) are fully swapped
     private void SetLayerRecursively(GameObject obj, int newLayer)
     {
-        if (obj == null) return;
+        if (obj == null)
+        {
+            return;
+        }
 
         obj.layer = newLayer;
 
@@ -88,7 +93,7 @@ public class HandCollisionHandler : MonoBehaviour
         {
             if (child != null)
             {
-                SetLayerRecursively(child.gameObject, newLayer);
+                this.SetLayerRecursively(child.gameObject, newLayer);
             }
         }
     }
