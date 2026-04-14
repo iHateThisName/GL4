@@ -43,6 +43,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5721080036807862834}
   - component: {fileID: 2186266730210364484}
+  - component: {fileID: 6099649490890638158}
   m_Layer: 0
   m_Name: KillPlayer
   m_TagString: Untagged
@@ -78,9 +79,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.KillPlayerState
   blocksTransitions: 1
-  killAnimTrigger: 
-  killSound: {fileID: 0}
-  killSoundVolume: 1
+--- !u!114 &6099649490890638158
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2547921773651638136}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4702ac2b4be5cd141a1c9c87889c9abc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AudioAffordance
+  clip: {fileID: 8300000, guid: 8c14c768f15dcfa439790ff6573869a4, type: 3}
+  loop: 0
+  volume: 1
 --- !u!1 &2874973325190177001
 GameObject:
   m_ObjectHideFlags: 0
@@ -91,6 +104,7 @@ GameObject:
   m_Component:
   - component: {fileID: 676581536022000861}
   - component: {fileID: 930086389623788984}
+  - component: {fileID: 1957338942605961910}
   m_Layer: 0
   m_Name: Flee
   m_TagString: Untagged
@@ -135,9 +149,6 @@ MonoBehaviour:
   moveConfig: {fileID: 0}
   targetThreshold: 0.5
   arrivalState: {fileID: 8360469948079414776}
-  stateAudio: {fileID: 0}
-  loopAudio: 1
-  audioVolume: 1
   references:
     version: 2
     RefIds:
@@ -145,6 +156,21 @@ MonoBehaviour:
       type: {class: FleeStrategy, ns: MonsterSystem, asm: Assembly-CSharp}
       data:
         fleeDistance: 20
+--- !u!114 &1957338942605961910
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2874973325190177001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4702ac2b4be5cd141a1c9c87889c9abc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AudioAffordance
+  clip: {fileID: 8300000, guid: fc323e27414aadf4095893d373c60c49, type: 3}
+  loop: 0
+  volume: 1
 --- !u!1 &3143046586435553925
 GameObject:
   m_ObjectHideFlags: 0
@@ -203,6 +229,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1389786760255403762}
   - component: {fileID: 4710868476148753846}
+  - component: {fileID: 7647351013422870514}
   m_Layer: 0
   m_Name: Chase
   m_TagString: Untagged
@@ -247,15 +274,156 @@ MonoBehaviour:
   moveConfig: {fileID: 0}
   targetThreshold: 0.5
   arrivalState: {fileID: 2186266730210364484}
-  stateAudio: {fileID: 0}
-  loopAudio: 1
-  audioVolume: 1
   references:
     version: 2
     RefIds:
     - rid: 1560563707155841127
       type: {class: FollowTargetStrategy, ns: MonsterSystem, asm: Assembly-CSharp}
       data: 
+--- !u!114 &7647351013422870514
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4364684727354554294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4702ac2b4be5cd141a1c9c87889c9abc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AudioAffordance
+  clip: {fileID: 8300000, guid: a1e34015c147f0246848c0e9de812e99, type: 3}
+  loop: 1
+  volume: 1
+--- !u!1 &5653585283074062437
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1655042661422024194}
+  - component: {fileID: 5076393854365137874}
+  m_Layer: 0
+  m_Name: AudioSource
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1655042661422024194
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5653585283074062437}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7514804033185431688}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &5076393854365137874
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5653585283074062437}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &7189738974041140129
 GameObject:
   m_ObjectHideFlags: 0
@@ -461,9 +629,6 @@ MonoBehaviour:
   moveConfig: {fileID: 11400000, guid: 15b4e26f9ed107b47a5e0c1dbf577210, type: 2}
   targetThreshold: 0.5
   arrivalState: {fileID: 5361090696373537641}
-  stateAudio: {fileID: 0}
-  loopAudio: 1
-  audioVolume: 1
   references:
     version: 2
     RefIds:
@@ -525,9 +690,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a0f28e82ba282747a3ad3dd8aea0f9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.MonsterController
-  config: {fileID: 11400000, guid: 0b54a110bdfa4ff49b779d961dd8ffd4, type: 2}
+  nightOverrides: []
+  spawnPoints: {fileID: 11400000, guid: 3da829e3696bcda44b21a85c1ae7376a, type: 2}
+  playerRef: {fileID: 11400000, guid: 8aa04a6520205384e9477b4745bd7d4b, type: 2}
   animator: {fileID: 0}
-  audioSource: {fileID: 0}
+  audioSource: {fileID: 5076393854365137874}
   sensorRoot: {fileID: 8554318996685896432}
   initialState: {fileID: 1765749272275066569}
 --- !u!1001 &7839779714245594630
@@ -606,6 +773,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 325820956463124110, guid: ae8a4adaccbb7324aa4aa03bb566d6f0, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8554318996685896432}
+    - targetCorrespondingSourceObject: {fileID: 325820956463124110, guid: ae8a4adaccbb7324aa4aa03bb566d6f0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1655042661422024194}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ae8a4adaccbb7324aa4aa03bb566d6f0, type: 3}
 --- !u!4 &7514804033185431688 stripped

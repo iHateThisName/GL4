@@ -1,20 +1,27 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 namespace MonsterSystem
 {
-    /// <summary>
-    /// Teleports Monster to a random position from the Transform config,
-    /// avoiding the same position twice in a row, then transitions to the next state.
-    /// </summary>
+    // Inga loves the Intruder and Munch :3 - They should kiss ^o^
     public class RelocateState : MonsterState
     {
-        [SerializeField] private MonsterState nextState; // State to transition to after relocation is complete
-        [SerializeField] private SO_NavMeshMoveConfig transforms;
+        [Header("=== Transitions ===")]
+        [SerializeField] private MonsterState nextState;
+        [SerializeField] private float transitionDelay = 2.0f;
+
+        [Header("=== VR & Physics Components ===")]
+        [SerializeField] private XRGrabInteractable grabInteractable;
+
+        [Header("=== Configuration ===")]
+        [SerializeField] private SO_TransformCollection transforms;
         [SerializeField] private bool useConfig = true;
-        [SerializeField] private bool killMomentum = false;
+        [SerializeField] private bool canKillMomentum = true; 
 
         private Rigidbody rb;
-        private int lastIndex = -1; // Index of the last used spawn point to avoid repeats
+        private int lastIndex = -1;
+        private Coroutine delayRoutine;
 
         public override void Initialize(MonsterController owningController)
         {
@@ -22,62 +29,104 @@ namespace MonsterSystem
             this.rb = this.controller.GetComponent<Rigidbody>();
         }
 
-        /// <summary>
-        /// On entering this state, picks a random spawn point (different from the last one),
-        /// teleports the monster there, and immediately transitions to the next state.
-        /// </summary>
         public override void OnStateEnter()
         {
+            base.OnStateEnter();
+            this.TriggerAffordances<AudioAffordance>();
+
+            this.DisableGrabInteractable();
+
+            // 3. Handle Relocation (Using STRICT Rigidbody Math)
+            Vector3 targetPos = this.controller.transform.position;
+            Quaternion targetRot = this.controller.transform.rotation;
+
             if (this.useConfig)
             {
-                // Retrieve the spawn points from the monster's shared config
-                var config = this.controller.Config;
-                if (config != null && config.spawnPoints != null && config.spawnPoints.Length > 0)
+                var spawnPoints = this.controller.SpawnPoints;
+                if (spawnPoints != null && spawnPoints.points != null && spawnPoints.points.Length > 0)
                 {
                     int index;
-
-                    // If only one spawn point exists, use it directly
-                    if (config.spawnPoints.Length == 1) index = 0;
+                    if (spawnPoints.points.Length == 1)
+                    {
+                        index = 0;
+                    }
                     else
                     {
-                        // Pick a random index that differs from the last used index
-                        do { index = Random.Range(0, config.spawnPoints.Length); }
+                        do
+                        {
+                            index = Random.Range(0, spawnPoints.points.Length);
+                        }
                         while (index == this.lastIndex);
                     }
 
-                    // Remember this index to avoid choosing it again next time
                     this.lastIndex = index;
-
-                    // Teleport the monster to the selected spawn point's position and rotation
-                    var point = config.spawnPoints[index];
-                    this.controller.transform.SetPositionAndRotation(point.position, Quaternion.Euler(point.rotation));
+                    targetPos = spawnPoints.points[index].position;
+                    targetRot = Quaternion.Euler(spawnPoints.points[index].rotation);
                 }
             }
             else
             {
-                if(this.transforms != null && this.transforms.points.Length > 0)
+                if (this.transforms != null && this.transforms.points.Length > 0)
                 {
                     int index = Random.Range(0, this.transforms.points.Length);
-                    Vector3 position = this.transforms.points[index].position;
-                    Vector3 rotation = this.transforms.points[index].rotation;
-                    this.controller.transform.SetPositionAndRotation(position, Quaternion.Euler(rotation));
+                    targetPos = this.transforms.points[index].position;
+                    targetRot = Quaternion.Euler(this.transforms.points[index].rotation);
                 }
             }
 
-            if (this.killMomentum)
-                KillForces();
-            
-            // Immediately transition to the configured next state
-            if (this.nextState != null)
-                RequestTransition(this.nextState);
+            this.FixRigidBody(targetPos, targetRot);
+            this.controller.transform.root.SetPositionAndRotation(targetPos, targetRot);
+
+            this.delayRoutine = StartCoroutine(this.WaitAndTransitionRoutine());
         }
-        
-        private void KillForces()
+
+        private void FixRigidBody(Vector3 targetPos, Quaternion targetRot)
         {
+            // THE PHYSICS FIX: Tell the Rigidbody exactly where it lives now.
             if (this.rb != null)
             {
-                this.rb.linearVelocity = Vector3.zero;
-                this.rb.angularVelocity = Vector3.zero;
+                this.rb.position = targetPos;
+                this.rb.rotation = targetRot;
+            }
+        }
+
+        private void DisableGrabInteractable()
+        {
+            if (this.grabInteractable != null)
+            {
+                this.grabInteractable.enabled = false;
+            }
+
+            if (this.rb != null)
+            {
+                this.rb.isKinematic = true;
+
+                if (this.canKillMomentum)
+                {
+                    this.rb.linearVelocity = Vector3.zero;
+                    this.rb.angularVelocity = Vector3.zero;
+                }
+            }
+        }
+
+        private IEnumerator WaitAndTransitionRoutine()
+        {
+            yield return new WaitForSeconds(this.transitionDelay);
+
+            if (this.nextState != null)
+            {
+                this.RequestTransition(this.nextState);
+            }
+        }
+
+        public override void OnStateExit()
+        {
+            base.OnStateExit();
+
+            if (this.delayRoutine != null)
+            {
+                StopCoroutine(this.delayRoutine);
+                this.delayRoutine = null;
             }
         }
     }

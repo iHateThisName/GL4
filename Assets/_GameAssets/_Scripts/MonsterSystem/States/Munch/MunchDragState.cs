@@ -13,21 +13,21 @@ namespace MonsterSystem
         {
             base.OnStateEnter();
 
-            Transform player = this.controller.Config.PlayerTarget;
+            Transform player = this.controller.PlayerTarget;
             if (player != null)
             {
                 this.controller.transform.position = player.position - player.forward * this.behindDistance;
                 this.controller.transform.LookAt(player);
             }
-
-            StopAffordances<AudioAffordance>();
+            
+            this.controller.PreviousState?.StopAffordances<AudioAffordance>();
             TriggerAffordances<AudioAffordance>();
             TriggerAffordances<AnimationAffordance>();
         }
 
         protected override void OnTimerFinished()
         {
-            DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Monster);
+            KillPlayer();
         }
     }
 }

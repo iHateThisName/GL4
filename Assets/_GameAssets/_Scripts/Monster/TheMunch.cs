@@ -198,7 +198,7 @@ public class TheMunch : MonoBehaviour
                     }
                 }
 
-                DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Monster, false);
+                DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Monster);
                 break;
         }
     }

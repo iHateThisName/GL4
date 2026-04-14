@@ -3,7 +3,8 @@ using UnityEngine;
 public static class AnimationTriggers {
     public static readonly int Flashed = Animator.StringToHash("FlashlightTrigger");
     public static readonly int Chasing = Animator.StringToHash("ChasingTrigger");
-        public static readonly int Walk = Animator.StringToHash("WalkTrigger");
+    public static readonly int Walk = Animator.StringToHash("WalkTrigger");
+    public static readonly int Attack = Animator.StringToHash("AttackTrigger");
     public static class Intruder {
         public static readonly int ApproachWindow = Animator.StringToHash("IntruderApproachWindowTrigger");
         public static readonly int IdleWindow = Animator.StringToHash("WindowIdleTrigger");
@@ -23,6 +24,7 @@ public static class AnimationTriggers {
             EnumAnimationStates.Walk => AnimationTriggers.Walk,
             EnumAnimationStates.Chasing => AnimationTriggers.Chasing,
             EnumAnimationStates.Flashed => AnimationTriggers.Flashed,
+            EnumAnimationStates.Attack => AnimationTriggers.Attack,
             EnumAnimationStates.IntruderApproachWindow => Intruder.ApproachWindow,
             EnumAnimationStates.IntruderIdleWindow => Intruder.IdleWindow,
             EnumAnimationStates.IntruderOpenWindow => Intruder.OpenWindow,

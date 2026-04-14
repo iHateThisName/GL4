@@ -13,7 +13,9 @@ namespace MonsterSystem
         [SerializeField] private MonsterState impatient;
         [SerializeField] private MonsterState resetPatience;
 
+        private Transform playerTransform;
         private float detectionRangeSqr;
+        
         public bool IsPlayerInRange { get; private set; }
 
         /// <summary>
@@ -21,19 +23,18 @@ namespace MonsterSystem
         /// </summary>
         public float SqrDistanceToPlayer { get; private set; } = float.MaxValue;
 
-        public Transform PlayerTransform => this.controller.Config.PlayerTarget;
-
         public override void Initialize(MonsterController owningMonster)
         {
             base.Initialize(owningMonster);
             this.detectionRangeSqr = this.detectionRange * this.detectionRange;
+            this.playerTransform = this.controller.PlayerTarget;
         }
 
         public override void OnTick(float tickDelta)
         {
             base.OnTick(tickDelta);
 
-            Transform player = this.PlayerTransform;
+            Transform player = this.playerTransform;
             if (player == null) return;
 
             // sqrMagnitude avoids sqrt — significant on ARM/Quest 2

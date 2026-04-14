@@ -26,7 +26,7 @@ public class SoundEffectManager : Singleton<SoundEffectManager>
         mute = false;
     }
 
-    public void PlaySoundFXClip(AudioClip audioClip, Transform spawmTransform, float volume, float duration = 0.0f, bool parentSpawnTransform = false)
+    public void PlaySoundFXClip(AudioClip audioClip, Transform spawmTransform, float volume, float duration = 0.0f, bool is3DSound = false, bool parentSpawnTransform = false)
     {
         if (mute) return;
 
@@ -41,6 +41,8 @@ public class SoundEffectManager : Singleton<SoundEffectManager>
 
         audioSource.clip = audioClip;
         audioSource.volume = volume;
+        audioSource.spatialBlend = is3DSound ? 1.0f : 0.0f;
+
         audioSource.Play();
 
         float returnDelay = duration > 0.0f ? duration : audioSource.clip.length;

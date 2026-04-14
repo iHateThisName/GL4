@@ -14,7 +14,7 @@ namespace MonsterSystem
         
         [Header("Destination")]
         [SerializeReference] private DestinationStrategy strategy;
-        [SerializeField] private SO_NavMeshMoveConfig moveConfig;
+        [SerializeField] private SO_TransformCollection moveConfig;
 
         [Header("Arrival")]
         [SerializeField] private float targetThreshold = 0.5f;
@@ -57,7 +57,11 @@ namespace MonsterSystem
 
             // Default to player if no context target was provided
             if (this.target == null)
-                this.target = this.controller.Config.PlayerTarget;
+            {
+                this.target = this.controller.PlayerTarget;
+                if (this.target == null)
+                    Debug.LogWarning($"[NavMeshMoveState] {name}: No context target and PlayerTarget is null.");
+            }
             
             // Resolve and set initial destination
             SetDestinationFromStrategy();
@@ -73,7 +77,7 @@ namespace MonsterSystem
             if (this.agent == null) return;
 
             // Apply night scaling
-            var nightOverride = this.controller.Config.GetOverrideForNight(this.controller.CurrentNight);
+            var nightOverride = this.controller.GetOverrideForNight(this.controller.CurrentNight);
             this.agent.speed = this.baseSpeed * nightOverride.speedMultiplier;
 
             // Only re-resolve destination for FollowTarget (tracks a moving target).
@@ -136,7 +140,7 @@ namespace MonsterSystem
         private void CachePoints()
         {
             // Check strategy for its own config first, fall back to state-level config
-            SO_NavMeshMoveConfig config = this.moveConfig;
+            SO_TransformCollection config = this.moveConfig;
 
             if (config != null && config.points != null && config.points.Length > 0)
             {

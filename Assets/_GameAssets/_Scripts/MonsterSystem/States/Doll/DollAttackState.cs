@@ -32,22 +32,23 @@ namespace MonsterSystem
 
         public override void OnStateEnter()
         {
+            this.TriggerAffordances<AudioAffordance>();
             this.playerTransform = this.playerRef?.Value;
             Debug.Log("THEDOLLHASYOU.");
 
             if (this.playerTransform != null)
             {
-                AttachToPlayerFace();
+                this.AttachToPlayerFace();
             }
             else
             {
                 Debug.LogError("DollAttackState: Player Transform not found on DollSensor! Triggering emergency kill.");
-                TriggerImmediateKill();
+                this.TriggerImmediateKill();
                 return;
             }
 
             this.deathCts = new CancellationTokenSource();
-            _ = DeathSequenceAsync(this.deathCts.Token);
+            _ = this.DeathSequenceAsync(this.deathCts.Token);
         }
 
         private void AttachToPlayerFace()
@@ -56,7 +57,9 @@ namespace MonsterSystem
 
             // Shut down navMesh and Physics
             if (this.rootParent.TryGetComponent<UnityEngine.AI.NavMeshAgent>(out var agent))
+            {
                 agent.enabled = false;
+            }
 
             if (this.rootParent.TryGetComponent<Rigidbody>(out var rb))
             {
@@ -82,12 +85,14 @@ namespace MonsterSystem
             await Awaitable.WaitForSecondsAsync(this.timeBeforeDeathCall, ct);
 
             if (!ct.IsCancellationRequested)
-                TriggerImmediateKill();
+            {
+                this.TriggerImmediateKill();
+            }
         }
 
         private void TriggerImmediateKill()
         {
-            DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Monster);
+            this.KillPlayer();
         }
 
         public override void OnStateExit()

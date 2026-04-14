@@ -31,23 +31,14 @@ public static class DeathSystem
     /// </remarks>
     /// <param name="reason">The cause of death (Temperature, Hunger, Monster, or Survived).</param>
     /// <param name="completelyRestart">Reserved for future use - whether to fully restart the game.</param>
-    public static void KillPlayer(DeathEvent.DeathReason reason, bool completelyRestart = false)
+    public static void KillPlayer(DeathEvent.DeathReason reason, string additionalInfo = "", bool completelyRestart = false)
     {
-        deathEvent = new DeathEvent(reason);
+        deathEvent = new DeathEvent(reason, additionalInfo);
         OnPlayerDied?.Invoke();
 
         // Automatically load scene if no listeners handle the transition
         if (!AnyListeners)
             deathEvent.LoadScene();
-    }
-
-    /// <summary>
-    /// Triggers the win condition (player survived the night).
-    /// Uses the death system to transition to the GameOver scene with a "Survived" reason.
-    /// </summary>
-    public static void WinGame()
-    {
-        KillPlayer(DeathEvent.DeathReason.Survived, true);
     }
 
     /// <summary>
@@ -81,18 +72,19 @@ public static class DeathSystem
         }
 
         private DeathReason reason;
+        private string additionalInfo;
 
         /// <summary>
         /// Creates a new death event with the specified reason.
         /// </summary>
         /// <param name="reason">The cause of death.</param>
-        public DeathEvent(DeathReason reason)
+        public DeathEvent(DeathReason reason) : this(reason, "") {}
+        
+        public DeathEvent(DeathReason reason, string additionalInfo)
         {
             this.reason = reason;
+            this.additionalInfo = additionalInfo;
         }
-
-        /// <summary>The cause of this death event.</summary>
-        public DeathReason Reason => reason;
 
         /// <summary>
         /// Loads the GameOver scene.
@@ -106,5 +98,11 @@ public static class DeathSystem
             
             SceneTransition.LoadScene(1, config, fadeRef);
         }
+        
+        /// <summary>The cause of this death event.</summary>
+        public DeathReason Reason => reason;
+        
+        /// <summary>Additional info, like the monster's name.</summary>
+        public string AdditionalInfo => additionalInfo;
     }
 }

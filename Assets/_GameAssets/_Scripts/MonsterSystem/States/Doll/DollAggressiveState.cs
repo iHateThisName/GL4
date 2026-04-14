@@ -1,59 +1,30 @@
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.XR.Interaction.Toolkit;
-using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 namespace MonsterSystem
 {
     public class DollAggressiveState : NavMeshMoveState
     {
-        [Header("=== Doll Specifics ===")]
-        [SerializeField] private Rigidbody rb;
-        [SerializeField] private XRGrabInteractable grabInteractable;
-
         public override void OnStateEnter()
         {
-            if (this.grabInteractable != null)
-            {
-                this.grabInteractable.enabled = false;
-            }
-
-            if (this.rb != null)
-            {
-                this.rb.linearVelocity = Vector3.zero;
-                this.rb.angularVelocity = Vector3.zero;
-                this.rb.isKinematic = true;
-            }
-
-            var agent = GetComponent<NavMeshAgent>();
-            if (agent != null)
-            {
-                agent.enabled = true; // MUST be enabled for Warp to function
-
-                NavMeshHit hit;
-                if (NavMesh.SamplePosition(transform.position, out hit, 10.0f, NavMesh.AllAreas))
-                {
-                    agent.Warp(hit.position);
-                }
-                else
-                {
-                    Debug.LogWarning("[DollAggressiveState] Could not find a NavMesh close enough to snap to!");
-                }
-            }
-
+            // The Relocate state already handled the teleporting, locked the physics, and snapped the NavMeshAgent to the floor.
+            // Let the base class hook up the timers and start the chase!
             base.OnStateEnter();
-            Debug.Log("Doll is Aggressive! Snapped to NavMesh and hunting the player.");
+
+            Debug.Log("Doll is Aggressive and actively hunting!");
         }
 
         public override void OnStateExit()
         {
+            // Let the base class handle its own cleanup first
             base.OnStateExit();
 
-            var agent = GetComponent<NavMeshAgent>();
-            if (agent != null && agent.isOnNavMesh)
+            // We grab the agent dynamically here to completely avoid that serialization error.
+            // This safely stops her if she transitions to another state (like attacking or hiding).
+            var navAgent = this.GetComponent<NavMeshAgent>();
+            if (navAgent != null && navAgent.isOnNavMesh)
             {
-                agent.isStopped = true;
-                agent.enabled = false;
+                navAgent.isStopped = true;
             }
         }
     }

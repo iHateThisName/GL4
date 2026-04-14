@@ -58,9 +58,9 @@ namespace MonsterSystem
             this.rate = this.baseDrainRate;
 
             // Apply night-specific aggression multiplier from configuration
-            if (this.controller.Config != null)
+            if (this.controller != null)
             {
-                var nightOverride = this.controller.Config.GetOverrideForNight(this.controller.CurrentNight);
+                var nightOverride = this.controller.GetOverrideForNight(this.controller.CurrentNight);
                 this.rate *= nightOverride.aggressionMultiplier;
             }
 

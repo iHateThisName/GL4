@@ -23,12 +23,7 @@ namespace Refactored
         private void SpawnMonsterWithEvent(NightEvent evt)
         {
             var eventData = evt.GetPayload();
-            if (eventData.GetEventType() != NightEventType.SpawnMonster)
-            {
-                Debug.LogError("Event is not a SpawnMonster event.");
-                return;
-            }
-            Debug.Log("Spawning Monster");
+            if (eventData.GetEventType() != NightEventType.SpawnMonster) return;
 
             for (int i = 0; i < eventData.GetMonsterCount(); i++)
             {
@@ -52,14 +47,14 @@ namespace Refactored
 
         private void SpawnMonster(GameObject monsterToSpawn, MonsterController monsterController)
         {
-            var config = monsterController.Config;
-            if (config == null || config.spawnPoints == null || config.spawnPoints.Length == 0)
+            var spawnPoints = monsterController.SpawnPoints;
+            if (spawnPoints == null || spawnPoints.points == null || spawnPoints.points.Length == 0)
             {
                 Debug.LogError("Monster Config or spawn points missing, cannot spawn monster.");
                 return;
             }
 
-            var spawnPoint = config.GetRandomSpawnPoint();
+            var spawnPoint = monsterController.SpawnPoints.GetRandom();
             Instantiate(monsterToSpawn, spawnPoint.position, Quaternion.Euler(spawnPoint.rotation));
         }
     }

@@ -61,8 +61,19 @@ namespace MonsterSystem
     {
         public override DestinationResult ResolveDestination(in DestinationContext ctx)
         {
-            Vector3 pos = ctx.Target != null ? ctx.Target.position : ctx.Controller.transform.position;
-            return DestinationResult.At(pos);
+            Transform target = ctx.Target;
+
+            // If no explicit target was passed, fall back to player
+            if (target == null)
+                target = ctx.Controller.PlayerTarget;
+
+            if (target == null)
+            {
+                Debug.LogWarning("[FollowTargetStrategy] No target and no PlayerTarget — defaulting to self position.");
+                return DestinationResult.At(ctx.Controller.transform.position);
+            }
+
+            return DestinationResult.At(target.position);
         }
     }
 

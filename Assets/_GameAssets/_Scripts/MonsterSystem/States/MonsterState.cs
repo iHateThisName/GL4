@@ -9,6 +9,15 @@ namespace MonsterSystem
 
         private StateAffordance[] affordances;
         protected MonsterController controller;
+        
+        public virtual void Initialize(MonsterController owningController)
+        {
+            this.controller = owningController;
+            this.affordances = GetComponents<StateAffordance>();
+
+            for (int i = 0; i < this.affordances.Length; i++)
+                this.affordances[i].Initialize(owningController);
+        }
 
         /// Called when this state becomes active.
         public virtual void OnStateEnter() { }
@@ -19,7 +28,7 @@ namespace MonsterSystem
         /// <summary>
         /// Triggers all configured affordances (audio, animation, etc.)
         /// </summary>
-        protected void TriggerAffordances()
+        public void TriggerAffordances()
         {
             if (this.affordances == null) return;
             for (int i = 0; i < this.affordances.Length; i++)
@@ -30,7 +39,7 @@ namespace MonsterSystem
         /// Triggers only affordances of the specified type.
         /// Example: TriggerAffordances&lt;AudioAffordance&gt;()
         /// </summary>
-        protected void TriggerAffordances<T>() where T : StateAffordance
+        public void TriggerAffordances<T>() where T : StateAffordance
         {
             if (this.affordances == null) return;
             for (int i = 0; i < this.affordances.Length; i++)
@@ -43,7 +52,7 @@ namespace MonsterSystem
         /// <summary>
         /// Stops all configured affordances.
         /// </summary>
-        protected void StopAffordances()
+        public void StopAffordances()
         {
             if (this.affordances == null) return;
             for (int i = 0; i < this.affordances.Length; i++)
@@ -54,7 +63,7 @@ namespace MonsterSystem
         /// Stops only affordances of the specified type.
         /// Example: StopAffordances&lt;AudioAffordance&gt;()
         /// </summary>
-        protected void StopAffordances<T>() where T : StateAffordance
+        public void StopAffordances<T>() where T : StateAffordance
         {
             if (this.affordances == null) return;
             for (int i = 0; i < this.affordances.Length; i++)
@@ -78,14 +87,14 @@ namespace MonsterSystem
         {
             MonsterStateManager.RequestTransition(controller, targetState, context);
         }
-
-        public virtual void Initialize(MonsterController owningController)
+        
+        protected void KillPlayer()
         {
-            this.controller = owningController;
-            this.affordances = GetComponents<StateAffordance>();
+            string monsterName = this.controller.transform.parent.name;
+            monsterName = monsterName.Replace("(Clone)", "").Replace("Prefab", "");
 
-            for (int i = 0; i < this.affordances.Length; i++)
-                this.affordances[i].Initialize(owningController);
+            // Notify the death system that the player was killed by a monster
+            DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Monster, monsterName);
         }
         
         /// <summary>

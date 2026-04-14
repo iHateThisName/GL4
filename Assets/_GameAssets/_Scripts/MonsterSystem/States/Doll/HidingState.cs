@@ -1,91 +1,104 @@
-using MonsterSystem;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
-public class HidingState : MonsterState
+namespace MonsterSystem
 {
-    [Header("=== Components ===")]
-    [SerializeField] private XRGrabInteractable grabInteractable;
-    [SerializeField] private UnityEngine.AI.NavMeshAgent navMeshAgent;
-    [SerializeField] private Rigidbody rb;
-    [SerializeField] private MonsterState nextState;
-
-    [Header("=== Bed Reference ===")]
-    [SerializeField] private TriggerArea bedTriggerArea;
-
-    [Header("=== Doll Detection ===")]
-    [Tooltip("Drag the GameObject containing the Doll's actual collider here.")]
-    [SerializeField] private Collider dollCollider;
-
-    public override void OnStateEnter()
+    public class HidingState : MonsterState
     {
-        base.OnStateEnter();
+        [Header("=== Components ===")]
+        [SerializeField] private XRGrabInteractable grabInteractable;
+        [SerializeField] private NavMeshAgent navMeshAgent;
+        [SerializeField] private Rigidbody rb;
+        [SerializeField] private MonsterState nextState;
 
-        // 1. Turn OFF pathfinding
-        if (navMeshAgent != null) navMeshAgent.enabled = false;
+        private bool isTransitioning = false;
 
-        // 2. Turn ON physics explicitly so she falls/can be grabbed
-        if (rb != null) rb.isKinematic = false;
-
-        // 3. Enable VR grabbing
-        if (grabInteractable != null)
+        public override void Initialize(MonsterController owningController)
         {
-            grabInteractable.enabled = true;
+            base.Initialize(owningController);
         }
 
-        // 4. Listen for the bed
-        if (bedTriggerArea != null)
+        public override void OnStateEnter()
         {
-            this.bedTriggerArea.OnTriggerStayed += OnDollDropped;
-        }
-    }
+            base.OnStateEnter();
+            this.isTransitioning = false;
 
-    public override void OnStateExit()
-    {
-        base.OnStateExit();
+            if (this.navMeshAgent != null)
+            {
+                this.navMeshAgent.enabled = false;
+            }
 
-        if (bedTriggerArea != null)
-        {
-            this.bedTriggerArea.OnTriggerStayed -= OnDollDropped;
-        }
+            if (this.rb != null)
+            {
+                this.rb.isKinematic = false;
+            }
 
-        // Force drop her if the timer runs out and she goes Aggressive
-        if (grabInteractable != null)
-        {
-            grabInteractable.enabled = false;
-        }
-
-        // Notice we removed the rb.isKinematic = true here!
-        // We will let the AggressiveState or PatientState handle their own physics needs.
-    }
-
-    private void OnDollDropped(Collider collider)
-    {
-        if (dollCollider != null && collider != dollCollider) return;
-        if (grabInteractable != null && grabInteractable.isSelected) return;
-
-        ReturnToBed();
-    }
-
-    private void ReturnToBed()
-    {
-        if (bedTriggerArea != null)
-        {
-            this.bedTriggerArea.OnTriggerStayed -= OnDollDropped;
+            if (this.grabInteractable != null)
+            {
+                this.grabInteractable.enabled = true;
+                // Listen for ANY time the doll is grabbed or snapped
+                this.grabInteractable.selectEntered.AddListener(this.OnDollSelected);
+            }
         }
 
-        if (grabInteractable != null) grabInteractable.enabled = false;
-
-        var petSensor = this.controller.GetSensor<DollSensor>();
-        if (petSensor != null)
+        public override void OnStateExit()
         {
-            petSensor.ResetTimer();
+            base.OnStateExit();
+
+            if (this.grabInteractable != null)
+            {
+                this.grabInteractable.enabled = false;
+                // Stop listening when she leaves this state
+                this.grabInteractable.selectEntered.RemoveListener(this.OnDollSelected);
+            }
         }
 
-        if (this.nextState != null)
+        private void OnDollSelected(SelectEnterEventArgs args)
         {
-            RequestTransition(this.nextState);
+            // Check if the thing that just grabbed her is a Socket (not the player's hands)
+            if (args.interactorObject is XRSocketInteractor)
+            {
+                Debug.Log("[HidingState] Snapped into a socket! Waiting for physical snap to finish...");
+
+                if (this.isTransitioning)
+                {
+                    return;
+                }
+
+                if (this.nextState != null)
+                {
+                    this.isTransitioning = true;
+
+                    // Call the new Coroutine
+                    StartCoroutine(this.TransitionAfterSnapRoutine());
+                }
+                else
+                {
+                    Debug.LogError("[HidingState] Transition failed! 'Next State' is empty.");
+                }
+            }
+        }
+
+        private IEnumerator TransitionAfterSnapRoutine()
+        {
+            // Wait for the XR Toolkit to finish its visual/physical snapping movement.
+            // Tweak this number slightly if it feels too fast or too slow.
+            yield return new WaitForSeconds(0.25f);
+
+            Debug.Log($"[HidingState] Snap finished, requesting transition to {this.nextState.name}");
+            this.RequestTransition(this.nextState);
+        }
+
+        private IEnumerator TransitionNextFrameRoutine()
+        {
+            yield return new WaitForEndOfFrame();
+
+            Debug.Log($"[HidingState] Frame ended, officially requesting transition to {this.nextState.name}");
+            this.RequestTransition(this.nextState);
         }
     }
 }

@@ -74,6 +74,14 @@ public class VRLever : MonoBehaviour {
         yield return new WaitForFixedUpdate();
         UpdateSpringBehaviour();
         //StartCoroutine(UpdateSpringBehaviourIEnumerator()); This was less efficient than just calling the method in the FixedUpdate.
+
+        // Disalbe optimization in the begin to ensure the lever's state is correctly updated and events are fired when the game starts,
+        // then re-enable it after a short delay to optimize performance during gameplay.
+        if (this.optimizeUpdate) {
+            this.optimizeUpdate = false;
+            yield return new WaitUntil(() => this.CurrentState == EnumLeverState.Open || this.CurrentState == EnumLeverState.Closed);
+            this.optimizeUpdate = true;
+        }
     }
 
     private void InitializeStartRotation() {
@@ -140,4 +148,6 @@ public class VRLever : MonoBehaviour {
             targetPosition = (currentState == EnumLeverState.Closed || currentState == EnumLeverState.LeaningClosed) ? targetClosed : targetOpen
         };
     }
+
+    public bool GetSmartUpdateEnabled() => this.optimizeUpdate;
 }

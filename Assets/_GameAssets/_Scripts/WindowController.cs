@@ -27,4 +27,5 @@ public class WindowController : MonoBehaviour
 
     public Action<VRLever.EnumLeverState> GetWindowEvent() => windowJoint.OnLeverStateChanged;
     public VRLever.EnumLeverState GetCurrentWindowState() => windowJoint.CurrentState;
+    public bool IsVRLeverSmartUpdateEnabled() => windowJoint.GetSmartUpdateEnabled();
 }

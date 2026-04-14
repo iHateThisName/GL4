@@ -1,4 +1,3 @@
-using MonsterSystem;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
@@ -15,19 +14,26 @@ namespace MonsterSystem
         {
             base.OnStateEnter();
 
-            if (rb != null)
+            if (this.rb != null)
             {
-                rb.isKinematic = false;
+                this.rb.isKinematic = false;
 
                 // Instantly kill all throwing momentum/gravity from the drop
-                rb.linearVelocity = Vector3.zero;
-                rb.angularVelocity = Vector3.zero;
+                this.rb.linearVelocity = Vector3.zero;
+                this.rb.angularVelocity = Vector3.zero;
             }
 
-            if (grabInteractable != null) grabInteractable.enabled = false;
+            if (this.grabInteractable != null)
+            {
+                this.grabInteractable.enabled = false;
+            }
 
+            // Assuming 'controller' is a protected/public variable from the base MonsterState class
             var petSensor = this.controller.GetSensor<DollSensor>();
-            if (petSensor != null) petSensor.ResetTimer();
+            if (petSensor != null)
+            {
+                petSensor.ResetTimer();
+            }
 
             Debug.Log("Doll is Patient (Slouched). Physics ON. Momentum killed. Grabbing OFF.");
         }

@@ -1,5 +1,5 @@
 using UnityEngine;
-using TMPro; // Required for TextMeshPro
+using TMPro;
 
 namespace MonsterSystem
 {
@@ -7,24 +7,29 @@ namespace MonsterSystem
     {
         [Header("=== State Transitions ===")]
         [SerializeField] private MonsterState patientState;
-        [SerializeField] private MonsterState relocateState;
+        [SerializeField] private MonsterState relocateState; // Teleports to hiding spot
         [SerializeField] private MonsterState hidingState;
-        [SerializeField] private MonsterState aggressiveState;
+
+        [Tooltip("The setup state that handles the jump scare and NavMesh teleport before chasing.")]
+        [SerializeField] private MonsterState aggressiveSetupState; // NEW: The bridge state!
+
+        [SerializeField] private MonsterState aggressiveState; // The actual chase state
         [SerializeField] private MonsterState attackState;
 
+        [Header("=== Config ===")]
+        [SerializeField] private float timeToAggressive = 20f;
+        [SerializeField] private float timeToHiding = 20f;
 
         [Header("=== Debug UI ===")]
         [SerializeField] private TMP_Text debugText;
 
         private float neglectTimer = 0f;
-        private DollConfig config;
         private MonsterState lastTriggeredState;
 
         public override void Initialize(MonsterController owningMonster)
         {
             base.Initialize(owningMonster);
-            config = owningMonster.GetConfig<DollConfig>();
-            lastTriggeredState = patientState;
+            this.lastTriggeredState = this.patientState;
         }
 
         public override void OnTick(float tickDelta)
@@ -32,23 +37,24 @@ namespace MonsterSystem
             base.OnTick(tickDelta);
 
             // Only tick the timer if she is in one of these three states
-            if (controller.CurrentState == patientState || controller.CurrentState == relocateState || controller.CurrentState == hidingState)
+            if (this.controller.CurrentState == this.patientState || this.controller.CurrentState == this.relocateState || this.controller.CurrentState == this.hidingState)
             {
-                neglectTimer += this.TickDelta;
+                this.neglectTimer += this.TickDelta;
 
                 // 1. Check for Aggressive first (Timer has reached the absolute maximum)
-                if (neglectTimer >= (config.timeToHiding + config.timeToAggressive))
+                if (this.neglectTimer >= (this.timeToHiding + this.timeToAggressive))
                 {
-                    HandleStateTransition(aggressiveState);
+                    // Trigger the Setup/Jump Scare state instead of the direct chase!
+                    this.HandleStateTransition(this.aggressiveSetupState);
                 }
                 // 2. Check for Relocate (Timer hit the first threshold, AND she is still in bed)
-                else if (neglectTimer >= config.timeToHiding && controller.CurrentState == patientState)
+                else if (this.neglectTimer >= this.timeToHiding && this.controller.CurrentState == this.patientState)
                 {
-                    HandleStateTransition(relocateState);
+                    this.HandleStateTransition(this.relocateState);
                 }
             }
 
-            UpdateDebugUI();
+            this.UpdateDebugUI();
         }
 
         public void ReducePatience(float delta)
@@ -58,9 +64,9 @@ namespace MonsterSystem
 
         private void HandleStateTransition(MonsterState targetState)
         {
-            if (targetState != null && targetState != lastTriggeredState)
+            if (targetState != null && targetState != this.lastTriggeredState)
             {
-                lastTriggeredState = targetState;
+                this.lastTriggeredState = targetState;
                 this.TriggerTransitionTo(targetState);
             }
         }
@@ -68,55 +74,62 @@ namespace MonsterSystem
         public override void OnStateChanged()
         {
             base.OnStateChanged();
-            lastTriggeredState = controller.CurrentState;
+            this.lastTriggeredState = this.controller.CurrentState;
         }
 
         public void ResetTimer()
         {
-            neglectTimer = 0f;
+            this.neglectTimer = 0f;
 
-            if (controller.CurrentState != attackState)
+            if (this.controller.CurrentState != this.attackState)
             {
-                HandleStateTransition(patientState);
+                this.HandleStateTransition(this.patientState);
             }
         }
 
         private void UpdateDebugUI()
         {
-            if (debugText == null || controller.CurrentState == null) return;
+            if (this.debugText == null || this.controller.CurrentState == null)
+            {
+                return;
+            }
 
             // Strip "Doll" and "State" from the class name for cleaner display
-            string cleanStateName = controller.CurrentState.GetType().Name.Replace("Doll", "").Replace("State", "");
+            string cleanStateName = this.controller.CurrentState.GetType().Name.Replace("Doll", "").Replace("State", "");
             string stateText = $"State: {cleanStateName}";
             string timerText = "";
 
-            if (controller.CurrentState == patientState)
+            if (this.controller.CurrentState == this.patientState)
             {
-                float timeLeft = config.timeToHiding - neglectTimer;
+                float timeLeft = this.timeToHiding - this.neglectTimer;
                 timerText = $"\nHiding In: {Mathf.Max(0, timeLeft):F1}s";
-                debugText.color = Color.green;
+                this.debugText.color = Color.green;
             }
-            else if (controller.CurrentState == relocateState || controller.CurrentState == hidingState)
+            else if (this.controller.CurrentState == this.relocateState || this.controller.CurrentState == this.hidingState)
             {
-                float timeLeft = (config.timeToHiding + config.timeToAggressive) - neglectTimer;
+                float timeLeft = (this.timeToHiding + this.timeToAggressive) - this.neglectTimer;
                 timerText = $"\nAttacking In: {Mathf.Max(0, timeLeft):F1}s";
 
                 // Use an orange color for the hiding phase to show rising tension
-                debugText.color = new Color(1f, 0.5f, 0f);
+                this.debugText.color = new Color(1f, 0.5f, 0f);
             }
-            else if (controller.CurrentState == aggressiveState)
+            else if (this.controller.CurrentState == this.aggressiveSetupState)
             {
-                //float dist = Vector3.Distance(transform.position, playerTransform.position);
-                //timerText = $"\nChasing! Dist: {dist:F1}m";
-                debugText.color = Color.red;
+                timerText = "\nTELEPORTING...";
+                this.debugText.color = Color.yellow;
             }
-            else if (controller.CurrentState == attackState)
+            else if (this.controller.CurrentState == this.aggressiveState)
+            {
+                timerText = "\nCHASING!";
+                this.debugText.color = Color.red;
+            }
+            else if (this.controller.CurrentState == this.attackState)
             {
                 timerText = "\nYOU ARE DEAD";
-                debugText.color = Color.magenta;
+                this.debugText.color = Color.magenta;
             }
 
-            debugText.text = stateText + timerText;
+            this.debugText.text = stateText + timerText;
         }
     }
 }

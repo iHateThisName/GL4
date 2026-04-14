@@ -29,10 +29,13 @@ public class BaseNavAIMonster : MonoBehaviour {
     [SerializeField] private float fleeDuration = 35f; // How long the monster flees after being hit by flashlight
     [SerializeField] private float fleeDistance = 20f; // How far the monster tries to flee 
 
+    // Action events
+    public Action OnAttackPlayer;
+
     // Nav
     private Vector3 spawnPoint;
     private int currentPatrolIndex = 0;
-    private PlayerTemperatureSimulator.EnumLocationType currentLocation;
+    private PlayerTemperatureSimulator.EnumLocationType currentPlayerLocation;
     private WindowController target; // For intruder behavior, the window the monster is trying to enter through.
 
     // Delegate for monster behavior logic. This will point to the appropriate function based on the monster type.
@@ -102,7 +105,7 @@ public class BaseNavAIMonster : MonoBehaviour {
     /// Updates the location type when the environment changes.
     /// </summary>
     private void HandleLocationChange(PlayerTemperatureSimulator.EnumLocationType type) {
-        this.currentLocation = type;
+        this.currentPlayerLocation = type;
 
         // If the player is no longer in the Cold, stop the stalking audio.
         if (type != PlayerTemperatureSimulator.EnumLocationType.Cold) {
@@ -128,7 +131,12 @@ public class BaseNavAIMonster : MonoBehaviour {
     private void CheckAttackRange() {
         // Check if the monster is in attack range of the player.
         float distanceToPlayer = Vector3.Distance(this.transform.position, this.player.position);
-        if (distanceToPlayer <= this.attackRange) {
+
+        // Check if the monster type requires the player to be in a cold location for the attack to be valid.
+        bool requiresCold = this.monsterType == EnumMonsterType.Stalker;
+        bool isLocationValid = !requiresCold || this.currentPlayerLocation == PlayerTemperatureSimulator.EnumLocationType.Cold;
+
+        if (distanceToPlayer <= this.attackRange && isLocationValid) {
             AttackPlayer();
         }
     }
@@ -138,7 +146,7 @@ public class BaseNavAIMonster : MonoBehaviour {
     /// based on the configured monster type.
     /// </summary>
     private Action MonsterLogicSelector() {
-        switch (monsterType) {
+        switch (this.monsterType) {
             case EnumMonsterType.Stalker:
                 return StalkerNavigationLogic;
             case EnumMonsterType.Intruder:
@@ -168,8 +176,6 @@ public class BaseNavAIMonster : MonoBehaviour {
             }
             // Randomly select one of the closed windows as the new target
             this.target = closedWindows[UnityEngine.Random.Range(0, closedWindows.Count)];
-            // Start moving towards the target window's position
-            //agent.SetDestination(this.target.TargetPosition.position);
 
             Vector3 approachePoint = this.target.TargetPosition.position - (-this.target.TargetPosition.right * 5f);
             Agent.SetDestination(approachePoint);
@@ -181,7 +187,15 @@ public class BaseNavAIMonster : MonoBehaviour {
         if (!Agent.pathPending && Agent.velocity.sqrMagnitude == 0f) {
             // debug log the current position the pathendposition and the target position
             Vector3 targetPosition = this.target.TargetPosition.position;
-            if (this.Agent.pathEndPosition.x == targetPosition.x && this.Agent.pathEndPosition.z == targetPosition.z) {
+            targetPosition.y = this.Agent.transform.position.y; // setting the y so its the same when warping.
+
+            // Calculate distance ignoring the Y axis
+            Vector2 pathEnd2D = new Vector2(this.Agent.pathEndPosition.x, this.Agent.pathEndPosition.z);
+            Vector2 target2D = new Vector2(targetPosition.x, targetPosition.z);
+            
+            float stoppingThreshold = 0.1f;
+
+            if (Vector2.Distance(pathEnd2D, target2D) <= stoppingThreshold) {
                 DisableNavigation();
                 // Reached Window target
                 this.Agent.Warp(targetPosition); // Making sure the monster is exactly at the target position.
@@ -215,7 +229,7 @@ public class BaseNavAIMonster : MonoBehaviour {
         }
 
         // Check if player is outside.
-        if (currentLocation == PlayerTemperatureSimulator.EnumLocationType.Cold) {
+        if (currentPlayerLocation == PlayerTemperatureSimulator.EnumLocationType.Cold) {
             this.Agent.SetDestination(this.player.position);
             this.DebugInformation = $"Stalker is pursuing the player at {this.player.position}";
 
@@ -246,13 +260,18 @@ public class BaseNavAIMonster : MonoBehaviour {
         if (this.isPlayerKilled) return; // Prevent multiple attack triggers if the player is already killed.
         this.isPlayerKilled = true;
 
-        //Audio
-        SoundEffectManager.Instance.PlaySoundFXClip(this.killAudio, transform, 0.75f);
+        this.DebugInformation = $"{this.monsterType} is attacking the player!";
 
-        this.DebugInformation = "Monster is attacking the player!";
+        //Audio
+        //SoundEffectManager.Instance.PlaySoundFXClip(this.killAudio, transform, 0.75f); use a audio affordance instead.
+
+        // Event trigger
+        this.OnAttackPlayer?.Invoke();
+
         // Implement attack logic here. trigger animation, reduce player health, etc.
-        Debug.Log("Monster is attacking the player!");
-        DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Monster, completelyRestart: false);
+        //Debug.Log("Monster is attacking the player!");
+        //DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Monster, completelyRestart: false);
+
     }
 
     private void UpdateStalkingAudio(bool isStalking) {

@@ -73,6 +73,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1242494970359174038}
+  - component: {fileID: 279058813585738472}
   m_Layer: 0
   m_Name: States
   m_TagString: Untagged
@@ -94,6 +95,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2484438290095207372}
+  - {fileID: 6309410382688941831}
   - {fileID: 2422155775393250689}
   - {fileID: 2041391103117283210}
   - {fileID: 5079762235378765361}
@@ -101,6 +103,25 @@ Transform:
   - {fileID: 8082873736197129284}
   m_Father: {fileID: 1257309348054210874}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &279058813585738472
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2008536085359024731}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a0f28e82ba282747a3ad3dd8aea0f9b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.MonsterController
+  nightOverrides: []
+  spawnPoints: {fileID: 11400000, guid: 76cdd536e2aa8bb45b0b4c19a2af3932, type: 2}
+  playerRef: {fileID: 11400000, guid: 8aa04a6520205384e9477b4745bd7d4b, type: 2}
+  animator: {fileID: 2984454646786910488}
+  audioSource: {fileID: 8610362843901164458}
+  sensorRoot: {fileID: 2343827092994151497}
+  initialState: {fileID: 3198911293393157017}
 --- !u!1 &2224058024617820946
 GameObject:
   m_ObjectHideFlags: 0
@@ -148,7 +169,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.MunchFeedableState
   blocksTransitions: 0
-  <animationState>k__BackingField: 0
   nextState: {fileID: 1124015477162281980}
   exitOnComplete: 0
   waitForAffordanceAnimation: 0
@@ -185,7 +205,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AudioAffordance
   clip: {fileID: 8300000, guid: 44627079fb43bdd408145cafd3660382, type: 3}
-  loop: 0
+  loop: 1
   volume: 1
 --- !u!1 &2296687331529582161
 GameObject:
@@ -234,7 +254,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.MunchFeedableState
   blocksTransitions: 0
-  <animationState>k__BackingField: 0
   nextState: {fileID: 1124015477162281980}
   exitOnComplete: 0
   waitForAffordanceAnimation: 0
@@ -255,7 +274,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AudioAffordance
   clip: {fileID: 8300000, guid: 2fe0804fafdc86140b8104dc9ee18ee8, type: 3}
-  loop: 0
+  loop: 1
   volume: 1
 --- !u!114 &7890218810431224938
 MonoBehaviour:
@@ -353,7 +372,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.MunchAcceptFoodState
   blocksTransitions: 1
-  <animationState>k__BackingField: 0
   nextState: {fileID: 3198911293393157017}
   exitOnComplete: 1
   waitForAffordanceAnimation: 1
@@ -389,6 +407,54 @@ MonoBehaviour:
   clip: {fileID: 8300000, guid: b7524718948beb3418d5f11f0fe56417, type: 3}
   loop: 0
   volume: 1
+--- !u!1 &2626946641650882738
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6309410382688941831}
+  - component: {fileID: 5731669701624702447}
+  m_Layer: 0
+  m_Name: Idle
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6309410382688941831
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2626946641650882738}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1242494970359174038}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5731669701624702447
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2626946641650882738}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbe65502d3a88a14ca92763eb6f4e9b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.IdleState
+  blocksTransitions: 0
+  interval: 0.1
+  duration: 0
+  nextState: {fileID: 0}
 --- !u!1 &5020440885573426465
 GameObject:
   m_ObjectHideFlags: 0
@@ -435,10 +501,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.RadioSensor
   stateToTransitionTo: {fileID: 0}
   radioRef: {fileID: 11400000, guid: b7444bc83e7e01742ad9851020aa5b6f, type: 2}
-  frenzyState: {fileID: 710727004609936139}
   normalState: {fileID: 5946285856578261012}
-  safeAggressionModifier: 0.5
-  dangerAggressionModifier: 1.5
 --- !u!1 &5389320278334512957
 GameObject:
   m_ObjectHideFlags: 0
@@ -484,9 +547,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.MunchRelocateState
   blocksTransitions: 1
-  nextState: {fileID: 5946285856578261012}
-  transforms: {fileID: 0}
+  nextState: {fileID: 5731669701624702447}
+  transitionDelay: 2
+  grabInteractable: {fileID: 0}
+  transforms: {fileID: 11400000, guid: 76cdd536e2aa8bb45b0b4c19a2af3932, type: 2}
   useConfig: 1
+  killMomentum: 0
 --- !u!1 &5563555725848977607
 GameObject:
   m_ObjectHideFlags: 0
@@ -534,7 +600,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.MunchRejectFoodState
   blocksTransitions: 1
-  <animationState>k__BackingField: 0
   nextState: {fileID: 5946285856578261012}
   exitOnComplete: 1
   waitForAffordanceAnimation: 0
@@ -694,7 +759,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 4950517335717247463, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 4038270345354055687}
+      addedObject: {fileID: 3150005142149285927}
     - targetCorrespondingSourceObject: {fileID: 8764447899412136325, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7146271881563414096}
@@ -731,23 +796,33 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 4950517335717247463, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
   m_PrefabInstance: {fileID: 8102502749938366390}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &4038270345354055687
-MonoBehaviour:
+--- !u!54 &3150005142149285927
+Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3801629742082641489}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a0f28e82ba282747a3ad3dd8aea0f9b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.MonsterController
-  config: {fileID: 11400000, guid: ff306d00d63e5704e88d2e7c1f8e5e7d, type: 2}
-  animator: {fileID: 2984454646786910488}
-  audioSource: {fileID: 8610362843901164458}
-  sensorRoot: {fileID: 2343827092994151497}
-  initialState: {fileID: 3198911293393157017}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!82 &8610362843901164458 stripped
 AudioSource:
   m_CorrespondingSourceObject: {fileID: 508898174136536092, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}

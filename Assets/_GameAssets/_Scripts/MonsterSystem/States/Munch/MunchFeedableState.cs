@@ -28,10 +28,11 @@ namespace MonsterSystem
             if (this.feedZone != null)
                 this.feedZone.OnTriggerEntered += HandleFeedTrigger;
             
+            // Stop whichever feedable state was active before (may be on a different GameObject)
+            this.controller.PreviousState?.StopAffordances<AudioAffordance>();
+
             TriggerAffordances<AnimationAffordance>();
-            
-            // Start playing the looping sound for this feedable state
-           TriggerAffordances<AudioAffordance>();
+            TriggerAffordances<AudioAffordance>();
         }
 
         /// <summary>
@@ -42,9 +43,6 @@ namespace MonsterSystem
             // Unsubscribe from the feed zone trigger to prevent stale callbacks
             if (this.feedZone != null)
                 this.feedZone.OnTriggerEntered -= HandleFeedTrigger;
-
-            // Stop any looping audio that was started on enter
-            StopAffordances<AudioAffordance>();
         }
 
         /// <summary>
@@ -55,7 +53,7 @@ namespace MonsterSystem
         {
             Debug.Log("Triggered Feed trigger");
             // Ignore non-food objects and guard against missing controller
-            if (!other.CompareTag("Food")) return;
+            if (HungerSystem.TryGetFood(other) == null) return;
 
             // Retrieve the food's rigidbody; bail out if none is attached
             Rigidbody foodRb = other.attachedRigidbody;
@@ -67,10 +65,11 @@ namespace MonsterSystem
             return;
 
             // Accept food if it is moving slowly enough; otherwise reject it
+            /*
             if (foodRb.linearVelocity.magnitude <= this.maxAcceptableVelocity)
                 this.controller.TransitionTo(this.acceptState, foodRb);
             else
-                this.controller.TransitionTo(this.rejectState, foodRb);
+                this.controller.TransitionTo(this.rejectState, foodRb);*/
         }
     }
 }

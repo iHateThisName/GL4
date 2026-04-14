@@ -146,6 +146,9 @@ namespace MonsterSystem
             this.remainingCooldownTime = this.sensorCooldownDuration;
             this.exposure = 0f;
 
+            // this should be happening in the state
+            // another option could be to call: this.fleeState.TriggerAffordances<AudioAffordance>();
+            
             // Play stun audio
             if (this.flashedSound != null && this.controller.GetComponent<AudioSource>() != null)
                 MonsterAudio.PlayOneShot(this.controller.GetComponent<AudioSource>(), this.flashedSound);
