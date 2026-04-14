@@ -28,7 +28,7 @@ namespace MonsterSystem
         /// <summary>
         /// Triggers all configured affordances (audio, animation, etc.)
         /// </summary>
-        protected void TriggerAffordances()
+        public void TriggerAffordances()
         {
             if (this.affordances == null) return;
             for (int i = 0; i < this.affordances.Length; i++)
@@ -39,7 +39,7 @@ namespace MonsterSystem
         /// Triggers only affordances of the specified type.
         /// Example: TriggerAffordances&lt;AudioAffordance&gt;()
         /// </summary>
-        protected void TriggerAffordances<T>() where T : StateAffordance
+        public void TriggerAffordances<T>() where T : StateAffordance
         {
             if (this.affordances == null) return;
             for (int i = 0; i < this.affordances.Length; i++)
@@ -52,7 +52,7 @@ namespace MonsterSystem
         /// <summary>
         /// Stops all configured affordances.
         /// </summary>
-        protected void StopAffordances()
+        public void StopAffordances()
         {
             if (this.affordances == null) return;
             for (int i = 0; i < this.affordances.Length; i++)

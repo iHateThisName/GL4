@@ -33,19 +33,8 @@ namespace MonsterSystem
         {
             base.OnStateEnter();
             TriggerAffordances<AudioAffordance>();
-
-            if (this.grabInteractable != null) this.grabInteractable.enabled = false;
-
-            if (this.rb != null)
-            {
-                this.rb.isKinematic = true;
-
-                if (this.killMomentum)
-                {
-                    this.rb.linearVelocity = Vector3.zero;
-                    this.rb.angularVelocity = Vector3.zero;
-                }
-            }
+            
+            DisableGrabInteractable();
 
             // 3. Handle Relocation (Using STRICT Rigidbody Math)
             Vector3 targetPos = this.controller.transform.position;
@@ -79,15 +68,36 @@ namespace MonsterSystem
                 }
             }
 
+            FixRigidBody(targetPos, targetRot);
+            this.controller.transform.root.SetPositionAndRotation(targetPos, targetRot);
+
+            delayRoutine = StartCoroutine(WaitAndTransitionRoutine());
+        }
+
+        private void FixRigidBody(Vector3 targetPos, Quaternion targetRot)
+        {
             // THE PHYSICS FIX: Tell the Rigidbody exactly where it lives now.
             if (this.rb != null)
             {
                 this.rb.position = targetPos;
                 this.rb.rotation = targetRot;
             }
-            this.controller.transform.SetPositionAndRotation(targetPos, targetRot);
+        }
 
-            delayRoutine = StartCoroutine(WaitAndTransitionRoutine());
+        private void DisableGrabInteractable()
+        {
+            if (this.grabInteractable != null) this.grabInteractable.enabled = false;
+
+            if (this.rb != null)
+            {
+                this.rb.isKinematic = true;
+
+                if (this.killMomentum)
+                {
+                    this.rb.linearVelocity = Vector3.zero;
+                    this.rb.angularVelocity = Vector3.zero;
+                }
+            }
         }
 
         private IEnumerator WaitAndTransitionRoutine()
