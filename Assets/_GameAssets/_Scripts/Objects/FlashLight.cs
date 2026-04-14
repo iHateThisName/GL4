@@ -1,4 +1,4 @@
-using Assets.Scripts.Singleton;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
@@ -14,7 +14,7 @@ using UnityEngine.XR.Interaction.Toolkit.Interactables;
 /// </summary>
 [RequireComponent(typeof(XRGrabInteractable))] 
 // Ensures the object always has an XRGrabInteractable component
-public class Flashlight : Singleton<Flashlight>
+public class Flashlight : MonoBehaviour
 {
     [Header("=== References ===")]
     // Handle used to grab and toggle the flashlight on/off
@@ -34,7 +34,10 @@ public class Flashlight : Singleton<Flashlight>
     [SerializeField] private bool startEnabled = false;
 
     private TimerHandle batteryHandle;
-    
+
+    // CTS to cancel in-progress smooth light transitions
+    private CancellationTokenSource lightTransitionCTS;
+
     // Target intensity we smoothly move toward
     private float targetLightIntensity;
 
@@ -61,9 +64,8 @@ public class Flashlight : Singleton<Flashlight>
     /// <summary>
     /// Automatically fetch Light component if not set in inspector.
     /// </summary>
-    protected override void Awake()
+    private void Awake()
     {
-        base.Awake();
         if (this.lightSource == null)
             this.lightSource = GetComponentInChildren<Light>();
     }
@@ -129,20 +131,23 @@ public class Flashlight : Singleton<Flashlight>
     private void OnDestroy()
     {
         TimerManager.Release(ref this.batteryHandle);
+        this.lightTransitionCTS?.Cancel();
+        this.lightTransitionCTS?.Dispose();
     }
     #endregion
 
     private void OnFlashlightDecay()
     {
-        // If power is too low, turn off
-        if (this.LightIntensity <= this.flashlightSettings.GetMinLightPower())
-        {
-            ToggleFlashLight(false);
-            return;
-        }
-        // Reduce intensity
+        // Reduce target intensity
         UpdateLightIntensity(-this.flashlightSettings.GetLightDecayRate());
         UpdateFlashLight();
+
+        // Turn off once target reaches minimum — check target, not the lerped source value
+        if (this.targetLightIntensity <= this.flashlightSettings.GetMinLightPower())
+        {
+            Debug.Log("Flashlight reached minimum power, turning off.");
+            ToggleFlashLight(false);
+        }
     }
     
     /// <summary>
@@ -155,24 +160,43 @@ public class Flashlight : Singleton<Flashlight>
     }
 
     /// <summary>
-    /// Smoothly interpolates intensity and updates beam range.
+    /// Cancels any running transition and starts a new one toward the current targets.
+    /// Uses Awaitable to avoid IEnumerator/coroutine allocation.
     /// </summary>
     private void UpdateFlashLight()
     {
         if (this.lightSource == null) return;
 
-        // Smooth transition toward target intensity
-        this.lightSource.intensity = Mathf.MoveTowards(this.LightIntensity, this.targetLightIntensity, 5f * Time.deltaTime);
+        this.lightTransitionCTS?.Cancel();
+        this.lightTransitionCTS?.Dispose();
+        this.lightTransitionCTS = new CancellationTokenSource();
 
-        // Normalize intensity to 0–1 range
-        float normalized = Mathf.InverseLerp(this.flashlightSettings.GetMinLightPower(), this.flashlightSettings.GetMaxLightPower(), this.LightIntensity);
+        _ = SmoothLightTransitionAsync(this.lightTransitionCTS.Token);
+    }
 
-        // Adjust beam range based on power level
-        this.targetLightRange = Mathf.Lerp(this.flashlightSettings.GetMinLightRange(), this.flashlightSettings.GetMaxLightRange(), normalized);
-        this.lightSource.range = Mathf.MoveTowards(this.lightSource.range, this.targetLightRange, 5f * Time.deltaTime);
+    private async Awaitable SmoothLightTransitionAsync(CancellationToken ct)
+    {
+        try
+        {
+            while (!Mathf.Approximately(this.lightSource.intensity, this.targetLightIntensity) ||
+                   !Mathf.Approximately(this.lightSource.range, this.targetLightRange))
+            {
+                this.lightSource.intensity = Mathf.MoveTowards(this.lightSource.intensity, this.targetLightIntensity, 5f * Time.deltaTime);
 
-        // Update detection cone with new range
-        this.flashlightSettings.CalculateDetectionCone(this.targetLightRange);
+                float normalized = Mathf.InverseLerp(this.flashlightSettings.GetMinLightPower(), this.flashlightSettings.GetMaxLightPower(), this.lightSource.intensity);
+                this.targetLightRange = Mathf.Lerp(this.flashlightSettings.GetMinLightRange(), this.flashlightSettings.GetMaxLightRange(), normalized);
+                this.lightSource.range = Mathf.MoveTowards(this.lightSource.range, this.targetLightRange, 5f * Time.deltaTime);
+
+                this.flashlightSettings.CalculateDetectionCone(this.lightSource.range);
+                await Awaitable.NextFrameAsync(ct);
+            }
+
+            // Snap to exact targets once close enough
+            this.lightSource.intensity = this.targetLightIntensity;
+            this.lightSource.range = this.targetLightRange;
+            this.flashlightSettings.CalculateDetectionCone(this.lightSource.range);
+        }
+        catch (System.OperationCanceledException) { }
     }
     
     // ==== Crank Logic ====
@@ -230,6 +254,20 @@ public class Flashlight : Singleton<Flashlight>
         ToggleFlashLight(flickeredLastFrame);
     }
     
+    /// <summary>
+    /// Waits 6 seconds after pickup before the first decay tick fires.
+    /// After the delay expires, switches to the repeating decay timer.
+    /// </summary>
+    private void SetupInitialDecayDelayTimer()
+    {
+        if (!TimerManager.Validate(this.batteryHandle))
+            this.batteryHandle = TimerManager.Create(0, this.flashlightSettings.GetLightDecayTick());
+        else
+            TimerManager.Reconfigure(this.batteryHandle, 0, this.flashlightSettings.GetLightDecayTick());
+
+        TimerManager.SetCallbacks(this.batteryHandle, null, SetupActiveFlashlightTimer);
+    }
+
     private void SetupActiveFlashlightTimer()
     {
         if (!TimerManager.Validate(this.batteryHandle))
@@ -274,18 +312,22 @@ public class Flashlight : Singleton<Flashlight>
     }
     
     /// <summary>
-    /// Turns flashlight on when grabbed.
+    /// Turns flashlight on when grabbed. Starts the 6-second initial delay before first decay.
     /// </summary>
     private void ToggleOnFlashlight()
     {
         ToggleFlashLight(true);
-        TimerManager.Resume(this.batteryHandle);
+        SetupInitialDecayDelayTimer();
     }
 
     private void ToggleOffFlashlight()
     {
         ToggleFlashLight(false);
         TimerManager.Pause(this.batteryHandle);
+
+        this.lightTransitionCTS?.Cancel();
+        this.lightTransitionCTS?.Dispose();
+        this.lightTransitionCTS = null;
     }
     
     /// <summary>
