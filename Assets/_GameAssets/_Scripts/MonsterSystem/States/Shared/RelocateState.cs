@@ -17,7 +17,7 @@ namespace MonsterSystem
         [Header("=== Configuration ===")]
         [SerializeField] private SO_TransformCollection transforms;
         [SerializeField] private bool useConfig = true;
-        [SerializeField] private bool killMomentum = true;
+        [SerializeField] private bool canKillMomentum = true; 
 
         private Rigidbody rb;
         private int lastIndex = -1;
@@ -32,9 +32,9 @@ namespace MonsterSystem
         public override void OnStateEnter()
         {
             base.OnStateEnter();
-            TriggerAffordances<AudioAffordance>();
-            
-            DisableGrabInteractable();
+            this.TriggerAffordances<AudioAffordance>();
+
+            this.DisableGrabInteractable();
 
             // 3. Handle Relocation (Using STRICT Rigidbody Math)
             Vector3 targetPos = this.controller.transform.position;
@@ -46,10 +46,16 @@ namespace MonsterSystem
                 if (spawnPoints != null && spawnPoints.points != null && spawnPoints.points.Length > 0)
                 {
                     int index;
-                    if (spawnPoints.points.Length == 1) index = 0;
+                    if (spawnPoints.points.Length == 1)
+                    {
+                        index = 0;
+                    }
                     else
                     {
-                        do { index = Random.Range(0, spawnPoints.points.Length); }
+                        do
+                        {
+                            index = Random.Range(0, spawnPoints.points.Length);
+                        }
                         while (index == this.lastIndex);
                     }
 
@@ -68,10 +74,10 @@ namespace MonsterSystem
                 }
             }
 
-            FixRigidBody(targetPos, targetRot);
+            this.FixRigidBody(targetPos, targetRot);
             this.controller.transform.root.SetPositionAndRotation(targetPos, targetRot);
 
-            delayRoutine = StartCoroutine(WaitAndTransitionRoutine());
+            this.delayRoutine = StartCoroutine(this.WaitAndTransitionRoutine());
         }
 
         private void FixRigidBody(Vector3 targetPos, Quaternion targetRot)
@@ -86,13 +92,16 @@ namespace MonsterSystem
 
         private void DisableGrabInteractable()
         {
-            if (this.grabInteractable != null) this.grabInteractable.enabled = false;
+            if (this.grabInteractable != null)
+            {
+                this.grabInteractable.enabled = false;
+            }
 
             if (this.rb != null)
             {
                 this.rb.isKinematic = true;
 
-                if (this.killMomentum)
+                if (this.canKillMomentum)
                 {
                     this.rb.linearVelocity = Vector3.zero;
                     this.rb.angularVelocity = Vector3.zero;
@@ -102,11 +111,11 @@ namespace MonsterSystem
 
         private IEnumerator WaitAndTransitionRoutine()
         {
-            yield return new WaitForSeconds(transitionDelay);
+            yield return new WaitForSeconds(this.transitionDelay);
 
             if (this.nextState != null)
             {
-                RequestTransition(this.nextState);
+                this.RequestTransition(this.nextState);
             }
         }
 
@@ -114,10 +123,10 @@ namespace MonsterSystem
         {
             base.OnStateExit();
 
-            if (delayRoutine != null)
+            if (this.delayRoutine != null)
             {
-                StopCoroutine(delayRoutine);
-                delayRoutine = null;
+                StopCoroutine(this.delayRoutine);
+                this.delayRoutine = null;
             }
         }
     }

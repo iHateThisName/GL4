@@ -7,10 +7,8 @@ namespace MonsterSystem
     {
         public override void OnStateEnter()
         {
-            // The Relocate state already handled the teleporting, locked the physics, 
-            // and perfectly snapped the NavMeshAgent to the floor.
-
-            // We just let the base class hook up the timers and start the chase!
+            // The Relocate state already handled the teleporting, locked the physics, and snapped the NavMeshAgent to the floor.
+            // Let the base class hook up the timers and start the chase!
             base.OnStateEnter();
 
             Debug.Log("Doll is Aggressive and actively hunting!");
@@ -23,7 +21,7 @@ namespace MonsterSystem
 
             // We grab the agent dynamically here to completely avoid that serialization error.
             // This safely stops her if she transitions to another state (like attacking or hiding).
-            var navAgent = GetComponent<NavMeshAgent>();
+            var navAgent = this.GetComponent<NavMeshAgent>();
             if (navAgent != null && navAgent.isOnNavMesh)
             {
                 navAgent.isStopped = true;

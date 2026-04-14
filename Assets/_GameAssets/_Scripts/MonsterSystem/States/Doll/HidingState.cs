@@ -1,4 +1,3 @@
-using MonsterSystem;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
@@ -6,87 +5,100 @@ using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
-public class HidingState : MonsterState
+namespace MonsterSystem
 {
-    [Header("=== Components ===")]
-    [SerializeField] private XRGrabInteractable grabInteractable;
-    [SerializeField] private NavMeshAgent navMeshAgent;
-    [SerializeField] private Rigidbody rb;
-    [SerializeField] private MonsterState nextState;
-
-    private bool isTransitioning = false;
-
-    public override void Initialize(MonsterController owningController)
+    public class HidingState : MonsterState
     {
-        base.Initialize(owningController);
-    }
+        [Header("=== Components ===")]
+        [SerializeField] private XRGrabInteractable grabInteractable;
+        [SerializeField] private NavMeshAgent navMeshAgent;
+        [SerializeField] private Rigidbody rb;
+        [SerializeField] private MonsterState nextState;
 
-    public override void OnStateEnter()
-    {
-        base.OnStateEnter();
-        isTransitioning = false;
+        private bool isTransitioning = false;
 
-        if (navMeshAgent != null) navMeshAgent.enabled = false;
-        if (rb != null) rb.isKinematic = false;
-
-        if (grabInteractable != null)
+        public override void Initialize(MonsterController owningController)
         {
-            grabInteractable.enabled = true;
-            // Listen for ANY time the doll is grabbed or snapped
-            grabInteractable.selectEntered.AddListener(OnDollSelected);
+            base.Initialize(owningController);
         }
-    }
 
-    public override void OnStateExit()
-    {
-        base.OnStateExit();
-
-        if (grabInteractable != null)
+        public override void OnStateEnter()
         {
-            grabInteractable.enabled = false;
-            // Stop listening when she leaves this state
-            grabInteractable.selectEntered.RemoveListener(OnDollSelected);
-        }
-    }
+            base.OnStateEnter();
+            this.isTransitioning = false;
 
-    private void OnDollSelected(SelectEnterEventArgs args)
-    {
-        // Check if the thing that just grabbed her is a Socket (not the player's hands)
-        if (args.interactorObject is XRSocketInteractor)
-        {
-            Debug.Log("[HidingState] Snapped into a socket! Waiting for physical snap to finish...");
-
-            if (isTransitioning) return;
-
-            if (this.nextState != null)
+            if (this.navMeshAgent != null)
             {
-                isTransitioning = true;
-
-                // Call the new Coroutine
-                StartCoroutine(TransitionAfterSnapRoutine());
+                this.navMeshAgent.enabled = false;
             }
-            else
+
+            if (this.rb != null)
             {
-                Debug.LogError("[HidingState] Transition failed! 'Next State' is empty.");
+                this.rb.isKinematic = false;
+            }
+
+            if (this.grabInteractable != null)
+            {
+                this.grabInteractable.enabled = true;
+                // Listen for ANY time the doll is grabbed or snapped
+                this.grabInteractable.selectEntered.AddListener(this.OnDollSelected);
             }
         }
-    }
 
-    private IEnumerator TransitionAfterSnapRoutine()
-    {
-        // Wait for the XR Toolkit to finish its visual/physical snapping movement.
-        // Tweak this number slightly if it feels too fast or too slow.
-        yield return new WaitForSeconds(0.25f);
+        public override void OnStateExit()
+        {
+            base.OnStateExit();
 
-        Debug.Log($"[HidingState] Snap finished, requesting transition to {this.nextState.name}");
-        RequestTransition(this.nextState);
-    }
+            if (this.grabInteractable != null)
+            {
+                this.grabInteractable.enabled = false;
+                // Stop listening when she leaves this state
+                this.grabInteractable.selectEntered.RemoveListener(this.OnDollSelected);
+            }
+        }
 
-    private IEnumerator TransitionNextFrameRoutine()
-    {
-        yield return new WaitForEndOfFrame();
+        private void OnDollSelected(SelectEnterEventArgs args)
+        {
+            // Check if the thing that just grabbed her is a Socket (not the player's hands)
+            if (args.interactorObject is XRSocketInteractor)
+            {
+                Debug.Log("[HidingState] Snapped into a socket! Waiting for physical snap to finish...");
 
-        Debug.Log($"[HidingState] Frame ended, officially requesting transition to {this.nextState.name}");
-        RequestTransition(this.nextState);
+                if (this.isTransitioning)
+                {
+                    return;
+                }
+
+                if (this.nextState != null)
+                {
+                    this.isTransitioning = true;
+
+                    // Call the new Coroutine
+                    StartCoroutine(this.TransitionAfterSnapRoutine());
+                }
+                else
+                {
+                    Debug.LogError("[HidingState] Transition failed! 'Next State' is empty.");
+                }
+            }
+        }
+
+        private IEnumerator TransitionAfterSnapRoutine()
+        {
+            // Wait for the XR Toolkit to finish its visual/physical snapping movement.
+            // Tweak this number slightly if it feels too fast or too slow.
+            yield return new WaitForSeconds(0.25f);
+
+            Debug.Log($"[HidingState] Snap finished, requesting transition to {this.nextState.name}");
+            this.RequestTransition(this.nextState);
+        }
+
+        private IEnumerator TransitionNextFrameRoutine()
+        {
+            yield return new WaitForEndOfFrame();
+
+            Debug.Log($"[HidingState] Frame ended, officially requesting transition to {this.nextState.name}");
+            this.RequestTransition(this.nextState);
+        }
     }
 }

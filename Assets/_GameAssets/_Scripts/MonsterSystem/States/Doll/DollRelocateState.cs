@@ -10,19 +10,18 @@ namespace MonsterSystem
         [Header("=== Doll Specifics ===")]
         [SerializeField] private XRGrabInteractable grabInteractable;
         [SerializeField] private NavMeshAgent agent;
-        [SerializeField] private bool killMomentum = true;
+        [SerializeField] private bool canKillMomentum = true;
 
         [Header("=== Relocation Config ===")]
         [Tooltip("If true, snaps to the nearest point. If false, picks a random non-repeating point.")]
-        [SerializeField] private bool findNearest = true;
-        //[SerializeField] private Transform[] spawnPoints;
-        [SerializeField] SO_TransformCollection spawnPoints;
+        [SerializeField] private bool useNearest = true;
+        [SerializeField] private SO_TransformCollection spawnPoints;
 
         [Header("=== Horror Elements ===")]
         [Tooltip("How long she waits in the dark before the chase begins.")]
         [SerializeField] private float jumpScareDelay = 3.0f;
         [Tooltip("Drag the doll's main mesh renderer here so she can turn invisible")]
-        [SerializeField] private Renderer dollRenderer; // Updated to a single Renderer!
+        [SerializeField] private Renderer dollRenderer;
 
         [Header("=== Next State ===")]
         [Tooltip("Drag the Aggressive State here")]
@@ -40,16 +39,19 @@ namespace MonsterSystem
 
         public override void OnStateEnter()
         {
-            TriggerAffordances<AudioAffordance>();
+            this.TriggerAffordances<AudioAffordance>();
             base.OnStateEnter();
 
             // 1. Lock down interaction
-            if (this.grabInteractable != null) this.grabInteractable.enabled = false;
+            if (this.grabInteractable != null)
+            {
+                this.grabInteractable.enabled = false;
+            }
 
             // 2. Handle Physics
             if (this.rb != null)
             {
-                if (this.killMomentum)
+                if (this.canKillMomentum)
                 {
                     this.rb.linearVelocity = Vector3.zero;
                     this.rb.angularVelocity = Vector3.zero;
@@ -58,11 +60,14 @@ namespace MonsterSystem
             }
 
             // 3. Prepare NavMeshAgent and turn OFF visibility!
-            if (agent != null) agent.enabled = false;
-            SetVisibility(false);
+            if (this.agent != null)
+            {
+                this.agent.enabled = false;
+            }
+            this.SetVisibility(false);
 
             // 4. Determine Target Spot
-            var bestSpot = GetTargetSpawnPoint();
+            var bestSpot = this.GetTargetSpawnPoint();
 
             // 5. Teleport & Warp
             if (bestSpot.position != Vector3.zero)
@@ -71,44 +76,48 @@ namespace MonsterSystem
                 {
                     this.controller.transform.SetPositionAndRotation(hit.position, Quaternion.Euler(bestSpot.rotation));
 
-                    if (agent != null)
+                    if (this.agent != null)
                     {
-                        agent.enabled = true;
-                        agent.Warp(hit.position);
+                        this.agent.enabled = true;
+                        this.agent.Warp(hit.position);
                     }
                 }
                 else
                 {
                     Debug.LogError($"[DollRelocate] FAILED to find NavMesh near {bestSpot}! Forcing transform.");
                     this.controller.transform.SetPositionAndRotation(bestSpot.position, Quaternion.Euler(bestSpot.rotation));
-                    if (agent != null) agent.enabled = true;
+
+                    if (this.agent != null)
+                    {
+                        this.agent.enabled = true;
+                    }
                 }
             }
 
             // 6. Start the Suspense Timer!
-            if (agent != null && agent.isOnNavMesh)
+            if (this.agent != null && this.agent.isOnNavMesh)
             {
-                delayRoutine = StartCoroutine(WaitAndChaseRoutine());
+                this.delayRoutine = StartCoroutine(this.WaitAndChaseRoutine());
             }
             else
             {
                 Debug.LogError("[DollRelocate] FATAL: Agent failed to snap to NavMesh. Blocking chase to prevent crash.");
-                SetVisibility(true); // Failsafe if it crashes
+                this.SetVisibility(true); // Failsafe if it crashes
             }
         }
 
         private IEnumerator WaitAndChaseRoutine()
         {
             // Pause the execution here while she is invisible
-            yield return new WaitForSeconds(jumpScareDelay);
+            yield return new WaitForSeconds(this.jumpScareDelay);
 
             // Pop her back into existence!
-            SetVisibility(true);
+            this.SetVisibility(true);
 
             // Time is up, hand control over to the aggressive chase state
             if (this.nextState != null)
             {
-                RequestTransition(this.nextState);
+                this.RequestTransition(this.nextState);
             }
         }
 
@@ -117,36 +126,39 @@ namespace MonsterSystem
             base.OnStateExit();
 
             // Safety cleanup: If the state is forced to exit early, kill the timer
-            if (delayRoutine != null)
+            if (this.delayRoutine != null)
             {
-                StopCoroutine(delayRoutine);
-                delayRoutine = null;
+                StopCoroutine(this.delayRoutine);
+                this.delayRoutine = null;
             }
 
             // Failsafe: Guarantee she is visible when leaving this state
-            SetVisibility(true);
+            this.SetVisibility(true);
         }
 
         // Updated to handle just the one renderer
         private void SetVisibility(bool isVisible)
         {
-            if (dollRenderer != null)
+            if (this.dollRenderer != null)
             {
-                dollRenderer.enabled = isVisible;
+                this.dollRenderer.enabled = isVisible;
             }
         }
 
         private SpawnPoint GetTargetSpawnPoint()
         {
-            if (spawnPoints == null || spawnPoints.points.Length == 0) return new SpawnPoint();
+            if (this.spawnPoints == null || this.spawnPoints.points.Length == 0)
+            {
+                return new SpawnPoint();
+            }
 
-            if (findNearest)
+            if (this.useNearest)
             {
                 var nearest = new SpawnPoint();
                 float minDistance = float.MaxValue;
                 Vector3 currentPos = this.controller.transform.position;
 
-                foreach (var point in spawnPoints.points)
+                foreach (var point in this.spawnPoints.points)
                 {
                     float distance = Vector3.Distance(currentPos, point.position);
                     if (distance < minDistance)
@@ -160,15 +172,21 @@ namespace MonsterSystem
             else
             {
                 int index;
-                if (spawnPoints.points.Length == 1) index = 0;
+                if (this.spawnPoints.points.Length == 1)
+                {
+                    index = 0;
+                }
                 else
                 {
-                    do { index = Random.Range(0, spawnPoints.points.Length); }
+                    do
+                    {
+                        index = Random.Range(0, this.spawnPoints.points.Length);
+                    }
                     while (index == this.lastIndex);
                 }
 
                 this.lastIndex = index;
-                return spawnPoints.points[index];
+                return this.spawnPoints.points[index];
             }
         }
     }
