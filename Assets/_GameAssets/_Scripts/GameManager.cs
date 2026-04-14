@@ -229,4 +229,22 @@ public class GameManager : PersistenSingleton<GameManager> {
         }
         return closedWindows;
     }
+
+    [ContextMenu("Debug Log Window Statuses")]
+    public void DebugLogWindowStatuses() {
+        int openCount = 0;
+        int closedCount = 0;
+        int smartUpdateEnabledCount = 0;
+        string logMessage = "Current Window States:\n";
+        foreach (KeyValuePair<WindowController, VRLever.EnumLeverState> kvp in this.WindowsDictonary) {
+            if (kvp.Value == VRLever.EnumLeverState.Open) openCount++;
+            else if (kvp.Value == VRLever.EnumLeverState.Closed) closedCount++;
+
+            if (kvp.Key.IsVRLeverSmartUpdateEnabled()) smartUpdateEnabledCount++;
+        }
+        logMessage += $"Total Closed Windows: {closedCount} out of {this.WindowsDictonary.Count}\n";
+        logMessage += $"Total Open Windows: {openCount} out of {this.WindowsDictonary.Count}\n";
+        logMessage += $"Windows with Smart Update Enabled: {smartUpdateEnabledCount} out of {this.WindowsDictonary.Count}\n";
+        Debug.Log(logMessage);
+    }
 }
