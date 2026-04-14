@@ -7,10 +7,67 @@ using UnityEngine.XR.Interaction.Toolkit.Interactors;
 /// <summary>
 /// A clamped, snapping XR knob that rotates around its local forward (Z) axis.
 /// Outputs a normalized value (0-1) and current step index.
-/// Uses delta-based tracking to avoid accumulation/buffer problems.
+/// Uses three input sources (position offset, controller forward/up) with accumulated
+/// rotation tracking to avoid frame-delta instability.
 /// </summary>
 public class ClampedKnob : XRBaseInteractable
 {
+    const float k_ModeSwitchDeadZone = 0.1f;
+
+    /// <summary>
+    /// Tracks rotation from a grab-time base, accumulating offsets to handle full
+    /// rotation ranges while minimising floating-point error. Angles are computed in
+    /// the XY plane using Atan2(y, x).
+    /// </summary>
+    struct TrackedRotation
+    {
+        float m_BaseAngle;
+        float m_CurrentOffset;
+        float m_AccumulatedAngle;
+
+        public float totalOffset => m_AccumulatedAngle + m_CurrentOffset;
+
+        public void Reset()
+        {
+            m_BaseAngle = 0f;
+            m_CurrentOffset = 0f;
+            m_AccumulatedAngle = 0f;
+        }
+
+        /// <summary>Bakes in any accumulated offset and sets a new base from the given XY direction.</summary>
+        public void SetBaseFromVector(Vector3 direction)
+        {
+            m_AccumulatedAngle += m_CurrentOffset;
+            m_BaseAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            m_CurrentOffset = 0f;
+        }
+
+        /// <summary>Updates the current offset toward the given XY direction. Re-anchors when offset exceeds 90°.</summary>
+        public void SetTargetFromVector(Vector3 direction)
+        {
+            float targetAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            m_CurrentOffset = ShortestAngleDistance(m_BaseAngle, targetAngle, 360f);
+
+            // Re-anchor so accumulated rotation can exceed 180°
+            if (Mathf.Abs(m_CurrentOffset) > 90f)
+            {
+                m_BaseAngle = targetAngle;
+                m_AccumulatedAngle += m_CurrentOffset;
+                m_CurrentOffset = 0f;
+            }
+        }
+
+        static float ShortestAngleDistance(float start, float end, float max)
+        {
+            float delta = end - start;
+            float sign = Mathf.Sign(delta);
+            delta = Mathf.Abs(delta) % max;
+            if (delta > max * 0.5f)
+                delta = -(max - delta);
+            return delta * sign;
+        }
+    }
+
     /* =======================
      * Serialized Fields
      * ======================= */
@@ -28,8 +85,11 @@ public class ClampedKnob : XRBaseInteractable
     [Tooltip("Invert the rotation direction")]
     [SerializeField] private bool invertRotation = false;
 
-    [Tooltip("Maximum rotation per frame (prevents wrap-around jumps)")]
-    [SerializeField] private float maxDeltaPerFrame = 45f;
+    [Tooltip("Interactor must be at least this far from the handle center (world units) to use position tracking")]
+    [SerializeField] private float positionTrackedRadius = 0.1f;
+
+    [Tooltip("Multiplier for controller rotation (twist/forward/up vector) input")]
+    [SerializeField] private float twistSensitivity = 1.5f;
 
     [Header("Steps")]
     [Tooltip("Number of discrete positions/channels. Must be >= 2.")]
@@ -50,9 +110,15 @@ public class ClampedKnob : XRBaseInteractable
      * ======================= */
 
     private IXRSelectInteractor interactor;
-    private Vector3 lastProjectedDir;
     private float currentAngle;
     private int currentStep = -1;
+
+    private float baseKnobAngle;
+    private bool positionDriven;
+    private bool upVectorDriven;
+    private TrackedRotation positionAngles;
+    private TrackedRotation upVectorAngles;
+    private TrackedRotation forwardVectorAngles;
 
     /* =======================
      * Properties
@@ -99,11 +165,9 @@ public class ClampedKnob : XRBaseInteractable
         base.Awake();
 
         if (handle == null)
-        {
             handle = transform;
-        }
 
-        // Initialize to angle 0 in Awake, so Radio.Start() can override it
+        // Initialize to angle 0 in Awake so Radio.Start() can override it
         currentAngle = 0f;
         SnapToNearestStep();
         UpdateVisual();
@@ -133,9 +197,7 @@ public class ClampedKnob : XRBaseInteractable
         base.ProcessInteractable(updatePhase);
 
         if (updatePhase == XRInteractionUpdateOrder.UpdatePhase.Dynamic && isSelected)
-        {
             UpdateRotation();
-        }
     }
 
     public override Transform GetAttachTransform(IXRInteractor interactor)
@@ -150,8 +212,13 @@ public class ClampedKnob : XRBaseInteractable
     private void OnGrab(SelectEnterEventArgs args)
     {
         interactor = args.interactorObject;
-        Transform attach = interactor.GetAttachTransform(this);
-        lastProjectedDir = GetProjectedDirection(attach.position);
+
+        positionAngles.Reset();
+        upVectorAngles.Reset();
+        forwardVectorAngles.Reset();
+
+        baseKnobAngle = currentAngle;
+        UpdateRotation(freshCheck: true);
     }
 
     private void OnRelease(SelectExitEventArgs args)
@@ -163,37 +230,95 @@ public class ClampedKnob : XRBaseInteractable
      * Rotation Logic
      * ======================= */
 
-    private void UpdateRotation()
+    private void UpdateRotation(bool freshCheck = false)
     {
         if (interactor == null) return;
 
-        Transform attach = interactor.GetAttachTransform(this);
-        Vector3 currentDir = GetProjectedDirection(attach.position);
+        var interactorTransform = interactor.GetAttachTransform(this);
 
-        float delta = SignedAngle(lastProjectedDir, currentDir);
+        // --- Source 1: position offset ---
+        // Vector from handle center to interactor, projected onto local XY (zero out Z).
+        var localOffset = transform.InverseTransformVector(interactorTransform.position - handle.position);
+        localOffset.z = 0f;
+        // World-space magnitude of the projected offset, used for radius threshold check.
+        var radiusOffset = transform.TransformVector(localOffset).magnitude;
+        localOffset.Normalize();
 
-        // CRITICAL: Always update lastProjectedDir regardless of clamping.
-        // This prevents the accumulation/buffer problem.
-        lastProjectedDir = currentDir;
+        // --- Sources 2 & 3: controller forward / up vectors ---
+        // Both projected onto local XY (zero out Z).
+        var localForward = transform.InverseTransformDirection(interactorTransform.forward);
+        // How much the controller points along the knob's Z axis — drives forward vs up switch.
+        var localZ = Mathf.Abs(localForward.z);
+        localForward.z = 0f;
+        localForward.Normalize();
 
-        if (Mathf.Abs(delta) < 0.001f) return;
+        var localUp = transform.InverseTransformDirection(interactorTransform.up);
+        localUp.z = 0f;
+        localUp.Normalize();
 
-        // Clamp delta to prevent wrap-around jumps (e.g., -180 to 180)
-        delta = Mathf.Clamp(delta, -maxDeltaPerFrame, maxDeltaPerFrame);
+        // --- Mode switching: position ---
+        // Apply hysteresis so we don't flicker at the boundary.
+        if (positionDriven && !freshCheck)
+            radiusOffset *= 1f + k_ModeSwitchDeadZone;
 
-        // Invert rotation direction if needed
-        if (invertRotation)
+        if (radiusOffset >= positionTrackedRadius)
         {
-            delta = -delta;
+            if (!positionDriven || freshCheck)
+            {
+                positionAngles.SetBaseFromVector(localOffset);
+                positionDriven = true;
+            }
+        }
+        else
+            positionDriven = false;
+
+        // --- Mode switching: forward vs up vector ---
+        // When the controller points mostly along knob Z, forward projects to near-zero
+        // in XY — switch to up vector tracking instead.
+        if (!freshCheck)
+        {
+            if (!upVectorDriven)
+                localZ *= 1f - k_ModeSwitchDeadZone * 0.5f;
+            else
+                localZ *= 1f + k_ModeSwitchDeadZone * 0.5f;
         }
 
-        // Calculate new angle with clamping
-        float newAngle = Mathf.Clamp(currentAngle + delta, minAngle, maxAngle);
+        if (localZ > 0.707f)
+        {
+            if (!upVectorDriven || freshCheck)
+            {
+                upVectorAngles.SetBaseFromVector(localUp);
+                upVectorDriven = true;
+            }
+        }
+        else
+        {
+            if (upVectorDriven || freshCheck)
+            {
+                forwardVectorAngles.SetBaseFromVector(localForward);
+                upVectorDriven = false;
+            }
+        }
 
-        // Apply snapping
+        // --- Update active sources ---
+        if (positionDriven)
+            positionAngles.SetTargetFromVector(localOffset);
+
+        if (upVectorDriven)
+            upVectorAngles.SetTargetFromVector(localUp);
+        else
+            forwardVectorAngles.SetTargetFromVector(localForward);
+
+        // --- Compute new angle ---
+        float totalRotation = (upVectorAngles.totalOffset + forwardVectorAngles.totalOffset) * twistSensitivity
+                              + positionAngles.totalOffset;
+
+        if (invertRotation)
+            totalRotation = -totalRotation;
+
+        float newAngle = Mathf.Clamp(baseKnobAngle - totalRotation, minAngle, maxAngle);
+
         SnapAngle(ref newAngle);
-
-        // Ensure still within bounds after snapping
         newAngle = Mathf.Clamp(newAngle, minAngle, maxAngle);
 
         if (Mathf.Approximately(newAngle, currentAngle)) return;
@@ -201,7 +326,6 @@ public class ClampedKnob : XRBaseInteractable
         currentAngle = newAngle;
         UpdateVisual();
 
-        // Check if step changed
         int newStep = AngleToStep(currentAngle);
         if (newStep != currentStep)
         {
@@ -260,31 +384,6 @@ public class ClampedKnob : XRBaseInteractable
     }
 
     /* =======================
-     * Geometry Helpers
-     * ======================= */
-
-    private Vector3 GetProjectedDirection(Vector3 worldPos)
-    {
-        // Get direction from knob center to interactor in local space
-        Vector3 localPos = transform.InverseTransformPoint(worldPos);
-
-        // Project onto XY plane (perpendicular to Z/forward axis)
-        localPos.z = 0f;
-
-        return localPos.normalized;
-    }
-
-    private float SignedAngle(Vector3 from, Vector3 to)
-    {
-        // 2D signed angle in the XY plane
-        float angle = Vector2.SignedAngle(
-            new Vector2(from.x, from.y),
-            new Vector2(to.x, to.y)
-        );
-        return angle;
-    }
-
-    /* =======================
      * Value Conversion
      * ======================= */
 
@@ -302,9 +401,7 @@ public class ClampedKnob : XRBaseInteractable
      * Public API
      * ======================= */
 
-    /// <summary>
-    /// Sets the knob to a specific step index.
-    /// </summary>
+    /// <summary>Sets the knob to a specific step index.</summary>
     public void SetStep(int step)
     {
         step = Mathf.Clamp(step, 0, steps - 1);
@@ -318,9 +415,7 @@ public class ClampedKnob : XRBaseInteractable
         }
     }
 
-    /// <summary>
-    /// Sets the knob to a specific normalized value (0-1).
-    /// </summary>
+    /// <summary>Sets the knob to a specific normalized value (0-1).</summary>
     public void SetValue(float value)
     {
         value = Mathf.Clamp01(value);
@@ -336,9 +431,7 @@ public class ClampedKnob : XRBaseInteractable
         }
     }
 
-    /// <summary>
-    /// Sets the knob to a specific angle (clamped and snapped).
-    /// </summary>
+    /// <summary>Sets the knob to a specific angle (clamped and snapped).</summary>
     public void SetAngle(float angle)
     {
         currentAngle = Mathf.Clamp(angle, minAngle, maxAngle);
@@ -360,41 +453,29 @@ public class ClampedKnob : XRBaseInteractable
     private void OnValidate()
     {
         if (minAngle > maxAngle)
-        {
             minAngle = maxAngle;
-        }
 
         if (steps < 2)
-        {
             steps = 2;
-        }
     }
 
     private void OnDrawGizmosSelected()
     {
-        // Use world axes so the gizmo stays static
-        // Up is the 0° direction (12 o'clock), forward is the rotation axis
         Vector3 forward = Vector3.forward;
         Vector3 up = Vector3.up;
         Vector3 center = transform.position + transform.forward * gizmoForwardOffset;
 
         float radius = 0.05f;
 
-        // Draw min angle (left limit) - red line
         Gizmos.color = Color.red;
-        Vector3 minDir = Quaternion.AngleAxis(minAngle, forward) * up;
-        Gizmos.DrawLine(center, center + minDir * radius);
+        Gizmos.DrawLine(center, center + Quaternion.AngleAxis(minAngle, forward) * up * radius);
 
-        // Draw max angle (right limit) - green line
         Gizmos.color = Color.green;
-        Vector3 maxDir = Quaternion.AngleAxis(maxAngle, forward) * up;
-        Gizmos.DrawLine(center, center + maxDir * radius);
+        Gizmos.DrawLine(center, center + Quaternion.AngleAxis(maxAngle, forward) * up * radius);
 
-        // Draw zero/center angle - white line (12 o'clock)
         Gizmos.color = Color.white;
         Gizmos.DrawLine(center, center + up * radius * 0.8f);
 
-        // Draw step positions - dots with current step highlighted
         if (steps >= 2)
         {
             for (int i = 0; i < steps; i++)
@@ -404,25 +485,20 @@ public class ClampedKnob : XRBaseInteractable
 
                 if (i == currentStep)
                 {
-                    // Current step - larger yellow/orange sphere
-                    Gizmos.color = new Color(1f, 0.6f, 0f); // Orange
+                    Gizmos.color = new Color(1f, 0.6f, 0f);
                     Gizmos.DrawSphere(center + stepDir * radius, 0.004f);
                 }
                 else
                 {
-                    // Other steps - small cyan dots
                     Gizmos.color = Color.cyan;
                     Gizmos.DrawSphere(center + stepDir * radius, 0.002f);
                 }
             }
         }
 
-        // Draw current angle - yellow line (longer)
         Gizmos.color = Color.yellow;
-        Vector3 currentDir = Quaternion.AngleAxis(currentAngle, forward) * up;
-        Gizmos.DrawLine(center, center + currentDir * radius * 1.2f);
+        Gizmos.DrawLine(center, center + Quaternion.AngleAxis(currentAngle, forward) * up * radius * 1.2f);
 
-        // Draw arc showing valid rotation range
         Gizmos.color = new Color(0f, 1f, 1f, 0.3f);
         DrawArc(center, forward, up, minAngle, maxAngle, radius);
     }
@@ -449,36 +525,25 @@ public class ClampedKnob : XRBaseInteractable
      * ======================= */
 
     [ContextMenu("Rotate Left")]
-    private void DebugRotateLeft()
-    {
-        DebugRotate(-GetDebugStep());
-    }
+    private void DebugRotateLeft() => DebugRotate(-GetDebugStep());
 
     [ContextMenu("Rotate Right")]
-    private void DebugRotateRight()
-    {
-        DebugRotate(GetDebugStep());
-    }
+    private void DebugRotateRight() => DebugRotate(GetDebugStep());
 
     [ContextMenu("Set to Angle Zero")]
-    private void DebugSetToAngleZero()
-    {
-        DebugSetAngle(0f);
-    }
+    private void DebugSetToAngleZero() => DebugSetAngle(0f);
 
     [ContextMenu("Next Step")]
     private void DebugNextStep()
     {
-        int nextStep = Mathf.Min(currentStep + 1, steps - 1);
-        SetStep(nextStep);
+        SetStep(Mathf.Min(currentStep + 1, steps - 1));
         Debug.Log($"[ClampedKnob] Step: {currentStep} | Angle: {currentAngle:F1}°");
     }
 
     [ContextMenu("Previous Step")]
     private void DebugPrevStep()
     {
-        int prevStep = Mathf.Max(currentStep - 1, 0);
-        SetStep(prevStep);
+        SetStep(Mathf.Max(currentStep - 1, 0));
         Debug.Log($"[ClampedKnob] Step: {currentStep} | Angle: {currentAngle:F1}°");
     }
 
@@ -489,10 +554,7 @@ public class ClampedKnob : XRBaseInteractable
         Debug.Log($"[ClampedKnob] Step at angle 0: {StepAtAngleZero} | Angle: {currentAngle:F1}°");
     }
 
-    private float GetDebugStep()
-    {
-        return debugRotationStep > 0f ? debugRotationStep : 30f;
-    }
+    private float GetDebugStep() => debugRotationStep > 0f ? debugRotationStep : 30f;
 
     private void DebugRotate(float delta)
     {
@@ -510,9 +572,7 @@ public class ClampedKnob : XRBaseInteractable
         {
             currentStep = newStep;
             if (Application.isPlaying)
-            {
                 onStepChanged.Invoke(currentStep);
-            }
         }
 
         Debug.Log($"[ClampedKnob] Step: {currentStep} | Angle: {currentAngle:F1}°");
@@ -529,9 +589,7 @@ public class ClampedKnob : XRBaseInteractable
         {
             currentStep = newStep;
             if (Application.isPlaying)
-            {
                 onStepChanged.Invoke(currentStep);
-            }
         }
 
         Debug.Log($"[ClampedKnob] Step: {currentStep} | Angle: {currentAngle:F1}°");
