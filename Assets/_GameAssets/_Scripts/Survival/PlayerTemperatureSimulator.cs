@@ -18,6 +18,9 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
     private readonly float FREEZE_RATE = -0.15f; // Rate of temperature change per second outside in cold
     private readonly float NORMAL_RATE = -0.06f; // Rate of temperature change per second inside
     private readonly float WARM_RATE = 0.12f; // Rate of temperature change per second while next to fireplace
+    private readonly float OPEN_WINDOW_RATE = -0.03f; // Rate of temperature change per second when a single window is open
+
+    [SerializeField, Gaskellgames.ReadOnly] private int openWindowCount = 0;
 
     [SerializeField] private EnumLocationType currentLocationType = EnumLocationType.Normal;
     [SerializeField] private EnumBodyTemperatureState currentBodyTemperatureState = EnumBodyTemperatureState.Normal;
@@ -167,8 +170,8 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
         // The rate of temperature change in different environments
         return location switch {
             EnumLocationType.Cold => this.FREEZE_RATE, // Cold locations cause rapid cooling
-            EnumLocationType.Normal => this.NORMAL_RATE, // Normal locations cause slight cooling
-            EnumLocationType.Warm => this.WARM_RATE, // Warm locations cause warming
+            EnumLocationType.Normal => this.NORMAL_RATE + (this.OPEN_WINDOW_RATE * this.openWindowCount), // Normal locations cause slight cooling
+            EnumLocationType.Warm => this.WARM_RATE + (this.OPEN_WINDOW_RATE * this.openWindowCount), // Warm locations cause warming
             EnumLocationType.Shack => this.FREEZE_RATE,
             _ => this.NORMAL_RATE,
         };
@@ -192,6 +195,15 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
             EnumLocationType.Warm => 40.2f,
             _ => 41f,
         };
+    }
+
+    public void UpdateOpenWindowCount() {
+        // When a window is not closed, we make the player colder.
+        // Ignoring if the window is leaning closed or leaning open.
+        // Modifier will be applied as long as the window is not in a closed state.
+        int closedWindow = GameManager.Instance.GetClosedWindows().Count;
+        int openWindows = GameManager.Instance.WindowsDictonary.Count - closedWindow;
+        this.openWindowCount = openWindows;
     }
 }
 

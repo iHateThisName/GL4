@@ -218,6 +218,8 @@ public class GameManager : PersistenSingleton<GameManager> {
         // update the dictionary with the new state and remove the old refrence
         this.WindowsDictonary.Remove(windowController);
         this.WindowsDictonary.Add(windowController, newSate);
+
+        PlayerTemperatureSimulator.Instance.UpdateOpenWindowCount();
     }
 
     public List<WindowController> GetClosedWindows() {
