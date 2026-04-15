@@ -1,51 +1,75 @@
 using System.Threading;
 using UnityEngine;
 
-/// <summary>
-/// Registers this XR origin in a shared SO_TransformRef and disables whatever origin
-/// was previously registered before activating its own. This prevents two XR origins
-/// from ever being active simultaneously without touching this scene's own XR origin.
-///
-/// Additionally cycles the assigned interactor roots for one frame so they reinitialize
-/// from a clean state, clearing any stale hover/select carried over from controller input
-/// during the loading screen.
-/// </summary>
 public class XRSceneSwitch : MonoBehaviour
 {
     [SerializeField] private SO_TransformRef xrOriginRef;
-    [Tooltip("Assign the Left and Right Controller GameObjects (children of the XR Origin). " +
-             "They are disabled for one frame on load to clear stale interaction state.")]
     [SerializeField] private GameObject[] interactorRoots;
 
     private void Awake()
     {
+        string sceneName = gameObject.scene.name;
+
         if (xrOriginRef != null)
         {
-            // Disable the previous scene's XR origin before registering ours.
             Transform previous = xrOriginRef.Value;
             if (previous != null && previous != this.transform.root)
+            {
+                Debug.Log($"[XRSceneSwitch] ({sceneName}) Disabling previous XR origin: '{previous.name}' (scene: {previous.gameObject.scene.name})");
                 previous.gameObject.SetActive(false);
+            }
+            else
+            {
+                Debug.Log($"[XRSceneSwitch] ({sceneName}) No previous XR origin to disable (ref was {(previous == null ? "null" : "self")})");
+            }
 
             xrOriginRef.Value = this.transform.root;
+            Debug.Log($"[XRSceneSwitch] ({sceneName}) Registered XR origin: '{this.transform.root.name}'");
+        }
+        else
+        {
+            Debug.LogWarning($"[XRSceneSwitch] ({sceneName}) xrOriginRef is not assigned!");
         }
 
         if (interactorRoots != null && interactorRoots.Length > 0)
-            _ = CycleInteractors(Application.exitCancellationToken);
+        {
+            Debug.Log($"[XRSceneSwitch] ({sceneName}) Starting interactor cycle ({interactorRoots.Length} roots)");
+            _ = CycleInteractors(Application.exitCancellationToken, sceneName);
+        }
+        else
+        {
+            Debug.LogWarning($"[XRSceneSwitch] ({sceneName}) No interactorRoots assigned, skipping cycle.");
+        }
     }
 
-    // Disables all interactor roots for one frame then re-enables them.
-    // This forces the XR interactors to re-evaluate input from a clean state,
-    // preventing phantom hovers or selections carried in from controller button state.
-    private async Awaitable CycleInteractors(CancellationToken ct)
+    private async Awaitable CycleInteractors(CancellationToken ct, string sceneName)
     {
         foreach (var root in interactorRoots)
-            if (root != null) root.SetActive(false);
+        {
+            if (root != null)
+            {
+                Debug.Log($"[XRSceneSwitch] ({sceneName}) Disabling interactor: '{root.name}'");
+                root.SetActive(false);
+            }
+        }
 
         await Awaitable.NextFrameAsync(ct);
 
-        if (this == null) return;
+        if (this == null)
+        {
+            Debug.LogWarning($"[XRSceneSwitch] ({sceneName}) Destroyed before interactors could be re-enabled.");
+            return;
+        }
 
         foreach (var root in interactorRoots)
-            if (root != null) root.SetActive(true);
+        {
+            if (root != null)
+            {
+                Debug.Log($"[XRSceneSwitch] ({sceneName}) Re-enabling interactor: '{root.name}'");
+                root.SetActive(true);
+            }
+        }
+
+        Debug.Log($"[XRSceneSwitch] ({sceneName}) Interactor cycle complete.");
     }
 }

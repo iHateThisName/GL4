@@ -53,7 +53,14 @@ namespace MonsterSystem
         {
             Debug.Log("Triggered Feed trigger");
             // Ignore non-food objects and guard against missing controller
-            if (HungerSystem.TryGetFood(other) == null) return;
+            var food = HungerSystem.TryGetFood(other);
+            if (food == null) return;
+
+            if (food.Value <= 1)
+            {
+                Debug.Log("That is emptied");
+                return;
+            }
 
             // Retrieve the food's rigidbody; bail out if none is attached
             Rigidbody foodRb = other.attachedRigidbody;

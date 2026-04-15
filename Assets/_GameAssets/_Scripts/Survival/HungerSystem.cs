@@ -104,6 +104,12 @@ public class HungerSystem : MonoBehaviour
     private void tryEatFood(Collider other)
     {
         var foodObject = TryGetFood(other);
+        if (foodObject == null) return;
+        if (foodObject.Value <= 1)
+        {
+            Debug.Log("That is emptied");
+            return;
+        }
 
         if (this.hunger + this.hungerSettings.GetFoodFillValue() >= this.MaxHunger)
         {
