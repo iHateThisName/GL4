@@ -1,11 +1,14 @@
 using System.Threading;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class XRSceneSwitch : MonoBehaviour
 {
     [SerializeField] private SO_TransformRef xrOriginRef;
-    [Tooltip("Assign the Left and Right Controller GameObjects. Their children are cycled to reset interactor state.")]
     [SerializeField] private GameObject[] interactorRoots;
+    [Tooltip("Assign the XRI Default Input Actions asset (or whichever asset drives your controllers). " +
+             "All actions are reset after re-enable to prevent stale trigger state causing phantom selections.")]
+    [SerializeField] private InputActionAsset actionAsset;
 
     private void Awake()
     {
@@ -41,22 +44,22 @@ public class XRSceneSwitch : MonoBehaviour
     private async Awaitable CycleInteractors(CancellationToken ct, string sceneName)
     {
         foreach (var root in interactorRoots)
-        {
-            if (root == null) continue;
-            foreach (Transform child in root.transform)
-                child.gameObject.SetActive(false);
-        }
+            if (root != null) root.SetActive(false);
 
         await Awaitable.NextFrameAsync(ct);
 
         if (this == null) return;
 
         foreach (var root in interactorRoots)
-        {
-            if (root == null) continue;
-            foreach (Transform child in root.transform)
-                child.gameObject.SetActive(true);
-        }
+            if (root != null) root.SetActive(true);
+
+        // Reset all input actions in the same frame as re-enable, before any Update() runs.
+        // This forces every action's state machine back to waiting, so a continuously-held
+        // trigger from the previous scene does not immediately register as a selection.
+        if (actionAsset != null)
+            foreach (var map in actionAsset.actionMaps)
+                foreach (var action in map.actions)
+                    action.Reset();
 
         Debug.Log($"[XRSceneSwitch] ({sceneName}) Interactor cycle complete.");
     }
