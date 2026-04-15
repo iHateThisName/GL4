@@ -173,7 +173,7 @@ public class FireplaceController : MonoBehaviour {
     }
 
     public void Ignite(FireMatchController match) {
-        if (tutorialManager != null)
+        if (tutorialManager != null && tutorialManager.hasLitFire == false)
         {
             tutorialManager.hasLitFire = true;
         }
