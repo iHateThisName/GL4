@@ -1,46 +1,26 @@
 using UnityEngine;
 
 /// <summary>
-/// Registers this XR origin in a shared SO_TransformRef so SceneTransition can disable
-/// it before the new scene activates. If the scene is loaded mid-transition the origin
-/// is immediately disabled and re-enabled once the transition (and fade-in) is complete.
-///
-/// Set disableDuringTransition = false on the loading screen's XROrigin — it must stay
-/// active so the player can see the loading UI in VR.
+/// Registers this XR origin in a shared SO_TransformRef and disables whatever origin
+/// was previously registered before activating its own. This prevents two XR origins
+/// from ever being active simultaneously without touching (and corrupting) this scene's
+/// own XR origin configuration.
 /// </summary>
 public class XRSceneSwitch : MonoBehaviour
 {
     [SerializeField] private SO_TransformRef xrOriginRef;
-    [Tooltip("Disable this XR origin when loaded mid-transition. Uncheck for the loading screen scene.")]
-    [SerializeField] private bool disableDuringTransition = true;
 
     private void Awake()
     {
-        if (xrOriginRef != null)
-            xrOriginRef.Value = this.transform.root;
+        if (xrOriginRef == null) return;
 
-        if (disableDuringTransition && SceneTransition.IsTransitioning)
-            _ = DisableUntilTransitionDone(Application.exitCancellationToken);
-    }
+        // Disable the previous scene's XR origin before registering ours.
+        // SceneTransition already disables it after fade-out, but this catches
+        // any edge case (e.g. loading screen → new scene overlap).
+        Transform previous = xrOriginRef.Value;
+        if (previous != null && previous != this.transform.root)
+            previous.gameObject.SetActive(false);
 
-    private async Awaitable DisableUntilTransitionDone(System.Threading.CancellationToken ct)
-    {
-        this.transform.root.gameObject.SetActive(false);
-
-        while (SceneTransition.IsTransitioning)
-            await Awaitable.NextFrameAsync(ct);
-
-        if (this == null) return;
-
-        // Re-enable, then do one disable→re-enable cycle the next frame so the XR
-        // interactors reinitialize from a clean state (avoids phantom hover/select).
-        var root = this.transform.root.gameObject;
-        root.SetActive(true);
-        await Awaitable.NextFrameAsync(ct);
-        if (this == null) return;
-        root.SetActive(false);
-        await Awaitable.NextFrameAsync(ct);
-        if (this == null) return;
-        root.SetActive(true);
+        xrOriginRef.Value = this.transform.root;
     }
 }
