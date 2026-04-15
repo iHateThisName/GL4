@@ -6,9 +6,8 @@ public class XRSceneSwitch : MonoBehaviour
 {
     [SerializeField] private SO_TransformRef xrOriginRef;
     [SerializeField] private GameObject[] interactorRoots;
-    [Tooltip("Assign the XRI Default Input Actions asset (or whichever asset drives your controllers). " +
-             "All actions are reset after re-enable to prevent stale trigger state causing phantom selections.")]
-    [SerializeField] private InputActionAsset actionAsset;
+    [Tooltip("Assign the select/activate InputActionReferences directly from the left and right controllers.")]
+    [SerializeField] private InputActionReference[] interactionActions;
 
     private void Awake()
     {
@@ -53,16 +52,12 @@ public class XRSceneSwitch : MonoBehaviour
         foreach (var root in interactorRoots)
             if (root != null) root.SetActive(true);
 
-        // Reset all input actions in the same frame as re-enable, before any Update() runs.
-        // This forces every action's state machine back to waiting, so a continuously-held
-        // trigger from the previous scene does not immediately register as a selection.
-        // Only reset button/axis actions — skipping pose/tracking actions (Vector3, Quaternion)
-        // so controller movement continues to work normally.
-        if (actionAsset != null)
-            foreach (var map in actionAsset.actionMaps)
-                foreach (var action in map.actions)
-                    if (action.expectedControlType is "Button" or "Axis")
-                        action.Reset();
+        // Reset only the specific interaction actions in the same frame as re-enable,
+        // before Update() processes them. Forces a fresh press requirement so a held
+        // trigger from the previous scene cannot cause a phantom selection.
+        if (interactionActions != null)
+            foreach (var actionRef in interactionActions)
+                actionRef?.action?.Reset();
 
         Debug.Log($"[XRSceneSwitch] ({sceneName}) Interactor cycle complete.");
     }
