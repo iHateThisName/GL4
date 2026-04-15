@@ -30,8 +30,17 @@ public class XRSceneSwitch : MonoBehaviour
         while (SceneTransition.IsTransitioning)
             await Awaitable.NextFrameAsync(ct);
 
-        // Guard against the unlikely case this object was destroyed before the transition ended.
-        if (this != null)
-            this.transform.root.gameObject.SetActive(true);
+        if (this == null) return;
+
+        // Re-enable, then do one disable→re-enable cycle the next frame so the XR
+        // interactors reinitialize from a clean state (avoids phantom hover/select).
+        var root = this.transform.root.gameObject;
+        root.SetActive(true);
+        await Awaitable.NextFrameAsync(ct);
+        if (this == null) return;
+        root.SetActive(false);
+        await Awaitable.NextFrameAsync(ct);
+        if (this == null) return;
+        root.SetActive(true);
     }
 }
