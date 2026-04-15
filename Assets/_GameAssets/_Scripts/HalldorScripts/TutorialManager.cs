@@ -23,10 +23,12 @@ public class TutorialManager : MonoBehaviour
         {
             if(nightSettings.DebugStartNight > 1)
             {
+                Debug.Log("Tutorial deleted");
                 Destroy(this.gameObject);
             }
             else
             {
+                Debug.Log("Tutorial started");
                 nightSettings.nightTimeMinutes = 0f;
                 Destroy(tempertureManager);
                 Destroy(hungerManager);
