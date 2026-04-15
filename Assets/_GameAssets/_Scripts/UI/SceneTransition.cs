@@ -22,6 +22,12 @@ public static class SceneTransition
 
     public static event Action<float> OnProgress;
     public static event Action<int> OnTransitionComplete;
+    /// <summary>
+    /// Fired after the loading screen is unloaded but before the fade-in begins.
+    /// The target scene is still behind an opaque overlay — safe to reset XR interactor state here.
+    /// SceneTransition waits one frame after firing so subscribers have time to act.
+    /// </summary>
+    public static event Action OnBeforeFadeIn;
 
     public static void LoadScene(string sceneName, SO_ScreenFadeRef fadeRef, SO_TransformRef xrOriginRef = null)
     {

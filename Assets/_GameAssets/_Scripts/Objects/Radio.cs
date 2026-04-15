@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.XR.Content.Interaction;
@@ -34,6 +35,15 @@ public class Radio : MonoBehaviour
     // Guards against callbacks arriving before Start() finishes
     private bool initialized;
 
+    private struct QueuedBroadcast
+    {
+        public AudioClip clip;
+        public float resumeTime;
+    }
+
+    private readonly LinkedList<QueuedBroadcast> _broadcastQueue = new LinkedList<QueuedBroadcast>();
+    private bool _isPlayingBroadcast;
+
     /// <summary>
     /// C# Action fired when channel changes. Parameters: (channel 1-indexed, isSafe)
     /// </summary>
@@ -63,8 +73,14 @@ public class Radio : MonoBehaviour
 
     private void Update()
     {
-        if (!editorTestMode || !initialized || knob == null) return;
-        knob.value = knob.value; // re-triggers SetValue → fires onValueChange
+        if (editorTestMode && initialized && knob != null)
+            knob.value = knob.value; // re-triggers SetValue → fires onValueChange
+
+        if (_isPlayingBroadcast && !audioSource.isPlaying)
+        {
+            _isPlayingBroadcast = false;
+            PlayNextBroadcast();
+        }
     }
 
     private void Start()
@@ -107,10 +123,54 @@ public class Radio : MonoBehaviour
         if (!isOnSafeChannel) return;
 
         int tipIndex = UnityEngine.Random.Range(0, tips.Length);
-        Debug.Log("Playing tip: " + tipIndex + " for " + tips[tipIndex].name + " with audiosource: " + this.audioSource);
-        this.audioSource.clip = tips[tipIndex];
-        this.audioSource.loop = false;
-        this.audioSource.Play();
+        AudioClip incoming = tips[tipIndex];
+        Debug.Log("Queuing/playing tip: " + tipIndex + " for " + incoming.name);
+
+        if (_isPlayingBroadcast)
+        {
+            if (eventData.GetIsOverrideBroadcast())
+            {
+                // Pause current clip and push it to the front of the queue so it resumes after the override.
+                float pausedTime = audioSource.time;
+                AudioClip pausedClip = audioSource.clip;
+                audioSource.Stop();
+                _broadcastQueue.AddFirst(new QueuedBroadcast { clip = pausedClip, resumeTime = pausedTime });
+                _isPlayingBroadcast = false;
+                PlayBroadcast(new QueuedBroadcast { clip = incoming, resumeTime = 0f });
+            }
+            else
+            {
+                _broadcastQueue.AddLast(new QueuedBroadcast { clip = incoming, resumeTime = 0f });
+                Debug.Log("Broadcast queued. Queue size: " + _broadcastQueue.Count);
+            }
+        }
+        else
+        {
+            PlayBroadcast(new QueuedBroadcast { clip = incoming, resumeTime = 0f });
+        }
+    }
+
+    private void PlayBroadcast(QueuedBroadcast broadcast)
+    {
+        _isPlayingBroadcast = true;
+        audioSource.clip = broadcast.clip;
+        audioSource.time = broadcast.resumeTime;
+        audioSource.loop = false;
+        audioSource.Play();
+    }
+
+    private void PlayNextBroadcast()
+    {
+        if (_broadcastQueue.Count == 0) return;
+        var next = _broadcastQueue.First.Value;
+        _broadcastQueue.RemoveFirst();
+        PlayBroadcast(next);
+    }
+
+    private void ClearBroadcastQueue()
+    {
+        _broadcastQueue.Clear();
+        _isPlayingBroadcast = false;
     }
 
     private void OnKnobValueChanged(float value)
@@ -139,6 +199,7 @@ public class Radio : MonoBehaviour
 
         if (!isOnSafeChannel && staticSound != null)
         {
+            ClearBroadcastQueue();
             this.audioSource.clip = this.staticSound;
             this.audioSource.loop = true;
             this.audioSource.Play();
