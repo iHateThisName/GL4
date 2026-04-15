@@ -7,10 +7,8 @@ public class XRSceneSwitch : MonoBehaviour
 {
     [SerializeField] private SO_TransformRef xrOriginRef;
     [SerializeField] private GameObject[] interactorRoots;
-    [Tooltip("Assign the select/activate InputActionReferences directly from the left and right controllers.")]
     [SerializeField] private InputActionReference[] interactionActions;
-
-    [SerializeField] private XRBaseInputInteractor[] kskgns;
+    [SerializeField] private XRBaseInputInteractor[] interactors;
 
     private void Awake()
     {
@@ -54,16 +52,20 @@ public class XRSceneSwitch : MonoBehaviour
 
         foreach (var root in interactorRoots)
             if (root != null) root.SetActive(true);
-        
-        foreach (var interactor in kskgns)
-            interactor.interactablesSelected.Clear();
 
-        // Reset only the specific interaction actions in the same frame as re-enable,
-        // before Update() processes them. Forces a fresh press requirement so a held
-        // trigger from the previous scene cannot cause a phantom selection.
+        // Cancel selections through XRIT's proper API so OnSelectExited fires correctly
+        // on both the interactor and the interactable.
+        if (interactors != null)
+            foreach (var interactor in interactors)
+                if (interactor != null && interactor.interactionManager != null)
+                    interactor.interactionManager.CancelInteractorSelection(interactor as IXRSelectInteractor);
+
+        // Reset interaction actions to require a fresh press, preventing a held trigger
+        // from the previous scene registering as a new selection.
+        /*
         if (interactionActions != null)
             foreach (var actionRef in interactionActions)
-                actionRef?.action?.Reset();
+                actionRef?.action?.Reset();*/
 
         Debug.Log($"[XRSceneSwitch] ({sceneName}) Interactor cycle complete.");
     }
