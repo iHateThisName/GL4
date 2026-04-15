@@ -56,10 +56,13 @@ public class XRSceneSwitch : MonoBehaviour
         // Reset all input actions in the same frame as re-enable, before any Update() runs.
         // This forces every action's state machine back to waiting, so a continuously-held
         // trigger from the previous scene does not immediately register as a selection.
+        // Only reset button/axis actions — skipping pose/tracking actions (Vector3, Quaternion)
+        // so controller movement continues to work normally.
         if (actionAsset != null)
             foreach (var map in actionAsset.actionMaps)
                 foreach (var action in map.actions)
-                    action.Reset();
+                    if (action.expectedControlType is "Button" or "Axis")
+                        action.Reset();
 
         Debug.Log($"[XRSceneSwitch] ({sceneName}) Interactor cycle complete.");
     }
