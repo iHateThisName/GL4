@@ -9,6 +9,7 @@ public class FireplaceController : MonoBehaviour {
     private readonly float BURN_RATE = 0.5f;
     private readonly float MAX_FUEL_FOR_FULL_HEAT = 200f;
     private readonly Stack<Firewood> fuelQueue = new Stack<Firewood>(); // Stack to hold firewood fuel
+    [SerializeField] private TutorialManager tutorialManager; //A refrence to the tutorial manager
     [field: SerializeField] public bool IsLit { get; private set; } = false; // Indicates if the fireplace is currently lit and will burn fuel.
     [field: SerializeField] public bool HasFuel { get; private set; } = false; // Indicates if there is any fuel left in the fireplace.
 
@@ -172,6 +173,10 @@ public class FireplaceController : MonoBehaviour {
     }
 
     public void Ignite(FireMatchController match) {
+        if (tutorialManager != null)
+        {
+            tutorialManager.hasLitFire = true;
+        }
         this.IsLit = true;
         this.fireVFX.SetActive(true);
     }
