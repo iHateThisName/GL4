@@ -30,7 +30,7 @@ public class TutorialManager : MonoBehaviour
             {
                 nightSettings.nightTimeMinutes = 0f;
                 Destroy(tempertureManager);
-                Destroy(hungerManager);
+                hungerManager.SetActive(false);
                 Debug.Log("Tutorial started");
             }
         }
