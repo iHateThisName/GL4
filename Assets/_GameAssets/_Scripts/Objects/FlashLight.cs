@@ -145,8 +145,8 @@ public class Flashlight : MonoBehaviour
         // Turn off once target reaches minimum — check target, not the lerped source value
         if (this.targetLightIntensity <= this.flashlightSettings.GetMinLightPower())
         {
-            Debug.Log("Flashlight reached minimum power, turning off.");
-            ToggleFlashLight(false);
+            Debug.Log("Flashlight reached minimum power, flickering out.");
+            SetupFlashlightFlickerTimer();
         }
     }
     
@@ -304,7 +304,7 @@ public class Flashlight : MonoBehaviour
         this.flickeredLastFrame = false;
         ToggleFlashLight(true);
         
-        if (this.LightIntensity < this.flashlightSettings.GetMinLightPower())
+        if (this.LightIntensity <= this.flashlightSettings.GetMinLightPower())
         {
             ToggleFlashLight(false);
         }
