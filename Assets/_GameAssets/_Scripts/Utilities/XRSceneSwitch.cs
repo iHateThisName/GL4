@@ -62,10 +62,10 @@ public class XRSceneSwitch : MonoBehaviour
 
         // Reset interaction actions to require a fresh press, preventing a held trigger
         // from the previous scene registering as a new selection.
-        /*
+
         if (interactionActions != null)
             foreach (var actionRef in interactionActions)
-                actionRef?.action?.Reset();*/
+                actionRef?.action?.Reset();
 
         Debug.Log($"[XRSceneSwitch] ({sceneName}) Interactor cycle complete.");
     }
