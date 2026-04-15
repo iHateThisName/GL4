@@ -36,7 +36,7 @@ public class BaseNavAIMonster : MonoBehaviour {
     private Vector3 spawnPoint;
     private int currentPatrolIndex = 0;
     private PlayerTemperatureSimulator.EnumLocationType currentPlayerLocation;
-    private WindowController target; // For intruder behavior, the window the monster is trying to enter through.
+    private WindowController targetWindow; // For intruder behavior, the window the monster is trying to enter through.
 
     // Delegate for monster behavior logic. This will point to the appropriate function based on the monster type.
     private Action monsterNavigationLogic;
@@ -167,26 +167,23 @@ public class BaseNavAIMonster : MonoBehaviour {
         }
 
         // Select a window to target if we don't have one or if the current target window is already open
-        if (this.target == null || this.target.GetCurrentWindowState() == VRLever.EnumLeverState.Open) {
-            // Get all windows that has the state closed
-            List<WindowController> closedWindows = GameManager.Instance.GetClosedWindows();
-            if (closedWindows.Count == 0) {
-                Debug.LogWarning("Intruder monster cannot find any closed windows to target.");
+        if (this.targetWindow == null || this.targetWindow.GetCurrentWindowState() == VRLever.EnumLeverState.Open) {
+            this.targetWindow = IntruderSelectWindow();
+            if (this.targetWindow == null) {
+                this.DebugInformation = "Intruder cannot find a valid window to target.";
                 return;
             }
-            // Randomly select one of the closed windows as the new target
-            this.target = closedWindows[UnityEngine.Random.Range(0, closedWindows.Count)];
 
-            Vector3 approachePoint = this.target.TargetPosition.position - (-this.target.TargetPosition.right * 5f);
+            Vector3 approachePoint = this.targetWindow.TargetPosition.position - (-this.targetWindow.TargetPosition.right * 5f);
             Agent.SetDestination(approachePoint);
-            this.DebugInformation = $"Intruder is targeting a window at {this.target.TargetPosition.position} and moving towards approache point at {approachePoint}";
+            this.DebugInformation = $"Intruder is targeting a window at {this.targetWindow.TargetPosition.position} and moving towards approache point at {approachePoint}";
         }
 
 
         // Check if target as been reached.
         if (!Agent.pathPending && Agent.velocity.sqrMagnitude == 0f) {
             // debug log the current position the pathendposition and the target position
-            Vector3 targetPosition = this.target.TargetPosition.position;
+            Vector3 targetPosition = this.targetWindow.TargetPosition.position;
             targetPosition.y = this.Agent.transform.position.y; // setting the y so its the same when warping.
 
             // Calculate distance ignoring the Y axis
@@ -199,7 +196,7 @@ public class BaseNavAIMonster : MonoBehaviour {
                 DisableNavigation();
                 // Reached Window target
                 this.Agent.Warp(targetPosition); // Making sure the monster is exactly at the target position.
-                this.Agent.gameObject.transform.rotation = this.target.TargetPosition.rotation; // Make sure the monster is rotated to match the window's rotation.
+                this.Agent.gameObject.transform.rotation = this.targetWindow.TargetPosition.rotation; // Make sure the monster is rotated to match the window's rotation.
 
                 // Tell the monster controller to start a diffrent animation state for opening the window.
                 this.monsterController.TransitionTo(this.monsterController.GetMonsterState<IntruderApproachWindowState>());
@@ -214,6 +211,19 @@ public class BaseNavAIMonster : MonoBehaviour {
         }
 
     }
+
+    private WindowController IntruderSelectWindow() {
+        // Get all windows that has the state closed
+        List<WindowController> closedWindows = GameManager.Instance.GetClosedWindows();
+        if (closedWindows.Count == 0) {
+            Debug.LogWarning("Intruder monster cannot find any closed windows to target.");
+            return null;
+        }
+        // Randomly select one of the closed windows as the new target
+        return closedWindows[UnityEngine.Random.Range(0, closedWindows.Count)];
+    }
+
+    public WindowController GetCurrentTargetWindow() => this.targetWindow;
 
 
     /// <summary>

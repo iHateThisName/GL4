@@ -3,27 +3,32 @@ using UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets;
 
 public class ApplyPlayerSettings : MonoBehaviour
 {
-    [SerializeField]
-    private SettingsScript settingsToApply;
+    //A refrence to the settings script
+    [SerializeField] private SettingsScript settingsToApply;
 
-    [SerializeField]
-    private ControllerInputActionManager rightControllerRefrence;
+    //A refrence to the player's controllers
+    [SerializeField] private ControllerInputActionManager rightControllerRefrence;
+    [SerializeField] private ControllerInputActionManager leftControllerRefrence;
 
-    [SerializeField]
-    private ControllerInputActionManager leftControllerRefrence;
-
+    //A refrence to the tunneling vignette
     [SerializeField]
     private GameObject tunnelingObject;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        //Finds the settings script
         settingsToApply = FindFirstObjectByType<SettingsScript>();
 
+        //Finds the tunneling vignette
         tunnelingObject = GameObject.Find("TunnelingVignette");
+        //Applies default settings
         tunnelingObject.SetActive(false);
+        rightControllerRefrence.smoothTurnEnabled = true;
+        leftControllerRefrence.smoothMotionEnabled = true;
 
-        if(settingsToApply != null )
+        //Applies the player's preferred settings
+        if (settingsToApply != null )
         {
             if (settingsToApply.snapEnabled)
             {
