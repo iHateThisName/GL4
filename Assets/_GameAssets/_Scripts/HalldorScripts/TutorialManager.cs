@@ -28,10 +28,10 @@ public class TutorialManager : MonoBehaviour
             }
             else
             {
-                Debug.Log("Tutorial started");
                 nightSettings.nightTimeMinutes = 0f;
                 Destroy(tempertureManager);
                 Destroy(hungerManager);
+                Debug.Log("Tutorial started");
             }
         }
     }
