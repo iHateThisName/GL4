@@ -1,6 +1,7 @@
 using System.Threading;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
 public class XRSceneSwitch : MonoBehaviour
 {
@@ -8,6 +9,8 @@ public class XRSceneSwitch : MonoBehaviour
     [SerializeField] private GameObject[] interactorRoots;
     [Tooltip("Assign the select/activate InputActionReferences directly from the left and right controllers.")]
     [SerializeField] private InputActionReference[] interactionActions;
+
+    [SerializeField] private XRBaseInputInteractor[] kskgns;
 
     private void Awake()
     {
@@ -51,6 +54,9 @@ public class XRSceneSwitch : MonoBehaviour
 
         foreach (var root in interactorRoots)
             if (root != null) root.SetActive(true);
+        
+        foreach (var interactor in kskgns)
+            interactor.interactablesSelected.Clear();
 
         // Reset only the specific interaction actions in the same frame as re-enable,
         // before Update() processes them. Forces a fresh press requirement so a held
