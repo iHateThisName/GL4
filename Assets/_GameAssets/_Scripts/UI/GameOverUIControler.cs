@@ -28,6 +28,7 @@ public class GameOverUIControler : MonoBehaviour
         GameManager.Instance.ContinueGame();
     }
 
+    //Setting for going back to the main menu
     public void BackToMenu()
     {
         SceneManager.LoadScene("MainMenu");
