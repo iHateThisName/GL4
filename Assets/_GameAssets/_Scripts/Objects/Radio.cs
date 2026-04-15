@@ -17,6 +17,8 @@ public class Radio : MonoBehaviour
     [Header("Channel Settings")]
     [Tooltip("Number of discrete channels. Set the knob's Angle Increment to (maxAngle - minAngle) / (totalChannels - 1) to match visual snapping.")]
     [SerializeField] private int totalChannels = 9;
+    [Tooltip("When true, forces the knob's SetValue each frame so Inspector slider changes fire onValueChange. Disable in production.")]
+    [SerializeField] private bool editorTestMode = false;
     [Tooltip("The safe channel (1-indexed). Use 0 to auto-select the channel at angle 0.")]
     [SerializeField] private int safeChannel = 0;
     [Tooltip("Prefix added to channel for display (e.g., 88 shows channels as 89, 90, 91...)")]
@@ -57,6 +59,12 @@ public class Radio : MonoBehaviour
             knob.onValueChange.RemoveListener(OnKnobValueChanged);
 
         GameManager.OnEventAvailable -= OnNightEvent;
+    }
+
+    private void Update()
+    {
+        if (!editorTestMode || !initialized || knob == null) return;
+        knob.value = knob.value; // re-triggers SetValue → fires onValueChange
     }
 
     private void Start()
