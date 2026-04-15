@@ -150,4 +150,9 @@ public class VRLever : MonoBehaviour {
     }
 
     public bool GetSmartUpdateEnabled() => this.optimizeUpdate;
+    public IEnumerator DisableSmartUpdateCorutine() {
+        this.optimizeUpdate = false;
+        yield return new WaitForSeconds(10f);
+        this.optimizeUpdate = true;
+    }
 }
