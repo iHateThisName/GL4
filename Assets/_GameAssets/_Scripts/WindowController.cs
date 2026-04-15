@@ -23,7 +23,7 @@ public class WindowController : MonoBehaviour
     private void HandleWindowStateChanged(VRLever.EnumLeverState state)
     {
         GameManager.Instance.UpdateWindowState(this, state);
-        Debug.Log($"Window state changed to {state}");
+        //Debug.Log($"Window state changed to {state}");
     }
 
     public Action<VRLever.EnumLeverState> GetWindowEvent() => this.windowJoint.OnLeverStateChanged;

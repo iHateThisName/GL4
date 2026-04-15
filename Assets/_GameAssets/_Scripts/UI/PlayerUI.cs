@@ -171,7 +171,7 @@ public class PlayerUI : MonoBehaviour
 
     private async Awaitable FadeCanvasGroupAsync(CanvasGroup canvasGroup, bool fadeIn, float targetAlpha, CancellationToken ct)
     {
-        Debug.Log($"Starting fade {(fadeIn ? "in" : "out")} for {canvasGroup.gameObject.name} to target alpha {targetAlpha}");
+        //Debug.Log($"Starting fade {(fadeIn ? "in" : "out")} for {canvasGroup.gameObject.name} to target alpha {targetAlpha}");
 
         if (canvasGroup == null) return;
 
