@@ -18,7 +18,7 @@ public class IntruderFlashedState : AnimatedState {
     }
 
      private System.Collections.IEnumerator DelayedDestroy() {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(3f);
         GameObject go = transform.root.gameObject;
         Destroy(go);
     }

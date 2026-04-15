@@ -231,6 +231,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3645684759878816719}
   - component: {fileID: 8581784409638178010}
+  - component: {fileID: 4108226675085203310}
   m_Layer: 0
   m_Name: Flashed
   m_TagString: Untagged
@@ -250,7 +251,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 4642228401420172502}
   m_Father: {fileID: 6303827022862854503}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8581784409638178010
@@ -270,6 +272,22 @@ MonoBehaviour:
   exitOnComplete: 1
   waitForAffordanceAnimation: 0
   monsterNavigation: {fileID: 132277432202858881}
+--- !u!114 &4108226675085203310
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 738339366660153081}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa4759459a2f6df4e8a3af805bf14913, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
+  paramType: 0
+  AnimationState: 6
+  paramName: 
+  boolValue: 1
 --- !u!1 &771940631241205751
 GameObject:
   m_ObjectHideFlags: 0
@@ -1143,7 +1161,7 @@ MonoBehaviour:
   occlusionMask:
     serializedVersion: 2
     m_Bits: 0
-  flashlightSettings: {fileID: 0}
+  flashlightSettings: {fileID: 11400000, guid: e1d80fbeeb3e27b498a6a95b85fa8a72, type: 2}
   fleeState: {fileID: 8581784409638178010}
   exposureBuildSpeed: 3
   exposureDecaySpeed: 2
@@ -1217,6 +1235,68 @@ MonoBehaviour:
   AnimationState: 7
   paramName: 
   boolValue: 1
+--- !u!1001 &4946766338379631473
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 3645684759878816719}
+    m_Modifications:
+    - target: {fileID: 345356482580756391, guid: cfff9c2f945b14541907c0533cc756d5, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 345356482580756391, guid: cfff9c2f945b14541907c0533cc756d5, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 345356482580756391, guid: cfff9c2f945b14541907c0533cc756d5, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 345356482580756391, guid: cfff9c2f945b14541907c0533cc756d5, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 345356482580756391, guid: cfff9c2f945b14541907c0533cc756d5, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 345356482580756391, guid: cfff9c2f945b14541907c0533cc756d5, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 345356482580756391, guid: cfff9c2f945b14541907c0533cc756d5, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 345356482580756391, guid: cfff9c2f945b14541907c0533cc756d5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 345356482580756391, guid: cfff9c2f945b14541907c0533cc756d5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 345356482580756391, guid: cfff9c2f945b14541907c0533cc756d5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6269452438010106162, guid: cfff9c2f945b14541907c0533cc756d5, type: 3}
+      propertyPath: m_Name
+      value: SmokeScreen_Intruder
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: cfff9c2f945b14541907c0533cc756d5, type: 3}
+--- !u!4 &4642228401420172502 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 345356482580756391, guid: cfff9c2f945b14541907c0533cc756d5, type: 3}
+  m_PrefabInstance: {fileID: 4946766338379631473}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5804665307699812350
 PrefabInstance:
   m_ObjectHideFlags: 0
