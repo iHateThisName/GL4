@@ -65,7 +65,7 @@ public class GameManager : PersistenSingleton<GameManager> {
     private void OnSceneTransitionComplete(int sceneIndex)
     {
         Debug.Log($"[GameManager] loaded into: {sceneIndex}");
-        if (sceneIndex == 0)
+        if (sceneIndex == 1)
             InitializeNight();
     }
 
@@ -89,7 +89,7 @@ public class GameManager : PersistenSingleton<GameManager> {
 
     public void ContinueGame() {
         Debug.Log("Continuing Game...");
-        SceneTransition.LoadScene(0, this.screenFadeRef);
+        SceneTransition.LoadScene(1, this.screenFadeRef);
     }
 
     private void InstantiateTimer()
@@ -179,7 +179,7 @@ public class GameManager : PersistenSingleton<GameManager> {
             if (evt.GetEventType() == NightEventType.SpawnMonster)
                 result.Add(new ScheduledNightEvent(evt, 0.1f, idx++));
         });
-
+        
         return result.ToArray();
     }
 

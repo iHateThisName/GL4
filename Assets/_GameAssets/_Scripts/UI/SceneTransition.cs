@@ -17,46 +17,55 @@ public static class SceneTransition
     private static int progressUpdateInterval = 3;
     private static bool isTransitioning;
     private static ThreadPriority asyncLoadPriority = ThreadPriority.Low;
-    
+
+    public static bool IsTransitioning => isTransitioning;
+
     public static event Action<float> OnProgress;
     public static event Action<int> OnTransitionComplete;
 
-    public static void LoadScene(string sceneName, SO_ScreenFadeRef fadeRef)
+    public static void LoadScene(string sceneName, SO_ScreenFadeRef fadeRef, SO_TransformRef xrOriginRef = null)
     {
-        LoadScene(sceneName, FadeConfig.FadeToBlack(2), fadeRef);
+        LoadScene(sceneName, FadeConfig.FadeToBlack(2), fadeRef, xrOriginRef);
     }
 
-    public static void LoadScene(string sceneName, FadeConfig fadeOutConfig, SO_ScreenFadeRef fadeRef)
+    public static void LoadScene(string sceneName, FadeConfig fadeOutConfig, SO_ScreenFadeRef fadeRef, SO_TransformRef xrOriginRef = null)
     {
         if (isTransitioning) return;
-        _ = TransitionAsync(sceneName, fadeOutConfig, fadeRef);
+        _ = TransitionAsync(sceneName, fadeOutConfig, fadeRef, xrOriginRef);
     }
 
-    public static void LoadScene(int buildIndex, SO_ScreenFadeRef fadeRef)
+    public static void LoadScene(int buildIndex, SO_ScreenFadeRef fadeRef, SO_TransformRef xrOriginRef = null)
     {
-        LoadScene(buildIndex, FadeConfig.FadeToBlack(2), fadeRef);
+        LoadScene(buildIndex, FadeConfig.FadeToBlack(2), fadeRef, xrOriginRef);
     }
 
-    public static void LoadScene(int buildIndex, FadeConfig fadeOutConfig, SO_ScreenFadeRef fadeRef)
+    public static void LoadScene(int buildIndex, FadeConfig fadeOutConfig, SO_ScreenFadeRef fadeRef, SO_TransformRef xrOriginRef = null)
     {
         if (isTransitioning) return;
         string scenePath = SceneUtility.GetScenePathByBuildIndex(buildIndex);
         string sceneName = System.IO.Path.GetFileNameWithoutExtension(scenePath);
-        _ = TransitionAsync(sceneName, fadeOutConfig, fadeRef);
+        _ = TransitionAsync(sceneName, fadeOutConfig, fadeRef, xrOriginRef);
     }
 
     // --- Core transition ---
-    private static async Awaitable TransitionAsync(string targetSceneName, FadeConfig fadeOutConfig, SO_ScreenFadeRef fadeRef)
+    private static async Awaitable TransitionAsync(string targetSceneName, FadeConfig fadeOutConfig, SO_ScreenFadeRef fadeRef, SO_TransformRef xrOriginRef = null)
     {
         isTransitioning = true;
         var ct = Application.exitCancellationToken;
         Scene sceneToUnload = SceneManager.GetActiveScene();
-        
+
         var fadeInConfig = new FadeConfig(0f, 2, fadeOutConfig.imageConfigs);
-        
+
         var currentFade = fadeRef?.Value;
         Debug.Log($"[SceneTransition] Phase 1: Fade out. ScreenFade={currentFade != null}");
         if (currentFade != null) await currentFade.FadeAsync(fadeOutConfig, ct);
+
+        // Screen is fully opaque — safe to disable the old scene's XR origin before the new one loads.
+        if (xrOriginRef?.Value != null)
+        {
+            Debug.Log("[SceneTransition] Disabling old XR origin");
+            xrOriginRef.Value.gameObject.SetActive(false);
+        }
 
         // Screen is now fully opaque. Load loading screen ADDITIVELY behind the opaque overlay.
         Debug.Log("[SceneTransition] Phase 2: Loading screen");

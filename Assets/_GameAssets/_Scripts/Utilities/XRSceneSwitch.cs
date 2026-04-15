@@ -1,37 +1,37 @@
-using System.Threading;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
+/// <summary>
+/// Registers this XR origin in a shared SO_TransformRef so SceneTransition can disable
+/// it before the new scene activates. If the scene is loaded mid-transition the origin
+/// is immediately disabled and re-enabled once the transition (and fade-in) is complete.
+///
+/// Set disableDuringTransition = false on the loading screen's XROrigin — it must stay
+/// active so the player can see the loading UI in VR.
+/// </summary>
 public class XRSceneSwitch : MonoBehaviour
 {
-    private Transform xrOrigin;
-    private CancellationTokenSource xrControlCtx; 
-    
+    [SerializeField] private SO_TransformRef xrOriginRef;
+    [Tooltip("Disable this XR origin when loaded mid-transition. Uncheck for the loading screen scene.")]
+    [SerializeField] private bool disableDuringTransition = true;
+
     private void Awake()
     {
-        this.xrOrigin = this.transform.root;
+        if (xrOriginRef != null)
+            xrOriginRef.Value = this.transform.root;
+
+        if (disableDuringTransition && SceneTransition.IsTransitioning)
+            _ = DisableUntilTransitionDone(Application.exitCancellationToken);
     }
 
-    private void OnEnable()
+    private async Awaitable DisableUntilTransitionDone(System.Threading.CancellationToken ct)
     {
-        SceneManager.sceneLoaded += OnSceneLoaded;
-    }
+        this.transform.root.gameObject.SetActive(false);
 
-    private void OnDisable()
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
-    
-    private void OnSceneLoaded(Scene arg0, LoadSceneMode arg1)
-    {
-        this.xrControlCtx = new CancellationTokenSource();
-        ReEnableXr(this.xrControlCtx.Token);
-    }
+        while (SceneTransition.IsTransitioning)
+            await Awaitable.NextFrameAsync(ct);
 
-    private async Awaitable ReEnableXr(CancellationToken ct)
-    {
-        this.xrOrigin.gameObject.SetActive(false);
-        await Awaitable.WaitForSecondsAsync(0.5f, ct);
-        this.xrOrigin.gameObject.SetActive(true);
+        // Guard against the unlikely case this object was destroyed before the transition ended.
+        if (this != null)
+            this.transform.root.gameObject.SetActive(true);
     }
 }

@@ -127,8 +127,6 @@ public class Radio : MonoBehaviour
         // Convert 1-indexed to 0-indexed and set knob
         int step = Mathf.Clamp(channel - 1, 0, knob.Steps - 1);
         knob.SetStep(step);
-
-        // Apply will be called via OnKnobStepChanged from the knob's event
     }
 
     private void ApplyChannel(int stepInternal)

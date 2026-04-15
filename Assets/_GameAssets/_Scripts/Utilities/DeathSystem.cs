@@ -96,7 +96,7 @@ public static class DeathSystem
                 ? FadeConfig.FadeToWhite()
                 : FadeConfig.FadeToBlack();
             
-            SceneTransition.LoadScene(1, config, fadeRef);
+            SceneTransition.LoadScene(2, config, fadeRef);
         }
         
         /// <summary>The cause of this death event.</summary>
