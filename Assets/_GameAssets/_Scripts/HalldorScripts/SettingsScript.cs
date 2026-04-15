@@ -112,7 +112,7 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
     {
         nightSettings.SetDebugStartNight(2);
         enableNightTwoCube.SetActive(false);
-        enableNightThreeCube.SetActive(false);
+        enableNightThreeCube.SetActive(true);
         enableNightOneCube.SetActive(true);
     }
 
@@ -120,8 +120,8 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
     public void EnableNightThree()
     {
         nightSettings.SetDebugStartNight(3);
-        enableNightTwoCube.SetActive(false);
-        enableNightOneCube.SetActive(false);
-        enableNightThreeCube.SetActive(true);
+        enableNightThreeCube.SetActive(false);
+        enableNightTwoCube.SetActive(true);
+        enableNightOneCube.SetActive(true);
     }
 }
