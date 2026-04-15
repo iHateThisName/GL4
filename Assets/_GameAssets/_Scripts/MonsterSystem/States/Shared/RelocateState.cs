@@ -17,7 +17,9 @@ namespace MonsterSystem
         [Header("=== Configuration ===")]
         [SerializeField] private SO_TransformCollection transforms;
         [SerializeField] private bool useConfig = true;
-        [SerializeField] private bool canKillMomentum = true; 
+        [SerializeField] private bool canKillMomentum = true;
+
+        [SerializeField]
 
         private Rigidbody rb;
         private int lastIndex = -1;
@@ -33,6 +35,8 @@ namespace MonsterSystem
         {
             base.OnStateEnter();
             this.TriggerAffordances<AudioAffordance>();
+            this.TriggerAffordances<VfxAffordance>();
+
 
             this.DisableGrabInteractable();
 

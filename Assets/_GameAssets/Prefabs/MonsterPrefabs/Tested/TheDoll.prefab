@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8081459201721522103}
   - component: {fileID: 5516808396667445640}
   - component: {fileID: 1986643422806203072}
+  - component: {fileID: 2994375968977633093}
   m_Layer: 0
   m_Name: Aggressive
   m_TagString: Untagged
@@ -76,6 +77,19 @@ MonoBehaviour:
   clip: {fileID: 8300000, guid: 4432f4904f836134eb009fe2cc526804, type: 3}
   loop: 1
   volume: 1
+--- !u!114 &2994375968977633093
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 290783745828222862}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aaa34404e3bf4c5ab65596ca06f5b25e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VfxAffordance
+  vfxAsset: {fileID: 8926484042661614526, guid: 016c7835102272642b7079cd81f6d2ef, type: 3}
 --- !u!1 &1445374913760098245
 GameObject:
   m_ObjectHideFlags: 0
@@ -268,6 +282,7 @@ GameObject:
   - component: {fileID: 3662960028798784414}
   - component: {fileID: 3121626272259508856}
   - component: {fileID: 2987720582210339999}
+  - component: {fileID: 210468888850545089}
   m_Layer: 0
   m_Name: DollRelocate
   m_TagString: Untagged
@@ -308,7 +323,8 @@ MonoBehaviour:
   grabInteractable: {fileID: 8213382684775212631}
   transforms: {fileID: 11400000, guid: c857e95225c5e6545989108d853e456d, type: 2}
   useConfig: 0
-  killMomentum: 1
+  canKillMomentum: 1
+  rb: {fileID: 0}
 --- !u!114 &2987720582210339999
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -324,6 +340,19 @@ MonoBehaviour:
   clip: {fileID: 8300000, guid: e13ed7eaed9aa394683b8dcb19bbb599, type: 3}
   loop: 0
   volume: 1
+--- !u!114 &210468888850545089
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1666760154419829998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aaa34404e3bf4c5ab65596ca06f5b25e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VfxAffordance
+  vfxAsset: {fileID: 8926484042661614526, guid: 016c7835102272642b7079cd81f6d2ef, type: 3}
 --- !u!1 &2215229423872836330
 GameObject:
   m_ObjectHideFlags: 0
@@ -765,6 +794,7 @@ GameObject:
   m_Component:
   - component: {fileID: 285961349528642890}
   - component: {fileID: 5312942356579680233}
+  - component: {fileID: 2138905456663758235}
   m_Layer: 0
   m_Name: Hiding
   m_TagString: Untagged
@@ -804,6 +834,19 @@ MonoBehaviour:
   navMeshAgent: {fileID: 1758525936543291132}
   rb: {fileID: 5593219599415299837}
   nextState: {fileID: 1708653840634344366}
+--- !u!114 &2138905456663758235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7079660608194877710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aaa34404e3bf4c5ab65596ca06f5b25e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VfxAffordance
+  vfxAsset: {fileID: 8926484042661614526, guid: 016c7835102272642b7079cd81f6d2ef, type: 3}
 --- !u!1 &7097070077748286372
 GameObject:
   m_ObjectHideFlags: 0
@@ -815,6 +858,7 @@ GameObject:
   - component: {fileID: 6266036368524755492}
   - component: {fileID: 5591425356144439866}
   - component: {fileID: 8703164156901155560}
+  - component: {fileID: 1432845645145338972}
   m_Layer: 0
   m_Name: DollRelocateToNav
   m_TagString: Untagged
@@ -852,8 +896,8 @@ MonoBehaviour:
   blocksTransitions: 0
   grabInteractable: {fileID: 8213382684775212631}
   agent: {fileID: 1758525936543291132}
-  killMomentum: 1
-  findNearest: 1
+  canKillMomentum: 1
+  useNearest: 1
   spawnPoints: {fileID: 11400000, guid: b621c75494b970149b1acb6f9925e93e, type: 2}
   jumpScareDelay: 3
   dollRenderer: {fileID: 137496443782842635}
@@ -873,6 +917,19 @@ MonoBehaviour:
   clip: {fileID: 8300000, guid: 6f1da88fa6f6e9f4da40c3a16193c354, type: 3}
   loop: 0
   volume: 1
+--- !u!114 &1432845645145338972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7097070077748286372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aaa34404e3bf4c5ab65596ca06f5b25e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VfxAffordance
+  vfxAsset: {fileID: 8926484042661614526, guid: 016c7835102272642b7079cd81f6d2ef, type: 3}
 --- !u!1 &7629443495240033469
 GameObject:
   m_ObjectHideFlags: 0

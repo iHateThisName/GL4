@@ -24,7 +24,9 @@ namespace MonsterSystem
 
         public override void OnStateEnter()
         {
+
             base.OnStateEnter();
+            TriggerAffordances<VfxAffordance>();
             this.isTransitioning = false;
 
             if (this.navMeshAgent != null)

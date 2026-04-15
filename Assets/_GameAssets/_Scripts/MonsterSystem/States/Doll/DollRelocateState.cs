@@ -39,8 +39,10 @@ namespace MonsterSystem
 
         public override void OnStateEnter()
         {
-            this.TriggerAffordances<AudioAffordance>();
+
             base.OnStateEnter();
+            this.TriggerAffordances<AudioAffordance>();
+            this.TriggerAffordances <VfxAffordance>();
 
             // 1. Lock down interaction
             if (this.grabInteractable != null)
