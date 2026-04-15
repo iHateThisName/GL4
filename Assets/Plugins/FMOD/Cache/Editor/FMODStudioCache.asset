@@ -1,45 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-9068758599069225796
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
-  m_Name: bank:/Master.strings.bank
-  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorBankRef
-  Path: ../OneDrive/Desktop/StillWinter/Build/Desktop/Master.strings.bank
-  Name: Master.strings
-  StudioPath: bank:/Master.strings
-  lastModified: 639102167281943514
-  FileSizes:
-  - Name: Desktop
-    Value: 1292
-  Exists: 1
---- !u!114 &-8058689916178559094
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
-  m_Name: bank:/Music.bank
-  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorBankRef
-  Path: ../OneDrive/Desktop/StillWinter/Build/Desktop/Music.bank
-  Name: Music
-  StudioPath: bank:/Music
-  lastModified: 639102167281974351
-  FileSizes:
-  - Name: Desktop
-    Value: 506
-  Exists: 1
 --- !u!114 &-7674154744080932588
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -86,7 +46,7 @@ MonoBehaviour:
     Data3: 1131054764
     Data4: -2048325780
   Banks:
-  - {fileID: 5530661373357022219}
+  - {fileID: 1759623812686793363}
   IsStream: 1
   Is3D: 0
   IsOneShot: 0
@@ -138,7 +98,7 @@ MonoBehaviour:
     Data3: -576512098
     Data4: -79032922
   Banks:
-  - {fileID: 5530661373357022219}
+  - {fileID: 1759623812686793363}
   IsStream: 1
   Is3D: 0
   IsOneShot: 1
@@ -165,7 +125,7 @@ MonoBehaviour:
     Data3: -111385984
     Data4: -746572200
   Banks:
-  - {fileID: 5530661373357022219}
+  - {fileID: 1759623812686793363}
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -174,7 +134,27 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
---- !u!114 &-1943860111788061355
+--- !u!114 &-2092920755048649012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Music.bank
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorBankRef
+  Path: Assets/_GameAssets/Sound/Fmod/Build/Desktop/Music.bank
+  Name: Music
+  StudioPath: bank:/Music
+  lastModified: 639118576856023306
+  FileSizes:
+  - Name: Desktop
+    Value: 506
+  Exists: 1
+--- !u!114 &-1538499117008347195
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -186,10 +166,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
   m_Name: bank:/Bank A.bank
   m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorBankRef
-  Path: ../OneDrive/Desktop/StillWinter/Build/Desktop/Bank A.bank
+  Path: Assets/_GameAssets/Sound/Fmod/Build/Desktop/Bank A.bank
   Name: Bank A
   StudioPath: bank:/Bank A
-  lastModified: 639102167222484492
+  lastModified: 639118576855133795
   FileSizes:
   - Name: Desktop
     Value: 506
@@ -213,7 +193,7 @@ MonoBehaviour:
     Data3: 1727409074
     Data4: -181671968
   Banks:
-  - {fileID: 5530661373357022219}
+  - {fileID: 1759623812686793363}
   IsStream: 1
   Is3D: 1
   IsOneShot: 0
@@ -235,10 +215,10 @@ MonoBehaviour:
   m_Name: FMODStudioCache
   m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EventCache
   EditorBanks:
-  - {fileID: -9068758599069225796}
-  - {fileID: -1943860111788061355}
-  - {fileID: 5530661373357022219}
-  - {fileID: -8058689916178559094}
+  - {fileID: 7475299836851846506}
+  - {fileID: -1538499117008347195}
+  - {fileID: 1759623812686793363}
+  - {fileID: -2092920755048649012}
   EditorEvents:
   - {fileID: -315409883655728871}
   - {fileID: -3174337175506190268}
@@ -248,11 +228,11 @@ MonoBehaviour:
   - {fileID: -4437818263921976000}
   EditorParameters: []
   MasterBanks:
-  - {fileID: 5530661373357022219}
+  - {fileID: 1759623812686793363}
   StringsBanks:
-  - {fileID: -9068758599069225796}
+  - {fileID: 7475299836851846506}
   cacheVersion: 131858
-  cacheTime: 639102167281974351
+  cacheTime: 639118576856023306
   SerializableEventsDict:
   - key: event:/SiD/RadioDemonV1
     index: 0
@@ -293,6 +273,26 @@ MonoBehaviour:
   - LeaningOpen
   - Open
   Exists: 1
+--- !u!114 &1759623812686793363
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.bank
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorBankRef
+  Path: Assets/_GameAssets/Sound/Fmod/Build/Desktop/Master.bank
+  Name: Master
+  StudioPath: bank:/Master
+  lastModified: 639118576855981912
+  FileSizes:
+  - Name: Desktop
+    Value: 12929216
+  Exists: 1
 --- !u!114 &3598971249647298106
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -312,7 +312,7 @@ MonoBehaviour:
     Data3: -598941000
     Data4: -1091828783
   Banks:
-  - {fileID: 5530661373357022219}
+  - {fileID: 1759623812686793363}
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -320,7 +320,7 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 5125
---- !u!114 &5530661373357022219
+--- !u!114 &7475299836851846506
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -330,15 +330,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
-  m_Name: bank:/Master.bank
+  m_Name: bank:/Master.strings.bank
   m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorBankRef
-  Path: ../OneDrive/Desktop/StillWinter/Build/Desktop/Master.bank
-  Name: Master
-  StudioPath: bank:/Master
-  lastModified: 639102167281924683
+  Path: Assets/_GameAssets/Sound/Fmod/Build/Desktop/Master.strings.bank
+  Name: Master.strings
+  StudioPath: bank:/Master.strings
+  lastModified: 639118576856010679
   FileSizes:
   - Name: Desktop
-    Value: 12929216
+    Value: 1292
   Exists: 1
 --- !u!114 &7524057726983306142
 MonoBehaviour:
@@ -383,7 +383,7 @@ MonoBehaviour:
     Data3: 1321586328
     Data4: -1346333645
   Banks:
-  - {fileID: 5530661373357022219}
+  - {fileID: 1759623812686793363}
   IsStream: 1
   Is3D: 1
   IsOneShot: 0
