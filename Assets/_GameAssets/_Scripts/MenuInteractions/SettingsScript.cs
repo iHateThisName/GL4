@@ -21,6 +21,7 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
 
     [SerializeField] private GameObject enableNightOneCube;
     [SerializeField] private GameObject enableNightTwoCube;
+    [SerializeField] private GameObject enableNightThreeCube;
 
     //A refrence to the player's controllers
     [SerializeField] private ControllerInputActionManager rightControllerRefrence;
@@ -102,6 +103,7 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
     {
         nightSettings.SetDebugStartNight(1);
         enableNightOneCube.SetActive(false);
+        enableNightThreeCube.SetActive(true);
         enableNightTwoCube.SetActive(true);
     }
 
@@ -110,6 +112,16 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
     {
         nightSettings.SetDebugStartNight(2);
         enableNightTwoCube.SetActive(false);
+        enableNightThreeCube.SetActive(false);
         enableNightOneCube.SetActive(true);
+    }
+
+    //A method for enabling night 3
+    public void EnableNightThree()
+    {
+        nightSettings.SetDebugStartNight(3);
+        enableNightTwoCube.SetActive(false);
+        enableNightOneCube.SetActive(false);
+        enableNightThreeCube.SetActive(true);
     }
 }
