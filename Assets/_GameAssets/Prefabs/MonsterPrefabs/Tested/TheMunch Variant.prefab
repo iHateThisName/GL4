@@ -376,7 +376,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 8892355806475949383}
   - {fileID: 282161950259980696}
   - {fileID: 4493772035742109859}
   m_Father: {fileID: 1257309348054210874}
@@ -624,6 +623,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VfxAffordance
   vfxAsset: {fileID: 8926484042661614526, guid: 8e2007eb98486af48b243d17476c8047, type: 3}
+  isChild: 0
+  vfxInstance: {fileID: 0}
 --- !u!1 &5563555725848977607
 GameObject:
   m_ObjectHideFlags: 0
@@ -708,59 +709,6 @@ MonoBehaviour:
   AnimationState: 0
   paramName: Rej
   boolValue: 1
---- !u!1 &7823497145132291538
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8892355806475949383}
-  - component: {fileID: 8945015160039359414}
-  m_Layer: 0
-  m_Name: Satiety
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &8892355806475949383
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7823497145132291538}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 2343827092994151497}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8945015160039359414
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7823497145132291538}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0312c846a745143458c87e7efd4ef969, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.SatietySensor
-  stateToTransitionTo: {fileID: 0}
-  maxSatiety: 60
-  baseDrainRate: 0.4
-  hungryThreshold: 40
-  angryThreshold: 20
-  killThreshold: 0
-  hungryState: {fileID: 5946285856578261012}
-  angryState: {fileID: 710727004609936139}
-  killState: {fileID: 571947567131634409}
 --- !u!1001 &8102502749938366390
 PrefabInstance:
   m_ObjectHideFlags: 0
