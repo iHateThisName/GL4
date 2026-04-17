@@ -4550,6 +4550,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerTemperatureSimulator
   currentBodyTemperature: 40
+  <CurrentHeatModifier>k__BackingField: 0
   openWindowCount: 0
   currentLocationType: 0
   currentBodyTemperatureState: 0
@@ -6351,7 +6352,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7132f7239181408d88440c84fac4f71e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VisualEffectManager
-  vfxPrefab: {fileID: 7143877955081452287, guid: 70c5350a8a5afb44fb75cac6baacbcd8, type: 3}
 --- !u!1 &798966444
 GameObject:
   m_ObjectHideFlags: 0
@@ -7733,6 +7733,38 @@ PrefabInstance:
     - target: {fileID: 4829839351965416455, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6394717722284339143, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6394717722284339143, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6394717722284339143, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6394717722284339143, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6394717722284339143, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6394717722284339143, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7987529374729579640, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_ExcludeLayers.m_Bits
+      value: 65271
+      objectReference: {fileID: 0}
+    - target: {fileID: 7987529374729579640, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_IncludeLayers.m_Bits
+      value: 256
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
