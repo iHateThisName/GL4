@@ -107,7 +107,7 @@ public class HungerSystem : MonoBehaviour
     {
         var foodObject = TryGetFood(other);
         if (foodObject == null) return;
-        if (foodObject.Value <= 1)
+        if (foodObject.Value <= 0)
         {
             Debug.Log("That is emptied");
             return;
@@ -129,7 +129,7 @@ public class HungerSystem : MonoBehaviour
     /// <param name="food">food being processed.</param>
     private void eatFood(Food foodObject)
     {
-        if (foodObject == null || foodObject.Value < 1) return;
+        if (foodObject == null || foodObject.Value <= 0) return;
         
         foodObject.Eat();
 

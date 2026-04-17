@@ -60,7 +60,7 @@ namespace MonsterSystem
                 return;
             }
 
-            if (food.Value <= 1)
+            if (food.Value <= 0)
             {
                 Debug.Log("That is emptied");
                 return;
@@ -70,8 +70,7 @@ namespace MonsterSystem
             Rigidbody foodRb = other.attachedRigidbody;
             if (foodRb == null) return;
             
-            foodRb.transform.SetParent(this.feedZone.transform, false);
-            foodRb.position = this.feedZone.transform.position;
+            AttachFood(food, foodRb);
             
             Debug.Log("Food was found");
             RequestTransition(this.acceptState, foodRb);
@@ -82,6 +81,19 @@ namespace MonsterSystem
                 this.controller.TransitionTo(this.acceptState, foodRb);
             else
                 this.controller.TransitionTo(this.rejectState, foodRb);*/
+        }
+
+        private void AttachFood(Food food, Rigidbody foodRb)
+        {
+            foodRb.useGravity = false;
+            foodRb.isKinematic = true;
+            foodRb.constraints = RigidbodyConstraints.FreezeRotation;
+            
+            food.transform.SetParent(null);
+            food.transform.SetParent(this.feedZone.transform, false);
+            
+            food.transform.localPosition = Vector3.zero;
+            food.transform.localRotation = Quaternion.Euler(Vector3.zero);
         }
     }
 }

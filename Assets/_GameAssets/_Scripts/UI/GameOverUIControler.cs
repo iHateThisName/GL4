@@ -1,6 +1,5 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Controls the Game Over screen UI, displaying death reason and auto-restart countdown.
@@ -31,7 +30,8 @@ public class GameOverUIControler : MonoBehaviour
     //Setting for going back to the main menu
     public void BackToMenu()
     {
-        SceneManager.LoadScene("MainMenu");
+        GameManager.Instance.LoadScene("MainMenu");
+        //SceneManager.LoadScene("MainMenu");
     }
 
     /// <summary>

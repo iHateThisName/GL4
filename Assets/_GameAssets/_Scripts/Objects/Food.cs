@@ -12,16 +12,20 @@ public class Food : MonoBehaviour
     private void Awake()
     {
         this.meshFilter = GetComponentInChildren<MeshFilter>();
-        this.value = meshes.Length;
+        this.value = meshes.Length - 1;
+        if (this.meshFilter != null && meshes.Length > 0)
+            this.meshFilter.mesh = this.meshes[this.value];
     }
 
     public void Eat()
     {
         this.value--;
-        this.meshFilter.mesh = this.meshes[this.value - 1];
-        
-        if (this.value == -1 && destroyOnEaten) 
-            Destroy(this.gameObject, 0.1f);
+        if (this.value < 0)
+        {
+            if (destroyOnEaten) Destroy(this.gameObject, 0.1f);
+            return;
+        }
+        this.meshFilter.mesh = this.meshes[this.value];
     }
     
     public float FillValue => overrideFoodValue;

@@ -4,7 +4,7 @@ namespace MonsterSystem
 {
     public class ResourceSensor : MonsterSensor
     {
-        [SerializeField] private float maxResource;
+        [SerializeField] private float maxResource = 100;
         [SerializeField] private float[] transitionValues;
         [SerializeField] private MonsterState[] statesToTransitionTo;
         [SerializeField] private float baseDepletionValue = -1;

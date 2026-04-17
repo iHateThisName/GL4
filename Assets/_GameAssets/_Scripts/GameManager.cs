@@ -92,6 +92,10 @@ public class GameManager : PersistenSingleton<GameManager> {
         SceneTransition.LoadScene(1, this.screenFadeRef);
     }
 
+    public void LoadScene(string sceneName) {
+        SceneTransition.LoadScene(sceneName, this.screenFadeRef);
+    }
+
     private void InstantiateTimer()
     {
         Debug.Log("Instantiating Timer...");
