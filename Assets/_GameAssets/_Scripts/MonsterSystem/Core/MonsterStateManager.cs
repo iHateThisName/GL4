@@ -11,10 +11,20 @@ namespace MonsterSystem
         static MonsterController[] sweep = new MonsterController[16];
         static int sweepCount;
 
-        static float tickInterval = 0.2f;  // 5 ticks/sec
-        static float elapsed;
         static int batchIndex;
         static int batchSize = 5;
+
+        // FUTURE: Per-sensor tick intervals
+        // Each MonsterSensor could expose a float TickInterval (defaulting to 0.2s).
+        // MonsterStateManager would group sensors into interval buckets:
+        //   struct IntervalBucket { float interval; float elapsed; int batchIndex; MonsterSensor[] sensors; }
+        // MonsterBootstrap would revert to a per-frame Update call (or GCD interval),
+        // and each bucket would accumulate its own elapsed and fire independently.
+        // Batching within a bucket works the same way batchIndex does today.
+        // Main costs: manager tracks sensors directly (not controllers), isDirty rebuild
+        // becomes per-bucket, and Bootstrap loses its fixed 0.2s gate.
+        // Only worth doing if sensors have genuinely different perf needs
+        // (e.g. expensive pathfinding sensor at 1s vs cheap proximity sensor at 0.1s).
 
         public static void Register(MonsterController controller)
         {
@@ -41,15 +51,9 @@ namespace MonsterSystem
             }
         }
 
-        /// Called every frame by PlayerLoop (via MonsterBootstrap).
-        public static void UpdateMonsters()
+        /// Called every 0.2s by MonsterBootstrap via PlayerLoop.
+        public static void UpdateMonsters(float tickDelta)
         {
-            elapsed += Time.deltaTime;
-            if (elapsed < tickInterval) return;
-
-            float tickDelta = elapsed;
-            elapsed = 0f;
-
             if (activeCount == 0) return;
             
             if (isDirty)
@@ -97,7 +101,6 @@ namespace MonsterSystem
                 sweep[i] = null;
             sweepCount = 0;
 
-            elapsed = 0f;
             batchIndex = 0;
             isDirty = false;
         }

@@ -249,5 +249,25 @@ namespace MonsterSystem
                 speedMultiplier = 1f
             };
         }
+        
+        #if UNITY_EDITOR
+        [ContextMenu("Transition To Next State")]
+        private void ContextTransitionToNextState()
+        {
+            if (this.states == null || this.states.Length == 0) return;
+            int index = System.Array.IndexOf(this.states, this.currentState);
+            int next = (index + 1) % this.states.Length;
+            TransitionTo(this.states[next]);
+        }
+
+        [ContextMenu("Transition To Previous State")]
+        private void ContextTransitionToPreviousState()
+        {
+            if (this.states == null || this.states.Length == 0) return;
+            int index = System.Array.IndexOf(this.states, this.currentState);
+            int prev = (index - 1 + this.states.Length) % this.states.Length;
+            TransitionTo(this.states[prev]);
+        }
+        #endif
     }
 }

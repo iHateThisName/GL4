@@ -3139,6 +3139,30 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6394717722284339143, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6394717722284339143, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6394717722284339143, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6394717722284339143, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6394717722284339143, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6394717722284339143, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 9016595584973978775, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
@@ -4215,8 +4239,8 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1346711481299500691, guid: ec0aa4cbafce12445b407631d33d1905, type: 3}
-      propertyPath: interval
-      value: 20
+      propertyPath: resourceInterval
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4181545296685392125, guid: ec0aa4cbafce12445b407631d33d1905, type: 3}
       propertyPath: m_Name
@@ -4224,7 +4248,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4181545296685392125, guid: ec0aa4cbafce12445b407631d33d1905, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5225646556616369139, guid: ec0aa4cbafce12445b407631d33d1905, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4279,26 +4303,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1285011829392818217, guid: b802fd9c358715b43988c525cacc5926, type: 3}
-      propertyPath: m_Value
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1285011829392818217, guid: b802fd9c358715b43988c525cacc5926, type: 3}
-      propertyPath: m_MaxAngle
-      value: 120
-      objectReference: {fileID: 0}
-    - target: {fileID: 1285011829392818217, guid: b802fd9c358715b43988c525cacc5926, type: 3}
-      propertyPath: m_MinAngle
-      value: -120
-      objectReference: {fileID: 0}
-    - target: {fileID: 1285011829392818217, guid: b802fd9c358715b43988c525cacc5926, type: 3}
-      propertyPath: m_AngleIncrement
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 1285011829392818217, guid: b802fd9c358715b43988c525cacc5926, type: 3}
-      propertyPath: m_TwistSensitivity
-      value: 1.5
-      objectReference: {fileID: 0}
     - target: {fileID: 2545940075947019343, guid: b802fd9c358715b43988c525cacc5926, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.7879486
@@ -4338,14 +4342,6 @@ PrefabInstance:
     - target: {fileID: 2545940075947019343, guid: b802fd9c358715b43988c525cacc5926, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3589052970873710112, guid: b802fd9c358715b43988c525cacc5926, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.49999997
-      objectReference: {fileID: 0}
-    - target: {fileID: 3589052970873710112, guid: b802fd9c358715b43988c525cacc5926, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0.86602545
       objectReference: {fileID: 0}
     - target: {fileID: 9141646344603871652, guid: b802fd9c358715b43988c525cacc5926, type: 3}
       propertyPath: m_Name

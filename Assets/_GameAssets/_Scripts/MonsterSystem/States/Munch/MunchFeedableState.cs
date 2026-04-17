@@ -54,7 +54,11 @@ namespace MonsterSystem
             Debug.Log("Triggered Feed trigger");
             // Ignore non-food objects and guard against missing controller
             var food = HungerSystem.TryGetFood(other);
-            if (food == null) return;
+            if (food == null)
+            {
+                Debug.Log("Did not get food from: " + other.name);
+                return;
+            }
 
             if (food.Value <= 1)
             {
@@ -67,9 +71,7 @@ namespace MonsterSystem
             if (foodRb == null) return;
             
             Debug.Log("Food was found");
-            
             RequestTransition(this.acceptState, foodRb);
-            return;
 
             // Accept food if it is moving slowly enough; otherwise reject it
             /*

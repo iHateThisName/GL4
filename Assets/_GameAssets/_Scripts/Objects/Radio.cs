@@ -226,6 +226,21 @@ public class Radio : MonoBehaviour
         return CurrentChannel == channel;
     }
 
+    [ContextMenu("Set Random Channel")]
+    private void ContextSetRandomChannel()
+    {
+        int channel;
+        do { channel = UnityEngine.Random.Range(1, TotalChannels + 1); }
+        while (channel == SafeChannel && TotalChannels > 1);
+        SetChannel(channel);
+    }
+
+    [ContextMenu("Set Safe Channel")]
+    private void ContextSetSafeChannel()
+    {
+        SetChannel(SafeChannel);
+    }
+
     private void OnValidate()
     {
         if (totalChannels < 2)

@@ -45,10 +45,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.DisruptRadioFrequencyState
   blocksTransitions: 0
-  interval: 5
+  interval: 0.2
   duration: 0
   radioRef: {fileID: 11400000, guid: b7444bc83e7e01742ad9851020aa5b6f, type: 2}
   exitState: {fileID: 3004101101291162495}
+  disruptionInterval: 10
+  resourceDepletionValue: 2.5
+  resourceDepletionInterval: 2
 --- !u!1 &2810850428064555372
 GameObject:
   m_ObjectHideFlags: 0
@@ -177,6 +180,57 @@ Transform:
   - {fileID: 2355242163959156132}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4236574080508602566
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1510360639877679732}
+  - component: {fileID: 6082617435289506659}
+  m_Layer: 0
+  m_Name: Resource
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1510360639877679732
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4236574080508602566}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2355242163959156132}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6082617435289506659
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4236574080508602566}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1d233ac31574899b3b9fd8f9c799ac0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.ResourceSensor
+  stateToTransitionTo: {fileID: 0}
+  maxResource: 100
+  transitionValues:
+  - 20
+  statesToTransitionTo:
+  - {fileID: 6782068129171829247}
+  baseDepletionValue: -1
 --- !u!1 &4493433350775686819
 GameObject:
   m_ObjectHideFlags: 0
@@ -308,6 +362,7 @@ Transform:
   m_Children:
   - {fileID: 1914526387410738816}
   - {fileID: 7458304548254202180}
+  - {fileID: 1510360639877679732}
   m_Father: {fileID: 5225646556616369139}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &9181115424053318874
