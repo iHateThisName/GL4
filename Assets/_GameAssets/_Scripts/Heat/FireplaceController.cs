@@ -175,7 +175,7 @@ public class FireplaceController : MonoBehaviour {
     public void Ignite(FireMatchController match) {
         if (tutorialManager != null && tutorialManager.hasLitFire == false)
         {
-            tutorialManager.hasLitFire = true;
+            tutorialManager.TurnOnFire();
         }
         this.IsLit = true;
         this.fireVFX.SetActive(true);

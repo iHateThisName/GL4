@@ -36,9 +36,10 @@ public class TutorialManager : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    public void TurnOnFire()
     {
+        hasLitFire = true;
+        hungerManager.SetActive(true);
         
     }
 }
