@@ -35,4 +35,10 @@ public class VfxAffordance : StateAffordance {
         this.visualEffect.Stop();
         this.vfxInstance.SetActive(false);
     }
+
+    private void OnDestroy() {
+        if (this.vfxInstance != null) {
+            Destroy(this.vfxInstance);
+        }
+    }
 }
