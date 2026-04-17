@@ -70,6 +70,9 @@ namespace MonsterSystem
             Rigidbody foodRb = other.attachedRigidbody;
             if (foodRb == null) return;
             
+            foodRb.transform.SetParent(this.feedZone.transform, false);
+            foodRb.position = this.feedZone.transform.position;
+            
             Debug.Log("Food was found");
             RequestTransition(this.acceptState, foodRb);
 
