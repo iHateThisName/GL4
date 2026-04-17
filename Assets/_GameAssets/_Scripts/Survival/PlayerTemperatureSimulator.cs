@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> {
 
-    [SerializeField] private float currentBodyTemperature = 37.0f; // Normal human body temperature in Celsius
+    [SerializeField, Gaskellgames.ReadOnly] private float currentBodyTemperature = 37.0f; // Normal human body temperature in Celsius
     private readonly float MIN_COMFORTABLE_TEMPERATURE = 35.2f; // Hypothermia threshold,
                                                                 // 32 - 35 C is mild hypothermia (shivering, confusion),
                                                                 // 28 - 32 C is moderate (slurred speech, drowsiness),
@@ -20,6 +20,8 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
     private readonly float WARM_RATE = 0.12f; // Rate of temperature change per second while next to fireplace
     private readonly float OPEN_WINDOW_RATE = -0.03f; // Rate of temperature change per second when a single window is open
 
+    [field:SerializeField, Gaskellgames.ReadOnly] public float CurrentHeatModifier { get; private set; } = 0f;
+
     [SerializeField, Gaskellgames.ReadOnly] private int openWindowCount = 0;
 
     [SerializeField] private EnumLocationType currentLocationType = EnumLocationType.Normal;
@@ -31,6 +33,7 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
     public static Action<BodyTemperatureStateChange> OnBodyTemperatureStateChanged;
     // Event triggered when location type changes.
     public static Action<EnumLocationType> OnLocationTypeChanged;
+    public static Action<float> OnHeatModifierChanged;
 
     // Temperature change rate based on location type, Normal slowly decreases, Cold rapidly decreases, Warm increases
     public enum EnumLocationType { Normal, Cold, Warm, Shack }
@@ -148,7 +151,14 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
     /// </summary>
     private void SimulateTemperatureChange() {
         // Calculate next body temperature
-        float nextTemp = this.currentBodyTemperature + GetLocationRate(this.currentLocationType) * Time.fixedDeltaTime;
+        float heatModifier = GetLocationRate(this.currentLocationType);
+
+        if (heatModifier != this.CurrentHeatModifier) {
+            this.CurrentHeatModifier = heatModifier;
+            OnHeatModifierChanged?.Invoke(this.CurrentHeatModifier);
+        }
+
+        float nextTemp = this.currentBodyTemperature + heatModifier * Time.fixedDeltaTime;
 
         // Get location-specific min and max temperatures
         float minTemp = GetLocationMinTemp(this.currentLocationType);
