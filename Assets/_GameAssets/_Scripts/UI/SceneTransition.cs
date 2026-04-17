@@ -12,7 +12,7 @@ public static class SceneTransition
 {
     private static float fadeOutLoadingDuration = 0.5f;
     private static float holdAt100Duration = 0.5f;
-    private static float minimumLoadingDisplayTime = 8f;
+    private static float minimumLoadingDisplayTime = 0.75f;
     private static int LoadingScreenIndex => SceneManager.sceneCountInBuildSettings - 1;
     private static int progressUpdateInterval = 3;
     private static bool isTransitioning;
