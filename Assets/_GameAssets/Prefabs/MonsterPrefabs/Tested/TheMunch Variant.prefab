@@ -512,6 +512,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2484438290095207372}
   - component: {fileID: 3198911293393157017}
+  - component: {fileID: 9099496089540829095}
   m_Layer: 0
   m_Name: Relocate
   m_TagString: Untagged
@@ -552,7 +553,21 @@ MonoBehaviour:
   grabInteractable: {fileID: 0}
   transforms: {fileID: 11400000, guid: 76cdd536e2aa8bb45b0b4c19a2af3932, type: 2}
   useConfig: 1
-  killMomentum: 0
+  canKillMomentum: 1
+  rb: {fileID: 0}
+--- !u!114 &9099496089540829095
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5389320278334512957}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aaa34404e3bf4c5ab65596ca06f5b25e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VfxAffordance
+  vfxAsset: {fileID: 8926484042661614526, guid: 8e2007eb98486af48b243d17476c8047, type: 3}
 --- !u!1 &5563555725848977607
 GameObject:
   m_ObjectHideFlags: 0

@@ -59,12 +59,33 @@ namespace MonsterSystem
             }
         }
 
+        [Header("=== Easter Egg ===")]
+        [SerializeField] private MonsterState attackState; // Assign the Attack State in the inspector
+
         private void OnDollSelected(SelectEnterEventArgs args)
         {
             // Check if the thing that just grabbed her is a Socket (not the player's hands)
-            if (args.interactorObject is XRSocketInteractor)
+            if (args.interactorObject is XRSocketInteractor socket)
             {
-                Debug.Log("[HidingState] Snapped into a socket! Waiting for physical snap to finish...");
+                // EASTER EGG: Check if the socket is the Fireplace
+                if (socket.transform.CompareTag("FirePlace"))
+                {
+                    Debug.Log("[HidingState] Snapped into the Fireplace! Triggering Easter Egg.");
+
+                    if (this.attackState != null)
+                    {
+                        // Instantly transition to the attack state
+                        this.RequestTransition(this.attackState);
+                    }
+                    else
+                    {
+                        Debug.LogError("[HidingState] Fireplace triggered, but Attack State is missing!");
+                    }
+
+                    return; // Stop the rest of the normal bed-socket logic
+                }
+
+                Debug.Log("[HidingState] Snapped into a normal socket! Waiting for physical snap to finish...");
 
                 if (this.isTransitioning)
                 {

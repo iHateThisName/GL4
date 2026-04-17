@@ -412,7 +412,7 @@ Transform:
   m_GameObject: {fileID: 3076776730030149679}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.062, y: 0.023, z: 0}
   m_LocalScale: {x: 0.3000001, y: 0.3, z: 0.3000001}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -514,7 +514,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3584912247854795726}
-  - component: {fileID: 1930524124037398378}
   - component: {fileID: 1758525936543291132}
   - component: {fileID: 4777723644521654610}
   - component: {fileID: 5593219599415299837}
@@ -547,25 +546,6 @@ Transform:
   - {fileID: 5028797612979446905}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1930524124037398378
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6880271366201179141}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a0f28e82ba282747a3ad3dd8aea0f9b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.MonsterController
-  nightOverrides: []
-  spawnPoints: {fileID: 11400000, guid: 5f5594a317da04c41810b8ab7cec5373, type: 2}
-  playerRef: {fileID: 11400000, guid: 8aa04a6520205384e9477b4745bd7d4b, type: 2}
-  animator: {fileID: 0}
-  audioSource: {fileID: 6190555411854072295}
-  sensorRoot: {fileID: 5624446739809958843}
-  initialState: {fileID: 5312942356579680233}
 --- !u!195 &1758525936543291132
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -835,6 +815,7 @@ MonoBehaviour:
   navMeshAgent: {fileID: 1758525936543291132}
   rb: {fileID: 5593219599415299837}
   nextState: {fileID: 1708653840634344366}
+  attackState: {fileID: 7030186266804405750}
 --- !u!114 &2138905456663758235
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1319,6 +1300,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5455919166180357250}
+  - component: {fileID: 4773274735772950392}
   m_Layer: 0
   m_Name: States
   m_TagString: Untagged
@@ -1347,6 +1329,25 @@ Transform:
   - {fileID: 6266036368524755492}
   m_Father: {fileID: 3584912247854795726}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4773274735772950392
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8772031545931181964}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a0f28e82ba282747a3ad3dd8aea0f9b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.MonsterController
+  nightOverrides: []
+  spawnPoints: {fileID: 11400000, guid: 5f5594a317da04c41810b8ab7cec5373, type: 2}
+  playerRef: {fileID: 11400000, guid: 8aa04a6520205384e9477b4745bd7d4b, type: 2}
+  animator: {fileID: 0}
+  audioSource: {fileID: 6190555411854072295}
+  sensorRoot: {fileID: 5624446739809958843}
+  initialState: {fileID: 5312942356579680233}
 --- !u!1001 &529744181998733394
 PrefabInstance:
   m_ObjectHideFlags: 0
