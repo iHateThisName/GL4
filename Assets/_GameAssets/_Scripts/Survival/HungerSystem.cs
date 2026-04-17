@@ -141,7 +141,9 @@ public class HungerSystem : MonoBehaviour
 
         //Play eatSFX
         if (eatSFX != null)
+        {
             SoundEffectManager.Instance.PlaySoundFXClip(this.eatSFX, transform, 1f);
+        }
 
         if(tutorialManager != null && tutorialManager.hasLitFire == true && tutorialManager.hasEatenFood == false)
         {
