@@ -146,7 +146,7 @@ public class HungerSystem : MonoBehaviour
         }
 
         Debug.Log("Testing 1");
-        if(tutorialManager != null /*&& tutorialManager.hasLitFire == true && tutorialManager.hasEatenFood == false*/)
+        if(tutorialManager != null && tutorialManager.hasLitFire == true && tutorialManager.hasEatenFood == false)
         {
             Debug.Log("Testing 2");
             tutorialManager.EatedFood();
