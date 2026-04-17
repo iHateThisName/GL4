@@ -31,7 +31,9 @@ public class HungerSystem : MonoBehaviour
 
     [Header("=== Configuration ====")]
     [SerializeField] private SO_HungerSettings hungerSettings;
-    
+
+    [SerializeField] private TutorialManager tutorialManager; //A refrence to the tutorial manager
+
     private TimerHandle hungerHandle;
     
     // current state of hunger
@@ -140,6 +142,11 @@ public class HungerSystem : MonoBehaviour
         //Play eatSFX
         if (eatSFX != null)
             SoundEffectManager.Instance.PlaySoundFXClip(this.eatSFX, transform, 1f);
+
+        if(tutorialManager != null && tutorialManager.hasLitFire == true && tutorialManager.hasEatenFood == false)
+        {
+            tutorialManager.EatedFood();
+        }
     }
 
     /// <summary>

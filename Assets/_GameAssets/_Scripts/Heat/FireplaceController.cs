@@ -173,12 +173,12 @@ public class FireplaceController : MonoBehaviour {
     }
 
     public void Ignite(FireMatchController match) {
+        this.IsLit = true;
+        this.fireVFX.SetActive(true);
         if (tutorialManager != null && tutorialManager.hasLitFire == false)
         {
             tutorialManager.TurnOnFire();
         }
-        this.IsLit = true;
-        this.fireVFX.SetActive(true);
     }
     private void HandleFireAudio()
     {

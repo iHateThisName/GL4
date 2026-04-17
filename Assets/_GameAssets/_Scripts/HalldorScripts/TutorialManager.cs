@@ -40,6 +40,17 @@ public class TutorialManager : MonoBehaviour
     {
         hasLitFire = true;
         hungerManager.SetActive(true);
-        
+        hungerManager.GetComponent<HungerSystem>().TutorialFood();
+    }
+
+    public void EatedFood()
+    {
+        hasEatenFood = true;
+        hungerManager.SetActive(false);
+    }
+
+    public void FixRadio()
+    {
+        hasFixedRadio = true;
     }
 }
