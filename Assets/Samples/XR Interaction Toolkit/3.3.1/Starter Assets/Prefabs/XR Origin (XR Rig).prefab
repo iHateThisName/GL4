@@ -5276,7 +5276,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8343550798563338433}
-  - component: {fileID: 1391659484424351057}
   m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
@@ -5300,28 +5299,6 @@ Transform:
   - {fileID: 8735194275785425419}
   m_Father: {fileID: 6630345044929513384}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &1391659484424351057
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7693185929342731221}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 27e3b892da42c104185d5754a960e9f9, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &7789028010071077187
 GameObject:
   m_ObjectHideFlags: 0
@@ -5536,6 +5513,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8735194275785425419}
+  - component: {fileID: 1682717534008501066}
   m_Layer: 0
   m_Name: Anim_Death_Munch
   m_TagString: Untagged
@@ -5560,6 +5538,28 @@ Transform:
   - {fileID: 1414923978702666140}
   m_Father: {fileID: 8343550798563338433}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &1682717534008501066
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8246781708285188273}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 27e3b892da42c104185d5754a960e9f9, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &8312375932472108377
 GameObject:
   m_ObjectHideFlags: 0
@@ -5748,10 +5748,10 @@ BoxCollider:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 65271
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
