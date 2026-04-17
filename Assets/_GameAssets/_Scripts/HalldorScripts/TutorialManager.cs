@@ -47,6 +47,7 @@ public class TutorialManager : MonoBehaviour
     {
         hasEatenFood = true;
         hungerManager.SetActive(false);
+        Debug.Log("Testing 3");
     }
 
     public void FixRadio()
