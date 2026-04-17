@@ -6,7 +6,7 @@ using static PlayerTemperatureSimulator;
 /// <summary>
 /// Manages the player's UI display.
 /// </summary>
-public class PlayerUI : MonoBehaviour {
+public class DebugUI : MonoBehaviour {
     [Header("Refrences")]
     [SerializeField] private TMP_Text temperatureText;
     [SerializeField] private TMP_Text locationText;
