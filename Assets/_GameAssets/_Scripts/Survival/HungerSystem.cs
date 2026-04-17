@@ -197,6 +197,11 @@ public class HungerSystem : MonoBehaviour
         };
         return foodObject;
     }
+
+    public void TutorialFood()
+    {
+        hunger = 79f;
+    }
     
     #region DEPRECATED_HELPER
     /// <summary>
