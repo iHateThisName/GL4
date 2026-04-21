@@ -14,7 +14,7 @@ public class TutorialManager : MonoBehaviour
     [SerializeField] private GameObject tempertureManager;
 
     //A refrence to the hunger manager
-    [SerializeField] private GameObject hungerManager;
+    [SerializeField] private HungerSystem hungerManager;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -30,24 +30,29 @@ public class TutorialManager : MonoBehaviour
             {
                 nightSettings.nightTimeMinutes = 0f;
                 Destroy(tempertureManager);
-                hungerManager.SetActive(false);
+                this.hungerManager.Pause();
                 Debug.Log("Tutorial started");
             }
         }
     }
 
-    public void TurnOnFire()
+    private void OnEnable() => HungerSystem.OnHungerChanged += OnHungerChanged;
+    
+    private void OnDisable() => HungerSystem.OnHungerChanged -= OnHungerChanged;
+
+    private void OnHungerChanged(float newHungerValue)
     {
-        hasLitFire = true;
-        hungerManager.SetActive(true);
-        hungerManager.GetComponent<HungerSystem>().TutorialFood();
+        if (!this.hasLitFire) return;
+        
+        this.hasEatenFood = true;
+        Debug.Log("eaten food");
     }
 
-    public void EatedFood()
+    [ContextMenu("Turn on fire")]
+    public void TurnOnFire()
     {
-        hasEatenFood = true;
-        hungerManager.SetActive(false);
-        Debug.Log("Testing 3");
+        hungerManager.ModifyHunger(-21);
+        hasLitFire = true;
     }
 
     public void FixRadio()

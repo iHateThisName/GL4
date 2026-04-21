@@ -1,4 +1,3 @@
-using TMPro;
 using UnityEngine;
 
 /// <summary>
@@ -32,9 +31,7 @@ public class HungerSystem : MonoBehaviour
     [Header("=== Configuration ====")]
     [SerializeField] private SO_HungerSettings hungerSettings;
 
-    [SerializeField] private TutorialManager tutorialManager; //A refrence to the tutorial manager
-
-    private TimerHandle hungerHandle;
+    private TimerHandle timerHandle;
     
     // current state of hunger
     private EnumHungerState hungerState;
@@ -60,15 +57,15 @@ public class HungerSystem : MonoBehaviour
     /// Initializes the hunger system by setting hunger to maximum
     /// and updating the UI to reflect the starting value.
     /// </summary>
-    private void Start()
+    private void Awake()
     {
         if (this.hungerSettings != null)
         {
             this.hunger = this.MaxHunger;
             this.hungerState = EnumHungerState.Full;
 
-            this.hungerHandle = TimerManager.Create(this.hungerSettings.GetHungerDecayTick());
-            TimerManager.SetCallbacks(this.hungerHandle, HandleHungerTick, null);
+            this.timerHandle = TimerManager.Create(this.hungerSettings.GetHungerDecayTick());
+            TimerManager.SetCallbacks(this.timerHandle, HandleHungerTick, null);
         }
     }
 
@@ -94,7 +91,7 @@ public class HungerSystem : MonoBehaviour
     
     private void OnDestroy()
     {
-        TimerManager.Release(ref this.hungerHandle);
+        TimerManager.Release(ref this.timerHandle);
     }
 
     /// <summary>
@@ -144,13 +141,6 @@ public class HungerSystem : MonoBehaviour
         {
             SoundEffectManager.Instance.PlaySoundFXClip(this.eatSFX, transform, 1f);
         }
-
-        Debug.Log("Testing 1");
-        if(tutorialManager != null && tutorialManager.hasLitFire == true && tutorialManager.hasEatenFood == false)
-        {
-            Debug.Log("Testing 2");
-            tutorialManager.EatedFood();
-        }
     }
 
     /// <summary>
@@ -165,9 +155,14 @@ public class HungerSystem : MonoBehaviour
         if (this.hunger <= 0)
         {
             Debug.Log("You are starving!");
-            TimerManager.Release(ref this.hungerHandle);
+            TimerManager.Release(ref this.timerHandle);
             DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Hunger, "", false);
         }
+    }
+
+    public void ModifyHunger(float delta)
+    {
+        ClampHunger(delta);
     }
 
     private void ClampHunger(float delta)
@@ -209,21 +204,9 @@ public class HungerSystem : MonoBehaviour
         return foodObject;
     }
 
-    public void TutorialFood()
+    public void Pause()
     {
-        hunger = 79f;
+        if (!this.timerHandle.IsValid) return;
+        TimerManager.Pause(this.timerHandle);
     }
-    
-    #region DEPRECATED_HELPER
-    /// <summary>
-    /// Updates the hunger UI text field with a new value.
-    /// </summary>
-    /// <param name="textField">The UI text element to update.</param>
-    /// <param name="newText">The new text to display.</param>
-    private void UpdateHungerText(TextMeshProUGUI textField, string newText)
-    {
-        if (textField == null) return;
-        textField.text = newText;
-    }
-    #endregion
 }
