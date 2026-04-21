@@ -62,7 +62,7 @@ namespace MonsterSystem
 
             if (food.Value <= 0)
             {
-                Debug.Log("That is emptied");
+                RequestTransition(this.rejectState, other.attachedRigidbody);
                 return;
             }
 
