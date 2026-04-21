@@ -27,7 +27,7 @@ namespace MonsterSystem
             base.Initialize(controller);
             this.sensor = controller.GetSensor<DollSensor>();
             this.playerTransform = this.playerRef?.Value;
-            this.rootParent = controller.transform;
+            this.rootParent = controller.transform.parent;
         }
 
         public override void OnStateEnter()

@@ -79,6 +79,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.KillPlayerState
   blocksTransitions: 1
+  nextState: {fileID: 0}
+  exitOnComplete: 1
+  waitForAffordanceAnimation: 0
+  useAnimation: 0
 --- !u!114 &6099649490890638158
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -272,7 +276,7 @@ MonoBehaviour:
   strategy:
     rid: 1560563707155841127
   moveConfig: {fileID: 0}
-  targetThreshold: 0.5
+  targetThreshold: 1
   arrivalState: {fileID: 2186266730210364484}
   references:
     version: 2

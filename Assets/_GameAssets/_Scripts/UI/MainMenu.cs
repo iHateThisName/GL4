@@ -1,13 +1,14 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
     public void StartGame()
     {
-        SceneManager.LoadScene("CabinLayoutFinal");
+        GameManager.Instance.LoadScene("CabinLayoutFinal");
+        //SceneManager.LoadScene("CabinLayoutFinal");
     }
 
+    //A function for quitting the editor or the game
     public void QuitGame()
     {
         #if UNITY_EDITOR

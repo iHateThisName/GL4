@@ -8,6 +8,7 @@ namespace MonsterSystem
     {
         [Header("Teleport")]
         [SerializeField] private float behindDistance = 1.5f;
+        [SerializeField] private GameObject munchModel;
 
         public override void OnStateEnter()
         {
@@ -23,6 +24,17 @@ namespace MonsterSystem
             this.controller.PreviousState?.StopAffordances<AudioAffordance>();
             TriggerAffordances<AudioAffordance>();
             TriggerAffordances<AnimationAffordance>();
+
+
+            CameraAnimationController cameraAnimation = Camera.main.GetComponentInChildren<CameraAnimationController>();
+            if (cameraAnimation != null) {
+                cameraAnimation.PlayMunchDeathAnimation();
+                if (this.munchModel != null) {
+                    this.munchModel.SetActive(false);
+                }
+            } else {
+                Debug.LogWarning("CameraAnimationController not found in children of main camera.");
+            }
         }
 
         protected override void OnTimerFinished()

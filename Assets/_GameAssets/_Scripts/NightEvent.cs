@@ -55,11 +55,14 @@ public struct NightEventData
     [SerializeField] private GameObject monster;
     [SerializeField] private int monsterCount;
     [SerializeField] private NightEventTiming timing;
+    [Tooltip("RadioBroadcast only: if true, interrupts any currently playing broadcast (which is paused and resumed after).")]
+    [SerializeField] private bool overrideBroadcast;
 
     public NightEventType GetEventType() => this.eventType;
     public GameObject GetMonsterPrefab() => this.monster;
     public int GetMonsterCount() => this.monsterCount;
     public NightEventTiming GetTiming() => this.timing;
+    public bool GetIsOverrideBroadcast() => this.overrideBroadcast;
 }
     
 [System.Serializable]

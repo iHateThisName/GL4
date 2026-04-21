@@ -24,6 +24,15 @@ namespace MonsterSystem
             base.Initialize(owningController);
             this.satietySensor = owningController.GetSensor<SatietySensor>();
         }
+        
+        public override void OnStateEnter()
+        {
+            base.OnStateEnter();
+            if (this.foodObject != null)
+            {
+                
+            }
+        }
 
         protected override void RegisterAnimationEvents()
         {
@@ -50,6 +59,9 @@ namespace MonsterSystem
             {
                 var grab = this.foodRb.GetComponent<XRGrabInteractable>();
                 ForceRelease(grab);
+
+                var disableGrab = this.foodRb.GetComponent<DisableGrab>();
+                if (disableGrab != null) disableGrab.enabled = true;
             }
 
             this.satietySensor.AddSatiety(this.satietyGain);

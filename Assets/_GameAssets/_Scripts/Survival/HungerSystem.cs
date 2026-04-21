@@ -31,7 +31,9 @@ public class HungerSystem : MonoBehaviour
 
     [Header("=== Configuration ====")]
     [SerializeField] private SO_HungerSettings hungerSettings;
-    
+
+    [SerializeField] private TutorialManager tutorialManager; //A refrence to the tutorial manager
+
     private TimerHandle hungerHandle;
     
     // current state of hunger
@@ -104,6 +106,12 @@ public class HungerSystem : MonoBehaviour
     private void tryEatFood(Collider other)
     {
         var foodObject = TryGetFood(other);
+        if (foodObject == null) return;
+        if (foodObject.Value <= 0)
+        {
+            Debug.Log("That is emptied");
+            return;
+        }
 
         if (this.hunger + this.hungerSettings.GetFoodFillValue() >= this.MaxHunger)
         {
@@ -121,7 +129,7 @@ public class HungerSystem : MonoBehaviour
     /// <param name="food">food being processed.</param>
     private void eatFood(Food foodObject)
     {
-        if (foodObject == null || foodObject.Value < 1) return;
+        if (foodObject == null || foodObject.Value <= 0) return;
         
         foodObject.Eat();
 
@@ -133,7 +141,16 @@ public class HungerSystem : MonoBehaviour
 
         //Play eatSFX
         if (eatSFX != null)
+        {
             SoundEffectManager.Instance.PlaySoundFXClip(this.eatSFX, transform, 1f);
+        }
+
+        Debug.Log("Testing 1");
+        if(tutorialManager != null && tutorialManager.hasLitFire == true && tutorialManager.hasEatenFood == false)
+        {
+            Debug.Log("Testing 2");
+            tutorialManager.EatedFood();
+        }
     }
 
     /// <summary>
@@ -190,6 +207,11 @@ public class HungerSystem : MonoBehaviour
             return null;
         };
         return foodObject;
+    }
+
+    public void TutorialFood()
+    {
+        hunger = 79f;
     }
     
     #region DEPRECATED_HELPER

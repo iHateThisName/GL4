@@ -65,7 +65,7 @@ public class GameManager : PersistenSingleton<GameManager> {
     private void OnSceneTransitionComplete(int sceneIndex)
     {
         Debug.Log($"[GameManager] loaded into: {sceneIndex}");
-        if (sceneIndex == 0)
+        if (sceneIndex == 1)
             InitializeNight();
     }
 
@@ -89,7 +89,11 @@ public class GameManager : PersistenSingleton<GameManager> {
 
     public void ContinueGame() {
         Debug.Log("Continuing Game...");
-        SceneTransition.LoadScene(0, this.screenFadeRef);
+        SceneTransition.LoadScene(1, this.screenFadeRef);
+    }
+
+    public void LoadScene(string sceneName) {
+        SceneTransition.LoadScene(sceneName, this.screenFadeRef);
     }
 
     private void InstantiateTimer()
@@ -179,7 +183,7 @@ public class GameManager : PersistenSingleton<GameManager> {
             if (evt.GetEventType() == NightEventType.SpawnMonster)
                 result.Add(new ScheduledNightEvent(evt, 0.1f, idx++));
         });
-
+        
         return result.ToArray();
     }
 
@@ -218,6 +222,8 @@ public class GameManager : PersistenSingleton<GameManager> {
         // update the dictionary with the new state and remove the old refrence
         this.WindowsDictonary.Remove(windowController);
         this.WindowsDictonary.Add(windowController, newSate);
+
+        PlayerTemperatureSimulator.Instance.UpdateOpenWindowCount();
     }
 
     public List<WindowController> GetClosedWindows() {

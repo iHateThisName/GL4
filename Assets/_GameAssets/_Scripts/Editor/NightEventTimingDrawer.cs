@@ -8,14 +8,30 @@ using UnityEngine;
 [CustomPropertyDrawer(typeof(NightEventTiming))]
 public class NightEventTimingDrawer : PropertyDrawer
 {
-    // Cached night length so we don't hit AssetDatabase.FindAssets every repaint.
-    // Invalidated whenever the project changes (asset added/moved/deleted/imported).
+    // Cached night length, populated eagerly to avoid any AssetDatabase calls inside OnGUI.
     private static float cachedNightSeconds = -1f;
 
     [InitializeOnLoadMethod]
     private static void Hook()
     {
-        EditorApplication.projectChanged += () => cachedNightSeconds = -1f;
+        // Populate the cache immediately on domain load.
+        RefreshCache();
+        // Re-populate asynchronously after project changes — delayCall breaks the
+        // sync feedback loop that LoadAssetAtPath would otherwise cause in OnGUI.
+        EditorApplication.projectChanged += () => EditorApplication.delayCall += RefreshCache;
+    }
+
+    private static void RefreshCache()
+    {
+        var guids = AssetDatabase.FindAssets("t:SO_NightSettings");
+        if (guids == null || guids.Length == 0)
+        {
+            cachedNightSeconds = 8f * 60f;
+            return;
+        }
+        var path = AssetDatabase.GUIDToAssetPath(guids[0]);
+        var settings = AssetDatabase.LoadAssetAtPath<SO_NightSettings>(path);
+        cachedNightSeconds = settings != null ? settings.GetNightTimeInSeconds() : 8f * 60f;
     }
 
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
@@ -100,23 +116,12 @@ public class NightEventTimingDrawer : PropertyDrawer
     }
 
     /// <summary>
-    /// Returns the cached night length in seconds, looking it up from the first
-    /// SO_NightSettings asset in the project on first call (or after project changes).
-    /// Falls back to 8 minutes if no settings asset exists.
+    /// Returns the cached night length in seconds. The cache is populated by
+    /// <see cref="RefreshCache"/> at domain load and after project changes, so
+    /// this method never touches the AssetDatabase (safe to call from OnGUI).
     /// </summary>
     private static float ResolveNightSeconds()
     {
-        if (cachedNightSeconds > 0f) return cachedNightSeconds;
-
-        var guids = AssetDatabase.FindAssets("t:SO_NightSettings");
-        if (guids == null || guids.Length == 0)
-        {
-            cachedNightSeconds = 8f * 60f;
-            return cachedNightSeconds;
-        }
-        var path = AssetDatabase.GUIDToAssetPath(guids[0]);
-        var settings = AssetDatabase.LoadAssetAtPath<SO_NightSettings>(path);
-        cachedNightSeconds = settings != null ? settings.GetNightTimeInSeconds() : 8f * 60f;
-        return cachedNightSeconds;
+        return cachedNightSeconds > 0f ? cachedNightSeconds : 8f * 60f;
     }
 }

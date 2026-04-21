@@ -53,16 +53,27 @@ namespace MonsterSystem
         {
             Debug.Log("Triggered Feed trigger");
             // Ignore non-food objects and guard against missing controller
-            if (HungerSystem.TryGetFood(other) == null) return;
+            var food = HungerSystem.TryGetFood(other);
+            if (food == null)
+            {
+                Debug.Log("Did not get food from: " + other.name);
+                return;
+            }
+
+            if (food.Value <= 0)
+            {
+                Debug.Log("That is emptied");
+                return;
+            }
 
             // Retrieve the food's rigidbody; bail out if none is attached
             Rigidbody foodRb = other.attachedRigidbody;
             if (foodRb == null) return;
             
-            Debug.Log("Food was found");
+            AttachFood(food, foodRb);
             
+            Debug.Log("Food was found");
             RequestTransition(this.acceptState, foodRb);
-            return;
 
             // Accept food if it is moving slowly enough; otherwise reject it
             /*
@@ -70,6 +81,19 @@ namespace MonsterSystem
                 this.controller.TransitionTo(this.acceptState, foodRb);
             else
                 this.controller.TransitionTo(this.rejectState, foodRb);*/
+        }
+
+        private void AttachFood(Food food, Rigidbody foodRb)
+        {
+            foodRb.useGravity = false;
+            foodRb.isKinematic = true;
+            foodRb.constraints = RigidbodyConstraints.FreezeRotation;
+            
+            food.transform.SetParent(null);
+            food.transform.SetParent(this.feedZone.transform, false);
+            
+            food.transform.localPosition = Vector3.zero;
+            food.transform.localRotation = Quaternion.Euler(Vector3.zero);
         }
     }
 }

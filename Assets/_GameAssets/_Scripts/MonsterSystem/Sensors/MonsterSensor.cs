@@ -15,20 +15,7 @@ namespace MonsterSystem
         /// </summary>
         protected float TickDelta { get; private set; }
 
-        /// <summary>
-        /// Called by MonsterController during the tick cycle.
-        /// Override to implement sensor logic. Always call base.OnTick(tickDelta) first.
-        /// </summary>
-        public virtual void OnTick(float tickDelta)
-        {
-            this.TickDelta = tickDelta;
-        }
-
-        public virtual void Initialize(MonsterController owningMonster)
-        {
-            this.controller = owningMonster;
-        }
-
+        #region UnityHooks
         protected virtual void Start()
         {
             hasStarted = true;
@@ -43,6 +30,21 @@ namespace MonsterSystem
         }
 
         protected virtual void OnDisable() => Unsubscribe();
+        #endregion
+        
+        public virtual void Initialize(MonsterController owningMonster)
+        {
+            this.controller = owningMonster;
+        }
+
+        /// <summary>
+        /// Called by MonsterController during the tick cycle.
+        /// Override to implement sensor logic. Always call base.OnTick(tickDelta) first.
+        /// </summary>
+        public virtual void OnTick(float tickDelta)
+        {
+            this.TickDelta = tickDelta;
+        }
 
         /// <summary>
         /// Override to subscribe to events. Called in Start and on re-enable.

@@ -1,5 +1,60 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &582218369661535199
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4493772035742109859}
+  - component: {fileID: 5620300915387118962}
+  m_Layer: 0
+  m_Name: Resource
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4493772035742109859
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 582218369661535199}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2343827092994151497}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5620300915387118962
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 582218369661535199}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1d233ac31574899b3b9fd8f9c799ac0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.ResourceSensor
+  stateToTransitionTo: {fileID: 0}
+  maxResource: 60
+  transitionValues:
+  - 40
+  - 20
+  - 1
+  statesToTransitionTo:
+  - {fileID: 5946285856578261012}
+  - {fileID: 710727004609936139}
+  - {fileID: 571947567131634409}
+  baseDepletionValue: 0.4
 --- !u!1 &1824396284530818015
 GameObject:
   m_ObjectHideFlags: 0
@@ -119,7 +174,7 @@ MonoBehaviour:
   spawnPoints: {fileID: 11400000, guid: 76cdd536e2aa8bb45b0b4c19a2af3932, type: 2}
   playerRef: {fileID: 11400000, guid: 8aa04a6520205384e9477b4745bd7d4b, type: 2}
   animator: {fileID: 2984454646786910488}
-  audioSource: {fileID: 8610362843901164458}
+  audioSource: {fileID: 0}
   sensorRoot: {fileID: 2343827092994151497}
   initialState: {fileID: 3198911293393157017}
 --- !u!1 &2224058024617820946
@@ -321,8 +376,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 8892355806475949383}
   - {fileID: 282161950259980696}
+  - {fileID: 4493772035742109859}
   m_Father: {fileID: 1257309348054210874}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2598727884023289864
@@ -512,6 +567,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2484438290095207372}
   - component: {fileID: 3198911293393157017}
+  - component: {fileID: 9099496089540829095}
   m_Layer: 0
   m_Name: Relocate
   m_TagString: Untagged
@@ -552,7 +608,23 @@ MonoBehaviour:
   grabInteractable: {fileID: 0}
   transforms: {fileID: 11400000, guid: 76cdd536e2aa8bb45b0b4c19a2af3932, type: 2}
   useConfig: 1
-  killMomentum: 0
+  canKillMomentum: 1
+  rb: {fileID: 0}
+--- !u!114 &9099496089540829095
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5389320278334512957}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aaa34404e3bf4c5ab65596ca06f5b25e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VfxAffordance
+  vfxAsset: {fileID: 8926484042661614526, guid: 8e2007eb98486af48b243d17476c8047, type: 3}
+  isChild: 0
+  vfxInstance: {fileID: 0}
 --- !u!1 &5563555725848977607
 GameObject:
   m_ObjectHideFlags: 0
@@ -637,59 +709,6 @@ MonoBehaviour:
   AnimationState: 0
   paramName: Rej
   boolValue: 1
---- !u!1 &7823497145132291538
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8892355806475949383}
-  - component: {fileID: 8945015160039359414}
-  m_Layer: 0
-  m_Name: Satiety
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &8892355806475949383
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7823497145132291538}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 2343827092994151497}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8945015160039359414
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7823497145132291538}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0312c846a745143458c87e7efd4ef969, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.SatietySensor
-  stateToTransitionTo: {fileID: 0}
-  maxSatiety: 60
-  baseDrainRate: 0.4
-  hungryThreshold: 40
-  angryThreshold: 20
-  killThreshold: 0
-  hungryState: {fileID: 5946285856578261012}
-  angryState: {fileID: 710727004609936139}
-  killState: {fileID: 571947567131634409}
 --- !u!1001 &8102502749938366390
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -746,8 +765,15 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8764447899412136325, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
+      propertyPath: m_Name
+      value: Trigger
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3060243921034406785, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 508898174136536092, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 6990434769242631820, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
@@ -757,9 +783,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 2343827092994151497}
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4950517335717247463, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 3150005142149285927}
     - targetCorrespondingSourceObject: {fileID: 8764447899412136325, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7146271881563414096}
@@ -789,42 +812,5 @@ Transform:
 --- !u!95 &2984454646786910488 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 6420786038646300334, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
-  m_PrefabInstance: {fileID: 8102502749938366390}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &3801629742082641489 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4950517335717247463, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
-  m_PrefabInstance: {fileID: 8102502749938366390}
-  m_PrefabAsset: {fileID: 0}
---- !u!54 &3150005142149285927
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3801629742082641489}
-  serializedVersion: 5
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
---- !u!82 &8610362843901164458 stripped
-AudioSource:
-  m_CorrespondingSourceObject: {fileID: 508898174136536092, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
   m_PrefabInstance: {fileID: 8102502749938366390}
   m_PrefabAsset: {fileID: 0}

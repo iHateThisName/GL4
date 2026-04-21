@@ -1,0 +1,127 @@
+using Assets.Scripts.Singleton;
+using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets;
+
+public class SettingsScript : PersistenSingleton<SettingsScript>
+{
+    //Bools for enabling certain settings. This is used by the ApplyPlayerSettings script
+    public bool snapEnabled = false;
+    public bool tunnelingEnabled = false;
+    public bool teleportEnabled = false;
+
+    //These cubes are just for visuals, they don't do anything, they turn off and on again depending on what the player wants
+    [SerializeField] private GameObject enableSnapCube;
+    [SerializeField] private GameObject disableSnapCube;
+
+    [SerializeField] private GameObject enableTunnelingCube;
+    [SerializeField] private GameObject disableTunnelingCube;
+
+    [SerializeField] private GameObject enableTelportCube;
+    [SerializeField] private GameObject disableTeleportCube;
+
+    [SerializeField] private GameObject enableNightOneCube;
+    [SerializeField] private GameObject enableNightTwoCube;
+    [SerializeField] private GameObject enableNightThreeCube;
+
+    //A refrence to the player's controllers
+    [SerializeField] private ControllerInputActionManager rightControllerRefrence;
+    [SerializeField] private ControllerInputActionManager leftControllerRefrence;
+
+    //A refrence to the tunneling vignette that's used for the tunneling
+    [SerializeField] private GameObject tunnelingVignette;
+
+    //A refrence to the night settings
+    [SerializeField] private SO_NightSettings nightSettings;
+
+    private void Start()
+    {
+        //Set default settings
+        tunnelingVignette.SetActive(false);
+        rightControllerRefrence.smoothTurnEnabled = true;
+        leftControllerRefrence.smoothMotionEnabled = true;
+
+        //Setting the default night to 1
+        nightSettings.SetDebugStartNight(1);
+    }
+
+    //A method for enabling snap turning
+    public void EnableSnapTurn()
+    {
+        rightControllerRefrence.smoothTurnEnabled = false;
+        snapEnabled = true;
+        enableSnapCube.SetActive(false);
+        disableSnapCube.SetActive(true);
+    }
+
+    //A method for disabling snap turning
+    public void DisableSnapTurn()
+    {
+        rightControllerRefrence.smoothTurnEnabled = true;
+        snapEnabled = false;
+        disableSnapCube.SetActive(false);
+        enableSnapCube.SetActive(true);
+    }
+
+    //A method for enabling tunneling
+    public void EnableTunneling()
+    {
+        tunnelingVignette.SetActive(true);
+        tunnelingEnabled = true;
+        enableTunnelingCube.SetActive(false);
+        disableTunnelingCube.SetActive(true);
+    }
+
+    //A method for disabling tunneling
+    public void DisableTunneling()
+    {
+        tunnelingVignette.SetActive(false);
+        tunnelingEnabled = false;
+        enableTunnelingCube.SetActive(false);
+        disableTunnelingCube.SetActive(true);
+    }
+
+    //A method for enabling teleporting
+    public void EnableTeleport()
+    {
+        leftControllerRefrence.smoothMotionEnabled = false;
+        teleportEnabled = true;
+        enableTelportCube.SetActive(false);
+        disableTeleportCube.SetActive(true);
+    }
+
+    //A method for disabling teleporting
+    public void DisableTeleport()
+    {
+        leftControllerRefrence.smoothMotionEnabled = true;
+        teleportEnabled = false;
+        disableTeleportCube.SetActive(false);
+        enableTelportCube.SetActive(true);
+    }
+
+    //A method for enabling night 1
+    public void EnableNightOne()
+    {
+        nightSettings.SetDebugStartNight(1);
+        enableNightOneCube.SetActive(false);
+        enableNightThreeCube.SetActive(true);
+        enableNightTwoCube.SetActive(true);
+    }
+
+    //A method for enabling night 2
+    public void EnableNightTwo()
+    {
+        nightSettings.SetDebugStartNight(2);
+        enableNightTwoCube.SetActive(false);
+        enableNightThreeCube.SetActive(true);
+        enableNightOneCube.SetActive(true);
+    }
+
+    //A method for enabling night 3
+    public void EnableNightThree()
+    {
+        nightSettings.SetDebugStartNight(3);
+        enableNightThreeCube.SetActive(false);
+        enableNightTwoCube.SetActive(true);
+        enableNightOneCube.SetActive(true);
+    }
+}

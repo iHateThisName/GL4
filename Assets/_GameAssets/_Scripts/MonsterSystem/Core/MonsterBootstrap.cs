@@ -11,16 +11,28 @@ namespace MonsterSystem
     internal static class MonsterBootstrap
     {
         static PlayerLoopSystem monsterSystem;
+        const float tickInterval = 0.2f;
+        static float elapsed;
+
+        static void Tick()
+        {
+            elapsed += Time.deltaTime;
+            if (elapsed < tickInterval) return;
+            float tickDelta = elapsed;
+            elapsed = 0f;
+            MonsterStateManager.UpdateMonsters(tickDelta);
+        }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
         internal static void Initialize()
         {
+            elapsed = 0f;
             PlayerLoopSystem currentPlayerLoop = PlayerLoop.GetCurrentPlayerLoop();
 
             monsterSystem = new PlayerLoopSystem()
             {
                 type = typeof(MonsterStateManager),
-                updateDelegate = MonsterStateManager.UpdateMonsters,
+                updateDelegate = Tick,
                 subSystemList = null
             };
 
@@ -46,6 +58,7 @@ namespace MonsterSystem
                 PlayerLoopSystem currentPlayerLoop = PlayerLoop.GetCurrentPlayerLoop();
                 PlayerLoopUtils.RemoveSystem<Update>(ref currentPlayerLoop, in monsterSystem);
                 PlayerLoop.SetPlayerLoop(currentPlayerLoop);
+                elapsed = 0f;
                 MonsterStateManager.Clear();
             }
         }

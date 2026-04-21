@@ -11,6 +11,8 @@ namespace MonsterSystem
             // Let the base class hook up the timers and start the chase!
             base.OnStateEnter();
 
+            TriggerAffordances<VfxAffordance>();
+
             Debug.Log("Doll is Aggressive and actively hunting!");
         }
 

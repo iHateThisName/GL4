@@ -2141,11 +2141,47 @@ PrefabInstance:
       propertyPath: screenFadeRef
       value: 
       objectReference: {fileID: 11400000, guid: 15754612ba4d523469df3bfe55c508cc, type: 2}
-    m_RemovedComponents: []
+    - target: {fileID: 9099153720150263682, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: kskgns.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9099153720150263682, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: 'kskgns.Array.data[0]'
+      value: 
+      objectReference: {fileID: 1532237610}
+    - target: {fileID: 9161135314408065495, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: hungerText
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 9161135314408065495, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: locationText
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 9161135314408065495, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: nightTimeText
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 9161135314408065495, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: coldCanvasGroup
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 9161135314408065495, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: heatCanvasGroup
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 9161135314408065495, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: temperatureText
+      value: 
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 9161135314408065495, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
     m_RemovedGameObjects:
     - {fileID: 9016595584973978775, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
     - {fileID: 4993182717501256285, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
     - {fileID: 8577309113562316067, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+    - {fileID: 7789028010071077187, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+    - {fileID: 3195352995005902771, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+    - {fileID: 7199113556661171421, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
@@ -2614,6 +2650,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1516968828}
   m_CullTransparentMesh: 1
+--- !u!114 &1532237610 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8877177980677234388, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+  m_PrefabInstance: {fileID: 1173739109}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25a07ef133a37d140a87cdf1f1c75fdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1590757453
 GameObject:
   m_ObjectHideFlags: 0

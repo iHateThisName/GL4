@@ -140,7 +140,7 @@ public class VRLever : MonoBehaviour {
 
         float targetClosed = this.invertOpenClosedState ? this.joint.limits.max : this.joint.limits.min;
         float targetOpen = this.invertOpenClosedState ? this.joint.limits.min : this.joint.limits.max;
-        Debug.Log($"{((currentState == EnumLeverState.Closed || currentState == EnumLeverState.LeaningClosed) ? targetClosed : targetOpen)}");
+        //Debug.Log($"{((currentState == EnumLeverState.Closed || currentState == EnumLeverState.LeaningClosed) ? targetClosed : targetOpen)}");
 
         return new JointSpring {
             spring = (currentState == EnumLeverState.Closed || currentState == EnumLeverState.Open) ? (float)this.SpringSnapForce : this.originalSpring.spring,
@@ -150,4 +150,9 @@ public class VRLever : MonoBehaviour {
     }
 
     public bool GetSmartUpdateEnabled() => this.optimizeUpdate;
+    public IEnumerator DisableSmartUpdateCorutine() {
+        this.optimizeUpdate = false;
+        yield return new WaitForSeconds(10f);
+        this.optimizeUpdate = true;
+    }
 }

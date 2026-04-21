@@ -4550,6 +4550,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerTemperatureSimulator
   currentBodyTemperature: 40
+  <CurrentHeatModifier>k__BackingField: 0
+  openWindowCount: 0
   currentLocationType: 0
   currentBodyTemperatureState: 0
 --- !u!114 &541198417
@@ -7354,6 +7356,10 @@ PrefabInstance:
       propertyPath: hungerDecayRate
       value: 0.05
       objectReference: {fileID: 0}
+    - target: {fileID: 6423729460017434217, guid: d62c6a0b7e0daef4a93ee2043c7a68aa, type: 3}
+      propertyPath: tutorialManager
+      value: 
+      objectReference: {fileID: 1467430461}
     - target: {fileID: 7666225100369289919, guid: d62c6a0b7e0daef4a93ee2043c7a68aa, type: 3}
       propertyPath: m_Name
       value: HungerSystem
@@ -7366,6 +7372,11 @@ PrefabInstance:
 --- !u!4 &878486855 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5001630332660474482, guid: d62c6a0b7e0daef4a93ee2043c7a68aa, type: 3}
+  m_PrefabInstance: {fileID: 878486854}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &878486856 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7666225100369289919, guid: d62c6a0b7e0daef4a93ee2043c7a68aa, type: 3}
   m_PrefabInstance: {fileID: 878486854}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &886260316
@@ -7685,6 +7696,30 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4829839351965416455, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6394717722284339143, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6394717722284339143, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6394717722284339143, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6394717722284339143, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6394717722284339143, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6394717722284339143, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
@@ -10780,6 +10815,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1633641065}
     - target: {fileID: 2809828351922358989, guid: 3ad53678de7ffbe42b0f6528f6e00912, type: 3}
+      propertyPath: debugSpawn
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2809828351922358989, guid: 3ad53678de7ffbe42b0f6528f6e00912, type: 3}
       propertyPath: nightSettings
       value: 
       objectReference: {fileID: 11400000, guid: 034fb29b749df934a9507784c8b52be7, type: 2}
@@ -12067,6 +12106,56 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8789340147903244157, guid: 336dad0e541c09945bf874da73fb7ad8, type: 3}
   m_PrefabInstance: {fileID: 1447208650}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1467430460
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1467430462}
+  - component: {fileID: 1467430461}
+  m_Layer: 0
+  m_Name: TutorialManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1467430461
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1467430460}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59d170322fd3221478d633ca732fe7f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialManager
+  hasLitFire: 0
+  hasEatenFood: 0
+  hasFixedRadio: 0
+  nightSettings: {fileID: 11400000, guid: 034fb29b749df934a9507784c8b52be7, type: 2}
+  tempertureManager: {fileID: 541198414}
+  hungerManager: {fileID: 878486856}
+--- !u!4 &1467430462
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1467430460}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 3.31354, y: 0.92884, z: -1.06515}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1479019854
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16031,6 +16120,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -0.576
       objectReference: {fileID: 0}
+    - target: {fileID: 6478574032641028484, guid: 2b28fed3f7074654295fb5c33997d726, type: 3}
+      propertyPath: tutorialManager
+      value: 
+      objectReference: {fileID: 1467430461}
     - target: {fileID: 8277888737252984738, guid: 2b28fed3f7074654295fb5c33997d726, type: 3}
       propertyPath: m_Name
       value: FireplacePrefab
@@ -20752,3 +20845,4 @@ SceneRoots:
   - {fileID: 405484797}
   - {fileID: 1527468397}
   - {fileID: 3420673165111940501}
+  - {fileID: 1467430462}

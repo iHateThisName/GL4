@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class WindowController : MonoBehaviour
@@ -22,10 +23,11 @@ public class WindowController : MonoBehaviour
     private void HandleWindowStateChanged(VRLever.EnumLeverState state)
     {
         GameManager.Instance.UpdateWindowState(this, state);
-        Debug.Log($"Window state changed to {state}");
+        //Debug.Log($"Window state changed to {state}");
     }
 
-    public Action<VRLever.EnumLeverState> GetWindowEvent() => windowJoint.OnLeverStateChanged;
-    public VRLever.EnumLeverState GetCurrentWindowState() => windowJoint.CurrentState;
-    public bool IsVRLeverSmartUpdateEnabled() => windowJoint.GetSmartUpdateEnabled();
+    public Action<VRLever.EnumLeverState> GetWindowEvent() => this.windowJoint.OnLeverStateChanged;
+    public VRLever.EnumLeverState GetCurrentWindowState() => this.windowJoint.CurrentState;
+    public bool IsVRLeverSmartUpdateEnabled() => this.windowJoint.GetSmartUpdateEnabled();
+    public void DisableSmartUpdate() => StartCoroutine(this.windowJoint.DisableSmartUpdateCorutine());
 }
