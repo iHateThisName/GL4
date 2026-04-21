@@ -10,6 +10,7 @@ public class IntruderFlashedState : AnimatedState {
     public override void OnStateEnter() {
         monsterNavigation.DisableNavigation();
         base.OnStateEnter();
+        TriggerAffordances<VfxAffordance>();
     }
 
     public override void OnAnimationComplete() {
