@@ -23,7 +23,7 @@ public class BaseNavAIMonster : MonoBehaviour {
     [Header("Config")]
     [SerializeField] private EnumMonsterType monsterType;
     [SerializeField] private float tickRate = 2f; // How often the monster updates its behavior (in seconds)
-    [SerializeField] private float attackRange = 0.5f;
+    [field:SerializeField] public float AttackRange { get; set; } = 0.5f;
 
     [Header("Flee Behaviour")]
     [SerializeField] private float fleeDuration = 35f; // How long the monster flees after being hit by flashlight
@@ -136,7 +136,7 @@ public class BaseNavAIMonster : MonoBehaviour {
         bool requiresCold = this.monsterType == EnumMonsterType.Stalker;
         bool isLocationValid = !requiresCold || this.currentPlayerLocation == PlayerTemperatureSimulator.EnumLocationType.Cold;
 
-        if (distanceToPlayer <= this.attackRange && isLocationValid) {
+        if (distanceToPlayer <= this.AttackRange && isLocationValid) {
             AttackPlayer();
         }
     }
@@ -255,7 +255,7 @@ public class BaseNavAIMonster : MonoBehaviour {
             if (this.patrolPoints.Length == 0) {
                 this.Agent.SetDestination(this.spawnPoint);
 
-            } else if (Vector3.Distance(this.transform.position, this.patrolPoints[this.currentPatrolIndex].position) < this.attackRange) {
+            } else if (Vector3.Distance(this.transform.position, this.patrolPoints[this.currentPatrolIndex].position) < this.AttackRange) {
                 // If the monster is close to the point, start patrolling between points.
                 currentPatrolIndex = (currentPatrolIndex + 1) % this.patrolPoints.Length;
                 this.Agent.SetDestination(this.patrolPoints[currentPatrolIndex].position);
