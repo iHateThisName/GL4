@@ -1,7 +1,6 @@
 using Assets.Scripts.Singleton;
 using MonsterSystem;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace Refactored
 {
@@ -48,13 +47,9 @@ namespace Refactored
         private void SpawnMonster(GameObject monsterToSpawn, MonsterController monsterController)
         {
             var spawnPoints = monsterController.SpawnPoints;
-            if (spawnPoints == null || spawnPoints.points == null || spawnPoints.points.Length == 0)
-            {
-                Debug.LogError("Monster Config or spawn points missing, cannot spawn monster.");
-                return;
-            }
-
-            var spawnPoint = monsterController.SpawnPoints.GetRandom();
+            bool hasValidSpawnPoint = spawnPoints != null && spawnPoints.points != null && spawnPoints.points.Length > 0;
+            
+            var spawnPoint = hasValidSpawnPoint ? monsterController.SpawnPoints.GetRandom() : new SpawnPoint();
             Instantiate(monsterToSpawn, spawnPoint.position, Quaternion.Euler(spawnPoint.rotation));
         }
     }

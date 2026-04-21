@@ -11,6 +11,12 @@ namespace MonsterSystem
     {
         public Vector3 position; // World-space position of the spawn point
         public Vector3 rotation; // Euler angles defining the spawn orientation
+        
+        public SpawnPoint(Vector3 position, Vector3 rotation)
+        {
+            this.position = position;
+            this.rotation = rotation;
+        }
     }
     
     /// <summary>
