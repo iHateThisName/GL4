@@ -79,7 +79,7 @@ public class ScreenFade : MonoBehaviour
     [Header("=== References ===")]
     [SerializeField] private SO_ScreenFadeRef screenFadeRef;
     [SerializeField] private CanvasGroup fadeCanvasGroup;
-    [SerializeField] private Image[] images;
+    [SerializeField] private Image[] images = new Image[0];
 
     [Header("=== Default Configuration ===")]
     [SerializeField] private FadeConfig defaultConfig = new FadeConfig(1f, 2f, null);
@@ -224,6 +224,11 @@ public class ScreenFade : MonoBehaviour
     {
         foreach (var imageConfig in imageConfigs)
         {
+            if (this.images == null || imageConfig.imageIndex >= this.images.Length)
+            {
+                Debug.LogWarning($"[ScreenFade] ConfigureImages: imageIndex {imageConfig.imageIndex} out of range (images.Length={this.images?.Length ?? 0}) on '{gameObject.name}'");
+                continue;
+            }
             var image = this.images[imageConfig.imageIndex];
             if (image != null)
             {
