@@ -54,14 +54,9 @@ namespace MonsterSystem
             Debug.Log("Triggered Feed trigger");
             // Ignore non-food objects and guard against missing controller
             var food = HungerSystem.TryGetFood(other);
-            if (food == null)
+            if (food == null || food.Value <= 0)
             {
-                Debug.Log("Did not get food from: " + other.name);
-                return;
-            }
-
-            if (food.Value <= 0)
-            {
+                Debug.Log("Did not get food from: " + other.name + " or food is empty");
                 RequestTransition(this.rejectState, other.attachedRigidbody);
                 return;
             }
