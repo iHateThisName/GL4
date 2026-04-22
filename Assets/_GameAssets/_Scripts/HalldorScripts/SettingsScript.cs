@@ -56,6 +56,7 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
     public void EnableSnapTurn()
     {
         rightControllerRefrence.smoothTurnEnabled = false;
+        leftControllerRefrence.smoothTurnEnabled = false;
         snapEnabled = true;
         enableSnapCube.SetActive(false);
         disableSnapCube.SetActive(true);
@@ -65,6 +66,7 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
     public void DisableSnapTurn()
     {
         rightControllerRefrence.smoothTurnEnabled = true;
+        leftControllerRefrence.smoothTurnEnabled = true;
         snapEnabled = false;
         disableSnapCube.SetActive(false);
         enableSnapCube.SetActive(true);
