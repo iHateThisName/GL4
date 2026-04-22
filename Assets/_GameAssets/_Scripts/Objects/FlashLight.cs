@@ -28,7 +28,17 @@ public class Flashlight : MonoBehaviour
     
     [Header("=== Light Settings ===")]
     [SerializeField] private SO_FlashlightSettings flashlightSettings;
-    
+
+    [Header("=== Drop / Socket Settings ===")]
+    // Player transform used to measure drop distance
+    [SerializeField] private Transform playerTransform;
+
+    // Socket on the player where the flashlight snaps if dropped too far
+    [SerializeField] private Transform flashlightSocket;
+
+    // Max distance from player before the flashlight teleports to the socket on drop
+    [SerializeField] private float maxDropDistance = 3f;
+
     // Debug/testing: start flashlight enabled
     [System.Obsolete("Only for testing purposes.")]
     [SerializeField] private bool startEnabled = false;
@@ -247,6 +257,8 @@ public class Flashlight : MonoBehaviour
     // ==== Flashlight Helpers ====
     private void OnFlashlightDropped(SelectExitEventArgs args)
     {
+        if (TeleportToSocketIfTooFar()) return;
+
         if (startEnabled) return;
 
         if (HasLowPower && HasPower)
@@ -258,6 +270,22 @@ public class Flashlight : MonoBehaviour
         {
             ToggleOffFlashlight();
         }
+    }
+
+    /// <summary>
+    /// If the flashlight was dropped beyond maxDropDistance from the player,
+    /// turns it off and snaps it to the player socket. Returns true if teleported.
+    /// </summary>
+    private bool TeleportToSocketIfTooFar()
+    {
+        if (this.playerTransform == null || this.flashlightSocket == null) return false;
+
+        float dist = Vector3.Distance(this.transform.position, this.playerTransform.position);
+        if (dist <= this.maxDropDistance) return false;
+
+        ToggleOffFlashlight();
+        this.transform.SetPositionAndRotation(this.flashlightSocket.position, this.flashlightSocket.rotation);
+        return true;
     }
 
     /// <summary>

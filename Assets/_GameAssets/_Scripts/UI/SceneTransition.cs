@@ -196,6 +196,10 @@ public static class SceneTransition
                 await unloadLoadingOp;
             }
 
+            // Loading screen is gone. Scene is behind opaque overlay — safe to reset XR state.
+            OnBeforeFadeIn?.Invoke();
+            await Awaitable.NextFrameAsync(ct);
+
             // All Start() methods have run. Scene is covered by opaque overlay.
             Debug.Log("[SceneTransition] Phase 5: Fade in");
             if (newFade != null) await newFade.FadeAsync(fadeInConfig, ct);

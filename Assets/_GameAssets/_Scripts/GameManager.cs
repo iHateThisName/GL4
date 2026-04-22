@@ -6,6 +6,7 @@ public class GameManager : PersistenSingleton<GameManager> {
 
     [Header("=== Runtime References ===")]
     [SerializeField] private SO_ScreenFadeRef screenFadeRef;
+    [SerializeField] private SO_TransformRef xrOriginRef;
 
     [Header("=== Night Configuration ===")]
     [SerializeField] private SO_NightSettings nightSettings;
@@ -89,11 +90,11 @@ public class GameManager : PersistenSingleton<GameManager> {
 
     public void ContinueGame() {
         Debug.Log("Continuing Game...");
-        SceneTransition.LoadScene(1, this.screenFadeRef);
+        SceneTransition.LoadScene(1, this.screenFadeRef, this.xrOriginRef);
     }
 
     public void LoadScene(string sceneName) {
-        SceneTransition.LoadScene(sceneName, this.screenFadeRef);
+        SceneTransition.LoadScene(sceneName, this.screenFadeRef, this.xrOriginRef);
     }
 
     private void InstantiateTimer()

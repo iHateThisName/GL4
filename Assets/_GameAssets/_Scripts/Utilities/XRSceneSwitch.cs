@@ -10,8 +10,11 @@ public class XRSceneSwitch : MonoBehaviour
     [SerializeField] private InputActionReference[] interactionActions;
     [SerializeField] private XRBaseInputInteractor[] interactors;
 
+    private CancellationTokenSource _cts;
+
     private void Awake()
     {
+        _cts = new CancellationTokenSource();
         string sceneName = gameObject.scene.name;
 
         if (xrOriginRef != null)
@@ -36,9 +39,16 @@ public class XRSceneSwitch : MonoBehaviour
         }
 
         if (interactorRoots != null && interactorRoots.Length > 0)
-            _ = CycleInteractors(Application.exitCancellationToken, sceneName);
+            _ = CycleInteractors(_cts.Token, sceneName);
         else
             Debug.LogWarning($"[XRSceneSwitch] ({sceneName}) No interactorRoots assigned.");
+    }
+
+    private void OnDestroy()
+    {
+        _cts?.Cancel();
+        _cts?.Dispose();
+        _cts = null;
     }
 
     private async Awaitable CycleInteractors(CancellationToken ct, string sceneName)
@@ -48,7 +58,7 @@ public class XRSceneSwitch : MonoBehaviour
 
         await Awaitable.NextFrameAsync(ct);
 
-        if (this == null) return;
+        if (ct.IsCancellationRequested || this == null) return;
 
         foreach (var root in interactorRoots)
             if (root != null) root.SetActive(true);
@@ -62,7 +72,6 @@ public class XRSceneSwitch : MonoBehaviour
 
         // Reset interaction actions to require a fresh press, preventing a held trigger
         // from the previous scene registering as a new selection.
-
         if (interactionActions != null)
             foreach (var actionRef in interactionActions)
                 actionRef?.action?.Reset();
