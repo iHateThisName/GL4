@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 563215344340736634}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Collision
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 6929985201886377470}
   - component: {fileID: 4028699220680939502}
   - component: {fileID: 2394913995301697803}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: MainBody
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -132,7 +132,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6398278992673224054}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -168,7 +168,7 @@ GameObject:
   - component: {fileID: 550460609972357289}
   - component: {fileID: 3140050388995310438}
   - component: {fileID: 5712471205608079930}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Flashlight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -209,6 +209,9 @@ MonoBehaviour:
   crankInteractable: {fileID: 2446850459793024294}
   lightSource: {fileID: 4685029044085830758}
   flashlightSettings: {fileID: 11400000, guid: e1d80fbeeb3e27b498a6a95b85fa8a72, type: 2}
+  playerTransform: {fileID: 0}
+  flashlightSocket: {fileID: 0}
+  maxDropDistance: 3
   startEnabled: 0
 --- !u!54 &3140050388995310438
 Rigidbody:
@@ -378,7 +381,7 @@ GameObject:
   - component: {fileID: 3496726357522429541}
   - component: {fileID: 4685029044085830758}
   - component: {fileID: 6444588960138604373}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Spot Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -505,7 +508,7 @@ GameObject:
   - component: {fileID: 3149195981415442079}
   - component: {fileID: 8804206865546767151}
   - component: {fileID: 6290989739838242750}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: FlashLight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -594,7 +597,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5509079959234985044}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Pivot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -627,7 +630,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5541971750670655488}
   - component: {fileID: 4831633267216106991}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -679,7 +682,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7885255903146925803}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Light_Transform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -713,7 +716,7 @@ GameObject:
   - component: {fileID: 199904188668991804}
   - component: {fileID: 2446850459793024294}
   - component: {fileID: 5304644391142830657}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Crank
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -838,7 +841,7 @@ GameObject:
   - component: {fileID: 7480162553037618820}
   - component: {fileID: 4082079276125353936}
   - component: {fileID: 6823227627898184812}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -930,7 +933,7 @@ GameObject:
   - component: {fileID: 4546467433802427725}
   - component: {fileID: 8231325063198045880}
   - component: {fileID: 7761110050300649158}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Hand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
