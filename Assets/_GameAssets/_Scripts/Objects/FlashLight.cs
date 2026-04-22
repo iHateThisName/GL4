@@ -33,7 +33,7 @@ public class Flashlight : MonoBehaviour
     [System.Obsolete("Only for testing purposes.")]
     [SerializeField] private bool startEnabled = false;
 
-    private TimerHandle batteryHandle;
+    private TimerHandle batteryTimerHandle;
 
     // CTS to cancel in-progress smooth light transitions
     private CancellationTokenSource lightTransitionCTS;
@@ -55,6 +55,9 @@ public class Flashlight : MonoBehaviour
     
     // Whether the flashlight should flicker on or off this frame/flicker
     private bool flickeredLastFrame;
+
+    // Set when flickering as part of turning off (e.g. dropped with low power)
+    private bool forceOffAfterFlicker;
 
     // How much intensity one full crank rotation adds
     private const float LIGHT_MAGNITUDE = 10;
@@ -119,18 +122,21 @@ public class Flashlight : MonoBehaviour
         this.flashlightSettings.Value = this.transform;
         this.flashlightSettings.CalculateDetectionCone(this.targetLightRange);
 
-        // Ensure flashlight starts off
+        // Ensure flashlight starts off, timer created but immediately paused
         ToggleFlashLight(false);
-
-        // Optional debug start
-        if (startEnabled) ToggleFlashLight(true);
-
         SetupActiveFlashlightTimer();
+        TimerManager.Pause(this.batteryTimerHandle);
+
+        if (startEnabled)
+        {
+            ToggleFlashLight(true);
+            TimerManager.Resume(this.batteryTimerHandle);
+        }
     }
 
     private void OnDestroy()
     {
-        TimerManager.Release(ref this.batteryHandle);
+        TimerManager.Release(ref this.batteryTimerHandle);
         this.lightTransitionCTS?.Cancel();
         this.lightTransitionCTS?.Dispose();
     }
@@ -200,7 +206,6 @@ public class Flashlight : MonoBehaviour
     }
     
     // ==== Crank Logic ====
-
     /// <summary>
     /// Called whenever the crank rotates.
     /// Converts rotation into power.
@@ -228,24 +233,40 @@ public class Flashlight : MonoBehaviour
             this.currentAngle += 360f;
             this.fullRotations--;
         }
-        
+
+        // Cranking restored power while the light was off — turn it on and start decay
+        if (HasPower && !this.powered)
+        {
+            ToggleFlashLight(true);
+            SetupActiveFlashlightTimer();
+        }
+
         UpdateFlashLight();
     }
     
     // ==== Flashlight Helpers ====
-
     private void OnFlashlightDropped(SelectExitEventArgs args)
     {
-        if (args.interactorObject == null || this.LightIntensity <= this.flashlightSettings.GetMinLightPower())
-            SetupDroppedFlashlightTimer();
+        if (startEnabled) return;
+
+        if (HasLowPower && HasPower)
+        {
+            this.forceOffAfterFlicker = true;
+            SetupFlashlightFlickerTimer();
+        }
+        else
+        {
+            ToggleOffFlashlight();
+        }
     }
 
     /// <summary>
-    /// Called when flashlight is grabbed. Ensures it always ends up in the left hand.
+    /// Called when flashlight is grabbed. Only turns on if there is remaining power.
     /// </summary>
     private void OnFlashlightPickedup(SelectEnterEventArgs args)
     {
-        ToggleOnFlashlight();
+        if (HasPower)
+            ToggleOnFlashlight();
     }
 
     private void OnFlashlightFlicker()
@@ -260,55 +281,51 @@ public class Flashlight : MonoBehaviour
     /// </summary>
     private void SetupInitialDecayDelayTimer()
     {
-        if (!TimerManager.Validate(this.batteryHandle))
-            this.batteryHandle = TimerManager.Create(0, this.flashlightSettings.GetLightDecayTick());
+        if (!TimerManager.Validate(this.batteryTimerHandle))
+            this.batteryTimerHandle = TimerManager.Create(0, this.flashlightSettings.GetLightDecayTick());
         else
-            TimerManager.Reconfigure(this.batteryHandle, 0, this.flashlightSettings.GetLightDecayTick());
+            TimerManager.Reconfigure(this.batteryTimerHandle, 0, this.flashlightSettings.GetLightDecayTick());
 
-        TimerManager.SetCallbacks(this.batteryHandle, null, SetupActiveFlashlightTimer);
+        TimerManager.SetCallbacks(this.batteryTimerHandle, null, SetupActiveFlashlightTimer);
     }
 
     private void SetupActiveFlashlightTimer()
     {
-        if (!TimerManager.Validate(this.batteryHandle))
-            this.batteryHandle = TimerManager.Create(this.flashlightSettings.GetLightDecayTick());
+        if (!TimerManager.Validate(this.batteryTimerHandle))
+            this.batteryTimerHandle = TimerManager.Create(this.flashlightSettings.GetLightDecayTick());
         else
-            TimerManager.Reconfigure(this.batteryHandle, this.flashlightSettings.GetLightDecayTick());
+            TimerManager.Reconfigure(this.batteryTimerHandle, this.flashlightSettings.GetLightDecayTick());
 
-        TimerManager.SetCallbacks(this.batteryHandle, OnFlashlightDecay, null);
-    }
-
-    private void SetupDroppedFlashlightTimer()
-    {
-        if (!TimerManager.Validate(this.batteryHandle))
-            this.batteryHandle = TimerManager.Create(0, 5);
-        else
-            TimerManager.Reconfigure(this.batteryHandle, 0, 5);
-
-        // Timer with interval 0 won't tick — it just waits for duration to finish
-        TimerManager.SetCallbacks(this.batteryHandle, null, SetupFlashlightFlickerTimer);
+        TimerManager.SetCallbacks(this.batteryTimerHandle, OnFlashlightDecay, null);
     }
 
     private void SetupFlashlightFlickerTimer()
     {
-        if (!TimerManager.Validate(this.batteryHandle))
-            this.batteryHandle = TimerManager.Create(this.flashlightSettings.GetFlickerInterval(), this.flashlightSettings.GetFlickerTime());
+        if (!TimerManager.Validate(this.batteryTimerHandle))
+            this.batteryTimerHandle = TimerManager.Create(this.flashlightSettings.GetFlickerInterval(), this.flashlightSettings.GetFlickerTime());
         else
-            TimerManager.Reconfigure(this.batteryHandle, this.flashlightSettings.GetFlickerInterval(), this.flashlightSettings.GetFlickerTime());
+            TimerManager.Reconfigure(this.batteryTimerHandle, this.flashlightSettings.GetFlickerInterval(), this.flashlightSettings.GetFlickerTime());
 
-        TimerManager.SetCallbacks(this.batteryHandle, OnFlashlightFlicker, ResumeFlashlightAfterFlicker);
+        TimerManager.SetCallbacks(this.batteryTimerHandle, OnFlashlightFlicker, ResumeFlashlightAfterFlicker);
     }
 
     private void ResumeFlashlightAfterFlicker()
     {
         this.flickeredLastFrame = false;
-        ToggleFlashLight(true);
-        
-        if (this.LightIntensity <= this.flashlightSettings.GetMinLightPower())
+
+        bool shouldTurnOn = HasPower && !this.forceOffAfterFlicker;
+        this.forceOffAfterFlicker = false;
+
+        if (shouldTurnOn)
+        {
+            ToggleFlashLight(true);
+            SetupActiveFlashlightTimer();
+        }
+        else
         {
             ToggleFlashLight(false);
+            TimerManager.Pause(this.batteryTimerHandle);
         }
-        SetupActiveFlashlightTimer();
     }
     
     /// <summary>
@@ -323,7 +340,7 @@ public class Flashlight : MonoBehaviour
     private void ToggleOffFlashlight()
     {
         ToggleFlashLight(false);
-        TimerManager.Pause(this.batteryHandle);
+        TimerManager.Pause(this.batteryTimerHandle);
 
         this.lightTransitionCTS?.Cancel();
         this.lightTransitionCTS?.Dispose();
@@ -344,6 +361,9 @@ public class Flashlight : MonoBehaviour
     #region Getters
     // public getter for powered state
     public bool PoweredOn => this.powered;
+
+    // Whether flashlight has any remaining power (above minimum)
+    public bool HasPower => this.targetLightIntensity > this.flashlightSettings.GetMinLightPower();
 
     // Whether flashlight is in low power state
     public bool HasLowPower => this.LightIntensity <= this.flashlightSettings.GetLowPowerThreshold();
