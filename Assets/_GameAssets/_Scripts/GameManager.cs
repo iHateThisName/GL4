@@ -82,7 +82,7 @@ public class GameManager : PersistenSingleton<GameManager> {
             ? BuildDebugSpawnSchedule()
             : this.nightSettings.BuildScheduleForNight(this.night);
         RefreshScheduleDebugView();
-        
+
         this.WindowsDictonary.Clear();
         InstantiateTimer();
     }
@@ -205,6 +205,7 @@ public class GameManager : PersistenSingleton<GameManager> {
     {
         Debug.Log("Night Survived");
         this.night++;
+        this.nightSettings.SaveCurrentNight(this.night);
 
         TimerManager.Release(ref this.nightTimerHandle);
 
@@ -217,6 +218,7 @@ public class GameManager : PersistenSingleton<GameManager> {
     private void HandleNightEarlyEnd()
     {
         TimerManager.Release(ref this.nightTimerHandle);
+        this.nightSettings.ResetNightTime();
 
         if (DeathSystem.deathEvent.Reason != DeathSystem.DeathEvent.DeathReason.Survived)
             this.night = 1;

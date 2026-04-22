@@ -21,7 +21,7 @@ public class TutorialManager : MonoBehaviour
     {
         if (nightSettings != null)
         {
-            if(nightSettings.DebugStartNight > 1)
+            if (nightSettings.DebugStartNight > 1)
             {
                 Debug.Log("Tutorial deleted");
                 Destroy(this.gameObject);

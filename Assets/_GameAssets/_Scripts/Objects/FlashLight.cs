@@ -65,8 +65,11 @@ public class Flashlight : MonoBehaviour
     // Set when flickering as part of turning off (e.g. dropped with low power)
     private bool forceOffAfterFlicker;
 
-    // True when held by the player or socketed — suppresses the dropped-distance check
+    // True when socketed or held — suppresses the dropped-distance check in Update
     private bool isSecured;
+
+    // True only while physically held by the player
+    private bool isHeld;
 
     // How much intensity one full crank rotation adds
     private const float LIGHT_MAGNITUDE = 10;
@@ -230,6 +233,7 @@ public class Flashlight : MonoBehaviour
     // ==== Flashlight Helpers ====
     private void OnFlashlightDropped(SelectExitEventArgs args)
     {
+        isHeld = false;
         if (TeleportToSocketIfTooFar()) return; // isSecured stays true — now socketed
         isSecured = false;
 
@@ -257,6 +261,7 @@ public class Flashlight : MonoBehaviour
         float dist = Vector3.Distance(this.transform.position, this.playerTransform.position);
         if (dist <= this.maxDropDistance) return false;
 
+        this.isSecured = true;
         ToggleOffFlashlight();
         this.transform.SetPositionAndRotation(this.flashlightSocket.position, this.flashlightSocket.rotation);
         return true;
@@ -268,6 +273,7 @@ public class Flashlight : MonoBehaviour
     private void OnFlashlightPickedup(SelectEnterEventArgs args)
     {
         isSecured = true;
+        isHeld = true;
         if (HasPower)
             ToggleOnFlashlight();
     }
@@ -316,7 +322,7 @@ public class Flashlight : MonoBehaviour
     {
         this.flickeredLastFrame = false;
 
-        bool shouldTurnOn = HasPower && !this.forceOffAfterFlicker;
+        bool shouldTurnOn = HasPower && !this.forceOffAfterFlicker && this.isHeld;
         this.forceOffAfterFlicker = false;
 
         if (shouldTurnOn)

@@ -11,15 +11,41 @@ public class SO_NightSettings : SO_RuntimeScriptableObject
 
     [Header("Debug")]
     [SerializeField] private int debugStartNight = 1;
+    
+    private float defaultNightTimeMinutes;
 
     public int DebugStartNight => this.debugStartNight;
+    
     public void SetDebugStartNight(int night)
     {
         this.debugStartNight = Mathf.Max(1, night);
         NotifyDataChanged();
     }
 
-    protected override void OnReset() => this.debugStartNight = 1;
+    /// <summary>
+    /// Saves the current night as the starting night for the next session/continue.
+    /// Does NOT fire NotifyDataChanged so it won't trigger editor hot-reload.
+    /// </summary>
+    public void SaveCurrentNight(int night)
+    {
+        this.debugStartNight = Mathf.Max(1, night);
+    }
+
+    protected override void OnReset()
+    {
+        this.debugStartNight = 1;
+        // Capture the serialized asset value before any runtime code modifies it.
+        defaultNightTimeMinutes = this.nightTimeMinutes;
+    }
+
+    /// <summary>
+    /// Restores nightTimeMinutes to the value set in the asset (before any runtime override).
+    /// Call at the start of each night so tutorial-night modifications don't carry over.
+    /// </summary>
+    public void ResetNightTime()
+    {
+        this.nightTimeMinutes = defaultNightTimeMinutes;
+    }
 
     private void OnValidate()
     {
