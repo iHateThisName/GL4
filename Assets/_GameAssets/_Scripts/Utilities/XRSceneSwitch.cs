@@ -1,14 +1,10 @@
 using System.Threading;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
 public class XRSceneSwitch : MonoBehaviour
 {
     [SerializeField] private SO_TransformRef xrOriginRef;
     [SerializeField] private GameObject[] interactorRoots;
-    [SerializeField] private InputActionReference[] interactionActions;
-    [SerializeField] private XRBaseInputInteractor[] interactors;
 
     private CancellationTokenSource _cts;
 
@@ -69,19 +65,6 @@ public class XRSceneSwitch : MonoBehaviour
 
         foreach (var root in interactorRoots)
             if (root != null) root.SetActive(true);
-
-        // Cancel selections through XRIT's proper API so OnSelectExited fires correctly
-        // on both the interactor and the interactable.
-        if (interactors != null)
-            foreach (var interactor in interactors)
-                if (interactor != null && interactor.interactionManager != null)
-                    interactor.interactionManager.CancelInteractorSelection(interactor as IXRSelectInteractor);
-
-        // Reset interaction actions to require a fresh press, preventing a held trigger
-        // from the previous scene registering as a new selection.
-        if (interactionActions != null)
-            foreach (var actionRef in interactionActions)
-                actionRef?.action?.Reset();
 
         Debug.Log($"[XRSceneSwitch] ({sceneName}) Interactor cycle complete.");
     }
