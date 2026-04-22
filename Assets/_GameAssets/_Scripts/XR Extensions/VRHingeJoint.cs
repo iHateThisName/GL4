@@ -44,7 +44,7 @@ public class VRLever : MonoBehaviour {
     private EnumLeverState previousState = EnumLeverState.None;
 
     private JointSpring originalSpring;
-    private bool isGrabbed = false; // Flag to track if the lever is currently grabbed by the player.
+    public bool IsGrabbed { get; private set; } = false; // Flag to track if the lever is currently grabbed by the player.
     public enum EnumLeverState { None, Closed, LeaningClosed, LeaningOpen, Open }
 
     #region Grab Event Listeners
@@ -57,11 +57,11 @@ public class VRLever : MonoBehaviour {
         grabInteractable.selectExited.RemoveListener(OnReleased);
     }
     private void OnGrabbed(SelectEnterEventArgs args) {
-        isGrabbed = true;
+        IsGrabbed = true;
         this.SpringSnapForce /= 2; // Decrease by 50% when grabbed to make it easier to move the lever.
     }
     private void OnReleased(SelectExitEventArgs args) {
-        isGrabbed = false;
+        IsGrabbed = false;
         this.SpringSnapForce *= 2; // Restore to original (increase by 100%)
     }
 
@@ -98,7 +98,7 @@ public class VRLever : MonoBehaviour {
 
     private void FixedUpdate() {
         if (this.optimizeUpdate) { //If true, skips updates when lever is in stable state(Open/ Closed) and not grabbed.
-            if (!isGrabbed && (this.CurrentState == EnumLeverState.Open || this.CurrentState == EnumLeverState.Closed)) return;
+            if (!IsGrabbed && (this.CurrentState == EnumLeverState.Open || this.CurrentState == EnumLeverState.Closed)) return;
         }
         UpdateSpringBehaviour();
     }

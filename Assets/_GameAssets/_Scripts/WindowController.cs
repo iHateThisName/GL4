@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class WindowController : MonoBehaviour
 {
-    [SerializeField] private VRLever windowJoint;
+    [field:SerializeField] public VRLever windowJoint { get; private set; }
     [SerializeField] private SO_WindowRegistryRef windowsRef;
     public Transform TargetPosition;
+
+    public bool IsGrabbed => windowJoint.IsGrabbed;
 
     private void OnEnable()
     {
