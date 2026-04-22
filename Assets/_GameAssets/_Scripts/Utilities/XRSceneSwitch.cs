@@ -1,4 +1,3 @@
-using System.Threading;
 using UnityEngine;
 
 public class XRSceneSwitch : MonoBehaviour
@@ -6,11 +5,10 @@ public class XRSceneSwitch : MonoBehaviour
     [SerializeField] private SO_TransformRef xrOriginRef;
     [SerializeField] private GameObject[] interactorRoots;
 
-    private CancellationTokenSource _cts;
+    private bool interactorsEnabled;
 
     private void Awake()
     {
-        _cts = new CancellationTokenSource();
         string sceneName = gameObject.scene.name;
 
         if (xrOriginRef != null)
@@ -34,38 +32,53 @@ public class XRSceneSwitch : MonoBehaviour
             Debug.LogWarning($"[XRSceneSwitch] ({sceneName}) xrOriginRef is not assigned!");
         }
 
+        // Subscribe so we disable our own origin before the next loading screen activates.
+        SceneTransition.OnBeforeLoadingScreen += DisableOwnOrigin;
+
         if (interactorRoots != null && interactorRoots.Length > 0)
-            _ = CycleInteractors(_cts.Token, sceneName);
+        {
+            foreach (var root in interactorRoots)
+                if (root != null) root.SetActive(false);
+
+            SceneTransition.OnBeforeFadeIn += EnableInteractors;
+            Debug.Log($"[XRSceneSwitch] ({sceneName}) Interactors disabled, waiting for OnBeforeFadeIn.");
+        }
         else
+        {
             Debug.LogWarning($"[XRSceneSwitch] ({sceneName}) No interactorRoots assigned.");
+        }
+    }
+
+    private void Start()
+    {
+        // Fallback: no transition in progress (e.g. first scene load) — enable immediately.
+        if (!interactorsEnabled && !SceneTransition.IsTransitioning)
+            EnableInteractors();
     }
 
     private void OnDestroy()
     {
-        _cts?.Cancel();
-        _cts?.Dispose();
-        _cts = null;
+        SceneTransition.OnBeforeLoadingScreen -= DisableOwnOrigin;
+        SceneTransition.OnBeforeFadeIn -= EnableInteractors;
     }
 
-    private async Awaitable CycleInteractors(CancellationToken ct, string sceneName)
+    private void DisableOwnOrigin()
     {
-        foreach (var root in interactorRoots)
-            if (root != null) root.SetActive(false);
+        SceneTransition.OnBeforeLoadingScreen -= DisableOwnOrigin;
+        if (xrOriginRef == null || xrOriginRef.Value != this.transform.root) return;
+        Debug.Log($"[XRSceneSwitch] ({gameObject.scene.name}) Disabling own XR origin before loading screen.");
+        this.transform.root.gameObject.SetActive(false);
+    }
 
-        try
-        {
-            await Awaitable.NextFrameAsync(ct);
-        }
-        catch (System.OperationCanceledException)
-        {
-            return;
-        }
+    private void EnableInteractors()
+    {
+        SceneTransition.OnBeforeFadeIn -= EnableInteractors;
+        interactorsEnabled = true;
 
-        if (this == null) return;
-
+        if (interactorRoots == null) return;
         foreach (var root in interactorRoots)
             if (root != null) root.SetActive(true);
 
-        Debug.Log($"[XRSceneSwitch] ({sceneName}) Interactor cycle complete.");
+        Debug.Log($"[XRSceneSwitch] ({gameObject.scene.name}) Interactors enabled.");
     }
 }

@@ -23,6 +23,11 @@ public static class SceneTransition
     public static event Action<float> OnProgress;
     public static event Action<int> OnTransitionComplete;
     /// <summary>
+    /// Fired immediately before the loading screen scene is loaded.
+    /// The current scene's XR origin should disable itself here to prevent two active XR origins.
+    /// </summary>
+    public static event Action OnBeforeLoadingScreen;
+    /// <summary>
     /// Fired after the loading screen is unloaded but before the fade-in begins.
     /// The target scene is still behind an opaque overlay — safe to reset XR interactor state here.
     /// SceneTransition waits one frame after firing so subscribers have time to act.
@@ -76,7 +81,10 @@ public static class SceneTransition
                 xrOriginRef.Value.gameObject.SetActive(false);
             }
 
-            // Screen is now fully opaque. Load loading screen ADDITIVELY behind the opaque overlay.
+            // Screen is now fully opaque. Disable current XR origin before loading screen activates.
+            OnBeforeLoadingScreen?.Invoke();
+
+            // Load loading screen ADDITIVELY behind the opaque overlay.
             Debug.Log("[SceneTransition] Phase 2: Loading screen");
             int loadingIndex = LoadingScreenIndex;
 
