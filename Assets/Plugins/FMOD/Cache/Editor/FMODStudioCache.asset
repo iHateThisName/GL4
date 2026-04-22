@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
-  m_Name: parameter:/SnowWind/WindChaseState
+  m_Name: parameter:/SnowWind 2/WindChaseState
   m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorParamRef
   Name: WindChaseState
   StudioPath: 
   Min: 0
-  Max: 2
+  Max: 3
   Default: 0
   ID:
     data1: 3812720488
@@ -25,7 +25,8 @@ MonoBehaviour:
   Labels:
   - Indoor
   - Outdoor
-  - Chase
+  - Value A
+  - Value B
   Exists: 1
 --- !u!114 &-4437818263921976000
 MonoBehaviour:
@@ -52,6 +53,34 @@ MonoBehaviour:
   IsOneShot: 0
   Parameters:
   - {fileID: -7674154744080932588}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
+--- !u!114 &-4045526287999058822
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/SiD/SnowWind 4
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorEventRef
+  Path: event:/SiD/SnowWind 4
+  Guid:
+    Data1: 1632450180
+    Data2: 1188699679
+    Data3: 956720311
+    Data4: 1407581705
+  Banks:
+  - {fileID: 1273445237479021464}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters:
+  - {fileID: 6445985743077830058}
   MinDistance: 1
   MaxDistance: 20
   Length: 0
@@ -120,10 +149,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorEventRef
   Path: event:/SiD/Door
   Guid:
-    Data1: -1033343701
-    Data2: 1181471960
-    Data3: -111385984
-    Data4: -746572200
+    Data1: -1533550937
+    Data2: 1254562160
+    Data3: -1502802559
+    Data4: 1335747005
   Banks:
   - {fileID: 1759623812686793363}
   IsStream: 0
@@ -174,6 +203,62 @@ MonoBehaviour:
   - Name: Desktop
     Value: 506
   Exists: 1
+--- !u!114 &-2111794375591429632
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/SnowWind 2/Footstep
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorParamRef
+  Name: Footstep
+  StudioPath: 
+  Min: 0
+  Max: 2
+  Default: 0
+  ID:
+    data1: 1064862225
+    data2: 1159266277
+  Type: 2
+  IsGlobal: 0
+  Labels:
+  - None
+  - Walking
+  - Running
+  Exists: 1
+--- !u!114 &-959563105675411127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/SiD/SnowWind 2
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorEventRef
+  Path: event:/SiD/SnowWind 2
+  Guid:
+    Data1: 583082063
+    Data2: 1231275916
+    Data3: -295547253
+    Data4: 1017676496
+  Banks:
+  - {fileID: 1273445237479021464}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters:
+  - {fileID: -6017885067467739209}
+  - {fileID: -2111794375591429632}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
 --- !u!114 &-315409883655728871
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -226,6 +311,13 @@ MonoBehaviour:
   - {fileID: 3598971249647298106}
   - {fileID: 7964675310374320276}
   - {fileID: -4437818263921976000}
+  - {fileID: -6834741357933470514}
+  - {fileID: 632383723591174902}
+  - {fileID: -959563105675411127}
+  - {fileID: -2618667656053057141}
+  - {fileID: 6476638047906205209}
+  - {fileID: -2551429230459347051}
+  - {fileID: -4045526287999058822}
   EditorParameters: []
   MasterBanks:
   - {fileID: 1759623812686793363}
@@ -246,6 +338,68 @@ MonoBehaviour:
     index: 4
   - key: event:/SiD/SnowWind
     index: 5
+  - key: event:/SiD/IntruderWindow
+    index: 6
+  - key: event:/SiD/DoorOLD
+    index: 7
+  - key: event:/SiD/SnowWind 2
+    index: 8
+  - key: event:/SiD/SnowFalling
+    index: 9
+  - key: event:/SiD/Eating
+    index: 10
+  - key: event:/SiD/SnowWind 3
+    index: 11
+  - key: event:/SiD/SnowWind 4
+    index: 12
+--- !u!114 &632383723591174902
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/SiD/DoorOLD
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorEventRef
+  Path: event:/SiD/DoorOLD
+  Guid:
+    Data1: -1033343701
+    Data2: 1181471960
+    Data3: -111385984
+    Data4: -746572200
+  Banks:
+  - {fileID: 1273445237479021464}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters:
+  - {fileID: 3800873983267919312}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
+--- !u!114 &1273445237479021464
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.bank
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorBankRef
+  Path: Assets/_GameAssets/Sound/Fmod/Build/Desktop/Master.bank
+  Name: Master
+  StudioPath: bank:/Master
+  lastModified: 639124658530320738
+  FileSizes:
+  - Name: Desktop
+    Value: 13375680
+  Exists: 1
 --- !u!114 &1473305947169070242
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -261,17 +415,78 @@ MonoBehaviour:
   Name: DoorState
   StudioPath: 
   Min: 0
-  Max: 2
-  Default: 0
+  Max: 3
+  Default: 1
   ID:
     data1: 688009361
     data2: 1569888197
   Type: 2
   IsGlobal: 0
   Labels:
+  - Open
   - Closed
   - LeaningOpen
-  - Open
+  - HoldOpen
+  Exists: 1
+--- !u!114 &1759623812686793363
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.bank
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorBankRef
+  Path: Assets/_GameAssets/Sound/Fmod/Build/Desktop/Master.bank
+  Name: Master
+  StudioPath: bank:/Master
+  lastModified: 639118576855981912
+  FileSizes:
+  - Name: Desktop
+    Value: 12929216
+  Exists: 1
+--- !u!114 &1759623812686793363
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.bank
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorBankRef
+  Path: Assets/_GameAssets/Sound/Fmod/Build/Desktop/Master.bank
+  Name: Master
+  StudioPath: bank:/Master
+  lastModified: 639118576855981912
+  FileSizes:
+  - Name: Desktop
+    Value: 12929216
+  Exists: 1
+--- !u!114 &1759623812686793363
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.bank
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorBankRef
+  Path: Assets/_GameAssets/Sound/Fmod/Build/Desktop/Master.bank
+  Name: Master
+  StudioPath: bank:/Master
+  lastModified: 639118576855981912
+  FileSizes:
+  - Name: Desktop
+    Value: 12929216
   Exists: 1
 --- !u!114 &1759623812686793363
 MonoBehaviour:
@@ -340,6 +555,61 @@ MonoBehaviour:
   - Name: Desktop
     Value: 1292
   Exists: 1
+--- !u!114 &6445985743077830058
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/SnowWind 4/WindChaseState
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorParamRef
+  Name: WindChaseState
+  StudioPath: 
+  Min: 0
+  Max: 3
+  Default: 0
+  ID:
+    data1: 3812720488
+    data2: 2205420993
+  Type: 2
+  IsGlobal: 0
+  Labels:
+  - Indoor
+  - Outdoor
+  - Value A
+  - Value B
+  Exists: 1
+--- !u!114 &6476638047906205209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/SiD/Eating
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorEventRef
+  Path: event:/SiD/Eating
+  Guid:
+    Data1: -1155078799
+    Data2: 1119809695
+    Data3: 1229316747
+    Data4: 554075337
+  Banks:
+  - {fileID: 1273445237479021464}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
 --- !u!114 &7524057726983306142
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -363,6 +633,26 @@ MonoBehaviour:
   Type: 0
   IsGlobal: 0
   Labels: []
+  Exists: 1
+--- !u!114 &7826964640910571554
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.strings.bank
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorBankRef
+  Path: Assets/_GameAssets/Sound/Fmod/Build/Desktop/Master.strings.bank
+  Name: Master.strings
+  StudioPath: bank:/Master.strings
+  lastModified: 639124658530345824
+  FileSizes:
+  - Name: Desktop
+    Value: 1670
   Exists: 1
 --- !u!114 &7964675310374320276
 MonoBehaviour:
