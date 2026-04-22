@@ -39,10 +39,16 @@ public class Radio : MonoBehaviour
     {
         public AudioClip clip;
         public float resumeTime;
+
+        public QueuedBroadcast(AudioClip clip, float resumeTime)
+        {
+            this.clip = clip;
+            this.resumeTime = resumeTime;
+        }
     }
 
-    private readonly LinkedList<QueuedBroadcast> _broadcastQueue = new LinkedList<QueuedBroadcast>();
-    private bool _isPlayingBroadcast;
+    private readonly LinkedList<QueuedBroadcast> broadcastQueue = new();
+    private bool isPlayingBroadcast;
 
     /// <summary>
     /// C# Action fired when channel changes. Parameters: (channel 1-indexed, isSafe)
@@ -76,9 +82,9 @@ public class Radio : MonoBehaviour
         if (editorTestMode && initialized && knob != null)
             knob.value = knob.value; // re-triggers SetValue → fires onValueChange
 
-        if (_isPlayingBroadcast && !audioSource.isPlaying)
+        if (isPlayingBroadcast && !audioSource.isPlaying)
         {
-            _isPlayingBroadcast = false;
+            isPlayingBroadcast = false;
             PlayNextBroadcast();
         }
     }
@@ -126,7 +132,7 @@ public class Radio : MonoBehaviour
         AudioClip incoming = tips[tipIndex];
         Debug.Log("Queuing/playing tip: " + tipIndex + " for " + incoming.name);
 
-        if (_isPlayingBroadcast)
+        if (isPlayingBroadcast)
         {
             if (eventData.GetIsOverrideBroadcast())
             {
@@ -134,25 +140,25 @@ public class Radio : MonoBehaviour
                 float pausedTime = audioSource.time;
                 AudioClip pausedClip = audioSource.clip;
                 audioSource.Stop();
-                _broadcastQueue.AddFirst(new QueuedBroadcast { clip = pausedClip, resumeTime = pausedTime });
-                _isPlayingBroadcast = false;
-                PlayBroadcast(new QueuedBroadcast { clip = incoming, resumeTime = 0f });
+                broadcastQueue.AddFirst(new QueuedBroadcast(pausedClip, pausedTime));
+                isPlayingBroadcast = false;
+                PlayBroadcast(new QueuedBroadcast(incoming, 0));
             }
             else
             {
-                _broadcastQueue.AddLast(new QueuedBroadcast { clip = incoming, resumeTime = 0f });
-                Debug.Log("Broadcast queued. Queue size: " + _broadcastQueue.Count);
+                broadcastQueue.AddLast(new QueuedBroadcast(incoming, 0));
+                Debug.Log("Broadcast queued. Queue size: " + broadcastQueue.Count);
             }
         }
         else
         {
-            PlayBroadcast(new QueuedBroadcast { clip = incoming, resumeTime = 0f });
+            PlayBroadcast(new QueuedBroadcast(incoming, 0));
         }
     }
 
     private void PlayBroadcast(QueuedBroadcast broadcast)
     {
-        _isPlayingBroadcast = true;
+        isPlayingBroadcast = true;
         audioSource.clip = broadcast.clip;
         audioSource.time = broadcast.resumeTime;
         audioSource.loop = false;
@@ -161,16 +167,16 @@ public class Radio : MonoBehaviour
 
     private void PlayNextBroadcast()
     {
-        if (_broadcastQueue.Count == 0) return;
-        var next = _broadcastQueue.First.Value;
-        _broadcastQueue.RemoveFirst();
+        if (broadcastQueue.Count == 0) return;
+        var next = broadcastQueue.First.Value;
+        broadcastQueue.RemoveFirst();
         PlayBroadcast(next);
     }
 
     private void ClearBroadcastQueue()
     {
-        _broadcastQueue.Clear();
-        _isPlayingBroadcast = false;
+        broadcastQueue.Clear();
+        isPlayingBroadcast = false;
     }
 
     private void OnKnobValueChanged(float value)
@@ -200,9 +206,12 @@ public class Radio : MonoBehaviour
         if (!isOnSafeChannel && staticSound != null)
         {
             ClearBroadcastQueue();
-            this.audioSource.clip = this.staticSound;
-            this.audioSource.loop = true;
-            this.audioSource.Play();
+            if (!audioSource.isPlaying || audioSource.clip != staticSound)
+            {
+                audioSource.clip = staticSound;
+                audioSource.loop = true;
+                audioSource.Play();
+            }
         }
         else
         {

@@ -1,4 +1,3 @@
-using System.Threading;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
@@ -45,9 +44,6 @@ public class Flashlight : MonoBehaviour
 
     private TimerHandle batteryTimerHandle;
 
-    // CTS to cancel in-progress smooth light transitions
-    private CancellationTokenSource lightTransitionCTS;
-
     // Target intensity we smoothly move toward
     private float targetLightIntensity;
 
@@ -68,6 +64,9 @@ public class Flashlight : MonoBehaviour
 
     // Set when flickering as part of turning off (e.g. dropped with low power)
     private bool forceOffAfterFlicker;
+
+    // True when held by the player or socketed — suppresses the dropped-distance check
+    private bool isSecured;
 
     // How much intensity one full crank rotation adds
     private const float LIGHT_MAGNITUDE = 10;
@@ -144,11 +143,26 @@ public class Flashlight : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        if (!isSecured)
+            TeleportToSocketIfTooFar();
+
+        if (!powered || lightSource == null) return;
+        if (lightSource.intensity == targetLightIntensity && lightSource.range == targetLightRange) return;
+
+        lightSource.intensity = Mathf.MoveTowards(lightSource.intensity, targetLightIntensity, 5f * Time.deltaTime);
+
+        float normalized = Mathf.InverseLerp(flashlightSettings.GetMinLightPower(), flashlightSettings.GetMaxLightPower(), lightSource.intensity);
+        targetLightRange = Mathf.Lerp(flashlightSettings.GetMinLightRange(), flashlightSettings.GetMaxLightRange(), normalized);
+        lightSource.range = Mathf.MoveTowards(lightSource.range, targetLightRange, 5f * Time.deltaTime);
+
+        flashlightSettings.CalculateDetectionCone(lightSource.range);
+    }
+
     private void OnDestroy()
     {
         TimerManager.Release(ref this.batteryTimerHandle);
-        this.lightTransitionCTS?.Cancel();
-        this.lightTransitionCTS?.Dispose();
     }
     #endregion
 
@@ -156,7 +170,6 @@ public class Flashlight : MonoBehaviour
     {
         // Reduce target intensity
         UpdateLightIntensity(-this.flashlightSettings.GetLightDecayRate());
-        UpdateFlashLight();
 
         // Turn off once target reaches minimum — check target, not the lerped source value
         if (this.targetLightIntensity <= this.flashlightSettings.GetMinLightPower())
@@ -175,45 +188,6 @@ public class Flashlight : MonoBehaviour
         this.targetLightIntensity = clampedLightIntensity;
     }
 
-    /// <summary>
-    /// Cancels any running transition and starts a new one toward the current targets.
-    /// Uses Awaitable to avoid IEnumerator/coroutine allocation.
-    /// </summary>
-    private void UpdateFlashLight()
-    {
-        if (this.lightSource == null) return;
-
-        this.lightTransitionCTS?.Cancel();
-        this.lightTransitionCTS?.Dispose();
-        this.lightTransitionCTS = new CancellationTokenSource();
-
-        _ = SmoothLightTransitionAsync(this.lightTransitionCTS.Token);
-    }
-
-    private async Awaitable SmoothLightTransitionAsync(CancellationToken ct)
-    {
-        try
-        {
-            while (!Mathf.Approximately(this.lightSource.intensity, this.targetLightIntensity) ||
-                   !Mathf.Approximately(this.lightSource.range, this.targetLightRange))
-            {
-                this.lightSource.intensity = Mathf.MoveTowards(this.lightSource.intensity, this.targetLightIntensity, 5f * Time.deltaTime);
-
-                float normalized = Mathf.InverseLerp(this.flashlightSettings.GetMinLightPower(), this.flashlightSettings.GetMaxLightPower(), this.lightSource.intensity);
-                this.targetLightRange = Mathf.Lerp(this.flashlightSettings.GetMinLightRange(), this.flashlightSettings.GetMaxLightRange(), normalized);
-                this.lightSource.range = Mathf.MoveTowards(this.lightSource.range, this.targetLightRange, 5f * Time.deltaTime);
-
-                this.flashlightSettings.CalculateDetectionCone(this.lightSource.range);
-                await Awaitable.NextFrameAsync(ct);
-            }
-
-            // Snap to exact targets once close enough
-            this.lightSource.intensity = this.targetLightIntensity;
-            this.lightSource.range = this.targetLightRange;
-            this.flashlightSettings.CalculateDetectionCone(this.lightSource.range);
-        }
-        catch (System.OperationCanceledException) { }
-    }
     
     // ==== Crank Logic ====
     /// <summary>
@@ -251,13 +225,13 @@ public class Flashlight : MonoBehaviour
             SetupActiveFlashlightTimer();
         }
 
-        UpdateFlashLight();
     }
-    
+
     // ==== Flashlight Helpers ====
     private void OnFlashlightDropped(SelectExitEventArgs args)
     {
-        if (TeleportToSocketIfTooFar()) return;
+        if (TeleportToSocketIfTooFar()) return; // isSecured stays true — now socketed
+        isSecured = false;
 
         if (startEnabled) return;
 
@@ -293,6 +267,7 @@ public class Flashlight : MonoBehaviour
     /// </summary>
     private void OnFlashlightPickedup(SelectEnterEventArgs args)
     {
+        isSecured = true;
         if (HasPower)
             ToggleOnFlashlight();
     }
@@ -369,10 +344,6 @@ public class Flashlight : MonoBehaviour
     {
         ToggleFlashLight(false);
         TimerManager.Pause(this.batteryTimerHandle);
-
-        this.lightTransitionCTS?.Cancel();
-        this.lightTransitionCTS?.Dispose();
-        this.lightTransitionCTS = null;
     }
     
     /// <summary>
@@ -405,7 +376,6 @@ public class Flashlight : MonoBehaviour
     private void TestLightIntensity()
     {
         UpdateLightIntensity(this.flashlightSettings.GetStartingLightPower());
-        UpdateFlashLight();
     }
     
     [ContextMenu("Test Flicker")]

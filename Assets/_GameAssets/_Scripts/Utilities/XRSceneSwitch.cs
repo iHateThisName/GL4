@@ -56,9 +56,16 @@ public class XRSceneSwitch : MonoBehaviour
         foreach (var root in interactorRoots)
             if (root != null) root.SetActive(false);
 
-        await Awaitable.NextFrameAsync(ct);
+        try
+        {
+            await Awaitable.NextFrameAsync(ct);
+        }
+        catch (System.OperationCanceledException)
+        {
+            return;
+        }
 
-        if (ct.IsCancellationRequested || this == null) return;
+        if (this == null) return;
 
         foreach (var root in interactorRoots)
             if (root != null) root.SetActive(true);

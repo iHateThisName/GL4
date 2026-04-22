@@ -62,21 +62,22 @@ public class NightEventTimingDrawer : PropertyDrawer
         EditorGUI.PropertyField(line, useRange);
         line.y += lineHeight + spacing;
 
+        float nightSeconds = ResolveNightSeconds();
+
         if (useRange.boolValue)
         {
-            EditorGUI.PropertyField(line, timeMin);
+            DrawSecondsSlider(line, timeMin, "Time Min", nightSeconds);
             line.y += lineHeight + spacing;
-            EditorGUI.PropertyField(line, timeMax);
+            DrawSecondsSlider(line, timeMax, "Time Max", nightSeconds);
             line.y += lineHeight + spacing;
         }
         else
         {
-            EditorGUI.PropertyField(line, time);
+            DrawSecondsSlider(line, time, "Time", nightSeconds);
             line.y += lineHeight + spacing;
         }
 
-        // Seconds preview against the resolved night length.
-        float nightSeconds = ResolveNightSeconds();
+        // Range preview line.
         string preview;
         if (useRange.boolValue)
         {
@@ -105,6 +106,15 @@ public class NightEventTimingDrawer : PropertyDrawer
         // header + useRange + (1 single OR 2 range) + preview line
         int rows = 3 + (useRange.boolValue ? 2 : 1);
         return rows * line + (rows - 1) * spacing;
+    }
+
+    private static void DrawSecondsSlider(Rect line, SerializedProperty prop, string label, float nightSeconds)
+    {
+        float currentSeconds = Mathf.Clamp01(prop.floatValue) * nightSeconds;
+        EditorGUI.BeginChangeCheck();
+        float newSeconds = EditorGUI.Slider(line, label, currentSeconds, 0f, nightSeconds);
+        if (EditorGUI.EndChangeCheck())
+            prop.floatValue = Mathf.Clamp01(newSeconds / nightSeconds);
     }
 
     private static string FormatTime(float seconds)

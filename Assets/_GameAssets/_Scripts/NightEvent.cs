@@ -72,9 +72,9 @@ public struct NightEvent
     [SerializeField] private int night;
     [SerializeField] private NightEventData eventData;
         
-    public NightEvent(NightEventData eventData, int idx, int night) 
+    public NightEvent(NightEventData eventData, int eventIdx, int night) 
     {
-        this.eventIdx = idx;
+        this.eventIdx = eventIdx;
         this.night = night;
         this.eventData = eventData;
     }

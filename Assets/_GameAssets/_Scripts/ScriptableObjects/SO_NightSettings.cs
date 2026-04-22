@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "NightSettings", menuName = "TeamSuperSimple/Night Settings", order = 0)]
-public class SO_NightSettings : ScriptableObject
+public class SO_NightSettings : SO_RuntimeScriptableObject
 {
     // Total duration of the night in minutes. Converted to seconds internally.
     [Tooltip("Total night duration (minutes)")]
@@ -12,10 +12,25 @@ public class SO_NightSettings : ScriptableObject
     [Header("Debug")]
     [SerializeField] private int debugStartNight = 1;
 
-    public int GetFinalNight() => this.nightEvents.Length;
-
     public int DebugStartNight => this.debugStartNight;
-    public void SetDebugStartNight(int night) => this.debugStartNight = Mathf.Max(1, night);
+    public void SetDebugStartNight(int night)
+    {
+        this.debugStartNight = Mathf.Max(1, night);
+        NotifyDataChanged();
+    }
+
+    protected override void OnReset() => this.debugStartNight = 1;
+
+    private void OnValidate()
+    {
+        if (this.debugStartNight < 1) this.debugStartNight = 1;
+#if UNITY_EDITOR
+        if (UnityEngine.Application.isPlaying)
+            NotifyDataChanged();
+#endif
+    }
+
+    public int GetFinalNight() => this.nightEvents.Length;
 
     public float GetNightTimeInSeconds() => this.nightTimeMinutes * 60;
 
