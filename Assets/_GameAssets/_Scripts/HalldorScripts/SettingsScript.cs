@@ -1,5 +1,6 @@
 using Assets.Scripts.Singleton;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets;
 
 public class SettingsScript : PersistenSingleton<SettingsScript>
@@ -32,6 +33,13 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
 
     //A refrence to the night settings
     [SerializeField] private SO_NightSettings nightSettings;
+
+    [Header("Teleport Input Actions")]
+    [Tooltip("Drag the Right Teleport Activate action here")]
+    public InputActionReference teleportActivateAction;
+
+    [Tooltip("Drag the Right Teleport Cancel action here")]
+    public InputActionReference teleportCancelAction;
 
     private void Start()
     {
@@ -85,6 +93,7 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
     {
         leftControllerRefrence.smoothMotionEnabled = false;
         teleportEnabled = true;
+        SetTeleportEnabled(true);
         enableTelportCube.SetActive(false);
         disableTeleportCube.SetActive(true);
     }
@@ -94,6 +103,7 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
     {
         leftControllerRefrence.smoothMotionEnabled = true;
         teleportEnabled = false;
+        SetTeleportEnabled(false);
         disableTeleportCube.SetActive(false);
         enableTelportCube.SetActive(true);
     }
@@ -123,5 +133,34 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
         enableNightThreeCube.SetActive(false);
         enableNightTwoCube.SetActive(true);
         enableNightOneCube.SetActive(true);
+    }
+
+    // This is the function your Main Menu Toggle will call
+    public void SetTeleportEnabled(bool isEnabled)
+    {
+        if (teleportActivateAction != null && teleportActivateAction.action != null)
+        {
+            if (isEnabled)
+            {
+                teleportActivateAction.action.Enable();
+            }
+            else
+            {
+                teleportActivateAction.action.Disable();
+            }
+        }
+
+        if (teleportCancelAction != null && teleportCancelAction.action != null)
+        {
+            if (isEnabled)
+            {
+                teleportCancelAction.action.Enable();
+            }
+            else
+            {
+                teleportCancelAction.action.Disable();
+            }
+        }
+        Debug.Log("Teleportation enabled state set to: " + isEnabled);
     }
 }
