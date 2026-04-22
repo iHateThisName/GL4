@@ -32,9 +32,6 @@ public class XRSceneSwitch : MonoBehaviour
             Debug.LogWarning($"[XRSceneSwitch] ({sceneName}) xrOriginRef is not assigned!");
         }
 
-        // Subscribe so we disable our own origin before the next loading screen activates.
-        SceneTransition.OnBeforeLoadingScreen += DisableOwnOrigin;
-
         if (interactorRoots != null && interactorRoots.Length > 0)
         {
             foreach (var root in interactorRoots)
@@ -58,16 +55,7 @@ public class XRSceneSwitch : MonoBehaviour
 
     private void OnDestroy()
     {
-        SceneTransition.OnBeforeLoadingScreen -= DisableOwnOrigin;
         SceneTransition.OnBeforeFadeIn -= EnableInteractors;
-    }
-
-    private void DisableOwnOrigin()
-    {
-        SceneTransition.OnBeforeLoadingScreen -= DisableOwnOrigin;
-        if (xrOriginRef == null || xrOriginRef.Value != this.transform.root) return;
-        Debug.Log($"[XRSceneSwitch] ({gameObject.scene.name}) Disabling own XR origin before loading screen.");
-        this.transform.root.gameObject.SetActive(false);
     }
 
     private void EnableInteractors()
