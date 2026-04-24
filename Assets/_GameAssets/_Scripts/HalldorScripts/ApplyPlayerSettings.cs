@@ -18,7 +18,7 @@ public class ApplyPlayerSettings : MonoBehaviour
     void Start()
     {
         //Finds the settings script
-        settingsToApply = FindFirstObjectByType<SettingsScript>();
+        settingsToApply = SettingsScript.Instance;
 
         //Finds the tunneling vignette
         tunnelingObject = GameObject.Find("TunnelingVignette");
