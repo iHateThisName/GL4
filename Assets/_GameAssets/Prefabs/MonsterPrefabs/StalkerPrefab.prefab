@@ -174,7 +174,7 @@ MonoBehaviour:
     - rid: 1560563707155841128
       type: {class: FleeStrategy, ns: MonsterSystem, asm: Assembly-CSharp}
       data:
-        fleeDistance: 20
+        fleeDistance: 30
 --- !u!114 &2158655959361425675
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -610,7 +610,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.IdleState
   blocksTransitions: 1
   interval: 0.1
-  duration: 5
+  duration: 10
   nextState: {fileID: 4910811012170373297}
 --- !u!1 &8085184186486536723
 GameObject:
