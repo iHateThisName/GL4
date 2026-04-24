@@ -23,6 +23,8 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
     [SerializeField] private GameObject enableNightOneCube;
     [SerializeField] private GameObject enableNightTwoCube;
     [SerializeField] private GameObject enableNightThreeCube;
+    [SerializeField] private GameObject enableNightFourCube;
+    [SerializeField] private GameObject enableNightFiveCube;
 
     //A refrence to the player's controllers
     [SerializeField] private ControllerInputActionManager rightControllerRefrence;
@@ -110,31 +112,57 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
         enableTelportCube.SetActive(true);
     }
 
-    //A method for enabling night 1
-    public void EnableNightOne()
+    public void SetCurrentNight(int nightNum)
     {
-        nightSettings.SetDebugStartNight(1);
-        enableNightOneCube.SetActive(false);
-        enableNightThreeCube.SetActive(true);
-        enableNightTwoCube.SetActive(true);
-    }
-
-    //A method for enabling night 2
-    public void EnableNightTwo()
-    {
-        nightSettings.SetDebugStartNight(2);
-        enableNightTwoCube.SetActive(false);
-        enableNightThreeCube.SetActive(true);
-        enableNightOneCube.SetActive(true);
-    }
-
-    //A method for enabling night 3
-    public void EnableNightThree()
-    {
-        nightSettings.SetDebugStartNight(3);
-        enableNightThreeCube.SetActive(false);
-        enableNightTwoCube.SetActive(true);
-        enableNightOneCube.SetActive(true);
+        if (nightNum == 1)
+        {
+            nightSettings.SetDebugStartNight(nightNum);
+            enableNightOneCube.SetActive(false);
+            enableNightThreeCube.SetActive(true);
+            enableNightTwoCube.SetActive(true);
+            enableNightFourCube.SetActive(true);
+            enableNightFiveCube.SetActive(true);
+        }
+        else if (nightNum == 2)
+        {
+            nightSettings.SetDebugStartNight(nightNum);
+            enableNightTwoCube.SetActive(false);
+            enableNightThreeCube.SetActive(true);
+            enableNightOneCube.SetActive(true);
+            enableNightFourCube.SetActive(true);
+            enableNightFiveCube.SetActive(true);
+        }
+        else if (nightNum == 3)
+        {
+            nightSettings.SetDebugStartNight(nightNum);
+            enableNightThreeCube.SetActive(false);
+            enableNightTwoCube.SetActive(true);
+            enableNightOneCube.SetActive(true);
+            enableNightFourCube.SetActive(true);
+            enableNightFiveCube.SetActive(true);
+        }
+        else if (nightNum == 4)
+        {
+            nightSettings.SetDebugStartNight(nightNum);
+            enableNightFourCube.SetActive(false);
+            enableNightThreeCube.SetActive(true);
+            enableNightTwoCube.SetActive(true);
+            enableNightOneCube.SetActive(true);
+            enableNightFiveCube.SetActive(true);
+        }
+        else if (nightNum == 5)
+        {
+            nightSettings.SetDebugStartNight(nightNum);
+            enableNightFiveCube.SetActive(false);
+            enableNightFourCube.SetActive(true);
+            enableNightThreeCube.SetActive(true);
+            enableNightTwoCube.SetActive(true);
+            enableNightOneCube.SetActive(true);
+        }
+        else
+        {
+            Debug.LogError("Invalid night number");
+        }
     }
 
     // This is the function your Main Menu Toggle will call
