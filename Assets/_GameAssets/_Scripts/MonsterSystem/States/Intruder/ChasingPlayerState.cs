@@ -18,8 +18,8 @@ public class ChasingPlayerState : AnimatedState {
         animator.applyRootMotion = false;
         StartCoroutine(NextFrame(animator));
 
-        // Increase the monster travel speed by 100% when chasing the player
-        this.monsterNavigation.Agent.speed *= 2f;
+        // Increase the monster travel speed by 150% when chasing the player
+        this.monsterNavigation.Agent.speed *= 2.5f;
 
         // Increase the attack range by 150% when chasing the player
         this.monsterNavigation.AttackRange *= 2.5f;
