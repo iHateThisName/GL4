@@ -10,6 +10,8 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
     public bool tunnelingEnabled = false;
     public bool teleportEnabled = false;
 
+    [SerializeField] private int currentNight = 1;
+
     //These cubes are just for visuals, they don't do anything, they turn off and on again depending on what the player wants
     [SerializeField] private GameObject enableSnapCube;
     [SerializeField] private GameObject disableSnapCube;
@@ -50,8 +52,8 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
         rightControllerRefrence.smoothTurnEnabled = true;
         leftControllerRefrence.smoothMotionEnabled = true;
 
-        //Setting the default night to 1
-        nightSettings.SetDebugStartNight(1);
+        //Setting the default night to the current night
+        nightSettings.SetDebugStartNight(this.currentNight);
     }
 
     //A method for enabling snap turning
