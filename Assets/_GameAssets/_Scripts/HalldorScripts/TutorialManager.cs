@@ -1,4 +1,5 @@
 using UnityEngine;
+using TMPro;
 
 public class TutorialManager : MonoBehaviour
 {
@@ -16,6 +17,9 @@ public class TutorialManager : MonoBehaviour
     //A refrence to the hunger manager
     [SerializeField] private HungerSystem hungerManager;
 
+    //A refrence to the tutorial UI text
+    [SerializeField] private TMP_Text tutorialText;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -24,11 +28,13 @@ public class TutorialManager : MonoBehaviour
             if (nightSettings.DebugStartNight > 1)
             {
                 Debug.Log("Tutorial deleted");
+                tutorialText.text = "";
                 Destroy(this.gameObject);
             }
             else
             {
                 nightSettings.nightTimeMinutes = 0f;
+                tutorialText.text = "Chop wood and turn on fire";
                 Destroy(tempertureManager);
                 this.hungerManager.Pause();
                 Debug.Log("Tutorial started");
@@ -42,21 +48,32 @@ public class TutorialManager : MonoBehaviour
 
     private void OnHungerChanged(float newHungerValue)
     {
-        if (!this.hasLitFire) return;
+        if (!this.hasLitFire || this.hasEatenFood) return;
         
         this.hasEatenFood = true;
+        tutorialText.text = "Put the radio frequency to Channel 30";
         Debug.Log("eaten food");
     }
 
     [ContextMenu("Turn on fire")]
     public void TurnOnFire()
     {
+        if(hasLitFire)
+        {
+            return;
+        }
+        tutorialText.text = "Eat a can of food";
         hungerManager.ModifyHunger(-21);
         hasLitFire = true;
     }
 
     public void FixRadio()
     {
+        if(!hasLitFire || !hasEatenFood || hasFixedRadio)
+        {
+            return;
+        }
         hasFixedRadio = true;
+        tutorialText.text = "Survive the night";
     }
 }
