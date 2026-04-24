@@ -1,14 +1,5 @@
 using UnityEngine;
 
-[System.Serializable]
-public enum NightEventType
-{
-    SpawnMonster,
-    SpawnFood,
-    DisruptRadio,
-    RadioBroadcast
-}
-
 /// <summary>
 /// Per-event firing time within the night, expressed as a normalized 0-1 fraction.
 /// 0 = start of night, 1 = end. Toggle <see cref="useRange"/> to pick a random value
@@ -49,14 +40,31 @@ public struct NightEventTiming
 }
 
 [System.Serializable]
-public struct NightEventData
+public struct NightEvent
 {
+    [System.Serializable]
+    public enum NightEventType
+    {
+        SpawnMonster,
+        SpawnFood,
+        DisruptRadio,
+        RadioBroadcast
+    }
+
     [SerializeField] private NightEventType eventType;
     [SerializeField] private GameObject monster;
     [SerializeField] private int monsterCount;
     [SerializeField] private NightEventTiming timing;
-    [Tooltip("RadioBroadcast only: if true, interrupts any currently playing broadcast (which is paused and resumed after).")]
     [SerializeField] private bool overrideBroadcast;
+
+    public NightEvent(NightEventType eventType, GameObject monster, int monsterCount, NightEventTiming timing, bool overrideBroadcast)
+    {
+        this.eventType = eventType;
+        this.monster = monster;
+        this.monsterCount = monsterCount;
+        this.timing = timing;
+        this.overrideBroadcast = overrideBroadcast;
+    }
 
     public NightEventType GetEventType() => this.eventType;
     public GameObject GetMonsterPrefab() => this.monster;
@@ -64,24 +72,31 @@ public struct NightEventData
     public NightEventTiming GetTiming() => this.timing;
     public bool GetIsOverrideBroadcast() => this.overrideBroadcast;
 }
-    
+
 [System.Serializable]
-public struct NightEvent
+public struct MonsterSpawnEventData
 {
-    [SerializeField] private int eventIdx;
-    [SerializeField] private int night;
-    [SerializeField] private NightEventData eventData;
-        
-    public NightEvent(NightEventData eventData, int eventIdx, int night) 
+    [SerializeField] private GameObject monster;
+    [Min(1)]
+    [SerializeField] private int monsterCount;
+    [SerializeField] private NightEventTiming timing;
+
+    public NightEvent ToNightEvent() => new NightEvent(NightEvent.NightEventType.SpawnMonster, monster, Mathf.Max(1, monsterCount), timing, false);
+}
+
+[System.Serializable]
+public struct RadioEventData
+{
+    public enum RadioEventType { Disrupt, Broadcast }
+    [SerializeField] private RadioEventType type;
+    [SerializeField] private bool overrideBroadcast;
+    [SerializeField] private NightEventTiming timing;
+
+    public NightEvent ToNightEvent()
     {
-        this.eventIdx = eventIdx;
-        this.night = night;
-        this.eventData = eventData;
+        var nightEventType = type == RadioEventType.Broadcast
+            ? NightEvent.NightEventType.RadioBroadcast
+            : NightEvent.NightEventType.DisruptRadio;
+        return new NightEvent(nightEventType, null, 0, timing, overrideBroadcast);
     }
-        
-    public int Index => this.eventIdx;
-
-    public int Night => this.night;
-
-    public NightEventData GetPayload() => this.eventData;
 }

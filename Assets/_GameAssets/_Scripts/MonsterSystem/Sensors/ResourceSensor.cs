@@ -8,8 +8,9 @@ namespace MonsterSystem
         [SerializeField] private float[] transitionValues;
         [SerializeField] private MonsterState[] statesToTransitionTo;
         [SerializeField] private float baseDepletionValue = -1;
+        [Gaskellgames.ReadOnly]
+        [SerializeField] private float resourceValue;
         
-        private float resourceValue;
         private float minTransitionValue;
         private bool deplete;
         private bool thresholdExhausted;

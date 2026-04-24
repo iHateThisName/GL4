@@ -12,7 +12,7 @@ namespace MonsterSystem
     {
         [SerializeField] private float satietyGain = 25f; // Amount of satiety added when food is accepted
 
-        private SatietySensor satietySensor; // Reference to the monster's satiety sensor component
+        private ResourceSensor satietySensor; // Reference to the monster's satiety sensor component
         private Rigidbody foodRb;            // Rigidbody of the food item being consumed
         private GameObject foodObject;       // Cached game object of the food for destruction after eating
 
@@ -22,16 +22,7 @@ namespace MonsterSystem
         public override void Initialize(MonsterController owningController)
         {
             base.Initialize(owningController);
-            this.satietySensor = owningController.GetSensor<SatietySensor>();
-        }
-        
-        public override void OnStateEnter()
-        {
-            base.OnStateEnter();
-            if (this.foodObject != null)
-            {
-                
-            }
+            this.satietySensor = owningController.GetSensor<ResourceSensor>();
         }
 
         protected override void RegisterAnimationEvents()
@@ -64,7 +55,8 @@ namespace MonsterSystem
                 if (disableGrab != null) disableGrab.enabled = true;
             }
 
-            this.satietySensor.AddSatiety(this.satietyGain);
+            if (this.satietySensor != null) 
+                this.satietySensor.ModValue(this.satietyGain);
 
             // Stop the feedable state's audio at the exact bite frame
             this.controller.PreviousState?.StopAffordances<AudioAffordance>();

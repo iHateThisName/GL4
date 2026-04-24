@@ -12,49 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 206c3560dc3f4da4bb72ca0e8015cb8f, type: 3}
   m_Name: Night4
   m_EditorClassIdentifier: Assembly-CSharp::SO_NightEvent
-  eventData:
-  - eventType: 0
-    monster: {fileID: 4181545296685392125, guid: ec0aa4cbafce12445b407631d33d1905, type: 3}
+  monsterSpawnEvents:
+  - monster: {fileID: 4181545296685392125, guid: d030a9afe7227df4dbe4bedc9aaa748d, type: 3}
     monsterCount: 1
     timing:
       useRange: 0
-      time: 0.043
+      time: 0.083333336
       timeMin: 0
       timeMax: 0
-    overrideBroadcast: 0
-  - eventType: 2
-    monster: {fileID: 4181545296685392125, guid: ec0aa4cbafce12445b407631d33d1905, type: 3}
-    monsterCount: 1
-    timing:
-      useRange: 0
-      time: 0.128
-      timeMin: 0
-      timeMax: 0
-    overrideBroadcast: 0
-  - eventType: 2
-    monster: {fileID: 4181545296685392125, guid: ec0aa4cbafce12445b407631d33d1905, type: 3}
-    monsterCount: 1
-    timing:
-      useRange: 0
-      time: 0.375
-      timeMin: 0
-      timeMax: 0
-    overrideBroadcast: 0
-  - eventType: 2
-    monster: {fileID: 4181545296685392125, guid: ec0aa4cbafce12445b407631d33d1905, type: 3}
-    monsterCount: 1
-    timing:
-      useRange: 0
-      time: 0.626
-      timeMin: 0
-      timeMax: 0
-    overrideBroadcast: 0
-  - eventType: 2
-    monster: {fileID: 4181545296685392125, guid: ec0aa4cbafce12445b407631d33d1905, type: 3}
-    monsterCount: 1
-    timing:
-      useRange: 0
-      time: 0.876
-      timeMin: 0
-      timeMax: 0
-    overrideBroadcast: 0
+  radioEvents: []

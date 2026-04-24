@@ -9,7 +9,7 @@ public class VfxAffordance : StateAffordance {
     [SerializeField, Gaskellgames.ReadOnly] private GameObject vfxInstance;
     private VisualEffect visualEffect;
 
-    public override void Trigger() {
+    public override void OnTrigger() {
         if (this.vfxAsset == null) {
             Debug.LogWarning($"No VFX asset assigned for {this.name} on {this.controller.name}");
             return;
@@ -31,7 +31,8 @@ public class VfxAffordance : StateAffordance {
         this.visualEffect.Play();
     }
 
-    public override void Stop() {
+    public override void OnStop() 
+    {
         this.visualEffect.Stop();
         this.vfxInstance.SetActive(false);
     }

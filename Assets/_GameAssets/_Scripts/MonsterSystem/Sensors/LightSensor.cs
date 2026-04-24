@@ -17,9 +17,6 @@ namespace MonsterSystem
         [SerializeField] private float stunThreshold = 1f;
         [SerializeField] private float sensorCooldownDuration = 5f;
 
-        [Header("=== Audio ===")]
-        [SerializeField] private AudioClip flashedSound;
-
         private DetectionConeData cachedCone;
         private Transform sensorTransform;
         private float remainingCooldownTime;
@@ -145,13 +142,6 @@ namespace MonsterSystem
         {
             this.remainingCooldownTime = this.sensorCooldownDuration;
             this.exposure = 0f;
-
-            // this should be happening in the state
-            // another option could be to call: this.fleeState.TriggerAffordances<AudioAffordance>();
-            
-            // Play stun audio
-            if (this.flashedSound != null && this.controller.GetComponent<AudioSource>() != null)
-                MonsterAudio.PlayOneShot(this.controller.GetComponent<AudioSource>(), this.flashedSound);
 
             // Transition to flee state with flashlight as target (NavMeshMoveState.AwayFromTarget mode)
             if (this.fleeState != null && FlashlightTransform != null)

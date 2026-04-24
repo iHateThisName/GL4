@@ -18,7 +18,7 @@ namespace MonsterSystem {
             this.audioSource = this.controller?.Audio;
         }
 
-        public override void Trigger() {
+        public override void OnTrigger() {
             if (this.audioSource == null || this.clip == null) return;
 
 
@@ -29,7 +29,7 @@ namespace MonsterSystem {
             //MonsterAudio.PlayOneShot(this.audioSource, this.clip, this.volume);
         }
 
-        public override void Stop() {
+        public override void OnStop() {
             if (this.audioSource != null)
                 MonsterAudio.Stop(this.audioSource);
         }

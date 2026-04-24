@@ -122,8 +122,7 @@ public class Radio : MonoBehaviour
 
     private void OnNightEvent(NightEvent evt)
     {
-        var eventData = evt.GetPayload();
-        if (eventData.GetEventType() != NightEventType.RadioBroadcast) return;
+        if (evt.GetEventType() != NightEvent.NightEventType.RadioBroadcast) return;
         Debug.Log("Radio received broadcast event and is safe: " + isOnSafeChannel);
 
         if (!isOnSafeChannel) return;
@@ -134,7 +133,7 @@ public class Radio : MonoBehaviour
 
         if (isPlayingBroadcast)
         {
-            if (eventData.GetIsOverrideBroadcast())
+            if (evt.GetIsOverrideBroadcast())
             {
                 // Pause current clip and push it to the front of the queue so it resumes after the override.
                 float pausedTime = audioSource.time;

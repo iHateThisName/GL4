@@ -10,13 +10,16 @@ public class GameManager : PersistenSingleton<GameManager> {
     [Header("=== Night Configuration ===")]
     [SerializeField] private SO_NightSettings nightSettings;
     [SerializeField] private bool debugSpawn;
+    [Gaskellgames.ReadOnly] 
+    [SerializeField] private int night = 1;
+    [SerializeField, HideInInspector] private List<GameObject> debugSpawnSelection = new List<GameObject>();
+    [SerializeField, HideInInspector] private bool debugSpawnSelectionInitialized;
 
     // Event invoked whenever a scheduled night event becomes available.
     // Other systems can subscribe to react (e.g., spawning enemies, triggering sounds).
     public static event System.Action<NightEvent> OnEventAvailable = delegate { };
 
     private TimerHandle nightTimerHandle;
-    private int night = 1;
     private int eventsFired = 0;
 
     private ScheduledNightEvent[] eventsSchedule;
@@ -25,7 +28,7 @@ public class GameManager : PersistenSingleton<GameManager> {
     [System.Serializable]
     private struct NightEventDebugView
     {
-        public NightEventType EventType;
+        public NightEvent.NightEventType EventType;
         public float TimeSeconds;
         public int OriginalIndex;
     }
@@ -143,7 +146,7 @@ public class GameManager : PersistenSingleton<GameManager> {
             this.eventsFired++;
 
             Debug.Log($"Night event fired at night {this.night}: {elapsed:F2}s (scheduled {scheduled.TimeSeconds:F2}s)");
-            OnEventAvailable.Invoke(new NightEvent(scheduled.Data, this.eventsFired, this.night));
+            OnEventAvailable.Invoke(scheduled.Data);
         }
 
         // Schedule the next tick to land exactly on the next pending event, or park
@@ -176,20 +179,24 @@ public class GameManager : PersistenSingleton<GameManager> {
     }
 
     /// <summary>
-    /// Collects every SpawnMonster event from all nights and schedules them all at 0.1 s,
-    /// ignoring their configured timing and which night they belong to.
+    /// Collects SpawnMonster events from all nights and schedules them all at 0.1s.
+    /// When debugSpawnSelection is non-empty, only selected monster prefabs are included.
+    /// An empty selection spawns all monsters (preserves the default behaviour).
     /// </summary>
     private ScheduledNightEvent[] BuildDebugSpawnSchedule()
     {
         var result = new List<ScheduledNightEvent>();
         int idx = 0;
+        var selectionSet = new HashSet<GameObject>(this.debugSpawnSelection ?? new List<GameObject>());
+        bool spawnAll = selectionSet.Count == 0;
 
         this.nightSettings.ForEachEventAcrossAllNights(evt =>
         {
-            if (evt.GetEventType() == NightEventType.SpawnMonster)
-                result.Add(new ScheduledNightEvent(evt, 0.1f, idx++));
+            if (evt.GetEventType() != NightEvent.NightEventType.SpawnMonster) return;
+            if (!spawnAll && !selectionSet.Contains(evt.GetMonsterPrefab())) return;
+            result.Add(new ScheduledNightEvent(evt, 0.1f, idx++));
         });
-        
+
         return result.ToArray();
     }
 
@@ -229,10 +236,10 @@ public class GameManager : PersistenSingleton<GameManager> {
     /// <summary>
     /// Fires a night event immediately, bypassing the schedule.
     /// </summary>
-    public void FireEvent(NightEventData data)
+    public void FireEvent(NightEvent evt)
     {
         this.eventsFired++;
-        OnEventAvailable.Invoke(new NightEvent(data, this.eventsFired, this.night));
+        OnEventAvailable.Invoke(evt);
     }
 
     /// <summary>
@@ -240,13 +247,13 @@ public class GameManager : PersistenSingleton<GameManager> {
     /// <paramref name="delaySeconds"/> from now. Updates the timer if the new event
     /// fires sooner than the currently pending tick.
     /// </summary>
-    public void ScheduleEvent(NightEventData data, float delaySeconds)
+    public void ScheduleEvent(NightEvent evt, float delaySeconds)
     {
         float elapsed = TimerManager.Validate(this.nightTimerHandle)
             ? TimerManager.GetRef(this.nightTimerHandle).Elapsed
             : 0f;
         float targetTime = elapsed + Mathf.Max(0f, delaySeconds);
-        InsertEventAndUpdateTimer(new ScheduledNightEvent(data, targetTime, -1));
+        InsertEventAndUpdateTimer(new ScheduledNightEvent(evt, targetTime, -1));
     }
 
     private void InsertEventAndUpdateTimer(ScheduledNightEvent newEvent)

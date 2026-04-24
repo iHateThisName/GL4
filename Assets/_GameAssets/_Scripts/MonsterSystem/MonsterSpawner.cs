@@ -21,19 +21,18 @@ namespace Refactored
 
         private void SpawnMonsterWithEvent(NightEvent evt)
         {
-            var eventData = evt.GetPayload();
-            if (eventData.GetEventType() != NightEventType.SpawnMonster) return;
+            if (evt.GetEventType() != NightEvent.NightEventType.SpawnMonster) return;
 
-            for (int i = 0; i < eventData.GetMonsterCount(); i++)
+            for (int i = 0; i < evt.GetMonsterCount(); i++)
             {
                 Debug.Log("Spawning Monster in loop");
-                var monster = eventData.GetMonsterPrefab();
+                var monster = evt.GetMonsterPrefab();
                 if (monster == null)
                 {
                     Debug.LogError("Monster Prefab is null, cannot spawn monster.");
                     return;
                 }
-                
+
                 var monsterController = monster.GetComponentInChildren<MonsterController>();
                 if (monsterController == null)
                 {

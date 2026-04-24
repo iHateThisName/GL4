@@ -11,7 +11,7 @@ public class SO_NightSettings : SO_RuntimeScriptableObject
 
     [Header("Debug")]
     [SerializeField] private int debugStartNight = 1;
-
+    
     // Captured from the serialized asset values in Awake, which fires once when the SO is first
     // loaded (before any runtime mutation). Kept in sync via OnValidate when outside play mode.
     private float defaultNightTimeMinutes;
@@ -77,12 +77,12 @@ public class SO_NightSettings : SO_RuntimeScriptableObject
     /// and returns the schedule sorted ascending. Events with identical resolved times
     /// will fire on the same tick (preserving their declared order as a tiebreaker).
     /// </summary>
-    public void ForEachEventAcrossAllNights(System.Action<NightEventData> callback)
+    public void ForEachEventAcrossAllNights(System.Action<NightEvent> callback)
     {
         for (int n = 0; n < this.nightEvents.Length; n++)
         {
             if (this.nightEvents[n] == null) continue;
-            NightEventData[] events = this.nightEvents[n].GetEventData();
+            NightEvent[] events = this.nightEvents[n].GetEventData();
             for (int i = 0; i < events.Length; i++)
                 callback(events[i]);
         }
@@ -91,10 +91,10 @@ public class SO_NightSettings : SO_RuntimeScriptableObject
     public ScheduledNightEvent[] BuildScheduleForNight(int night)
     {
         int nightIndex = night - 1;
-        NightEventData[] events = nightIndex >= this.nightEvents.Length ?
-            new NightEventData[0]
+        NightEvent[] events = nightIndex >= this.nightEvents.Length ? 
+            new NightEvent[0] 
             : this.nightEvents[nightIndex].GetEventData();
-
+        
         var schedule = new ScheduledNightEvent[events.Length];
         float nightSeconds = GetNightTimeInSeconds();
 
@@ -116,15 +116,15 @@ public class SO_NightSettings : SO_RuntimeScriptableObject
 }
 
 /// <summary>
-/// A NightEventData paired with its resolved absolute firing time within a single night.
+/// A NightEvent paired with its resolved absolute firing time within a single night.
 /// </summary>
 public readonly struct ScheduledNightEvent
 {
-    public readonly NightEventData Data;
+    public readonly NightEvent Data;
     public readonly float TimeSeconds;
     public readonly int OriginalIndex;
 
-    public ScheduledNightEvent(NightEventData data, float timeSeconds, int originalIndex)
+    public ScheduledNightEvent(NightEvent data, float timeSeconds, int originalIndex)
     {
         this.Data = data;
         this.TimeSeconds = timeSeconds;
