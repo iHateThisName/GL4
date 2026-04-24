@@ -27,6 +27,8 @@ public class Radio : MonoBehaviour
     [Tooltip("Channel to start on (1-indexed). Use 0 to start at the channel closest to angle 0.")]
     [SerializeField] private int startingChannel = 0;
 
+    [SerializeField] private int displayNumber = 0;
+
     // Internal channel is 0-indexed
     private int currentChannelInternal = -1;
     // Resolved safe channel is 0-indexed
@@ -110,6 +112,41 @@ public class Radio : MonoBehaviour
         else resolvedStartingInternal = startingChannel - 1;
 
         resolvedStartingInternal = Mathf.Clamp(resolvedStartingInternal, 0, TotalChannels - 1);
+
+        switch (startingChannel)
+        {
+            case 1:
+                displayNumber = 27;
+                break;
+            case 2:
+                displayNumber = 28;
+                break;
+            case 3:
+                displayNumber = 29;
+                break;
+            case 4:
+                displayNumber = 30;
+                break;
+            case 5:
+                displayNumber = 31;
+                break;
+            case 6:
+                displayNumber = 32;
+                break;
+            case 7:
+                displayNumber = 33;
+                break;
+            case 8:
+                displayNumber = 34;
+                break;
+            case 9:
+                displayNumber = 35;
+                break;
+            default:
+                displayNumber = 30;
+                break;
+        }
+
 
         // Set knob to starting channel — suppress event callbacks during init
         knob.value = StepToValue(resolvedStartingInternal);
@@ -220,13 +257,45 @@ public class Radio : MonoBehaviour
             this.audioSource.clip = null;
         }
         OnChannelChanged?.Invoke(CurrentChannel, isOnSafeChannel);
+        switch(CurrentChannel)
+        {
+            case 1:
+                displayNumber = 27;
+                break;
+            case 2:
+                displayNumber = 28;
+                break;
+            case 3:
+                displayNumber = 29;
+                break;
+            case 4:
+                displayNumber = 30;
+                break;
+            case 5:
+                displayNumber = 31;
+                break;
+            case 6:
+                displayNumber = 32;
+                break;
+            case 7:
+                displayNumber = 33;
+                break;
+            case 8:
+                displayNumber = 34;
+                break;
+            case 9:
+                displayNumber = 35;
+                break;
+            default:
+                break;
+        }
         UpdateDebugUI();
     }
 
     private void UpdateDebugUI()
     {
         if (channelText == null) return;
-        channelText.text = $"CH: {CurrentFrequency}";
+        channelText.text = $"CH: {displayNumber}";
     }
 
     public bool IsOnChannel(int channel)
