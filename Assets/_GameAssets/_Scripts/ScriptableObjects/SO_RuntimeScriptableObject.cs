@@ -52,4 +52,19 @@ public abstract class SO_RuntimeScriptableObject : ScriptableObject
             instance.OnReset();                   // Let subclass clear its fields
         }
     }
+
+#if UNITY_EDITOR
+    /// <summary>
+    /// Editor-only reset called when exiting play mode so the inspector reflects
+    /// the clean asset values immediately rather than showing stale runtime state.
+    /// </summary>
+    public static void ResetAllForEditor()
+    {
+        foreach (var instance in Instances)
+        {
+            instance.OnRuntimeDataChanged = null;
+            instance.OnReset();
+        }
+    }
+#endif
 }

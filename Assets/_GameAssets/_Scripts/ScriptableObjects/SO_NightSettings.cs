@@ -11,11 +11,20 @@ public class SO_NightSettings : SO_RuntimeScriptableObject
 
     [Header("Debug")]
     [SerializeField] private int debugStartNight = 1;
-    
+
+    // Captured from the serialized asset values in Awake, which fires once when the SO is first
+    // loaded (before any runtime mutation). Kept in sync via OnValidate when outside play mode.
     private float defaultNightTimeMinutes;
+    private int defaultDebugStartNight;
 
     public int DebugStartNight => this.debugStartNight;
-    
+
+    private void Awake()
+    {
+        defaultNightTimeMinutes = this.nightTimeMinutes;
+        defaultDebugStartNight = this.debugStartNight;
+    }
+
     public void SetDebugStartNight(int night)
     {
         this.debugStartNight = Mathf.Max(1, night);
@@ -33,14 +42,12 @@ public class SO_NightSettings : SO_RuntimeScriptableObject
 
     protected override void OnReset()
     {
-        this.debugStartNight = 1;
-        // Capture the serialized asset value before any runtime code modifies it.
-        defaultNightTimeMinutes = this.nightTimeMinutes;
+        this.nightTimeMinutes = defaultNightTimeMinutes;
+        this.debugStartNight = defaultDebugStartNight;
     }
 
     /// <summary>
-    /// Restores nightTimeMinutes to the value set in the asset (before any runtime override).
-    /// Call at the start of each night so tutorial-night modifications don't carry over.
+    /// Restores nightTimeMinutes to the asset value mid-session (e.g. after tutorial overrides it).
     /// </summary>
     public void ResetNightTime()
     {
@@ -53,6 +60,11 @@ public class SO_NightSettings : SO_RuntimeScriptableObject
 #if UNITY_EDITOR
         if (UnityEngine.Application.isPlaying)
             NotifyDataChanged();
+        else
+        {
+            defaultNightTimeMinutes = this.nightTimeMinutes;
+            defaultDebugStartNight = this.debugStartNight;
+        }
 #endif
     }
 
@@ -79,10 +91,10 @@ public class SO_NightSettings : SO_RuntimeScriptableObject
     public ScheduledNightEvent[] BuildScheduleForNight(int night)
     {
         int nightIndex = night - 1;
-        NightEventData[] events = nightIndex >= this.nightEvents.Length ? 
-            new NightEventData[0] 
+        NightEventData[] events = nightIndex >= this.nightEvents.Length ?
+            new NightEventData[0]
             : this.nightEvents[nightIndex].GetEventData();
-        
+
         var schedule = new ScheduledNightEvent[events.Length];
         float nightSeconds = GetNightTimeInSeconds();
 
