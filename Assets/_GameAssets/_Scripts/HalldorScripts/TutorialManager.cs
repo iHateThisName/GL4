@@ -36,7 +36,6 @@ public class TutorialManager : MonoBehaviour
             }
             else
             {
-                nightSettings.nightTimeMinutes = 0f;
                 tutorialText.text = "Chop wood and turn on fire";
                 Destroy(tempertureManager);
                 this.hungerManager.Pause();
