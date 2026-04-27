@@ -37,8 +37,8 @@ public class TutorialManager : MonoBehaviour
             else
             {
                 tutorialText.text = "Chop wood and turn on fire";
-                Destroy(tempertureManager);
-                this.hungerManager.Pause();
+                //Destroy(tempertureManager);
+                //this.hungerManager.Pause();
                 Debug.Log("Tutorial started");
             }
         }
