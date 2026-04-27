@@ -261,6 +261,10 @@ public class Radio : MonoBehaviour
             {
                 tutorialManager.FixRadio();
             }
+            else
+            {
+                Debug.Log("Tutorial stopped 1");
+            }
         }
         OnChannelChanged?.Invoke(CurrentChannel, isOnSafeChannel);
         switch(CurrentChannel)

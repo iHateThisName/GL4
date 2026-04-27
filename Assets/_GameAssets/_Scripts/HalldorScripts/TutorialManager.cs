@@ -75,6 +75,7 @@ public class TutorialManager : MonoBehaviour
     {
         if(!hasLitFire || !hasEatenFood || hasFixedRadio)
         {
+            Debug.Log("Tutorial stopped 2");
             return;
         }
         hasFixedRadio = true;
