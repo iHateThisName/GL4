@@ -29,6 +29,8 @@ public class Radio : MonoBehaviour
 
     [SerializeField] private int displayNumber = 0;
 
+    [SerializeField] private TutorialManager tutorialManager;
+
     // Internal channel is 0-indexed
     private int currentChannelInternal = -1;
     // Resolved safe channel is 0-indexed
@@ -255,6 +257,10 @@ public class Radio : MonoBehaviour
             this.audioSource.Stop();
             this.audioSource.loop = false;
             this.audioSource.clip = null;
+            if(tutorialManager != null && !tutorialManager.hasFixedRadio)
+            {
+                tutorialManager.FixRadio();
+            }
         }
         OnChannelChanged?.Invoke(CurrentChannel, isOnSafeChannel);
         switch(CurrentChannel)

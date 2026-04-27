@@ -17,6 +17,9 @@ public class TutorialManager : MonoBehaviour
     //A refrence to the hunger manager
     [SerializeField] private HungerSystem hungerManager;
 
+    //A refrence to the radio
+    [SerializeField] private Radio radio;
+
     //A refrence to the tutorial UI text
     [SerializeField] private TMP_Text tutorialText;
 
@@ -51,7 +54,8 @@ public class TutorialManager : MonoBehaviour
         if (!this.hasLitFire || this.hasEatenFood) return;
         
         this.hasEatenFood = true;
-        tutorialText.text = "Put the radio frequency to Channel 30";
+        radio.SetChannel(8);
+        tutorialText.text = "Put the radio frequency back to Channel 30";
         Debug.Log("eaten food");
     }
 
