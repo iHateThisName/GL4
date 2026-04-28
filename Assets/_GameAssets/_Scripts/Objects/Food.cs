@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 public class Food : MonoBehaviour
 {
@@ -6,6 +7,8 @@ public class Food : MonoBehaviour
     [SerializeField] private Mesh[] meshes;
     [SerializeField] private bool destroyOnEaten = false;
     
+    private XRGrabInteractable grabInteractable;
+    private Rigidbody rigidbody;
     private MeshFilter meshFilter;
     private int value;
 
@@ -15,6 +18,9 @@ public class Food : MonoBehaviour
         this.value = meshes.Length - 1;
         if (this.meshFilter != null && meshes.Length > 0)
             this.meshFilter.mesh = this.meshes[this.value];
+        
+        this.rigidbody = GetComponent<Rigidbody>();
+        this.grabInteractable = GetComponent<XRGrabInteractable>();
     }
 
     public void Eat()
@@ -31,4 +37,8 @@ public class Food : MonoBehaviour
     public float FillValue => overrideFoodValue;
     
     public int Value => this.value;
+    
+    public Rigidbody Rigidbody => this.rigidbody;
+    
+    public XRGrabInteractable GrabInteractable => this.grabInteractable;
 }

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit;
 
 namespace MonsterSystem
 {
@@ -31,7 +32,6 @@ namespace MonsterSystem
             // When coming from another feedable state, stop its audio before starting ours.
             // Audio is Custom mode so it won't auto-stop on exit — it persists into AcceptFoodState
             // until HandleEatMoment stops it.
-            this.controller.PreviousState?.StopAffordances<AudioAffordance>();
             TriggerAffordances<AudioAffordance>();
         }
 
@@ -62,7 +62,7 @@ namespace MonsterSystem
             }
 
             // Retrieve the food's rigidbody; bail out if none is attached
-            Rigidbody foodRb = other.attachedRigidbody;
+            Rigidbody foodRb = food.Rigidbody? food.Rigidbody : other.attachedRigidbody;
             if (foodRb == null) return;
             
             AttachFood(food, foodRb);
@@ -89,6 +89,9 @@ namespace MonsterSystem
             
             food.transform.localPosition = Vector3.zero;
             food.transform.localRotation = Quaternion.Euler(Vector3.zero);
+            
+            if (food.GrabInteractable != null)
+                food.GrabInteractable.enabled = false;
         }
     }
 }

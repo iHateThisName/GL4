@@ -193,6 +193,10 @@ public class HungerSystem : MonoBehaviour
         HungerStateChangedEvent?.Invoke(previousState, this.hungerState);
     }
     
+    public float Hunger => this.hunger;
+    
+    public EnumHungerState State => this.hungerState;
+    
     public static Food TryGetFood(Collider other)
     {
         var foodObject = other.GetComponentInParent<Food>();
