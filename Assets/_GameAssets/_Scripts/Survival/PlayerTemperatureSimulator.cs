@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> {
 
-    [SerializeField, Gaskellgames.ReadOnly] private float currentBodyTemperature = 37.0f; // Normal human body temperature in Celsius
+    [field:SerializeField, Gaskellgames.ReadOnly] public float CurrentBodyTemperature { get; private set; } = 37.0f; // Normal human body temperature in Celsius
     private readonly float MIN_COMFORTABLE_TEMPERATURE = 35.2f; // Hypothermia threshold,
                                                                 // 32 - 35 C is mild hypothermia (shivering, confusion),
                                                                 // 28 - 32 C is moderate (slurred speech, drowsiness),
@@ -104,7 +104,7 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
     /// </summary>
     private void UpdateBodyTemperatureState() {
         EnumBodyTemperatureState previousState = this.currentBodyTemperatureState;
-        this.currentBodyTemperatureState = GetStateFromTemperature(this.currentBodyTemperature);
+        this.currentBodyTemperatureState = GetStateFromTemperature(this.CurrentBodyTemperature);
 
         if (previousState != this.currentBodyTemperatureState) {
             NotifyBodyTempetureStateChange(previousState, this.currentBodyTemperatureState);
@@ -158,22 +158,22 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
             OnHeatModifierChanged?.Invoke(this.CurrentHeatModifier);
         }
 
-        float nextTemp = this.currentBodyTemperature + heatModifier * Time.fixedDeltaTime;
+        float nextTemp = this.CurrentBodyTemperature + heatModifier * Time.fixedDeltaTime;
 
         // Get location-specific min and max temperatures
         float minTemp = GetLocationMinTemp(this.currentLocationType);
         float maxTemp = GetLocationMaxTemp(this.currentLocationType);
 
         // Clamp temperature to location-specific min/max (setting a max and min value for temp)
-        if (nextTemp < this.currentBodyTemperature && this.currentBodyTemperature <= minTemp) {
-            nextTemp = currentBodyTemperature; // stop cooling because we've reached min for this location
+        if (nextTemp < this.CurrentBodyTemperature && this.CurrentBodyTemperature <= minTemp) {
+            nextTemp = CurrentBodyTemperature; // stop cooling because we've reached min for this location
 
-        } else if (nextTemp > this.currentBodyTemperature && this.currentBodyTemperature >= maxTemp) {
-            nextTemp = currentBodyTemperature; // stop heating because we've reached max for this location
+        } else if (nextTemp > this.CurrentBodyTemperature && this.CurrentBodyTemperature >= maxTemp) {
+            nextTemp = CurrentBodyTemperature; // stop heating because we've reached max for this location
         }
 
         // Update body temperature, will be no change if clamped
-        this.currentBodyTemperature = nextTemp;
+        this.CurrentBodyTemperature = nextTemp;
     }
 
     private float GetLocationRate(EnumLocationType location) {
