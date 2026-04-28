@@ -328,8 +328,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.7999728, y: 0.59016865, z: 0.94626147}
-  m_Center: {x: -0.0007071495, y: -0.20491609, z: -0.00055852527}
+  m_Size: {x: 0.7999728, y: 0.8121304, z: 0.9462616}
+  m_Center: {x: -0.0007071495, y: -0.09393561, z: -0.0005585353}
 --- !u!114 &4810188073211432227
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -611,10 +611,10 @@ PrefabInstance:
       addedObject: {fileID: 4687039360986419222}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 12745b28349adbc48b7594b5e936dc98, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 7917075115538537238}
+      addedObject: {fileID: 6609567490073321205}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 12745b28349adbc48b7594b5e936dc98, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 6609567490073321205}
+      addedObject: {fileID: 2153717915574261122}
     - targetCorrespondingSourceObject: {fileID: -7608823795907292598, guid: 12745b28349adbc48b7594b5e936dc98, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3608953456894031669}
@@ -637,9 +637,9 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3378564705527748263}
   serializedVersion: 5
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
+  m_Mass: 3
+  m_LinearDamping: 0.1
+  m_AngularDamping: 0.1
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -653,10 +653,31 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 2
   m_Constraints: 0
-  m_CollisionDetection: 0
---- !u!114 &7917075115538537238
+  m_CollisionDetection: 3
+--- !u!65 &6609567490073321205
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3378564705527748263}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.54, y: 0.16092987, z: 0.09653692}
+  m_Center: {x: 0.000008503596, y: -0.035388038, z: -0.0019670527}
+--- !u!114 &2153717915574261122
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -665,9 +686,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 3378564705527748263}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0ad34abafad169848a38072baa96cdb2, type: 3}
+  m_Script: {fileID: 11500000, guid: e79048f6ac4aff146bba6acadf93ee19, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Unity.XR.Interaction.Toolkit::UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable
+  m_EditorClassIdentifier: Assembly-CSharp::XRObjectDistanceBreak
   m_InteractionManager: {fileID: 0}
   m_Colliders: []
   m_InteractionLayers:
@@ -785,27 +806,9 @@ MonoBehaviour:
   m_LimitAngularVelocity: 0
   m_MaxLinearVelocityDelta: 10
   m_MaxAngularVelocityDelta: 20
---- !u!65 &6609567490073321205
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3378564705527748263}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.54, y: 0.16092987, z: 0.09653692}
-  m_Center: {x: 0.000008503596, y: -0.035388038, z: -0.0019670527}
+  maxBreakDistance: 1
+  useHapticWarning: 1
+  hapticIntensity: 0.5
 --- !u!1 &3767960861977770428 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -7608823795907292598, guid: 12745b28349adbc48b7594b5e936dc98, type: 3}

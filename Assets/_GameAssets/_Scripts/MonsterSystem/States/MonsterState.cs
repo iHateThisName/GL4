@@ -25,18 +25,47 @@ namespace MonsterSystem
         /// Called when leaving this state for another.
         public virtual void OnStateExit() { }
 
+        // Called by MonsterController before OnStateEnter.
+        internal void ProcessAffordancesOnEnter()
+        {
+            if (this.affordances == null) return;
+            for (int i = 0; i < this.affordances.Length; i++)
+            {
+                if (this.affordances[i]?.TriggerMode == AffordanceTriggerMode.OnStateEnter)
+                    this.affordances[i].OnTrigger();
+            }
+        }
+
+        // Called by MonsterController after OnStateExit.
+        internal void ProcessAffordancesOnExit()
+        {
+            if (this.affordances == null) return;
+            for (int i = 0; i < this.affordances.Length; i++)
+            {
+                var a = this.affordances[i];
+                if (a == null) continue;
+                if (a.TriggerMode == AffordanceTriggerMode.OnStateEnter)
+                    a.OnStop();
+                else if (a.TriggerMode == AffordanceTriggerMode.OnStateExit)
+                    a.OnTrigger();
+            }
+        }
+
         /// <summary>
-        /// Triggers all configured affordances (audio, animation, etc.)
+        /// Triggers all Custom-mode affordances. Use for mid-state affordances not bound to enter/exit.
         /// </summary>
         public void TriggerAffordances()
         {
             if (this.affordances == null) return;
             for (int i = 0; i < this.affordances.Length; i++)
-                this.affordances[i]?.Trigger();
+            {
+                if (this.affordances[i]?.TriggerMode == AffordanceTriggerMode.Custom)
+                    this.affordances[i].OnTrigger();
+            }
         }
 
         /// <summary>
-        /// Triggers only affordances of the specified type.
+        /// Triggers Custom-mode affordances of the specified type.
         /// Example: TriggerAffordances&lt;AudioAffordance&gt;()
         /// </summary>
         public void TriggerAffordances<T>() where T : StateAffordance
@@ -44,23 +73,23 @@ namespace MonsterSystem
             if (this.affordances == null) return;
             for (int i = 0; i < this.affordances.Length; i++)
             {
-                if (this.affordances[i] is T)
-                    this.affordances[i].Trigger();
+                if (this.affordances[i] is T && this.affordances[i].TriggerMode == AffordanceTriggerMode.Custom)
+                    this.affordances[i].OnTrigger();
             }
         }
 
         /// <summary>
-        /// Stops all configured affordances.
+        /// Stops all affordances regardless of mode. Use as an imperative override.
         /// </summary>
         public void StopAffordances()
         {
             if (this.affordances == null) return;
             for (int i = 0; i < this.affordances.Length; i++)
-                this.affordances[i]?.Stop();
+                this.affordances[i]?.OnStop();
         }
 
         /// <summary>
-        /// Stops only affordances of the specified type.
+        /// Stops all affordances of the specified type regardless of mode.
         /// Example: StopAffordances&lt;AudioAffordance&gt;()
         /// </summary>
         public void StopAffordances<T>() where T : StateAffordance
@@ -69,7 +98,7 @@ namespace MonsterSystem
             for (int i = 0; i < this.affordances.Length; i++)
             {
                 if (this.affordances[i] is T)
-                    this.affordances[i].Stop();
+                    this.affordances[i].OnStop();
             }
         }
 

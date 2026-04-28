@@ -27,6 +27,10 @@ public class Radio : MonoBehaviour
     [Tooltip("Channel to start on (1-indexed). Use 0 to start at the channel closest to angle 0.")]
     [SerializeField] private int startingChannel = 0;
 
+    [SerializeField] private int displayNumber = 0;
+
+    [SerializeField] private TutorialManager tutorialManager;
+
     // Internal channel is 0-indexed
     private int currentChannelInternal = -1;
     // Resolved safe channel is 0-indexed
@@ -39,10 +43,16 @@ public class Radio : MonoBehaviour
     {
         public AudioClip clip;
         public float resumeTime;
+
+        public QueuedBroadcast(AudioClip clip, float resumeTime)
+        {
+            this.clip = clip;
+            this.resumeTime = resumeTime;
+        }
     }
 
-    private readonly LinkedList<QueuedBroadcast> _broadcastQueue = new LinkedList<QueuedBroadcast>();
-    private bool _isPlayingBroadcast;
+    private readonly LinkedList<QueuedBroadcast> broadcastQueue = new();
+    private bool isPlayingBroadcast;
 
     /// <summary>
     /// C# Action fired when channel changes. Parameters: (channel 1-indexed, isSafe)
@@ -76,9 +86,9 @@ public class Radio : MonoBehaviour
         if (editorTestMode && initialized && knob != null)
             knob.value = knob.value; // re-triggers SetValue → fires onValueChange
 
-        if (_isPlayingBroadcast && !audioSource.isPlaying)
+        if (isPlayingBroadcast && !audioSource.isPlaying)
         {
-            _isPlayingBroadcast = false;
+            isPlayingBroadcast = false;
             PlayNextBroadcast();
         }
     }
@@ -105,6 +115,41 @@ public class Radio : MonoBehaviour
 
         resolvedStartingInternal = Mathf.Clamp(resolvedStartingInternal, 0, TotalChannels - 1);
 
+        switch (startingChannel)
+        {
+            case 1:
+                displayNumber = 27;
+                break;
+            case 2:
+                displayNumber = 28;
+                break;
+            case 3:
+                displayNumber = 29;
+                break;
+            case 4:
+                displayNumber = 30;
+                break;
+            case 5:
+                displayNumber = 31;
+                break;
+            case 6:
+                displayNumber = 32;
+                break;
+            case 7:
+                displayNumber = 33;
+                break;
+            case 8:
+                displayNumber = 34;
+                break;
+            case 9:
+                displayNumber = 35;
+                break;
+            default:
+                displayNumber = 30;
+                break;
+        }
+
+
         // Set knob to starting channel — suppress event callbacks during init
         knob.value = StepToValue(resolvedStartingInternal);
         currentChannelInternal = ValueToStep(knob.value);
@@ -116,8 +161,7 @@ public class Radio : MonoBehaviour
 
     private void OnNightEvent(NightEvent evt)
     {
-        var eventData = evt.GetPayload();
-        if (eventData.GetEventType() != NightEventType.RadioBroadcast) return;
+        if (evt.GetEventType() != NightEvent.NightEventType.RadioBroadcast) return;
         Debug.Log("Radio received broadcast event and is safe: " + isOnSafeChannel);
 
         if (!isOnSafeChannel) return;
@@ -126,33 +170,33 @@ public class Radio : MonoBehaviour
         AudioClip incoming = tips[tipIndex];
         Debug.Log("Queuing/playing tip: " + tipIndex + " for " + incoming.name);
 
-        if (_isPlayingBroadcast)
+        if (isPlayingBroadcast)
         {
-            if (eventData.GetIsOverrideBroadcast())
+            if (evt.GetIsOverrideBroadcast())
             {
                 // Pause current clip and push it to the front of the queue so it resumes after the override.
                 float pausedTime = audioSource.time;
                 AudioClip pausedClip = audioSource.clip;
                 audioSource.Stop();
-                _broadcastQueue.AddFirst(new QueuedBroadcast { clip = pausedClip, resumeTime = pausedTime });
-                _isPlayingBroadcast = false;
-                PlayBroadcast(new QueuedBroadcast { clip = incoming, resumeTime = 0f });
+                broadcastQueue.AddFirst(new QueuedBroadcast(pausedClip, pausedTime));
+                isPlayingBroadcast = false;
+                PlayBroadcast(new QueuedBroadcast(incoming, 0));
             }
             else
             {
-                _broadcastQueue.AddLast(new QueuedBroadcast { clip = incoming, resumeTime = 0f });
-                Debug.Log("Broadcast queued. Queue size: " + _broadcastQueue.Count);
+                broadcastQueue.AddLast(new QueuedBroadcast(incoming, 0));
+                Debug.Log("Broadcast queued. Queue size: " + broadcastQueue.Count);
             }
         }
         else
         {
-            PlayBroadcast(new QueuedBroadcast { clip = incoming, resumeTime = 0f });
+            PlayBroadcast(new QueuedBroadcast(incoming, 0));
         }
     }
 
     private void PlayBroadcast(QueuedBroadcast broadcast)
     {
-        _isPlayingBroadcast = true;
+        isPlayingBroadcast = true;
         audioSource.clip = broadcast.clip;
         audioSource.time = broadcast.resumeTime;
         audioSource.loop = false;
@@ -161,16 +205,16 @@ public class Radio : MonoBehaviour
 
     private void PlayNextBroadcast()
     {
-        if (_broadcastQueue.Count == 0) return;
-        var next = _broadcastQueue.First.Value;
-        _broadcastQueue.RemoveFirst();
+        if (broadcastQueue.Count == 0) return;
+        var next = broadcastQueue.First.Value;
+        broadcastQueue.RemoveFirst();
         PlayBroadcast(next);
     }
 
     private void ClearBroadcastQueue()
     {
-        _broadcastQueue.Clear();
-        _isPlayingBroadcast = false;
+        broadcastQueue.Clear();
+        isPlayingBroadcast = false;
     }
 
     private void OnKnobValueChanged(float value)
@@ -200,9 +244,12 @@ public class Radio : MonoBehaviour
         if (!isOnSafeChannel && staticSound != null)
         {
             ClearBroadcastQueue();
-            this.audioSource.clip = this.staticSound;
-            this.audioSource.loop = true;
-            this.audioSource.Play();
+            if (!audioSource.isPlaying || audioSource.clip != staticSound)
+            {
+                audioSource.clip = staticSound;
+                audioSource.loop = true;
+                audioSource.Play();
+            }
         }
         else
         {
@@ -210,15 +257,55 @@ public class Radio : MonoBehaviour
             this.audioSource.Stop();
             this.audioSource.loop = false;
             this.audioSource.clip = null;
+            if(tutorialManager != null && !tutorialManager.hasFixedRadio)
+            {
+                tutorialManager.FixRadio();
+            }
+            else
+            {
+                Debug.Log("Tutorial stopped 1");
+            }
         }
         OnChannelChanged?.Invoke(CurrentChannel, isOnSafeChannel);
+        switch(CurrentChannel)
+        {
+            case 1:
+                displayNumber = 27;
+                break;
+            case 2:
+                displayNumber = 28;
+                break;
+            case 3:
+                displayNumber = 29;
+                break;
+            case 4:
+                displayNumber = 30;
+                break;
+            case 5:
+                displayNumber = 31;
+                break;
+            case 6:
+                displayNumber = 32;
+                break;
+            case 7:
+                displayNumber = 33;
+                break;
+            case 8:
+                displayNumber = 34;
+                break;
+            case 9:
+                displayNumber = 35;
+                break;
+            default:
+                break;
+        }
         UpdateDebugUI();
     }
 
     private void UpdateDebugUI()
     {
         if (channelText == null) return;
-        channelText.text = $"CH: {CurrentFrequency}";
+        channelText.text = $"CH: {displayNumber}";
     }
 
     public bool IsOnChannel(int channel)

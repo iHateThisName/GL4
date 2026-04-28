@@ -77,8 +77,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cf95be1c55500e42b32c4214913308f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WindowController
-  windowJoint: {fileID: 7464565860305263348}
-  windowsRef: {fileID: 0}
+  <windowJoint>k__BackingField: {fileID: 7464565860305263348}
+  windowsRef: {fileID: 11400000, guid: 710b2a43d96baa5479a6a2e173d6385c, type: 2}
   TargetPosition: {fileID: 1745700257320978748}
 --- !u!1 &4763561317496736531
 GameObject:
@@ -343,6 +343,85 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1567895836604336823}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6069490192969106771
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3228434149051682875}
+  - component: {fileID: 7975847272076566202}
+  - component: {fileID: 4543490966176027029}
+  m_Layer: 9
+  m_Name: FmodSound
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3228434149051682875
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6069490192969106771}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1567895836604336823}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7975847272076566202
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6069490192969106771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -1533550937
+      Data2: 1254562160
+      Data3: -1502802559
+      Data4: 1335747005
+    Path: event:/SiD/Door
+  Event: 
+  EventPlayTrigger: 0
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
+--- !u!114 &4543490966176027029
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6069490192969106771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: facf9b8666d5fa14abe05bf4d6293562, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WindStateTest
+  emitter: {fileID: 7975847272076566202}
+  parameterName: DoorState
+  windowController: {fileID: 5238887826910594403}
 --- !u!1 &6516322614821744518
 GameObject:
   m_ObjectHideFlags: 0
@@ -555,6 +634,7 @@ Transform:
   - {fileID: 4177461410370727615}
   - {fileID: 731295491545518852}
   - {fileID: 1745700257320978748}
+  - {fileID: 3228434149051682875}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &9117679021043885005

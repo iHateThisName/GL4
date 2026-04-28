@@ -7,6 +7,7 @@ namespace MonsterSystem
     /// The drain rate is influenced by night-specific overrides, the radio sensor,
     /// and an external drain multiplier.
     /// </summary>
+    [System.Obsolete("Deprecated in favor of ResourceSensor")]
     public class SatietySensor : MonsterSensor
     {
         [Header("=== Satiety Configuration ===")]

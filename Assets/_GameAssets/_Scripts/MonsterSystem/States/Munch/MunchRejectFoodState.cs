@@ -13,7 +13,7 @@ namespace MonsterSystem
         [SerializeField] private float throwForce = 5f;                                  // Impulse magnitude applied to throw the food away
         [SerializeField] private Vector3 throwDirection = new Vector3(0f, 1f, 1f);       // Local-space direction the food is thrown toward
 
-        private SatietySensor satietySensor; // Reference to the monster's satiety sensor component
+        private ResourceSensor satietySensor; // Reference to the monster's satiety sensor component
         private Rigidbody foodRb;            // Rigidbody of the rejected food item
 
         /// <summary>
@@ -22,7 +22,7 @@ namespace MonsterSystem
         public override void Initialize(MonsterController owningController)
         {
             base.Initialize(owningController);
-            this.satietySensor = owningController.GetSensor<SatietySensor>();
+            this.satietySensor = owningController.GetSensor<ResourceSensor>();
         }
 
         /// <summary>
@@ -40,8 +40,6 @@ namespace MonsterSystem
         public override void OnStateEnter()
         {
             base.OnStateEnter();
-            
-            TriggerAffordances<AudioAffordance>();
 
             // Release the food from any XR grab and throw it away from the monster
             if (this.foodRb != null)
@@ -55,7 +53,8 @@ namespace MonsterSystem
             }
 
             // Reduce satiety by the configured loss amount
-            this.satietySensor.AddSatiety(-this.satietyLoss);
+            if (this.satietySensor != null)
+                this.satietySensor.ModValue(-this.satietyLoss);
         }
 
         /// <summary>

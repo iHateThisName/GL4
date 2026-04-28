@@ -27,11 +27,11 @@ namespace MonsterSystem
             // Subscribe to the feed zone trigger so we are notified when food enters
             if (this.feedZone != null)
                 this.feedZone.OnTriggerEntered += HandleFeedTrigger;
-            
-            // Stop whichever feedable state was active before (may be on a different GameObject)
-            this.controller.PreviousState?.StopAffordances<AudioAffordance>();
 
-            TriggerAffordances<AnimationAffordance>();
+            // When coming from another feedable state, stop its audio before starting ours.
+            // Audio is Custom mode so it won't auto-stop on exit — it persists into AcceptFoodState
+            // until HandleEatMoment stops it.
+            this.controller.PreviousState?.StopAffordances<AudioAffordance>();
             TriggerAffordances<AudioAffordance>();
         }
 
@@ -54,15 +54,10 @@ namespace MonsterSystem
             Debug.Log("Triggered Feed trigger");
             // Ignore non-food objects and guard against missing controller
             var food = HungerSystem.TryGetFood(other);
-            if (food == null)
+            if (food == null || food.Value <= 0)
             {
-                Debug.Log("Did not get food from: " + other.name);
-                return;
-            }
-
-            if (food.Value <= 0)
-            {
-                Debug.Log("That is emptied");
+                Debug.Log("Did not get food from: " + other.name + " or food is empty");
+                RequestTransition(this.rejectState, other.attachedRigidbody);
                 return;
             }
 

@@ -11,6 +11,12 @@ namespace MonsterSystem
     {
         public Vector3 position; // World-space position of the spawn point
         public Vector3 rotation; // Euler angles defining the spawn orientation
+        
+        public SpawnPoint(Vector3 position, Vector3 rotation)
+        {
+            this.position = position;
+            this.rotation = rotation;
+        }
     }
     
     /// <summary>
@@ -122,16 +128,18 @@ namespace MonsterSystem
         public void TransitionTo(MonsterState newState)
         {
             if (newState == null) return;
-            
+
             this.previousState = this.currentState;
             if (this.previousState != null)
             {
                 this.previousState.OnStateExit();
+                this.previousState.ProcessAffordancesOnExit();
                 this.previousState.gameObject.SetActive(false);
             }
 
             this.currentState = newState;
             this.currentState.gameObject.SetActive(true);
+            this.currentState.ProcessAffordancesOnEnter();
             this.currentState.OnStateEnter();
 
             // Notify sensors that state changed so they can trigger again
@@ -151,6 +159,7 @@ namespace MonsterSystem
             if (this.previousState != null)
             {
                 this.previousState.OnStateExit();
+                this.previousState.ProcessAffordancesOnExit();
                 this.previousState.gameObject.SetActive(false);
             }
 
@@ -161,6 +170,7 @@ namespace MonsterSystem
             if (newState is IStateWithContext<T> contextState)
                 contextState.ReceiveContext(context);
 
+            this.currentState.ProcessAffordancesOnEnter();
             this.currentState.OnStateEnter();
 
             // Notify sensors that state changed so they can trigger again

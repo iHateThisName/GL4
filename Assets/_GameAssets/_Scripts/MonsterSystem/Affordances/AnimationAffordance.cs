@@ -25,7 +25,7 @@ namespace MonsterSystem
             this.animator = owningController.Animator;
         }
 
-        public override void Trigger()
+        public override void OnTrigger()
         {
             if (this.animator == null) return;
             
@@ -47,7 +47,7 @@ namespace MonsterSystem
             }
         }
 
-        public override void Stop()
+        public override void OnStop()
         {
             if (this.animator == null) return;
             

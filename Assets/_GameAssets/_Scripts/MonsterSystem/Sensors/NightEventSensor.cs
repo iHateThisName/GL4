@@ -9,7 +9,7 @@ namespace MonsterSystem
     {
         [Header("Event Settings")]
         [Tooltip("The event type this sensor responds to")]
-        [SerializeField] private NightEventType respondToEventType = NightEventType.DisruptRadio;
+        [SerializeField] private NightEvent.NightEventType respondToEventType = NightEvent.NightEventType.DisruptRadio;
 
         protected override void Subscribe()
         {
@@ -25,8 +25,7 @@ namespace MonsterSystem
 
         private void OnGameManagerEvent(NightEvent evt)
         {
-            var eventPayload = evt.GetPayload();
-            if (eventPayload.GetEventType() != respondToEventType) return;
+            if (evt.GetEventType() != respondToEventType) return;
 
             // Trigger transition to the configured state
             TriggerStateTransition();

@@ -10,13 +10,16 @@ public class GameManager : PersistenSingleton<GameManager> {
     [Header("=== Night Configuration ===")]
     [SerializeField] private SO_NightSettings nightSettings;
     [SerializeField] private bool debugSpawn;
+    [Gaskellgames.ReadOnly] 
+    [SerializeField] private int night = 1;
+    [SerializeField, HideInInspector] private List<GameObject> debugSpawnSelection = new List<GameObject>();
+    [SerializeField, HideInInspector] private bool debugSpawnSelectionInitialized;
 
     // Event invoked whenever a scheduled night event becomes available.
     // Other systems can subscribe to react (e.g., spawning enemies, triggering sounds).
     public static event System.Action<NightEvent> OnEventAvailable = delegate { };
 
     private TimerHandle nightTimerHandle;
-    private int night = 1;
     private int eventsFired = 0;
 
     private ScheduledNightEvent[] eventsSchedule;
@@ -25,7 +28,7 @@ public class GameManager : PersistenSingleton<GameManager> {
     [System.Serializable]
     private struct NightEventDebugView
     {
-        public NightEventType EventType;
+        public NightEvent.NightEventType EventType;
         public float TimeSeconds;
         public int OriginalIndex;
     }
@@ -45,16 +48,22 @@ public class GameManager : PersistenSingleton<GameManager> {
     {
         DeathSystem.OnPlayerDied += HandleNightEarlyEnd;
         SceneTransition.OnTransitionComplete += OnSceneTransitionComplete;
+        if (this.nightSettings != null)
+            this.nightSettings.OnRuntimeDataChanged += OnNightSettingsChanged;
     }
 
-    /// <summary>
-    /// Unity callback invoked when the object becomes disabled.
-    /// Unsubscribes the debug method to avoid memory leaks or duplicate logs.
-    /// </summary>
     private void OnDisable()
     {
         DeathSystem.OnPlayerDied -= HandleNightEarlyEnd;
         SceneTransition.OnTransitionComplete -= OnSceneTransitionComplete;
+        if (this.nightSettings != null)
+            this.nightSettings.OnRuntimeDataChanged -= OnNightSettingsChanged;
+    }
+
+    private void OnNightSettingsChanged()
+    {
+        this.night = this.nightSettings.DebugStartNight;
+        InitializeNight();
     }
 
     private void Start() {
@@ -76,7 +85,7 @@ public class GameManager : PersistenSingleton<GameManager> {
             ? BuildDebugSpawnSchedule()
             : this.nightSettings.BuildScheduleForNight(this.night);
         RefreshScheduleDebugView();
-        
+
         this.WindowsDictonary.Clear();
         InstantiateTimer();
     }
@@ -137,7 +146,7 @@ public class GameManager : PersistenSingleton<GameManager> {
             this.eventsFired++;
 
             Debug.Log($"Night event fired at night {this.night}: {elapsed:F2}s (scheduled {scheduled.TimeSeconds:F2}s)");
-            OnEventAvailable.Invoke(new NightEvent(scheduled.Data, this.eventsFired, this.night));
+            OnEventAvailable.Invoke(scheduled.Data);
         }
 
         // Schedule the next tick to land exactly on the next pending event, or park
@@ -170,20 +179,24 @@ public class GameManager : PersistenSingleton<GameManager> {
     }
 
     /// <summary>
-    /// Collects every SpawnMonster event from all nights and schedules them all at 0.1 s,
-    /// ignoring their configured timing and which night they belong to.
+    /// Collects SpawnMonster events from all nights and schedules them all at 0.1s.
+    /// When debugSpawnSelection is non-empty, only selected monster prefabs are included.
+    /// An empty selection spawns all monsters (preserves the default behaviour).
     /// </summary>
     private ScheduledNightEvent[] BuildDebugSpawnSchedule()
     {
         var result = new List<ScheduledNightEvent>();
         int idx = 0;
+        var selectionSet = new HashSet<GameObject>(this.debugSpawnSelection ?? new List<GameObject>());
+        bool spawnAll = selectionSet.Count == 0;
 
         this.nightSettings.ForEachEventAcrossAllNights(evt =>
         {
-            if (evt.GetEventType() == NightEventType.SpawnMonster)
-                result.Add(new ScheduledNightEvent(evt, 0.1f, idx++));
+            if (evt.GetEventType() != NightEvent.NightEventType.SpawnMonster) return;
+            if (!spawnAll && !selectionSet.Contains(evt.GetMonsterPrefab())) return;
+            result.Add(new ScheduledNightEvent(evt, 0.1f, idx++));
         });
-        
+
         return result.ToArray();
     }
 
@@ -199,6 +212,7 @@ public class GameManager : PersistenSingleton<GameManager> {
     {
         Debug.Log("Night Survived");
         this.night++;
+        this.nightSettings.SaveCurrentNight(this.night);
 
         TimerManager.Release(ref this.nightTimerHandle);
 
@@ -211,12 +225,58 @@ public class GameManager : PersistenSingleton<GameManager> {
     private void HandleNightEarlyEnd()
     {
         TimerManager.Release(ref this.nightTimerHandle);
+        this.nightSettings.ResetNightTime();
 
         if (DeathSystem.deathEvent.Reason != DeathSystem.DeathEvent.DeathReason.Survived)
             this.night = 1;
     }
 
     public int GetCurrentNight() => this.night;
+
+    /// <summary>
+    /// Fires a night event immediately, bypassing the schedule.
+    /// </summary>
+    public void FireEvent(NightEvent evt)
+    {
+        this.eventsFired++;
+        OnEventAvailable.Invoke(evt);
+    }
+
+    /// <summary>
+    /// Injects a night event into the live schedule to fire after
+    /// <paramref name="delaySeconds"/> from now. Updates the timer if the new event
+    /// fires sooner than the currently pending tick.
+    /// </summary>
+    public void ScheduleEvent(NightEvent evt, float delaySeconds)
+    {
+        float elapsed = TimerManager.Validate(this.nightTimerHandle)
+            ? TimerManager.GetRef(this.nightTimerHandle).Elapsed
+            : 0f;
+        float targetTime = elapsed + Mathf.Max(0f, delaySeconds);
+        InsertEventAndUpdateTimer(new ScheduledNightEvent(evt, targetTime, -1));
+    }
+
+    private void InsertEventAndUpdateTimer(ScheduledNightEvent newEvent)
+    {
+        var list = new List<ScheduledNightEvent>(this.eventsSchedule ?? new ScheduledNightEvent[0]);
+        int insertAt = this.scheduleCursor;
+        while (insertAt < list.Count && list[insertAt].TimeSeconds <= newEvent.TimeSeconds)
+            insertAt++;
+        list.Insert(insertAt, newEvent);
+        this.eventsSchedule = list.ToArray();
+        RefreshScheduleDebugView();
+
+        // Only re-aim the timer if the new event is now the next one to fire.
+        // If it lands after the cursor we leave the timer untouched to avoid
+        // floating-point drift on the already-scheduled next event.
+        if (insertAt != this.scheduleCursor) return;
+        if (!TimerManager.Validate(this.nightTimerHandle)) return;
+        ref var timer = ref TimerManager.GetRef(this.nightTimerHandle);
+        float nextTime = this.eventsSchedule[this.scheduleCursor].TimeSeconds;
+        float delta = Mathf.Max(0.0001f, nextTime - timer.Elapsed);
+        timer.Interval = delta;
+        timer.NextInterval = timer.Elapsed + delta;
+    }
 
     public void UpdateWindowState(WindowController windowController, VRLever.EnumLeverState newSate) {
         // update the dictionary with the new state and remove the old refrence
