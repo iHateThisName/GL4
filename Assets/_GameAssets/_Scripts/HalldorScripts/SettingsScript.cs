@@ -90,8 +90,8 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
     {
         tunnelingVignette.SetActive(false);
         tunnelingEnabled = false;
-        enableTunnelingCube.SetActive(false);
-        disableTunnelingCube.SetActive(true);
+        disableTunnelingCube.SetActive(false);
+        enableTunnelingCube.SetActive(true);
     }
 
     //A method for enabling teleporting
