@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -14,6 +15,17 @@ public class HandWatch : MonoBehaviour
     
     [Header("==== Night Settings ====")]
     [SerializeField] private float timeAt8AM = 5f;
+    [Tooltip("Colors for each temperature state. 0/top most is Coldest")]
+    [SerializeField] private Color[] temperatureStateColors = new Color[7]
+    {
+        Color.magenta, // Hypothermia
+        Color.blue, // Moderate Hypothermia
+        Color.cyan, // Mild Hypothermia
+        Color.green, // Normal
+        Color.yellow, // Mild Hyperthermia
+        Color.red, // Moderate Hyperthermia
+        Color.white // Hyperthermia
+    };
     
     private float totalDuration;
 
@@ -46,32 +58,36 @@ public class HandWatch : MonoBehaviour
     private void HandleTemperatureChanged(BodyTemperatureStateChange change) 
     {
         this.temperatureText.text = change.CurrentState.ToString();
-        UpdateColor(change.CurrentState);
+        this.temperatureText.color = GetTemperatureColor(change.CurrentState);
     }
 
-    private void UpdateColor(PlayerTemperatureSimulator.EnumBodyTemperatureState state) 
+    private Color GetTemperatureColor(PlayerTemperatureSimulator.EnumBodyTemperatureState state)
     {
-        switch (state) 
+        switch (state)
         {
-            case PlayerTemperatureSimulator.EnumBodyTemperatureState.ModerateHypothermia:
-                this.temperatureText.color = Color.blue;
+            case PlayerTemperatureSimulator.EnumBodyTemperatureState.Normal:
+                return temperatureStateColors[3];
                 break;
             case PlayerTemperatureSimulator.EnumBodyTemperatureState.MildHypothermia:
-                this.temperatureText.color = Color.cyan;
+                return temperatureStateColors[2];
                 break;
-            case PlayerTemperatureSimulator.EnumBodyTemperatureState.Normal:
-                this.temperatureText.color = Color.green;
+            case PlayerTemperatureSimulator.EnumBodyTemperatureState.ModerateHypothermia:
+                return temperatureStateColors[1];
+                break;
+            case PlayerTemperatureSimulator.EnumBodyTemperatureState.Hypothermia:
+                return temperatureStateColors[0];
                 break;
             case PlayerTemperatureSimulator.EnumBodyTemperatureState.MildHyperthermia:
-                this.temperatureText.color = Color.yellow;
+                return temperatureStateColors[4];
                 break;
             case PlayerTemperatureSimulator.EnumBodyTemperatureState.ModerateHyperthermia:
-                this.temperatureText.color = Color.red;
+                return temperatureStateColors[5];
                 break;
             case PlayerTemperatureSimulator.EnumBodyTemperatureState.Hyperthermia:
-            case PlayerTemperatureSimulator.EnumBodyTemperatureState.Hypothermia:
-                this.temperatureText.color = Color.magenta;
+                return temperatureStateColors[6];
                 break;
+            default:
+                return Color.white;
         }
     }
     
@@ -117,6 +133,6 @@ public class HandWatch : MonoBehaviour
             hour = index == 0 ? 12 : index;
         }
 
-        return hour.ToString() + " AM";
+        return hour + " AM";
     }
 }

@@ -2041,6 +2041,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2388691784453412193, guid: 7f74fb9d412fedb45b6c36744cf7218f, type: 3}
   m_PrefabInstance: {fileID: 219384429}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &229584522 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6389787633337336303, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+  m_PrefabInstance: {fileID: 915951107}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1 &232604385
 GameObject:
   m_ObjectHideFlags: 0
@@ -5247,6 +5258,17 @@ Transform:
   - {fileID: 3429184632414438847}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &638601633 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8795191551435887527, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+  m_PrefabInstance: {fileID: 915951107}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1001 &649112658
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8064,13 +8086,20 @@ PrefabInstance:
       propertyPath: hungerSystem
       value: 
       objectReference: {fileID: 878486857}
+    - target: {fileID: 9174602348809712074, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: temperatureStateColors.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 1717954561962503726, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       insertIndex: -1
       addedObject: {fileID: 391966075}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7611225724953108666, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1811394817}
   m_SourcePrefab: {fileID: 100100000, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
 --- !u!114 &915951108 stripped
 MonoBehaviour:
@@ -14545,6 +14574,17 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1722107935}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1754162296 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8682305493464202202, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+  m_PrefabInstance: {fileID: 915951107}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1001 &1768921939
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14889,6 +14929,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1069019504110736801, guid: ce8c45ee30cf331409320df89d877025, type: 3}
   m_PrefabInstance: {fileID: 1804599910}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1811394815 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7611225724953108666, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+  m_PrefabInstance: {fileID: 915951107}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1811394817
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1811394815}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4ba89632894436e9a3537dedc485124, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HandWatch
+  hungerSystem: {fileID: 878486857}
+  nightSettings: {fileID: 11400000, guid: 034fb29b749df934a9507784c8b52be7, type: 2}
+  hungerText: {fileID: 229584522}
+  temperatureText: {fileID: 638601633}
+  timeText: {fileID: 1754162296}
+  timeAt8AM: 5
+  temperatureStateColors:
+  - {r: 1, g: 0, b: 1, a: 1}
+  - {r: 0, g: 0, b: 1, a: 1}
+  - {r: 0, g: 1, b: 1, a: 1}
+  - {r: 0, g: 1, b: 0, a: 1}
+  - {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  - {r: 1, g: 0, b: 0, a: 1}
+  - {r: 1, g: 1, b: 1, a: 1}
 --- !u!1001 &1811915823
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -17230,8 +17301,24 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.y
       value: 180
       objectReference: {fileID: 0}
+    - target: {fileID: 2999901845506133292, guid: 84782435e98a7594fb5dd60ea403f6f8, type: 3}
+      propertyPath: m_AttachTransform
+      value: 
+      objectReference: {fileID: 2082010331}
     - target: {fileID: 4330392950386702182, guid: 84782435e98a7594fb5dd60ea403f6f8, type: 3}
       propertyPath: rotationAxis
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4779663986116357660, guid: 84782435e98a7594fb5dd60ea403f6f8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4779663986116357660, guid: 84782435e98a7594fb5dd60ea403f6f8, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4779663986116357660, guid: 84782435e98a7594fb5dd60ea403f6f8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7365590998305880299, guid: 84782435e98a7594fb5dd60ea403f6f8, type: 3}
@@ -17283,6 +17370,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 84782435e98a7594fb5dd60ea403f6f8, type: 3}
+--- !u!4 &2082010331 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4779663986116357660, guid: 84782435e98a7594fb5dd60ea403f6f8, type: 3}
+  m_PrefabInstance: {fileID: 2082010330}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2090626213
 PrefabInstance:
   m_ObjectHideFlags: 0

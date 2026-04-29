@@ -58,12 +58,11 @@ public class GameManager : PersistenSingleton<GameManager> {
 
     private void OnNightSettingsChanged()
     {
-        this.night = this.nightSettings.DebugStartNight;
         InitializeNight();
     }
 
-    private void Start() {
-        this.night = this.nightSettings.DebugStartNight;
+    private void Start() 
+    {
         InitializeNight();
     }
 
@@ -76,6 +75,7 @@ public class GameManager : PersistenSingleton<GameManager> {
 
     private void InitializeNight()
     {
+        this.night = this.nightSettings.DebugStartNight;
         this.eventsFired = 0;
         this.eventsSchedule = this.debugSpawn
             ? BuildDebugSpawnSchedule()
@@ -92,12 +92,15 @@ public class GameManager : PersistenSingleton<GameManager> {
         TimerManager.Release(ref this.nightTimerHandle);
     }
 
-    public void ContinueGame() {
+    [ContextMenu("Continue Game")]
+    public void ContinueGame() 
+    {
         Debug.Log("Continuing Game...");
         SceneTransition.LoadScene(1, this.screenFadeRef);
     }
 
-    public void LoadScene(string sceneName) {
+    public void LoadScene(string sceneName) 
+    {
         SceneTransition.LoadScene(sceneName, this.screenFadeRef);
     }
 
