@@ -78,6 +78,14 @@ namespace MonsterSystem
                 this.controller.TransitionTo(this.rejectState, foodRb);*/
         }
 
+        /// <summary>
+        /// Snaps the food object into the feed zone so it appears held in Munch's hands during the
+        /// accept animation. Disables gravity and kinematics on the rigidbody, re-parents the
+        /// transform to the feed zone, and disables the XR grab interactable to prevent the player
+        /// from snatching the food back mid-animation.
+        /// </summary>
+        /// <param name="food">The food component being attached.</param>
+        /// <param name="foodRb">The rigidbody of the food to freeze in place.</param>
         private void AttachFood(Food food, Rigidbody foodRb)
         {
             foodRb.useGravity = false;
