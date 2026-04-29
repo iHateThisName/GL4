@@ -127,8 +127,8 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
             nightSettings.SetDebugStartNight(nightNum);
 
             enableNightOneCube.SetActive(false);
-            enableNightThreeCube.SetActive(true);
             enableNightTwoCube.SetActive(true);
+            enableNightThreeCube.SetActive(true);
             enableNightFourCube.SetActive(true);
             enableNightFiveCube.SetActive(true);
 
@@ -143,8 +143,8 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
             nightSettings.SetDebugStartNight(nightNum);
 
             enableNightOneCube.SetActive(true);
-            enableNightThreeCube.SetActive(false);
-            enableNightTwoCube.SetActive(true);
+            enableNightTwoCube.SetActive(false);
+            enableNightThreeCube.SetActive(true);
             enableNightFourCube.SetActive(true);
             enableNightFiveCube.SetActive(true);
 
@@ -159,8 +159,8 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
             nightSettings.SetDebugStartNight(nightNum);
 
             enableNightOneCube.SetActive(true);
-            enableNightThreeCube.SetActive(true);
-            enableNightTwoCube.SetActive(false);
+            enableNightTwoCube.SetActive(true);
+            enableNightThreeCube.SetActive(false);
             enableNightFourCube.SetActive(true);
             enableNightFiveCube.SetActive(true);
 
@@ -175,8 +175,8 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
             nightSettings.SetDebugStartNight(nightNum);
 
             enableNightOneCube.SetActive(true);
-            enableNightThreeCube.SetActive(true);
             enableNightTwoCube.SetActive(true);
+            enableNightThreeCube.SetActive(true);
             enableNightFourCube.SetActive(false);
             enableNightFiveCube.SetActive(true);
 
@@ -191,8 +191,8 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
             nightSettings.SetDebugStartNight(nightNum);
 
             enableNightOneCube.SetActive(true);
-            enableNightThreeCube.SetActive(true);
             enableNightTwoCube.SetActive(true);
+            enableNightThreeCube.SetActive(true);
             enableNightFourCube.SetActive(true);
             enableNightFiveCube.SetActive(false);
 
