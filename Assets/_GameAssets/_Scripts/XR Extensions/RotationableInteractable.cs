@@ -26,9 +26,6 @@ public class RotationableInteractable : MonoBehaviour
     // Transform that will be rotated (mechanical pivot point).
     [SerializeField] private Transform pivot;
 
-    // Optional visual-only transform if visuals are separated from logic.
-    [SerializeField] private Transform visual;
-
     // Axis around which the crank rotates.
     [SerializeField] private RotationAxis rotationAxis = RotationAxis.Y;
 
