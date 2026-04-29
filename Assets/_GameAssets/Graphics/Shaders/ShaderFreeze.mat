@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Shader Graphs_UIShaderTest
+  m_Name: ShaderFreeze
   m_Shader: {fileID: -6465566751694194690, guid: 5a0ab7b31fcdc334e9cd5830cc3b9b19, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -24,7 +24,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _NoiseTexture:
-        m_Texture: {fileID: 2800000, guid: 5fa4574e04223dc46bba0d6ea89050fb, type: 3}
+        m_Texture: {fileID: 2800000, guid: 6f7404d7111a5b0458ea6c9701aa16ea, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -42,6 +42,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _BreathFrequency: 1
+    - _BreathIntensity: 0.5
     - _Fullscreen_AlphaBlendOperation: 0
     - _Fullscreen_BlendMode: 1
     - _Fullscreen_ColorBlendOperation: 0
@@ -50,11 +51,11 @@ Material:
     - _Fullscreen_DstColorBlend: 10
     - _Fullscreen_SrcAlphaBlend: 1
     - _Fullscreen_SrcColorBlend: 5
-    - _VignetteIntensity: 3.75
-    - _VignettePower: 3.18
+    - _VignetteIntensity: 5.3
+    - _VignettePower: 2.5
     m_Colors:
-    - _Color: {r: 1.5771805, g: 2.2393324, b: 2.9960775, a: 1}
-    - _NoiseSpeed: {r: 0.1, g: 0.1, b: 0, a: 0}
+    - _Color: {r: 0.8692912, g: 2.1048794, b: 3.51698, a: 1}
+    - _NoiseSpeed: {r: 0.005, g: 0.005, b: 0, a: 0}
     - _NoiseTiling: {r: 3, g: 3, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
