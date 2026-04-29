@@ -12,12 +12,8 @@ public class GameManager : PersistenSingleton<GameManager> {
     [SerializeField] private bool debugSpawn;
     [Gaskellgames.ReadOnly] 
     [SerializeField] private int night = 1;
-    [SerializeField, HideInInspector] private List<GameObject> debugSpawnSelection = new List<GameObject>();
+    [SerializeField, HideInInspector] private List<GameObject> debugSpawnSelection = new();
     [SerializeField, HideInInspector] private bool debugSpawnSelectionInitialized;
-
-    // Event invoked whenever a scheduled night event becomes available.
-    // Other systems can subscribe to react (e.g., spawning enemies, triggering sounds).
-    public static event System.Action<NightEvent> OnEventAvailable = delegate { };
 
     private TimerHandle nightTimerHandle;
     private int eventsFired = 0;
@@ -35,10 +31,10 @@ public class GameManager : PersistenSingleton<GameManager> {
     [SerializeField] private NightEventDebugView[] scheduleDebugView;
 
     public Dictionary<WindowController, VRLever.EnumLeverState> WindowsDictonary { get; private set; } = new Dictionary<WindowController, VRLever.EnumLeverState>();
-
-    public float NightTime => TimerManager.Validate(this.nightTimerHandle) && TimerManager.GetRef(this.nightTimerHandle).IsRunning == 1
-        ? TimerManager.GetRef(this.nightTimerHandle).Elapsed
-        : this.nightSettings.GetNightTimeInSeconds();
+    
+    // Event invoked whenever a scheduled night event becomes available.
+    // Other systems can subscribe to react (e.g., spawning enemies, triggering sounds).
+    public static event System.Action<NightEvent> OnEventAvailable = delegate { };
 
     /// <summary>
     /// Unity callback invoked when the object becomes enabled.
@@ -241,6 +237,10 @@ public class GameManager : PersistenSingleton<GameManager> {
         this.eventsFired++;
         OnEventAvailable.Invoke(evt);
     }
+    
+    public float NightTime => TimerManager.Validate(this.nightTimerHandle) && TimerManager.GetRef(this.nightTimerHandle).IsRunning == 1
+        ? TimerManager.GetRef(this.nightTimerHandle).Elapsed
+        : this.nightSettings.GetNightTimeInSeconds();
 
     /// <summary>
     /// Injects a night event into the live schedule to fire after
