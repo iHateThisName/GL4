@@ -14,13 +14,22 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
 
     //These cubes are just for visuals, they don't do anything, they turn off and on again depending on what the player wants
     [SerializeField] private GameObject enableSnapCube;
-    [SerializeField] private GameObject disableSnapCube;
+    [SerializeField] private GameObject enableSmoothCube;
+
+    [SerializeField] private GameObject tabledSnapCube;
+    [SerializeField] private GameObject tabledSmoothCube;
 
     [SerializeField] private GameObject enableTunnelingCube;
     [SerializeField] private GameObject disableTunnelingCube;
 
+    [SerializeField] private GameObject tabledTunnelingCube;
+    [SerializeField] private GameObject tabledNoTunnelCube;
+
     [SerializeField] private GameObject enableTelportCube;
-    [SerializeField] private GameObject disableTeleportCube;
+    [SerializeField] private GameObject enabledLocomotionCube;
+
+    [SerializeField] private GameObject tabledTeleportCube;
+    [SerializeField] private GameObject tabledLocomotionCube;
 
     [SerializeField] private GameObject enableNightOneCube;
     [SerializeField] private GameObject enableNightTwoCube;
@@ -69,7 +78,9 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
         leftControllerRefrence.smoothTurnEnabled = false;
         snapEnabled = true;
         enableSnapCube.SetActive(false);
-        disableSnapCube.SetActive(true);
+        tabledSnapCube.SetActive(true);
+        enableSmoothCube.SetActive(true);
+        tabledSmoothCube.SetActive(false);
     }
 
     //A method for disabling snap turning
@@ -78,8 +89,10 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
         rightControllerRefrence.smoothTurnEnabled = true;
         leftControllerRefrence.smoothTurnEnabled = true;
         snapEnabled = false;
-        disableSnapCube.SetActive(false);
+        enableSmoothCube.SetActive(false);
+        tabledSmoothCube.SetActive(true);
         enableSnapCube.SetActive(true);
+        tabledSnapCube.SetActive(false);
     }
 
     //A method for enabling tunneling
@@ -88,7 +101,9 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
         tunnelingVignette.SetActive(true);
         tunnelingEnabled = true;
         enableTunnelingCube.SetActive(false);
+        tabledTunnelingCube.SetActive(true);
         disableTunnelingCube.SetActive(true);
+        tabledNoTunnelCube.SetActive(false);
     }
 
     //A method for disabling tunneling
@@ -97,7 +112,9 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
         tunnelingVignette.SetActive(false);
         tunnelingEnabled = false;
         disableTunnelingCube.SetActive(false);
+        tabledNoTunnelCube.SetActive(true);
         enableTunnelingCube.SetActive(true);
+        tabledTunnelingCube.SetActive(false);
     }
 
     //A method for enabling teleporting
@@ -107,7 +124,9 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
         teleportEnabled = true;
         SetTeleportEnabled(true);
         enableTelportCube.SetActive(false);
-        disableTeleportCube.SetActive(true);
+        tabledTeleportCube.SetActive(true);
+        enabledLocomotionCube.SetActive(true);
+        tabledLocomotionCube.SetActive(false);
     }
 
     //A method for disabling teleporting
@@ -116,8 +135,10 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
         leftControllerRefrence.smoothMotionEnabled = true;
         teleportEnabled = false;
         SetTeleportEnabled(false);
-        disableTeleportCube.SetActive(false);
+        enabledLocomotionCube.SetActive(false);
+        tabledLocomotionCube.SetActive(true);
         enableTelportCube.SetActive(true);
+        tabledTeleportCube.SetActive(false);
     }
 
     public void SetCurrentNight(int nightNum)
