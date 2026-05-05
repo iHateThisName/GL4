@@ -16,7 +16,8 @@ public static class AnimationTriggers {
     }
 
     public static class Stalker {
-        public static readonly int Walk = Animator.StringToHash("WalkTrigger");
+        public static readonly int ArmsCover = Animator.StringToHash("ArmsCoverTrigger");
+        public static readonly int ArmsUncover = Animator.StringToHash("ArmsUncoverTrigger");
     }
 
     public static int GetTriggerHash(EnumAnimationStates state) {
