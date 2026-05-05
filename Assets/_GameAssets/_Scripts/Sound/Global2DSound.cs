@@ -4,15 +4,19 @@ using UnityEngine.InputSystem;
 public class Global2DSound : MonoBehaviour {
     private enum EnumMovementState { Idle = 0, Walking = 1, Running = 2 }
     private enum EnumWindState { Indoor = 0, Outdoor = 1 }
-    private FMODUnity.StudioEventEmitter emitter;
 
-    private bool isSprinting = false;
-
+    [Header("===== FMod parameters =====")]
     [SerializeField] private string paramterMovementName = "Movement State";
-    private readonly string globalParamterWindName = "Wind State";
+    [SerializeField] private string paramterHungerName = "Hunger State";
 
-    [SerializeField] private UnityEngine.InputSystem.InputActionReference move;
-    [SerializeField] private UnityEngine.InputSystem.InputActionReference sprint;
+    [Header("===== Input Actions =====")]
+    [SerializeField] private InputActionReference move;
+    [SerializeField] private InputActionReference sprint;
+    
+    private readonly string globalParamterWindName = "Wind State";
+    
+    private FMODUnity.StudioEventEmitter emitter;
+    private bool isSprinting = false;
 
     private void Awake() {
         this.emitter = GetComponent<FMODUnity.StudioEventEmitter>();
@@ -20,6 +24,7 @@ public class Global2DSound : MonoBehaviour {
 
     private void OnEnable() {
         PlayerTemperatureSimulator.OnLocationTypeChanged += HandleLocationTypeChanged;
+        HungerSystem.HungerStateChangedEvent += OnHungerStateChanged;
 
         InputAction moveAction = this.move.action; // Vector2 input.
         InputAction sprintAction = this.sprint.action; // Button input.
@@ -38,8 +43,10 @@ public class Global2DSound : MonoBehaviour {
             Debug.LogWarning($"{nameof(Global2DSound)}: Sprint action is not assigned in the inspector.");
         }
     }
+
     private void OnDisable() {
         PlayerTemperatureSimulator.OnLocationTypeChanged -= HandleLocationTypeChanged;
+        HungerSystem.HungerStateChangedEvent -= OnHungerStateChanged;
 
         InputAction moveAction = this.move.action;
         InputAction sprintAction = this.sprint.action;
@@ -83,6 +90,13 @@ public class Global2DSound : MonoBehaviour {
             FMODUnity.RuntimeManager.StudioSystem.setParameterByName(this.globalParamterWindName, (float)EnumWindState.Outdoor);
         }
     }
+    
+    private void OnHungerStateChanged(HungerSystem.EnumHungerState previous, HungerSystem.EnumHungerState current)
+    {
+        var fmodParamaterValue = (int)current;
+        //this.emitter.SetParameter(this.paramterHungerName, fmodParamaterValue);
+    }
+    
     [ContextMenu("Movment Idle")] public void SetMovementIdle() => FMODUnity.RuntimeManager.StudioSystem.setParameterByName(this.paramterMovementName, (int)EnumMovementState.Idle);
     [ContextMenu("Movment Walking")] public void SetMovementWalking() => FMODUnity.RuntimeManager.StudioSystem.setParameterByName(this.paramterMovementName, (int)EnumMovementState.Walking);
     [ContextMenu("Movment Running")] public void SetMovementRunning() => FMODUnity.RuntimeManager.StudioSystem.setParameterByName(this.paramterMovementName, (int)EnumMovementState.Running);
