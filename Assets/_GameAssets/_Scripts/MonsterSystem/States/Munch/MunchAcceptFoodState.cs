@@ -25,6 +25,11 @@ namespace MonsterSystem
             this.satietySensor = owningController.GetSensor<ResourceSensor>();
         }
 
+        /// <summary>
+        /// Registers the two animation event callbacks for this state.
+        /// Index 0 wires <c>OnAnimationComplete</c> (drives the state transition at the end of the clip);
+        /// index 1 wires <c>HandleEatMoment</c> (fires at the bite frame to consume and destroy the food).
+        /// </summary>
         protected override void RegisterAnimationEvents()
         {
             base.RegisterAnimationEvents();          // index 0: OnAnimationComplete (transition)

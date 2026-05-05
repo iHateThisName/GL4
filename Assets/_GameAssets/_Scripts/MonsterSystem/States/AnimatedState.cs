@@ -16,13 +16,9 @@ namespace MonsterSystem {
     /// </summary>
     public class AnimatedState : MonsterState
     {
-
         [Header("Transition")]
         [SerializeField] protected MonsterState nextState;
         [SerializeField] private bool exitOnComplete = true;
-
-        [Tooltip("When true, wait for AnimationStateChange callback even if animationState is None (use with AnimationAffordance)")]
-        [SerializeField] private bool waitForAffordanceAnimation;
 
         /// <summary>
         /// True from OnStateEnter until OnAnimationComplete is called by AnimationStateChange.
@@ -50,7 +46,8 @@ namespace MonsterSystem {
         // Registration buffer used only during Initialize. Cleared once frozen.
         private List<Action> registrationBuffer;
 
-        public override void Initialize(MonsterController owningController) {
+        public override void Initialize(MonsterController owningController) 
+        {
             base.Initialize(owningController);
             this.registrationBuffer = new List<Action>();
             RegisterAnimationEvents();
@@ -62,14 +59,16 @@ namespace MonsterSystem {
         /// Override to register additional animation event callbacks. Always call base first
         /// so index 0 remains the default end-of-animation handler.
         /// </summary>
-        protected virtual void RegisterAnimationEvents() {
+        protected virtual void RegisterAnimationEvents() 
+        {
             RegisterAnimationEvent(OnAnimationComplete);
         }
 
         /// <summary>
         /// Called from <see cref="RegisterAnimationEvents"/> to add a callback at the next index.
         /// </summary>
-        protected void RegisterAnimationEvent(Action callback) {
+        protected void RegisterAnimationEvent(Action callback) 
+        {
             if (this.registrationBuffer == null) {
                 Debug.LogError($"[{GetType().Name}] RegisterAnimationEvent called outside of RegisterAnimationEvents()", this);
                 return;
@@ -81,7 +80,8 @@ namespace MonsterSystem {
         /// Called by AnimationStateChange when its configured normalized time is reached
         /// (or when the state exits early, if the SMB has fireOnEarlyExit enabled).
         /// </summary>
-        public void InvokeAnimationEvent(int index) {
+        public void InvokeAnimationEvent(int index) 
+        {
             if (this.animationEvents == null || index < 0 || index >= this.animationEvents.Length) {
                 int have = this.animationEvents?.Length ?? 0;
                 Debug.LogWarning($"[{GetType().Name}] No animation event registered at index {index} (have {have})", this);
@@ -93,35 +93,25 @@ namespace MonsterSystem {
         /// <summary>
         /// Triggers all affordances and begins waiting for animation completion.
         /// </summary>
-        public override void OnStateEnter() {
-            // Always trigger affordances first (they may set animator parameters)
+        public override void OnStateEnter() 
+        {
             TriggerAffordances<AnimationAffordance>();
-
-            if (this.waitForAffordanceAnimation)
-            {
-                this.IsAnimating = true;
-            }
-            //// No animation configured — complete immediately
-            //else
-            //{
-            //    this.IsAnimating = false;
-            //    this.OnAnimationComplete();
-            //}
+            this.IsAnimating = true;
         }
 
         /// <summary>
         /// Called by AnimationStateChange when the animation completes.
         /// Calls OnAnimationFinished for subclass cleanup, then transitions to nextState.
         /// </summary>
-        public virtual void OnAnimationComplete() {
+        public virtual void OnAnimationComplete() 
+        {
             this.IsAnimating = false;
 
             // Transition to the next state if one is assigned
-            if (this.nextState != null && exitOnComplete) {
+            if (this.nextState != null && exitOnComplete) 
                 RequestTransition(this.nextState);
-            } else {
+            else 
                 Debug.LogWarning($"[{GetType().Name}] Animation finished but no nextState configured!", this);
-            }
         }
     }
 }

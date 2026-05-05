@@ -34,7 +34,7 @@ public class HungerSystem : MonoBehaviour
     private TimerHandle timerHandle;
     
     // current state of hunger
-    private EnumHungerState hungerState;
+    private EnumHungerState hungerState = EnumHungerState.Full;
     
     // Internal current hunger value. Higher means the player is well-fed, lower means starving.
     [SerializeField] private float hunger;
@@ -192,6 +192,10 @@ public class HungerSystem : MonoBehaviour
         this.hungerState = newHungerState;
         HungerStateChangedEvent?.Invoke(previousState, this.hungerState);
     }
+    
+    public float Hunger => this.hunger;
+    
+    public EnumHungerState State => this.hungerState;
     
     public static Food TryGetFood(Collider other)
     {

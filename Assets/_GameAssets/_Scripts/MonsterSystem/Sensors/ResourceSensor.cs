@@ -36,14 +36,24 @@ namespace MonsterSystem
 
             if (this.thresholdExhausted) return;
 
+            // Find the most severe (lowest-value) threshold that has been crossed.
+            // Checking all exceeded thresholds and firing them all caused oscillation:
+            // transitioning to Angry reset hasTriggeredTransition mid-loop, letting the
+            // Hungry threshold (also exceeded) fire again immediately every tick.
+            MonsterState targetState = null;
+            float mostSevereThreshold = float.MaxValue;
+
             for (int i = 0; i < this.transitionValues.Length; i++)
             {
-                if (this.resourceValue <= this.transitionValues[i])
+                if (this.resourceValue <= this.transitionValues[i] && this.transitionValues[i] < mostSevereThreshold)
                 {
-                    if (this.controller.CurrentState == this.statesToTransitionTo[i]) continue;
-                    TriggerTransitionTo(this.statesToTransitionTo[i]);
+                    mostSevereThreshold = this.transitionValues[i];
+                    targetState = this.statesToTransitionTo[i];
                 }
             }
+
+            if (targetState != null && this.controller.CurrentState != targetState)
+                TriggerTransitionTo(targetState);
 
             if (this.resourceValue <= this.minTransitionValue)
                 this.thresholdExhausted = true;

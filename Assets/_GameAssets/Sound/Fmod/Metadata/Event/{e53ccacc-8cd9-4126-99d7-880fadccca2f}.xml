@@ -33,7 +33,6 @@
 			<destination>{fc743385-ce27-4ac2-9860-5463e1c051c6}</destination>
 		</relationship>
 		<relationship name="parameters">
-			<destination>{aae8a293-e307-4807-bda1-a8393921c587}</destination>
 			<destination>{dc92cbdf-e645-4c67-97a3-ea5071900520}</destination>
 		</relationship>
 		<relationship name="banks">
@@ -46,9 +45,6 @@
 		</relationship>
 	</object>
 	<object class="MasterTrack" id="{989b6987-956c-41bf-adc5-845af8c455c7}">
-		<relationship name="modules">
-			<destination>{7a01e5b4-c7db-497f-b612-1b635ee8a8c2}</destination>
-		</relationship>
 		<relationship name="mixerGroup">
 			<destination>{2e84abbb-6532-486d-91cd-f897ac752f5d}</destination>
 		</relationship>
@@ -82,11 +78,10 @@
 			<destination>{158d696e-3f56-4865-aac0-fe6f42fe25cf}</destination>
 		</relationship>
 	</object>
-	<object class="Timeline" id="{fc743385-ce27-4ac2-9860-5463e1c051c6}" />
-	<object class="ActionSheet" id="{aae8a293-e307-4807-bda1-a8393921c587}">
-		<relationship name="modules">
-			<destination>{7a01e5b4-c7db-497f-b612-1b635ee8a8c2}</destination>
-		</relationship>
+	<object class="Timeline" id="{fc743385-ce27-4ac2-9860-5463e1c051c6}">
+		<property name="isProxyEnabled">
+			<value>false</value>
+		</property>
 	</object>
 	<object class="ParameterProxy" id="{dc92cbdf-e645-4c67-97a3-ea5071900520}">
 		<relationship name="modules">
@@ -110,7 +105,6 @@
 			<destination>{0ce1d2c9-3f18-40b0-b320-0d8aba8d3c2e}</destination>
 		</relationship>
 	</object>
-	<object class="MultiSound" id="{7a01e5b4-c7db-497f-b612-1b635ee8a8c2}" />
 	<object class="MixerBusEffectChain" id="{c3f41d62-d939-4c3d-bf5c-26daa1c92cd3}">
 		<relationship name="effects">
 			<destination>{7ce0cd96-d11c-499f-9d1f-c1e9cc7bd905}</destination>
@@ -177,6 +171,9 @@
 		</property>
 		<property name="pitch">
 			<value>-5</value>
+		</property>
+		<property name="looping">
+			<value>true</value>
 		</property>
 		<relationship name="audioFile">
 			<destination>{b495efb5-8894-4a43-b90c-27cecce5e245}</destination>
@@ -294,6 +291,10 @@
 	<object class="MixerBusFader" id="{8c47655f-3585-4946-9ce0-0a6ed301987e}" />
 	<object class="SpatialiserEffect" id="{335b3d9b-3db9-4fe3-90ef-88ae915fede1}" />
 	<object class="MixerBusFader" id="{194c4d51-eee6-41b2-b006-d06cb0c06110}" />
-	<object class="SFXReverbEffect" id="{096cb03a-699a-43c0-9544-555daff94c30}" />
+	<object class="SFXReverbEffect" id="{096cb03a-699a-43c0-9544-555daff94c30}">
+		<property name="bypass">
+			<value>true</value>
+		</property>
+	</object>
 	<object class="MixerBusFader" id="{7ca53ac3-2f95-4197-b22e-9fea586c5808}" />
 </objects>

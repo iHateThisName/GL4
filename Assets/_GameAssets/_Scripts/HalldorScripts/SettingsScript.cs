@@ -14,19 +14,34 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
 
     //These cubes are just for visuals, they don't do anything, they turn off and on again depending on what the player wants
     [SerializeField] private GameObject enableSnapCube;
-    [SerializeField] private GameObject disableSnapCube;
+    [SerializeField] private GameObject enableSmoothCube;
+
+    [SerializeField] private GameObject tabledSnapCube;
+    [SerializeField] private GameObject tabledSmoothCube;
 
     [SerializeField] private GameObject enableTunnelingCube;
     [SerializeField] private GameObject disableTunnelingCube;
 
+    [SerializeField] private GameObject tabledTunnelingCube;
+    [SerializeField] private GameObject tabledNoTunnelCube;
+
     [SerializeField] private GameObject enableTelportCube;
-    [SerializeField] private GameObject disableTeleportCube;
+    [SerializeField] private GameObject enabledLocomotionCube;
+
+    [SerializeField] private GameObject tabledTeleportCube;
+    [SerializeField] private GameObject tabledLocomotionCube;
 
     [SerializeField] private GameObject enableNightOneCube;
     [SerializeField] private GameObject enableNightTwoCube;
     [SerializeField] private GameObject enableNightThreeCube;
     [SerializeField] private GameObject enableNightFourCube;
     [SerializeField] private GameObject enableNightFiveCube;
+
+    [SerializeField] private GameObject tabledNightOneCube;
+    [SerializeField] private GameObject tabledNightTwoCube;
+    [SerializeField] private GameObject tabledNightThreeCube;
+    [SerializeField] private GameObject tabledNightFourCube;
+    [SerializeField] private GameObject tabledNightFiveCube;
 
     //A refrence to the player's controllers
     [SerializeField] private ControllerInputActionManager rightControllerRefrence;
@@ -63,7 +78,9 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
         leftControllerRefrence.smoothTurnEnabled = false;
         snapEnabled = true;
         enableSnapCube.SetActive(false);
-        disableSnapCube.SetActive(true);
+        tabledSnapCube.SetActive(true);
+        enableSmoothCube.SetActive(true);
+        tabledSmoothCube.SetActive(false);
     }
 
     //A method for disabling snap turning
@@ -72,8 +89,10 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
         rightControllerRefrence.smoothTurnEnabled = true;
         leftControllerRefrence.smoothTurnEnabled = true;
         snapEnabled = false;
-        disableSnapCube.SetActive(false);
+        enableSmoothCube.SetActive(false);
+        tabledSmoothCube.SetActive(true);
         enableSnapCube.SetActive(true);
+        tabledSnapCube.SetActive(false);
     }
 
     //A method for enabling tunneling
@@ -82,7 +101,9 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
         tunnelingVignette.SetActive(true);
         tunnelingEnabled = true;
         enableTunnelingCube.SetActive(false);
+        tabledTunnelingCube.SetActive(true);
         disableTunnelingCube.SetActive(true);
+        tabledNoTunnelCube.SetActive(false);
     }
 
     //A method for disabling tunneling
@@ -90,8 +111,10 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
     {
         tunnelingVignette.SetActive(false);
         tunnelingEnabled = false;
-        enableTunnelingCube.SetActive(false);
-        disableTunnelingCube.SetActive(true);
+        disableTunnelingCube.SetActive(false);
+        tabledNoTunnelCube.SetActive(true);
+        enableTunnelingCube.SetActive(true);
+        tabledTunnelingCube.SetActive(false);
     }
 
     //A method for enabling teleporting
@@ -101,7 +124,9 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
         teleportEnabled = true;
         SetTeleportEnabled(true);
         enableTelportCube.SetActive(false);
-        disableTeleportCube.SetActive(true);
+        tabledTeleportCube.SetActive(true);
+        enabledLocomotionCube.SetActive(true);
+        tabledLocomotionCube.SetActive(false);
     }
 
     //A method for disabling teleporting
@@ -110,8 +135,10 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
         leftControllerRefrence.smoothMotionEnabled = true;
         teleportEnabled = false;
         SetTeleportEnabled(false);
-        disableTeleportCube.SetActive(false);
+        enabledLocomotionCube.SetActive(false);
+        tabledLocomotionCube.SetActive(true);
         enableTelportCube.SetActive(true);
+        tabledTeleportCube.SetActive(false);
     }
 
     public void SetCurrentNight(int nightNum)
@@ -119,47 +146,82 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
         if (nightNum == 1)
         {
             nightSettings.SetDebugStartNight(nightNum);
+
             enableNightOneCube.SetActive(false);
-            enableNightThreeCube.SetActive(true);
             enableNightTwoCube.SetActive(true);
+            enableNightThreeCube.SetActive(true);
             enableNightFourCube.SetActive(true);
             enableNightFiveCube.SetActive(true);
+
+            tabledNightOneCube.SetActive(true);
+            tabledNightTwoCube.SetActive(false);
+            tabledNightThreeCube.SetActive(false);
+            tabledNightFourCube.SetActive(false);
+            tabledNightFiveCube.SetActive(false);
         }
         else if (nightNum == 2)
         {
             nightSettings.SetDebugStartNight(nightNum);
+
+            enableNightOneCube.SetActive(true);
             enableNightTwoCube.SetActive(false);
             enableNightThreeCube.SetActive(true);
-            enableNightOneCube.SetActive(true);
             enableNightFourCube.SetActive(true);
             enableNightFiveCube.SetActive(true);
+
+            tabledNightOneCube.SetActive(false);
+            tabledNightTwoCube.SetActive(true);
+            tabledNightThreeCube.SetActive(false);
+            tabledNightFourCube.SetActive(false);
+            tabledNightFiveCube.SetActive(false);
         }
         else if (nightNum == 3)
         {
             nightSettings.SetDebugStartNight(nightNum);
-            enableNightThreeCube.SetActive(false);
-            enableNightTwoCube.SetActive(true);
+
             enableNightOneCube.SetActive(true);
+            enableNightTwoCube.SetActive(true);
+            enableNightThreeCube.SetActive(false);
             enableNightFourCube.SetActive(true);
             enableNightFiveCube.SetActive(true);
+
+            tabledNightOneCube.SetActive(false);
+            tabledNightTwoCube.SetActive(false);
+            tabledNightThreeCube.SetActive(true);
+            tabledNightFourCube.SetActive(false);
+            tabledNightFiveCube.SetActive(false);
         }
         else if (nightNum == 4)
         {
             nightSettings.SetDebugStartNight(nightNum);
-            enableNightFourCube.SetActive(false);
-            enableNightThreeCube.SetActive(true);
-            enableNightTwoCube.SetActive(true);
+
             enableNightOneCube.SetActive(true);
+            enableNightTwoCube.SetActive(true);
+            enableNightThreeCube.SetActive(true);
+            enableNightFourCube.SetActive(false);
             enableNightFiveCube.SetActive(true);
+
+            tabledNightOneCube.SetActive(false);
+            tabledNightTwoCube.SetActive(false);
+            tabledNightThreeCube.SetActive(false);
+            tabledNightFourCube.SetActive(true);
+            tabledNightFiveCube.SetActive(false);
         }
         else if (nightNum == 5)
         {
             nightSettings.SetDebugStartNight(nightNum);
-            enableNightFiveCube.SetActive(false);
-            enableNightFourCube.SetActive(true);
-            enableNightThreeCube.SetActive(true);
-            enableNightTwoCube.SetActive(true);
+
             enableNightOneCube.SetActive(true);
+            enableNightTwoCube.SetActive(true);
+            enableNightThreeCube.SetActive(true);
+            enableNightFourCube.SetActive(true);
+            enableNightFiveCube.SetActive(false);
+
+            tabledNightOneCube.SetActive(false);
+            tabledNightTwoCube.SetActive(false);
+            tabledNightThreeCube.SetActive(false);
+            tabledNightFourCube.SetActive(false);
+            tabledNightFiveCube.SetActive(true);
         }
         else
         {

@@ -16,10 +16,9 @@ namespace MonsterSystem
     public abstract class StateAffordance : MonoBehaviour
     {
         [SerializeField] private AffordanceTriggerMode triggerMode = AffordanceTriggerMode.Custom;
+        [SerializeField] private bool stopOnExit = true;
 
         protected MonsterController controller;
-
-        public AffordanceTriggerMode TriggerMode => triggerMode;
 
         /// <summary>
         /// Called by MonsterState to provide access to the controller.
@@ -38,5 +37,11 @@ namespace MonsterSystem
         /// Stop/cancel this affordance if applicable.
         /// </summary>
         public virtual void OnStop() { }
+        
+        /// <summary>
+        /// Getters for affordance properties.
+        public AffordanceTriggerMode TriggerMode => triggerMode;
+        
+        public bool StopOnExit => stopOnExit;
     }
 }

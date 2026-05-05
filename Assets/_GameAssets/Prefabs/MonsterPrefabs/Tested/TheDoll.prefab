@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 8081459201721522103}
   - component: {fileID: 5516808396667445640}
-  - component: {fileID: 1986643422806203072}
   - component: {fileID: 2994375968977633093}
+  - component: {fileID: 4582080940729566720}
   m_Layer: 0
   m_Name: Aggressive
   m_TagString: Untagged
@@ -62,21 +62,6 @@ MonoBehaviour:
     - rid: 4379705079667097749
       type: {class: FollowTargetStrategy, ns: MonsterSystem, asm: Assembly-CSharp}
       data: 
---- !u!114 &1986643422806203072
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 290783745828222862}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4702ac2b4be5cd141a1c9c87889c9abc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AudioAffordance
-  clip: {fileID: 8300000, guid: 4432f4904f836134eb009fe2cc526804, type: 3}
-  loop: 1
-  volume: 1
 --- !u!114 &2994375968977633093
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -89,7 +74,44 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aaa34404e3bf4c5ab65596ca06f5b25e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VfxAffordance
+  triggerMode: 2
+  stopOnExit: 1
   vfxAsset: {fileID: 8926484042661614526, guid: 016c7835102272642b7079cd81f6d2ef, type: 3}
+  isChild: 0
+  vfxInstance: {fileID: 0}
+--- !u!114 &4582080940729566720
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 290783745828222862}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -449000756
+      Data2: 1093045465
+      Data3: 260626329
+      Data4: 801819821
+    Path: event:/MAIN/Doll
+  Event: 
+  EventPlayTrigger: 11
+  EventStopTrigger: 12
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: DollState
+    Value: 2
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &1445374913760098245
 GameObject:
   m_ObjectHideFlags: 0
@@ -337,6 +359,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4702ac2b4be5cd141a1c9c87889c9abc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AudioAffordance
+  triggerMode: 2
+  stopOnExit: 1
   clip: {fileID: 8300000, guid: e13ed7eaed9aa394683b8dcb19bbb599, type: 3}
   loop: 0
   volume: 1
@@ -352,7 +376,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aaa34404e3bf4c5ab65596ca06f5b25e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VfxAffordance
+  triggerMode: 2
+  stopOnExit: 1
   vfxAsset: {fileID: 8926484042661614526, guid: 016c7835102272642b7079cd81f6d2ef, type: 3}
+  isChild: 0
+  vfxInstance: {fileID: 0}
 --- !u!1 &2215229423872836330
 GameObject:
   m_ObjectHideFlags: 0
@@ -662,7 +690,19 @@ MonoBehaviour:
       m_Calls: []
   m_SelectEntered:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7963504078059114783}
+        m_TargetAssemblyTypeName: FMODUnity.StudioEventEmitter, FMODUnity
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_SelectExited:
     m_PersistentCalls:
       m_Calls: []
@@ -776,6 +816,8 @@ GameObject:
   - component: {fileID: 285961349528642890}
   - component: {fileID: 5312942356579680233}
   - component: {fileID: 2138905456663758235}
+  - component: {fileID: 3330798474214314585}
+  - component: {fileID: 7963504078059114783}
   m_Layer: 0
   m_Name: Hiding
   m_TagString: Untagged
@@ -828,7 +870,77 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aaa34404e3bf4c5ab65596ca06f5b25e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VfxAffordance
+  triggerMode: 2
+  stopOnExit: 1
   vfxAsset: {fileID: 8926484042661614526, guid: 016c7835102272642b7079cd81f6d2ef, type: 3}
+  isChild: 0
+  vfxInstance: {fileID: 0}
+--- !u!114 &3330798474214314585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7079660608194877710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -449000756
+      Data2: 1093045465
+      Data3: 260626329
+      Data4: 801819821
+    Path: event:/MAIN/Doll
+  Event: 
+  EventPlayTrigger: 11
+  EventStopTrigger: 12
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: DollState
+    Value: 1
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
+--- !u!114 &7963504078059114783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7079660608194877710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -449000756
+      Data2: 1093045465
+      Data3: 260626329
+      Data4: 801819821
+    Path: event:/MAIN/Doll
+  Event: 
+  EventPlayTrigger: 0
+  EventStopTrigger: 12
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: DollState
+    Value: 4
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &7097070077748286372
 GameObject:
   m_ObjectHideFlags: 0
@@ -896,6 +1008,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4702ac2b4be5cd141a1c9c87889c9abc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AudioAffordance
+  triggerMode: 2
+  stopOnExit: 1
   clip: {fileID: 8300000, guid: 6f1da88fa6f6e9f4da40c3a16193c354, type: 3}
   loop: 0
   volume: 1
@@ -911,7 +1025,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aaa34404e3bf4c5ab65596ca06f5b25e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VfxAffordance
+  triggerMode: 2
+  stopOnExit: 1
   vfxAsset: {fileID: 8926484042661614526, guid: 016c7835102272642b7079cd81f6d2ef, type: 3}
+  isChild: 0
+  vfxInstance: {fileID: 0}
 --- !u!1 &7629443495240033469
 GameObject:
   m_ObjectHideFlags: 0
@@ -976,7 +1094,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7101289165211502055
 Transform:
   m_ObjectHideFlags: 0
@@ -1189,7 +1307,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6800366008465673256}
   - component: {fileID: 7030186266804405750}
-  - component: {fileID: 5991709083730829472}
+  - component: {fileID: 3044130960285259089}
   m_Layer: 0
   m_Name: Attack
   m_TagString: Untagged
@@ -1229,7 +1347,7 @@ MonoBehaviour:
   verticalOffset: 0
   timeBeforeDeathCall: 1
   playerRef: {fileID: 11400000, guid: 8aa04a6520205384e9477b4745bd7d4b, type: 2}
---- !u!114 &5991709083730829472
+--- !u!114 &3044130960285259089
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1238,12 +1356,30 @@ MonoBehaviour:
   m_GameObject: {fileID: 8629785099626507080}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4702ac2b4be5cd141a1c9c87889c9abc, type: 3}
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AudioAffordance
-  clip: {fileID: 8300000, guid: 4332158888823654b9716151fc259b0b, type: 3}
-  loop: 0
-  volume: 0.7
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -449000756
+      Data2: 1093045465
+      Data3: 260626329
+      Data4: 801819821
+    Path: event:/MAIN/Doll
+  Event: 
+  EventPlayTrigger: 11
+  EventStopTrigger: 12
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: DollState
+    Value: 3
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &8704326584610175551
 GameObject:
   m_ObjectHideFlags: 0

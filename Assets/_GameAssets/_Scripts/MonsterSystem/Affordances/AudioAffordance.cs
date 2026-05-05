@@ -26,7 +26,6 @@ namespace MonsterSystem {
                 MonsterAudio.Play(audioSource, this.clip, true, this.volume);
             else
                 SoundEffectManager.Instance.PlaySoundFXClip(audioClip: this.clip, spawmTransform: transform, volume: this.volume, is3DSound: true, parentSpawnTransform: true);
-            //MonsterAudio.PlayOneShot(this.audioSource, this.clip, this.volume);
         }
 
         public override void OnStop() {

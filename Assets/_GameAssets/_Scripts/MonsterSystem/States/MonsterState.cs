@@ -42,12 +42,12 @@ namespace MonsterSystem
             if (this.affordances == null) return;
             for (int i = 0; i < this.affordances.Length; i++)
             {
-                var a = this.affordances[i];
-                if (a == null) continue;
-                if (a.TriggerMode == AffordanceTriggerMode.OnStateEnter)
-                    a.OnStop();
-                else if (a.TriggerMode == AffordanceTriggerMode.OnStateExit)
-                    a.OnTrigger();
+                var affordance = this.affordances[i];
+                if (affordance == null) continue;
+                if (affordance.StopOnExit)
+                    affordance.OnStop();
+                else if (affordance.TriggerMode == AffordanceTriggerMode.OnStateExit)
+                    affordance.OnTrigger();
             }
         }
 
