@@ -31,6 +31,8 @@ public class TemperatureZoneManager : Singleton<TemperatureZoneManager> {
             PlayerTemperatureSimulator.Instance.SetLocationType(PlayerTemperatureSimulator.EnumLocationType.Warm);
         } else if (activeZones.Contains(PlayerTemperatureSimulator.EnumLocationType.Normal)) {
             PlayerTemperatureSimulator.Instance.SetLocationType(PlayerTemperatureSimulator.EnumLocationType.Normal);
+        } else if (activeZones.Contains(PlayerTemperatureSimulator.EnumLocationType.Shack)) {
+            PlayerTemperatureSimulator.Instance.SetLocationType(PlayerTemperatureSimulator.EnumLocationType.Shack);
         } else {
             PlayerTemperatureSimulator.Instance.SetLocationType(PlayerTemperatureSimulator.EnumLocationType.Cold);
         }
