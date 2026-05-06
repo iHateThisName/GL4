@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="ParameterPreset" id="{e305fcd6-fedc-48ed-88c4-b1477fd352ab}">
+		<property name="name">
+			<value>Creek - Volume</value>
+		</property>
+		<relationship name="folder">
+			<destination>{a4cc0901-2699-488f-9213-3de01ceb69da}</destination>
+		</relationship>
+		<relationship name="parameter">
+			<destination>{c8011674-8e6e-4782-abef-6cdb252bd1d8}</destination>
+		</relationship>
+	</object>
+	<object class="GameParameter" id="{c8011674-8e6e-4782-abef-6cdb252bd1d8}">
+		<property name="parameterType">
+			<value>2</value>
+		</property>
+		<property name="maximum">
+			<value>2</value>
+		</property>
+		<property name="enumerationLabels">
+			<value>Normal</value>
+			<value>Creeky</value>
+		</property>
+		<property name="initialValue">
+			<value>0</value>
+		</property>
+	</object>
+</objects>

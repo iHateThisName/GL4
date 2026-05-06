@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="ParameterPreset" id="{8c438231-8844-42eb-ad2d-4451b67fda37}">
+		<property name="name">
+			<value>Wardrobe and Dresser</value>
+		</property>
+		<relationship name="folder">
+			<destination>{a4cc0901-2699-488f-9213-3de01ceb69da}</destination>
+		</relationship>
+		<relationship name="parameter">
+			<destination>{2f878e8c-7b8b-464b-9fd8-a12923dafab0}</destination>
+		</relationship>
+	</object>
+	<object class="GameParameter" id="{2f878e8c-7b8b-464b-9fd8-a12923dafab0}">
+		<property name="parameterType">
+			<value>2</value>
+		</property>
+		<property name="maximum">
+			<value>6</value>
+		</property>
+		<property name="enumerationLabels">
+			<value>Wardrobe Opening</value>
+			<value>Wardrobe Creeky Opening</value>
+			<value>Wardrobe Closing</value>
+			<value>Wardrobe Creeky Closing</value>
+			<value>Dresser Drawer Opening</value>
+			<value>Dresser Drawer Closing</value>
+		</property>
+		<property name="initialValue">
+			<value>0</value>
+		</property>
+	</object>
+</objects>

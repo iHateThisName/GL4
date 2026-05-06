@@ -420,8 +420,14 @@
 	<object class="MixerBusFader" id="{838917e4-033c-44f3-8032-9a6196428908}" />
 	<object class="MixerBusFader" id="{08a45198-4a10-47e5-a312-124b37312fc7}" />
 	<object class="SFXReverbEffect" id="{8fdbfa0b-8537-4a00-aac8-4c329d043571}">
+		<property name="decayTime">
+			<value>550</value>
+		</property>
+		<property name="HFDecayRatio">
+			<value>46.5</value>
+		</property>
 		<property name="lowShelfGain">
-			<value>12</value>
+			<value>7</value>
 		</property>
 		<property name="highCut">
 			<value>20000</value>

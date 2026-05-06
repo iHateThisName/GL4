@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="ParameterPreset" id="{fb6e405f-e375-4ae2-adc5-14e5d7fb8780}">
+		<property name="name">
+			<value>Cabinet</value>
+		</property>
+		<relationship name="folder">
+			<destination>{a4cc0901-2699-488f-9213-3de01ceb69da}</destination>
+		</relationship>
+		<relationship name="parameter">
+			<destination>{3b884ca2-0a7e-463f-a5ce-a52f149ba857}</destination>
+		</relationship>
+	</object>
+	<object class="GameParameter" id="{3b884ca2-0a7e-463f-a5ce-a52f149ba857}">
+		<property name="parameterType">
+			<value>2</value>
+		</property>
+		<property name="maximum">
+			<value>4</value>
+		</property>
+		<property name="enumerationLabels">
+			<value>Opening</value>
+			<value>Closing</value>
+			<value>Drawer Opening</value>
+			<value>Drawer Closing</value>
+		</property>
+		<property name="initialValue">
+			<value>0</value>
+		</property>
+	</object>
+</objects>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="ParameterPreset" id="{30e2005b-d176-4c3a-964a-52d4fe73558b}">
+		<property name="name">
+			<value>Heat Locations</value>
+		</property>
+		<relationship name="folder">
+			<destination>{a4cc0901-2699-488f-9213-3de01ceb69da}</destination>
+		</relationship>
+		<relationship name="parameter">
+			<destination>{6eeec77a-b458-4220-8f5a-ecdfc671fb08}</destination>
+		</relationship>
+	</object>
+	<object class="GameParameter" id="{6eeec77a-b458-4220-8f5a-ecdfc671fb08}">
+		<property name="parameterType">
+			<value>2</value>
+		</property>
+		<property name="maximum">
+			<value>3</value>
+		</property>
+		<property name="enumerationLabels">
+			<value>Normal</value>
+			<value>Cold</value>
+			<value>Warm</value>
+		</property>
+		<property name="initialValue">
+			<value>0</value>
+		</property>
+	</object>
+</objects>

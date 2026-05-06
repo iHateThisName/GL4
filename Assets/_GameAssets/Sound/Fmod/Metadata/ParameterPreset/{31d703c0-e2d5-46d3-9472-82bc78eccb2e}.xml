@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="ParameterPreset" id="{31d703c0-e2d5-46d3-9472-82bc78eccb2e}">
+		<property name="name">
+			<value>Body State</value>
+		</property>
+		<relationship name="folder">
+			<destination>{a4cc0901-2699-488f-9213-3de01ceb69da}</destination>
+		</relationship>
+		<relationship name="parameter">
+			<destination>{ed6072b4-b6ec-48b5-a386-202c6bc4c542}</destination>
+		</relationship>
+	</object>
+	<object class="GameParameter" id="{ed6072b4-b6ec-48b5-a386-202c6bc4c542}">
+		<property name="parameterType">
+			<value>2</value>
+		</property>
+		<property name="maximum">
+			<value>7</value>
+		</property>
+		<property name="enumerationLabels">
+			<value>Hypothermia</value>
+			<value>Moderate Hypothermia</value>
+			<value>Mild Hypothermia</value>
+			<value>Normal</value>
+			<value>Mild Hyperthermia</value>
+			<value>Moderate Hyperthermia</value>
+			<value>Hyperthermia</value>
+		</property>
+		<property name="isHeld">
+			<value>true</value>
+		</property>
+		<property name="initialValue">
+			<value>5</value>
+		</property>
+		<property name="isExposedRecursively">
+			<value>false</value>
+		</property>
+	</object>
+</objects>
