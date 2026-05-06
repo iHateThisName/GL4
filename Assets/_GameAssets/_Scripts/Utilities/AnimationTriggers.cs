@@ -1,6 +1,7 @@
 using UnityEngine;
 
 public static class AnimationTriggers {
+    public static readonly int Idle = Animator.StringToHash("IdleTrigger");
     public static readonly int Flashed = Animator.StringToHash("FlashlightTrigger");
     public static readonly int Chasing = Animator.StringToHash("ChasingTrigger");
     public static readonly int Walk = Animator.StringToHash("WalkTrigger");
@@ -26,9 +27,13 @@ public static class AnimationTriggers {
             EnumAnimationStates.Chasing => AnimationTriggers.Chasing,
             EnumAnimationStates.Flashed => AnimationTriggers.Flashed,
             EnumAnimationStates.Attack => AnimationTriggers.Attack,
+
             EnumAnimationStates.IntruderApproachWindow => Intruder.ApproachWindow,
             EnumAnimationStates.IntruderIdleWindow => Intruder.IdleWindow,
             EnumAnimationStates.IntruderOpenWindow => Intruder.OpenWindow,
+
+            EnumAnimationStates.StalkerArmsCover => Stalker.ArmsCover,
+            EnumAnimationStates.StalkerArmsUncover => Stalker.ArmsUncover,
             _ => 0
         };
 
@@ -45,7 +50,12 @@ public enum EnumAnimationStates {
     Attack,
     Death,
     Flashed,
+
     IntruderApproachWindow,
     IntruderIdleWindow,
-    IntruderOpenWindow
+    IntruderOpenWindow,
+
+    StalkerArmsCover,
+    StalkerArmsUncover,
+
 }
