@@ -4,7 +4,7 @@ using UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets;
 public class ApplyPlayerSettings : MonoBehaviour
 {
     //A refrence to the settings script
-    [SerializeField] private SettingsScript settingsToApply;
+    [SerializeField] private SettingsBools settingsToApply;
 
     //A refrence to the player's controllers
     [SerializeField] private ControllerInputActionManager rightControllerRefrence;
@@ -18,7 +18,7 @@ public class ApplyPlayerSettings : MonoBehaviour
     void Start()
     {
         //Finds the settings script
-        settingsToApply = SettingsScript.Instance;
+        settingsToApply = SettingsBools.Instance;
 
         //Finds the tunneling vignette
         tunnelingObject = GameObject.Find("TunnelingVignette");

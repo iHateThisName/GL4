@@ -62,8 +62,23 @@ public class SettingsScript : MonoBehaviour
         rightControllerRefrence.smoothTurnEnabled = true;
         leftControllerRefrence.smoothMotionEnabled = true;
 
+        settingsBool = GameObject.Find("SettingsBool").GetComponent<SettingsBools>();
+
         //Setting the default night to the current night
         nightSettings.SetDebugStartNight(this.settingsBool.currentNight);
+
+        if(settingsBool.snapEnabled)
+        {
+            EnableSnapTurn();
+        }
+        if(settingsBool.tunnelingEnabled)
+        {
+            EnableTunneling();
+        }
+        if(settingsBool.teleportEnabled)
+        {
+            EnableTeleport();
+        }
     }
 
     //A method for enabling snap turning
@@ -224,6 +239,8 @@ public class SettingsScript : MonoBehaviour
         {
             Debug.LogError("Invalid night number");
         }
+
+        settingsBool.currentNight = nightNum;
     }
 
     // This is the function your Main Menu Toggle will call

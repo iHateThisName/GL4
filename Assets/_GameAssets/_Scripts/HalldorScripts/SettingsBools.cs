@@ -9,16 +9,4 @@ public class SettingsBools : PersistenSingleton<SettingsBools>
     public bool teleportEnabled = false;
 
     public int currentNight = 1;
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
