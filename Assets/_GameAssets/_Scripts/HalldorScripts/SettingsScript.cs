@@ -174,6 +174,8 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
             tabledNightThreeCube.SetActive(false);
             tabledNightFourCube.SetActive(false);
             tabledNightFiveCube.SetActive(false);
+
+            Debug.Log("Night 2 selected");
         }
         else if (nightNum == 3)
         {
