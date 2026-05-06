@@ -1193,7 +1193,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.XR.Interaction.Toolkit::UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable
   m_InteractionManager: {fileID: 0}
   m_Colliders:
-  - {fileID: 0}
+  - {fileID: 183900400}
   m_InteractionLayers:
     m_Bits: 1
   m_DistanceCalculationMode: 1
@@ -2856,13 +2856,18 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2354866901123416352, guid: 50c3c26ebf3dd5e45b1ae1f19b69885e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 487604317}
-    - targetCorrespondingSourceObject: {fileID: 2354866901123416352, guid: 50c3c26ebf3dd5e45b1ae1f19b69885e, type: 3}
+    - targetCorrespondingSourceObject: {fileID: 7007866057785956269, guid: 50c3c26ebf3dd5e45b1ae1f19b69885e, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 487604322}
+      addedObject: {fileID: 487604316}
   m_SourcePrefab: {fileID: 100100000, guid: 50c3c26ebf3dd5e45b1ae1f19b69885e, type: 3}
 --- !u!4 &487604313 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7138092537777161859, guid: 50c3c26ebf3dd5e45b1ae1f19b69885e, type: 3}
+  m_PrefabInstance: {fileID: 487604312}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &487604314 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7007866057785956269, guid: 50c3c26ebf3dd5e45b1ae1f19b69885e, type: 3}
   m_PrefabInstance: {fileID: 487604312}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &487604315 stripped
@@ -2870,6 +2875,27 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 2354866901123416352, guid: 50c3c26ebf3dd5e45b1ae1f19b69885e, type: 3}
   m_PrefabInstance: {fileID: 487604312}
   m_PrefabAsset: {fileID: 0}
+--- !u!65 &487604316
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 487604314}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.4161827, y: 0.09970544, z: 0.28829947}
+  m_Center: {x: 2.2942487e-10, y: 5.078844e-10, z: -0.008520888}
 --- !u!114 &487604317
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2884,7 +2910,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.XR.Interaction.Toolkit::UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable
   m_InteractionManager: {fileID: 0}
   m_Colliders:
-  - {fileID: 0}
+  - {fileID: 487604316}
   m_InteractionLayers:
     m_Bits: 1
   m_DistanceCalculationMode: 1
@@ -3039,27 +3065,6 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 2
---- !u!65 &487604322
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 487604315}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.4161827, y: 0.0997054, z: 0.28829938}
-  m_Center: {x: 0, y: 0, z: -0.008520886}
 --- !u!1 &529968106
 GameObject:
   m_ObjectHideFlags: 0
@@ -6254,7 +6259,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.XR.Interaction.Toolkit::UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable
   m_InteractionManager: {fileID: 0}
   m_Colliders:
-  - {fileID: 0}
+  - {fileID: 1226725043}
   m_InteractionLayers:
     m_Bits: 1
   m_DistanceCalculationMode: 1
@@ -9975,7 +9980,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.XR.Interaction.Toolkit::UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable
   m_InteractionManager: {fileID: 0}
   m_Colliders:
-  - {fileID: 0}
+  - {fileID: 1979863379}
   m_InteractionLayers:
     m_Bits: 1
   m_DistanceCalculationMode: 1
@@ -11284,7 +11289,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.XR.Interaction.Toolkit::UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable
   m_InteractionManager: {fileID: 0}
   m_Colliders:
-  - {fileID: 0}
+  - {fileID: 5980747988804637794}
   m_InteractionLayers:
     m_Bits: 1
   m_DistanceCalculationMode: 1
