@@ -295,6 +295,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VfxAffordance
   triggerMode: 2
+  stopOnExit: 1
   vfxAsset: {fileID: 8926484042661614526, guid: 8e2007eb98486af48b243d17476c8047, type: 3}
   isChild: 0
   vfxInstance: {fileID: 0}
@@ -347,7 +348,6 @@ MonoBehaviour:
   blocksTransitions: 1
   nextState: {fileID: 5921275333700325378}
   exitOnComplete: 1
-  waitForAffordanceAnimation: 1
   satietyGain: 25
 --- !u!114 &8570423118274860084
 MonoBehaviour:
@@ -362,6 +362,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
   triggerMode: 0
+  stopOnExit: 1
   paramType: 1
   AnimationState: 0
   paramName: Extended
@@ -379,6 +380,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AudioAffordance
   triggerMode: 2
+  stopOnExit: 1
   clip: {fileID: 8300000, guid: b7524718948beb3418d5f11f0fe56417, type: 3}
   loop: 0
   volume: 1
@@ -431,7 +433,6 @@ MonoBehaviour:
   blocksTransitions: 0
   nextState: {fileID: 8320310173790660493}
   exitOnComplete: 0
-  waitForAffordanceAnimation: 0
   feedZone: {fileID: 5090489322079261466}
   maxAcceptableVelocity: 10
   rejectState: {fileID: 6481478295283805775}
@@ -449,6 +450,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
   triggerMode: 0
+  stopOnExit: 1
   paramType: 1
   AnimationState: 0
   paramName: Extended
@@ -466,6 +468,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AudioAffordance
   triggerMode: 2
+  stopOnExit: 1
   clip: {fileID: 8300000, guid: 44627079fb43bdd408145cafd3660382, type: 3}
   loop: 1
   volume: 1
@@ -485,7 +488,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &251773573856062932
 Transform:
   m_ObjectHideFlags: 0
@@ -500,7 +503,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2768018977427514133}
-  - {fileID: 8772008329508492435}
   m_Father: {fileID: 1982426181614364841}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &5869048950688489980
@@ -749,7 +751,6 @@ MonoBehaviour:
   blocksTransitions: 0
   nextState: {fileID: 8320310173790660493}
   exitOnComplete: 0
-  waitForAffordanceAnimation: 0
   feedZone: {fileID: 5090489322079261466}
   maxAcceptableVelocity: 10
   rejectState: {fileID: 6481478295283805775}
@@ -767,6 +768,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
   triggerMode: 0
+  stopOnExit: 1
   paramType: 1
   AnimationState: 0
   paramName: Extended
@@ -784,6 +786,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AudioAffordance
   triggerMode: 2
+  stopOnExit: 1
   clip: {fileID: 8300000, guid: 2fe0804fafdc86140b8104dc9ee18ee8, type: 3}
   loop: 1
   volume: 1
@@ -989,6 +992,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 251773573856062932}
+  - {fileID: 8193086215568600770}
   m_Father: {fileID: 6990434769242631820}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &6420786038646300334
@@ -1062,7 +1066,6 @@ MonoBehaviour:
   blocksTransitions: 1
   nextState: {fileID: 6248815390950015702}
   exitOnComplete: 1
-  waitForAffordanceAnimation: 0
   satietyLoss: 5
   throwForce: 5
   throwDirection: {x: 0, y: 1, z: 1}
@@ -1079,6 +1082,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AudioAffordance
   triggerMode: 0
+  stopOnExit: 1
   clip: {fileID: 0}
   loop: 0
   volume: 1
@@ -1095,6 +1099,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
   triggerMode: 2
+  stopOnExit: 1
   paramType: 0
   AnimationState: 0
   paramName: Rej
@@ -1162,6 +1167,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AudioAffordance
   triggerMode: 2
+  stopOnExit: 1
   clip: {fileID: 8300000, guid: 502eb3c9c43bfe54a9c5cac70163ddfe, type: 3}
   loop: 0
   volume: 1
@@ -1192,12 +1198,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8764447899412136325}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.2, z: -0.45}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0, y: -1, z: -0, w: 0}
+  m_LocalPosition: {x: 0.365, y: -0.038, z: 1.358}
+  m_LocalScale: {x: 0.62877, y: 0.62877, z: 0.62877}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 251773573856062932}
+  m_Father: {fileID: 8193086215568600770}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &4855100368168144753
 BoxCollider:
@@ -1401,6 +1407,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 15
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a640327f624eb5841a8a03504378c76f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1410,4 +1420,73 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a640327f624eb5841a8a03504378c76f, type: 3}
   m_PrefabInstance: {fileID: 2441870075262010622}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &2841656883589883681
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1982426181614364841}
+    m_Modifications:
+    - target: {fileID: 724015871957614929, guid: 508666dcd354c1d4fa0356424380a9c8, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6258920876129290723, guid: 508666dcd354c1d4fa0356424380a9c8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6258920876129290723, guid: 508666dcd354c1d4fa0356424380a9c8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6258920876129290723, guid: 508666dcd354c1d4fa0356424380a9c8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6258920876129290723, guid: 508666dcd354c1d4fa0356424380a9c8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6258920876129290723, guid: 508666dcd354c1d4fa0356424380a9c8, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6258920876129290723, guid: 508666dcd354c1d4fa0356424380a9c8, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6258920876129290723, guid: 508666dcd354c1d4fa0356424380a9c8, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6258920876129290723, guid: 508666dcd354c1d4fa0356424380a9c8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6258920876129290723, guid: 508666dcd354c1d4fa0356424380a9c8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: 6258920876129290723, guid: 508666dcd354c1d4fa0356424380a9c8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7963375110098439852, guid: 508666dcd354c1d4fa0356424380a9c8, type: 3}
+      propertyPath: m_Name
+      value: Munch
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 6258920876129290723, guid: 508666dcd354c1d4fa0356424380a9c8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8772008329508492435}
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 508666dcd354c1d4fa0356424380a9c8, type: 3}
+--- !u!4 &8193086215568600770 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6258920876129290723, guid: 508666dcd354c1d4fa0356424380a9c8, type: 3}
+  m_PrefabInstance: {fileID: 2841656883589883681}
   m_PrefabAsset: {fileID: 0}

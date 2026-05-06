@@ -55,6 +55,7 @@ MonoBehaviour:
   - {fileID: 710727004609936139}
   - {fileID: 571947567131634409}
   baseDepletionValue: 0.4
+  resourceValue: 0
 --- !u!1 &1824396284530818015
 GameObject:
   m_ObjectHideFlags: 0
@@ -104,6 +105,7 @@ MonoBehaviour:
   interval: 3.1
   duration: 3
   behindDistance: 1.5
+  munchModel: {fileID: 0}
 --- !u!114 &4235844505415943493
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -116,6 +118,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4702ac2b4be5cd141a1c9c87889c9abc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AudioAffordance
+  triggerMode: 2
+  stopOnExit: 1
   clip: {fileID: 8300000, guid: 502eb3c9c43bfe54a9c5cac70163ddfe, type: 3}
   loop: 0
   volume: 1
@@ -226,8 +230,7 @@ MonoBehaviour:
   blocksTransitions: 0
   nextState: {fileID: 1124015477162281980}
   exitOnComplete: 0
-  waitForAffordanceAnimation: 0
-  feedZone: {fileID: 7146271881563414096}
+  feedZone: {fileID: 0}
   maxAcceptableVelocity: 10
   rejectState: {fileID: 4550038304486667008}
   acceptState: {fileID: 1124015477162281980}
@@ -243,6 +246,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa4759459a2f6df4e8a3af805bf14913, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
+  triggerMode: 2
+  stopOnExit: 1
   paramType: 1
   AnimationState: 0
   paramName: Extended
@@ -259,6 +264,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4702ac2b4be5cd141a1c9c87889c9abc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AudioAffordance
+  triggerMode: 2
+  stopOnExit: 1
   clip: {fileID: 8300000, guid: 44627079fb43bdd408145cafd3660382, type: 3}
   loop: 1
   volume: 1
@@ -311,8 +318,7 @@ MonoBehaviour:
   blocksTransitions: 0
   nextState: {fileID: 1124015477162281980}
   exitOnComplete: 0
-  waitForAffordanceAnimation: 0
-  feedZone: {fileID: 7146271881563414096}
+  feedZone: {fileID: 0}
   maxAcceptableVelocity: 10
   rejectState: {fileID: 4550038304486667008}
   acceptState: {fileID: 1124015477162281980}
@@ -328,6 +334,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4702ac2b4be5cd141a1c9c87889c9abc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AudioAffordance
+  triggerMode: 2
+  stopOnExit: 1
   clip: {fileID: 8300000, guid: 2fe0804fafdc86140b8104dc9ee18ee8, type: 3}
   loop: 1
   volume: 1
@@ -343,6 +351,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa4759459a2f6df4e8a3af805bf14913, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
+  triggerMode: 2
+  stopOnExit: 1
   paramType: 1
   AnimationState: 0
   paramName: Extended
@@ -429,7 +439,6 @@ MonoBehaviour:
   blocksTransitions: 1
   nextState: {fileID: 3198911293393157017}
   exitOnComplete: 1
-  waitForAffordanceAnimation: 1
   satietyGain: 25
 --- !u!114 &4740664782332457874
 MonoBehaviour:
@@ -443,6 +452,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa4759459a2f6df4e8a3af805bf14913, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
+  triggerMode: 2
+  stopOnExit: 1
   paramType: 1
   AnimationState: 0
   paramName: Extended
@@ -459,6 +470,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4702ac2b4be5cd141a1c9c87889c9abc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AudioAffordance
+  triggerMode: 2
+  stopOnExit: 1
   clip: {fileID: 8300000, guid: b7524718948beb3418d5f11f0fe56417, type: 3}
   loop: 0
   volume: 1
@@ -622,6 +635,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aaa34404e3bf4c5ab65596ca06f5b25e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VfxAffordance
+  triggerMode: 2
+  stopOnExit: 1
   vfxAsset: {fileID: 8926484042661614526, guid: 8e2007eb98486af48b243d17476c8047, type: 3}
   isChild: 0
   vfxInstance: {fileID: 0}
@@ -674,7 +689,6 @@ MonoBehaviour:
   blocksTransitions: 1
   nextState: {fileID: 5946285856578261012}
   exitOnComplete: 1
-  waitForAffordanceAnimation: 0
   satietyLoss: 5
   throwForce: 5
   throwDirection: {x: 0, y: 1, z: 1}
@@ -690,6 +704,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4702ac2b4be5cd141a1c9c87889c9abc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AudioAffordance
+  triggerMode: 2
+  stopOnExit: 1
   clip: {fileID: 0}
   loop: 0
   volume: 1
@@ -705,6 +721,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa4759459a2f6df4e8a3af805bf14913, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
+  triggerMode: 2
+  stopOnExit: 1
   paramType: 0
   AnimationState: 0
   paramName: Rej
@@ -717,8 +735,20 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2932562549756063749, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3060243921034406785, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
       propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3252208286755928495, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3270650685475808880, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4950517335717247463, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
@@ -765,9 +795,41 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7276741193934039350, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8186198554141403637, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
+      propertyPath: audioSource
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 8764447899412136325, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
       propertyPath: m_Name
       value: Trigger
+      objectReference: {fileID: 0}
+    - target: {fileID: 8772008329508492435, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.61993
+      objectReference: {fileID: 0}
+    - target: {fileID: 8772008329508492435, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.61993
+      objectReference: {fileID: 0}
+    - target: {fileID: 8772008329508492435, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.61993
+      objectReference: {fileID: 0}
+    - target: {fileID: 8772008329508492435, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.362
+      objectReference: {fileID: 0}
+    - target: {fileID: 8772008329508492435, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.007
+      objectReference: {fileID: 0}
+    - target: {fileID: 8772008329508492435, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1.28
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3060243921034406785, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
@@ -782,28 +844,8 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6990434769242631820, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2343827092994151497}
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8764447899412136325, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7146271881563414096}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
---- !u!1 &707150627608901171 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8764447899412136325, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
-  m_PrefabInstance: {fileID: 8102502749938366390}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &7146271881563414096
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 707150627608901171}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 394c3dc8301e45118e660c31308faa88, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TriggerArea
 --- !u!4 &1257309348054210874 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6990434769242631820, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
