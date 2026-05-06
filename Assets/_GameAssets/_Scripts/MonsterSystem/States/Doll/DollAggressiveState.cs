@@ -12,6 +12,7 @@ namespace MonsterSystem
             base.OnStateEnter();
 
             TriggerAffordances<VfxAffordance>();
+            TriggerAffordances<AnimationAffordance>();
 
             Debug.Log("Doll is Aggressive and actively hunting!");
         }
