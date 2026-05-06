@@ -62,7 +62,7 @@ public class SettingsScript : MonoBehaviour
         rightControllerRefrence.smoothTurnEnabled = true;
         leftControllerRefrence.smoothMotionEnabled = true;
 
-        settingsBool = GameObject.Find("SettingsBool").GetComponent<SettingsBools>();
+        settingsBool = GameObject.Find("SettingsBools").GetComponent<SettingsBools>();
 
         //Setting the default night to the current night
         nightSettings.SetDebugStartNight(this.settingsBool.currentNight);
