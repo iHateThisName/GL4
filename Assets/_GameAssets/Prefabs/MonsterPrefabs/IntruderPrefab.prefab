@@ -233,6 +233,7 @@ GameObject:
   - component: {fileID: 8581784409638178010}
   - component: {fileID: 4108226675085203310}
   - component: {fileID: 609149178255826414}
+  - component: {fileID: 2068958812421158357}
   m_Layer: 0
   m_Name: Flashed
   m_TagString: Untagged
@@ -270,7 +271,6 @@ MonoBehaviour:
   blocksTransitions: 0
   nextState: {fileID: 0}
   exitOnComplete: 1
-  waitForAffordanceAnimation: 0
   monsterNavigation: {fileID: 132277432202858881}
 --- !u!114 &4108226675085203310
 MonoBehaviour:
@@ -284,6 +284,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa4759459a2f6df4e8a3af805bf14913, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
+  triggerMode: 2
+  stopOnExit: 1
   paramType: 0
   AnimationState: 6
   paramName: 
@@ -300,9 +302,44 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aaa34404e3bf4c5ab65596ca06f5b25e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VfxAffordance
+  triggerMode: 2
+  stopOnExit: 1
   vfxAsset: {fileID: 8926484042661614526, guid: e13122ac1564f214a9d405243d14f72a, type: 3}
   isChild: 0
   vfxInstance: {fileID: 0}
+--- !u!114 &2068958812421158357
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 738339366660153081}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -940244506
+      Data2: 1308984905
+      Data3: 234751872
+      Data4: -1950771364
+    Path: event:/MAIN/Intruder
+  Event: 
+  EventPlayTrigger: 1
+  EventStopTrigger: 12
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: Intruder
+    Value: 1
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &771940631241205751
 GameObject:
   m_ObjectHideFlags: 0
@@ -499,6 +536,7 @@ GameObject:
   - component: {fileID: 4386152443229987308}
   - component: {fileID: 6075446766147847021}
   - component: {fileID: 2083614844334143239}
+  - component: {fileID: 6218077762427886339}
   m_Layer: 0
   m_Name: WindowIdle
   m_TagString: Untagged
@@ -536,7 +574,6 @@ MonoBehaviour:
   blocksTransitions: 0
   nextState: {fileID: 6234756195703914020}
   exitOnComplete: 1
-  waitForAffordanceAnimation: 0
   countdownDuration: 10
 --- !u!114 &2083614844334143239
 MonoBehaviour:
@@ -550,10 +587,45 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa4759459a2f6df4e8a3af805bf14913, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
+  triggerMode: 2
+  stopOnExit: 1
   paramType: 0
   AnimationState: 8
   paramName: 
   boolValue: 1
+--- !u!114 &6218077762427886339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1821472748401317281}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -940244506
+      Data2: 1308984905
+      Data3: 234751872
+      Data4: -1950771364
+    Path: event:/MAIN/Intruder
+  Event: 
+  EventPlayTrigger: 11
+  EventStopTrigger: 12
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: Intruder
+    Value: 2
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &3458592905161940793
 GameObject:
   m_ObjectHideFlags: 0
@@ -565,6 +637,7 @@ GameObject:
   - component: {fileID: 3793825480316588878}
   - component: {fileID: 6893837462578570359}
   - component: {fileID: 5087643316373690665}
+  - component: {fileID: 5816543229570705881}
   m_Layer: 0
   m_Name: Walk
   m_TagString: Untagged
@@ -602,7 +675,6 @@ MonoBehaviour:
   blocksTransitions: 0
   nextState: {fileID: 359053292061219951}
   exitOnComplete: 0
-  waitForAffordanceAnimation: 0
 --- !u!114 &5087643316373690665
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -615,10 +687,45 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa4759459a2f6df4e8a3af805bf14913, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
+  triggerMode: 2
+  stopOnExit: 1
   paramType: 0
   AnimationState: 2
   paramName: 
   boolValue: 1
+--- !u!114 &5816543229570705881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3458592905161940793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -940244506
+      Data2: 1308984905
+      Data3: 234751872
+      Data4: -1950771364
+    Path: event:/MAIN/Intruder
+  Event: 
+  EventPlayTrigger: 1
+  EventStopTrigger: 12
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: Intruder
+    Value: 0
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &3477245539894949678
 GameObject:
   m_ObjectHideFlags: 0
@@ -630,7 +737,7 @@ GameObject:
   - component: {fileID: 2812116567047694206}
   - component: {fileID: 2077415697182246400}
   - component: {fileID: 2524414419004177613}
-  - component: {fileID: 2333697144740099360}
+  - component: {fileID: 1847511430920985088}
   m_Layer: 0
   m_Name: KillPlayer
   m_TagString: Untagged
@@ -668,7 +775,6 @@ MonoBehaviour:
   blocksTransitions: 0
   nextState: {fileID: 0}
   exitOnComplete: 1
-  waitForAffordanceAnimation: 0
   useAnimation: 0
 --- !u!114 &2524414419004177613
 MonoBehaviour:
@@ -682,11 +788,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa4759459a2f6df4e8a3af805bf14913, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
+  triggerMode: 2
+  stopOnExit: 1
   paramType: 0
   AnimationState: 4
   paramName: 
   boolValue: 1
---- !u!114 &2333697144740099360
+--- !u!114 &1847511430920985088
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -695,12 +803,30 @@ MonoBehaviour:
   m_GameObject: {fileID: 3477245539894949678}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4702ac2b4be5cd141a1c9c87889c9abc, type: 3}
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AudioAffordance
-  clip: {fileID: 8300000, guid: 8c14c768f15dcfa439790ff6573869a4, type: 3}
-  loop: 0
-  volume: 1
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -940244506
+      Data2: 1308984905
+      Data3: 234751872
+      Data4: -1950771364
+    Path: event:/MAIN/Intruder
+  Event: 
+  EventPlayTrigger: 1
+  EventStopTrigger: 12
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: Intruder
+    Value: 4
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &3807162221386724574
 GameObject:
   m_ObjectHideFlags: 0
@@ -894,7 +1020,6 @@ MonoBehaviour:
   blocksTransitions: 0
   nextState: {fileID: 1535485417224722708}
   exitOnComplete: 1
-  waitForAffordanceAnimation: 0
   monsterNavigation: {fileID: 132277432202858881}
   lightSensor: {fileID: 9136556400897258496}
   leftHandCollider: {fileID: 2060681122142682517}
@@ -911,6 +1036,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa4759459a2f6df4e8a3af805bf14913, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
+  triggerMode: 2
+  stopOnExit: 1
   paramType: 0
   AnimationState: 9
   paramName: 
@@ -1015,6 +1142,7 @@ GameObject:
   - component: {fileID: 8332113718619956109}
   - component: {fileID: 1535485417224722708}
   - component: {fileID: 4036445607456370848}
+  - component: {fileID: 2338283531204621248}
   m_Layer: 0
   m_Name: ChasingPlayer
   m_TagString: Untagged
@@ -1052,7 +1180,6 @@ MonoBehaviour:
   blocksTransitions: 0
   nextState: {fileID: 0}
   exitOnComplete: 1
-  waitForAffordanceAnimation: 0
   monsterNavigation: {fileID: 132277432202858881}
   moveDistance: 1.55347
 --- !u!114 &4036445607456370848
@@ -1067,10 +1194,45 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa4759459a2f6df4e8a3af805bf14913, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
+  triggerMode: 2
+  stopOnExit: 1
   paramType: 0
   AnimationState: 3
   paramName: 
   boolValue: 1
+--- !u!114 &2338283531204621248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700209252231293374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -940244506
+      Data2: 1308984905
+      Data3: 234751872
+      Data4: -1950771364
+    Path: event:/MAIN/Intruder
+  Event: 
+  EventPlayTrigger: 1
+  EventStopTrigger: 12
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: Intruder
+    Value: 3
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &8082112033680108158
 GameObject:
   m_ObjectHideFlags: 0
@@ -1182,7 +1344,6 @@ MonoBehaviour:
   exposureDecaySpeed: 2
   stunThreshold: 1
   sensorCooldownDuration: 5
-  flashedSound: {fileID: 8300000, guid: fc323e27414aadf4095893d373c60c49, type: 3}
 --- !u!1 &8898604334208933820
 GameObject:
   m_ObjectHideFlags: 0
@@ -1231,7 +1392,6 @@ MonoBehaviour:
   blocksTransitions: 0
   nextState: {fileID: 6075446766147847021}
   exitOnComplete: 1
-  waitForAffordanceAnimation: 0
   agent: {fileID: 6856695336247606016}
   monsterNavigation: {fileID: 132277432202858881}
 --- !u!114 &792608987780827113
@@ -1246,6 +1406,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa4759459a2f6df4e8a3af805bf14913, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
+  triggerMode: 2
+  stopOnExit: 1
   paramType: 0
   AnimationState: 7
   paramName: 
