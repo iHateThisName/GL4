@@ -35,6 +35,8 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
     public static Action<EnumLocationType> OnLocationTypeChanged;
     public static Action<float> OnHeatModifierChanged;
 
+    [SerializeField] private bool isSimulatingTemperature = true;
+
     // Temperature change rate based on location type, Normal slowly decreases, Cold rapidly decreases, Warm increases
     public enum EnumLocationType { Normal, Cold, Warm, Shack }
     // Player temperature states based on current body temperature
@@ -80,6 +82,10 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
     /// Simulates temperature changes and updates the body temperature state.
     /// </summary>
     private void FixedUpdate() {
+        if (!isSimulatingTemperature) { // If simulation is disabled, reset heat modifier and skip temperature changes
+            this.CurrentHeatModifier = 0f;
+            return;
+        }
         // Simulate temperature changes over time
         SimulateTemperatureChange();
         // Update temperature state based on current body temperature
