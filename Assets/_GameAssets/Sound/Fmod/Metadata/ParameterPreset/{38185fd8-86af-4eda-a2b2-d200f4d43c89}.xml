@@ -1,37 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <objects serializationModel="Studio.02.03.00">
-	<object class="ParameterPreset" id="{54569f6f-9c1f-4c7d-8c9c-af244e174e25}">
+	<object class="ParameterPreset" id="{38185fd8-86af-4eda-a2b2-d200f4d43c89}">
 		<property name="name">
-			<value>Munch</value>
+			<value>Stalker</value>
 		</property>
 		<relationship name="folder">
 			<destination>{64f98581-805f-41ed-838f-243091ea99f6}</destination>
 		</relationship>
 		<relationship name="parameter">
-			<destination>{210266b7-e182-4915-9f14-dfeb5987672f}</destination>
+			<destination>{634acc36-d5d4-4d6b-88c4-fa86b41eaa96}</destination>
 		</relationship>
 	</object>
-	<object class="GameParameter" id="{210266b7-e182-4915-9f14-dfeb5987672f}">
+	<object class="GameParameter" id="{634acc36-d5d4-4d6b-88c4-fa86b41eaa96}">
 		<property name="parameterType">
 			<value>2</value>
 		</property>
 		<property name="maximum">
-			<value>10</value>
+			<value>6</value>
 		</property>
 		<property name="enumerationLabels">
-			<value>Teleport</value>
+			<value>Chasing</value>
+			<value>Moving</value>
 			<value>Idle</value>
-			<value>Hungry</value>
-			<value>Angry</value>
-			<value>Accept</value>
-			<value>Munching</value>
-			<value>Reject</value>
-			<value>Throw Item</value>
-			<value>Sleep</value>
-			<value>Kill</value>
+			<value>Startle</value>
+			<value>Player Death</value>
+			<value>Null</value>
 		</property>
 		<property name="initialValue">
-			<value>1</value>
+			<value>0</value>
 		</property>
 	</object>
 </objects>
