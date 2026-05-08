@@ -11,6 +11,8 @@ public class TutorialManager : MonoBehaviour
 
     //A refrence to the night settings
     [SerializeField] private SO_NightSettings nightSettings;
+    [SerializeField] private Transform playerSpawnPosition;
+    [SerializeField] private Transform player;
 
     //A refrence to the temperture manager
     [SerializeField] private PlayerTemperatureSimulator tempertureManager;
@@ -40,11 +42,17 @@ public class TutorialManager : MonoBehaviour
             }
             else
             {
-                tutorialText.text = "Go into the livingroom";
+                tutorialText.text = "Go inside the cabin and enter the living room";
                 this.tempertureManager.SetIsSimulatorEnabled(false);
                 this.hungerManager.Pause();
-                GameManager.Instance.PrepareNightTimerWithDuration(15f);
+                GameManager.Instance.PrepareNightTimerWithDuration(40f);
                 Debug.Log("Tutorial started");
+
+                if (player != null)
+                {
+                    this.player.position = playerSpawnPosition.position;
+                    this.player.rotation = playerSpawnPosition.rotation;
+                }
 
                 this.triggerArea = this.GetComponentInChildren<TriggerArea>();
                 if (this.triggerArea != null)
@@ -84,7 +92,7 @@ public class TutorialManager : MonoBehaviour
         }
         if (this.hasFixedRadio) return;
         this.radio.SendBroadcast(Radio.RadioBroadcasts.RadioTutorialTip);
-        StartBroadcastWait(0f /* TODO: RadioTutorialTip duration */, () =>
+        StartBroadcastWait(10f /* TODO: RadioTutorialTip duration */, () =>
         {
             hasFixedRadio = true;
             this.tutorialText.text = "Survive the night";
