@@ -7,7 +7,10 @@ public class MunchFollow : MonoBehaviour
     [Header("Settings")]
     public float rotationSpeed = 5f; // smoothness
 
-    void Update()
+    private void Start() {
+        this.target = GameObject.FindWithTag("Player").transform.root.transform;
+    }
+    void FixedUpdate()
     {
         if (target == null) return;
 
@@ -23,7 +26,7 @@ public class MunchFollow : MonoBehaviour
         transform.rotation = Quaternion.Slerp(
             transform.rotation,
             targetRotation,
-            rotationSpeed * Time.deltaTime
+            rotationSpeed * Time.fixedDeltaTime
         );
     }
 }
