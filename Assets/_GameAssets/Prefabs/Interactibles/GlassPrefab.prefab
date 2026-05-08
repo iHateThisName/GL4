@@ -964,6 +964,9 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8270539655596798322, guid: ca732f800ff98924ca1dbdf86522430d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8205445759497844616}
     - targetCorrespondingSourceObject: {fileID: -1048422224543999501, guid: ca732f800ff98924ca1dbdf86522430d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2806852724716801131}
@@ -1835,6 +1838,42 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.058837876, y: 0.058963522, z: 0.071318105}
   m_Center: {x: 0.04514502, y: -0.001112801, z: -0.036397226}
+--- !u!1 &2649185001153941928 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8270539655596798322, guid: ca732f800ff98924ca1dbdf86522430d, type: 3}
+  m_PrefabInstance: {fileID: 6198378361869443290}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8205445759497844616
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2649185001153941928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -2115992752
+      Data2: 1089232994
+      Data3: 787285633
+      Data4: -96575930
+    Path: event:/Lyubo/Glass Shatter
+  Event: 
+  EventPlayTrigger: 11
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &2678991815063819667 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8298058902079862089, guid: ca732f800ff98924ca1dbdf86522430d, type: 3}
