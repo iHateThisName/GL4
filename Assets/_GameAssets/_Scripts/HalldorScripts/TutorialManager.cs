@@ -44,6 +44,7 @@ public class TutorialManager : MonoBehaviour
                 this.tempertureManager.SetIsSimulatorEnabled(false);
                 this.hungerManager.Pause();
                 GameManager.Instance.PauseNightTimer();
+                GameManager.Instance.SetNightTimerRemainingSeconds(15f);
                 Debug.Log("Tutorial started");
 
                 this.triggerArea = this.GetComponentInChildren<TriggerArea>();
@@ -83,11 +84,12 @@ public class TutorialManager : MonoBehaviour
             return;
         }
         if (this.hasFixedRadio) return;
-        FixRadio();
         this.radio.SendBroadcast(Radio.RadioBroadcasts.RadioTutorialTip);
         StartBroadcastWait(0f /* TODO: RadioTutorialTip duration */, () =>
         {
+            hasFixedRadio = true;
             this.tutorialText.text = "Survive the night";
+            GameManager.Instance.ResumeNightTimer();
         });
     }
 
@@ -116,25 +118,11 @@ public class TutorialManager : MonoBehaviour
         if (hasLitFire) return;
         this.hasLitFire = true;
         this.radio.SendBroadcast(Radio.RadioBroadcasts.FireTutorialTip);
-        StartBroadcastWait(0f /* TODO: FireTutorialTip duration */, () =>
+        StartBroadcastWait(10f /* TODO: FireTutorialTip duration */, () =>
         {
             this.radio.SetChannel(8);
             this.tutorialText.text = "Put the radio frequency back to Channel 30";
         });
-    }
-
-    public void FixRadio()
-    {
-        if(!hasLitFire || !hasEatenFood || hasFixedRadio)
-        {
-            Debug.Log("Tutorial stopped 2");
-            return;
-        }
-        hasFixedRadio = true;
-        this.radio.SendBroadcast(Radio.RadioBroadcasts.FoodTutorialTip);
-        tutorialText.text = "Survive the night";
-        GameManager.Instance.SetNightTimerRemainingSeconds(10f);
-        GameManager.Instance.ResumeNightTimer();
     }
     
     private void StartBroadcastWait(float duration, System.Action onFinished)
