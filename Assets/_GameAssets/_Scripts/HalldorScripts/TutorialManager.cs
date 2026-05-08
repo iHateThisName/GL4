@@ -13,7 +13,7 @@ public class TutorialManager : MonoBehaviour
     [SerializeField] private SO_NightSettings nightSettings;
 
     //A refrence to the temperture manager
-    [SerializeField] private GameObject tempertureManager;
+    [SerializeField] private PlayerTemperatureSimulator tempertureManager;
 
     //A refrence to the hunger manager
     [SerializeField] private HungerSystem hungerManager;
@@ -41,8 +41,9 @@ public class TutorialManager : MonoBehaviour
             else
             {
                 tutorialText.text = "Go into the livingroom";
-                //Destroy(tempertureManager);
+                this.tempertureManager.SetIsSimulatorEnabled(false);
                 this.hungerManager.Pause();
+                GameManager.Instance.PauseNightTimer();
                 Debug.Log("Tutorial started");
 
                 this.triggerArea = this.GetComponentInChildren<TriggerArea>();
@@ -81,11 +82,12 @@ public class TutorialManager : MonoBehaviour
             this.livingroomToken?.Cancel();
             return;
         }
+        if (this.hasFixedRadio) return;
         FixRadio();
         this.radio.SendBroadcast(Radio.RadioBroadcasts.RadioTutorialTip);
         StartBroadcastWait(0f /* TODO: RadioTutorialTip duration */, () =>
         {
-            tutorialText.text = "Survive the night";
+            this.tutorialText.text = "Survive the night";
         });
     }
 
@@ -112,12 +114,12 @@ public class TutorialManager : MonoBehaviour
     public void TurnOnFire()
     {
         if (hasLitFire) return;
-        hasLitFire = true;
+        this.hasLitFire = true;
         this.radio.SendBroadcast(Radio.RadioBroadcasts.FireTutorialTip);
         StartBroadcastWait(0f /* TODO: FireTutorialTip duration */, () =>
         {
-            radio.SetChannel(8);
-            tutorialText.text = "Put the radio frequency back to Channel 30";
+            this.radio.SetChannel(8);
+            this.tutorialText.text = "Put the radio frequency back to Channel 30";
         });
     }
 
@@ -131,6 +133,8 @@ public class TutorialManager : MonoBehaviour
         hasFixedRadio = true;
         this.radio.SendBroadcast(Radio.RadioBroadcasts.FoodTutorialTip);
         tutorialText.text = "Survive the night";
+        GameManager.Instance.SetNightTimerRemainingSeconds(10f);
+        GameManager.Instance.ResumeNightTimer();
     }
     
     private void StartBroadcastWait(float duration, System.Action onFinished)

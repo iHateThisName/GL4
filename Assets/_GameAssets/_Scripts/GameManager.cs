@@ -230,6 +230,26 @@ public class GameManager : PersistenSingleton<GameManager> {
             this.night = 1;
     }
 
+    public void PauseNightTimer()
+    {
+        TimerManager.Pause(this.nightTimerHandle);
+    }
+
+    public void ResumeNightTimer()
+    {
+        TimerManager.Resume(this.nightTimerHandle);
+    }
+
+    /// <summary>
+    /// Collapses the remaining night time to <paramref name="seconds"/> from now.
+    /// </summary>
+    public void SetNightTimerRemainingSeconds(float seconds)
+    {
+        if (!TimerManager.Validate(this.nightTimerHandle)) return;
+        ref var timer = ref TimerManager.GetRef(this.nightTimerHandle);
+        timer.Duration = timer.Elapsed + Mathf.Max(0f, seconds);
+    }
+
     public int GetCurrentNight() => this.night;
 
     /// <summary>
