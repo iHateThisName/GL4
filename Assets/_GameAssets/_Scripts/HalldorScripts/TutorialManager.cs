@@ -1,3 +1,4 @@
+using System.Threading;
 using UnityEngine;
 using TMPro;
 
@@ -23,6 +24,9 @@ public class TutorialManager : MonoBehaviour
     //A refrence to the tutorial UI text
     [SerializeField] private TMP_Text tutorialText;
 
+    private CancellationTokenSource livingroomToken;
+    private TriggerArea triggerArea;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -36,38 +40,85 @@ public class TutorialManager : MonoBehaviour
             }
             else
             {
-                tutorialText.text = "Chop wood and turn on fire";
+                tutorialText.text = "Go into the livingroom";
                 //Destroy(tempertureManager);
-                //this.hungerManager.Pause();
+                this.hungerManager.Pause();
                 Debug.Log("Tutorial started");
+
+                this.triggerArea = this.GetComponentInChildren<TriggerArea>();
+                if (this.triggerArea != null)
+                    this.triggerArea.OnTriggerEntered += EnteredLivingRoom;
             }
         }
     }
 
-    private void OnEnable() => HungerSystem.OnHungerChanged += OnHungerChanged;
-    
-    private void OnDisable() => HungerSystem.OnHungerChanged -= OnHungerChanged;
-
-    private void OnHungerChanged(float newHungerValue)
+    private void EnteredLivingRoom(Collider other)
     {
-        if (!this.hasLitFire || this.hasEatenFood) return;
-        
+        if (!other.CompareTag("Player")) return;
+        Debug.Log("Tutorial Entered Living room");
+        this.radio.SendBroadcast(Radio.RadioBroadcasts.IntroductionTutorial);
+        StartBroadcastWait(0f, StartTutorial); // 57 seconds
+    }
+
+    private void OnEnable()
+    {
+        HungerSystem.HungerStateChangedEvent += OnHungerStateChanged;
+        this.radio.OnChannelChanged += OnRadioChannelChanged;
+        this.radio.OnBroadcastChanged += OnRadioBroadcastChanged;
+    }
+
+    private void OnDisable()
+    {
+        HungerSystem.HungerStateChangedEvent -= OnHungerStateChanged;
+        this.radio.OnChannelChanged -= OnRadioChannelChanged;
+        this.radio.OnBroadcastChanged -= OnRadioBroadcastChanged;
+    }
+
+    private void OnRadioChannelChanged(int channelIndex, bool isSafeChannel)
+    {
+        if (!isSafeChannel)
+        {
+            this.livingroomToken?.Cancel();
+            return;
+        }
+        FixRadio();
+        this.radio.SendBroadcast(Radio.RadioBroadcasts.RadioTutorialTip);
+        StartBroadcastWait(0f /* TODO: RadioTutorialTip duration */, () =>
+        {
+            tutorialText.text = "Survive the night";
+        });
+    }
+
+    private void OnRadioBroadcastChanged(Radio.RadioBroadcasts broadcast)
+    {
+        if (broadcast == Radio.RadioBroadcasts.IntroductionTutorial) return;
+        this.livingroomToken?.Cancel();
+    }
+
+    private void OnHungerStateChanged(HungerSystem.EnumHungerState oldState, HungerSystem.EnumHungerState newState)
+    {
+        if (this.hasEatenFood) return;
+        if (newState != HungerSystem.EnumHungerState.Full) return;
         this.hasEatenFood = true;
-        radio.SetChannel(8);
-        tutorialText.text = "Put the radio frequency back to Channel 30";
+        this.radio.SendBroadcast(Radio.RadioBroadcasts.FoodTutorialTip);
         Debug.Log("eaten food");
+        StartBroadcastWait(0f /* TODO: FoodTutorialTip duration */, () =>
+        {
+            this.tutorialText.text = "Light the fireplace";
+        });
     }
 
     [ContextMenu("Turn on fire")]
     public void TurnOnFire()
     {
-        if(hasLitFire)
-        {
-            return;
-        }
-        tutorialText.text = "Eat a can of food";
-        hungerManager.ModifyHunger(-21);
+        if (hasLitFire) return;
         hasLitFire = true;
+        this.radio.SendBroadcast(Radio.RadioBroadcasts.FireTutorialTip);
+        StartBroadcastWait(0f /* TODO: FireTutorialTip duration */, () =>
+        {
+            radio.SetChannel(8);
+            tutorialText.text = "Put the radio frequency back to Channel 30";
+        });
     }
 
     public void FixRadio()
@@ -78,6 +129,30 @@ public class TutorialManager : MonoBehaviour
             return;
         }
         hasFixedRadio = true;
+        this.radio.SendBroadcast(Radio.RadioBroadcasts.FoodTutorialTip);
         tutorialText.text = "Survive the night";
+    }
+    
+    private void StartBroadcastWait(float duration, System.Action onFinished)
+    {
+        this.livingroomToken?.Cancel();
+        this.livingroomToken?.Dispose();
+        this.livingroomToken = new CancellationTokenSource();
+        _ = WaitForBroadcastToFinish(duration, this.livingroomToken.Token, onFinished);
+    }
+
+    private async Awaitable WaitForBroadcastToFinish(float duration, CancellationToken ct, System.Action onFinished)
+    {
+        try { await Awaitable.WaitForSecondsAsync(duration, ct); }
+        catch (System.OperationCanceledException) { }
+        finally { onFinished?.Invoke(); }
+    }
+
+    private void StartTutorial()
+    {
+        if (this.triggerArea != null)
+            this.triggerArea.OnTriggerEntered -= EnteredLivingRoom;
+        tutorialText.text = "Eat a can of food";
+        hungerManager.ModifyHunger(-20);
     }
 }

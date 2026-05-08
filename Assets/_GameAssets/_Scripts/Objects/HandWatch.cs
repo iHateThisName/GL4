@@ -92,32 +92,17 @@ public class HandWatch : MonoBehaviour
     /// <returns>The color associated with that state.</returns>
     private Color GetTemperatureColor(PlayerTemperatureSimulator.EnumBodyTemperatureState state)
     {
-        switch (state)
+        return state switch
         {
-            case PlayerTemperatureSimulator.EnumBodyTemperatureState.Normal:
-                return temperatureStateColors[3];
-                break;
-            case PlayerTemperatureSimulator.EnumBodyTemperatureState.MildHypothermia:
-                return temperatureStateColors[2];
-                break;
-            case PlayerTemperatureSimulator.EnumBodyTemperatureState.ModerateHypothermia:
-                return temperatureStateColors[1];
-                break;
-            case PlayerTemperatureSimulator.EnumBodyTemperatureState.Hypothermia:
-                return temperatureStateColors[0];
-                break;
-            case PlayerTemperatureSimulator.EnumBodyTemperatureState.MildHyperthermia:
-                return temperatureStateColors[4];
-                break;
-            case PlayerTemperatureSimulator.EnumBodyTemperatureState.ModerateHyperthermia:
-                return temperatureStateColors[5];
-                break;
-            case PlayerTemperatureSimulator.EnumBodyTemperatureState.Hyperthermia:
-                return temperatureStateColors[6];
-                break;
-            default:
-                return Color.white;
-        }
+            PlayerTemperatureSimulator.EnumBodyTemperatureState.Normal => temperatureStateColors[3],
+            PlayerTemperatureSimulator.EnumBodyTemperatureState.MildHypothermia => temperatureStateColors[2],
+            PlayerTemperatureSimulator.EnumBodyTemperatureState.ModerateHypothermia => temperatureStateColors[1],
+            PlayerTemperatureSimulator.EnumBodyTemperatureState.Hypothermia => temperatureStateColors[0],
+            PlayerTemperatureSimulator.EnumBodyTemperatureState.MildHyperthermia => temperatureStateColors[4],
+            PlayerTemperatureSimulator.EnumBodyTemperatureState.ModerateHyperthermia => temperatureStateColors[5],
+            PlayerTemperatureSimulator.EnumBodyTemperatureState.Hyperthermia => temperatureStateColors[6],
+            _ => Color.white
+        };
     }
     
     /// <summary>

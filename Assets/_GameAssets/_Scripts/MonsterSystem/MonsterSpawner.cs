@@ -41,7 +41,7 @@ namespace Refactored
         {
             if (evt.GetEventType() != NightEvent.NightEventType.SpawnMonster) return;
 
-            for (int i = 0; i < evt.GetMonsterCount(); i++)
+            for (int i = 0; i < evt.GetAmount(); i++)
             {
                 Debug.Log("Spawning Monster in loop");
                 var monster = evt.GetMonsterPrefab();
