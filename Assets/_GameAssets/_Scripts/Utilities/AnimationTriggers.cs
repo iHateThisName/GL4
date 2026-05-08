@@ -14,6 +14,12 @@ public static class AnimationTriggers {
     }
 
     public static class Munch {
+        public static readonly int Eating = Animator.StringToHash("EatingTrigger");
+        public static readonly int Enter = Animator.StringToHash("EnterTrigger");
+        public static readonly int Exit = Animator.StringToHash("ExitTrigger");
+        public static readonly int RejectFood = Animator.StringToHash("RejectFoodTrigger");
+        public static readonly int AcceptFood = Animator.StringToHash("AcceptFoodTrigger");
+
     }
 
     public static class Stalker {
@@ -34,6 +40,13 @@ public static class AnimationTriggers {
 
             EnumAnimationStates.StalkerArmsCover => Stalker.ArmsCover,
             EnumAnimationStates.StalkerArmsUncover => Stalker.ArmsUncover,
+
+
+            EnumAnimationStates.MunchEating => Munch.Eating,
+            EnumAnimationStates.MunchEnter => Munch.Enter,
+            EnumAnimationStates.MunchExit => Munch.Exit,
+            EnumAnimationStates.MunchRejectFood => Munch.RejectFood,
+            EnumAnimationStates.MunchAcceptFood => Munch.AcceptFood,
             _ => 0
         };
 
@@ -57,5 +70,11 @@ public enum EnumAnimationStates {
 
     StalkerArmsCover,
     StalkerArmsUncover,
+
+    MunchEating,
+    MunchEnter,
+    MunchExit,
+    MunchRejectFood,
+    MunchAcceptFood,
 
 }
