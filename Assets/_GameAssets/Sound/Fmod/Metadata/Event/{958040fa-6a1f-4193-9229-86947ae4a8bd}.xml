@@ -168,6 +168,9 @@
 		<property name="start">
 			<value>1</value>
 		</property>
+		<relationship name="sounds">
+			<destination>{5f281228-403d-440c-8fc4-d1d968055f51}</destination>
+		</relationship>
 	</object>
 	<object class="MultiSound" id="{2e079358-4253-4602-a4a2-d3d695d9e8f7}">
 		<property name="isCutoff">
@@ -310,6 +313,9 @@
 		<property name="start">
 			<value>10</value>
 		</property>
+		<relationship name="sounds">
+			<destination>{8497381c-c6a3-415f-a257-47245b367328}</destination>
+		</relationship>
 	</object>
 	<object class="EventMixerGroup" id="{2d6f6672-9942-4958-b0b4-b872ef320dd8}">
 		<property name="name">
@@ -340,6 +346,11 @@
 	</object>
 	<object class="MixerBusPanner" id="{e1fa1d6f-6f72-490d-8baa-f9f0b3caab2a}" />
 	<object class="MixerBusFader" id="{04158ffc-00df-4326-a0f1-5e42bd5a6065}" />
+	<object class="SingleSound" id="{5f281228-403d-440c-8fc4-d1d968055f51}">
+		<relationship name="audioFile">
+			<destination>{2fa7be70-686c-4837-836b-23d908cfea4c}</destination>
+		</relationship>
+	</object>
 	<object class="Automator" id="{91f32e6e-dec7-47fe-b4a8-d9018e37e6bc}">
 		<property name="nameOfPropertyBeingAutomated">
 			<value>pitch</value>
@@ -449,6 +460,11 @@
 	<object class="SingleSound" id="{bb6b2e07-359f-436b-8236-a3572d32a1e3}">
 		<relationship name="audioFile">
 			<destination>{81690770-5a23-48c7-822f-81a6e7816d37}</destination>
+		</relationship>
+	</object>
+	<object class="SingleSound" id="{8497381c-c6a3-415f-a257-47245b367328}">
+		<relationship name="audioFile">
+			<destination>{2d7e8424-acc8-4109-ac4a-e359f4028936}</destination>
 		</relationship>
 	</object>
 	<object class="Automator" id="{14dd3d90-8262-4754-bf7b-9b62cf300ac8}">
