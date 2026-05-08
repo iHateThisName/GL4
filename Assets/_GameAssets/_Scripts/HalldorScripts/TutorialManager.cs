@@ -43,8 +43,7 @@ public class TutorialManager : MonoBehaviour
                 tutorialText.text = "Go into the livingroom";
                 this.tempertureManager.SetIsSimulatorEnabled(false);
                 this.hungerManager.Pause();
-                GameManager.Instance.PauseNightTimer();
-                GameManager.Instance.SetNightTimerRemainingSeconds(15f);
+                GameManager.Instance.PrepareNightTimerWithDuration(15f);
                 Debug.Log("Tutorial started");
 
                 this.triggerArea = this.GetComponentInChildren<TriggerArea>();

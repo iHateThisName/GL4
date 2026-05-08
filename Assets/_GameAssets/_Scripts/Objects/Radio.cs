@@ -165,13 +165,49 @@ public class Radio : MonoBehaviour
 
         if (!this.isOnSafeChannel) PlayBroadcast(RadioBroadcasts.Static);
         else PlayBroadcast(RadioBroadcasts.Off);
-        
+
         OnChannelChanged?.Invoke(this.CurrentChannel, this.isOnSafeChannel);
         UpdateDebugUI();
     }
 
     [ContextMenu("Test Broadcast")]
     private void TestBroadcast()
+    {
+        PlayBroadcast(RadioBroadcasts.IntroductionTutorial);
+    }
+    
+    [ContextMenu("Test Broadcast 1")]
+    private void TestBroadcast1()
+    {
+        PlayBroadcast(RadioBroadcasts.FoodTutorialTip);
+    }
+    
+    [ContextMenu("Test Broadcast 2")]
+    private void TestBroadcast2()
+    {
+        PlayBroadcast(RadioBroadcasts.FireTutorialTip);
+    }
+
+    [ContextMenu("Test Broadcast 3")]
+    private void TestBroadcast3()
+    {
+        PlayBroadcast(RadioBroadcasts.RadioTutorialTip);
+    }
+    
+    [ContextMenu("Test Broadcast 4")]
+    private void TestBroadcast4()
+    {
+        PlayBroadcast(RadioBroadcasts.NightTwoWeather);
+    }
+    
+    [ContextMenu("Test Broadcast 5")]
+    private void TestBroadcast5()
+    {
+        PlayBroadcast(RadioBroadcasts.LostConnectionWithOutside);
+    }
+    
+    [ContextMenu("Test Broadcast 6")]
+    private void TestBroadcast6()
     {
         PlayBroadcast(RadioBroadcasts.LastBroadcast);
     }
