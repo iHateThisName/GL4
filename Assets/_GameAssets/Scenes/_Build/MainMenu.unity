@@ -5046,7 +5046,7 @@ PrefabInstance:
     - target: {fileID: 8809055701280683640, guid: 50c3c26ebf3dd5e45b1ae1f19b69885e, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: a0ceb35eaf1f2054889d34fe370f51cf, type: 2}
+      objectReference: {fileID: 2100000, guid: ff93574ffd2db2d4c92c8d5cd6d3d7ea, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5111,7 +5111,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.XR.Interaction.Toolkit::UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable
   m_InteractionManager: {fileID: 0}
   m_Colliders:
-  - {fileID: 2138357397}
+  - {fileID: 957671330}
   m_InteractionLayers:
     m_Bits: 1
   m_DistanceCalculationMode: 1
@@ -5266,6 +5266,11 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 2
+--- !u!65 &957671330 stripped
+BoxCollider:
+  m_CorrespondingSourceObject: {fileID: 2316387827959229753, guid: 50c3c26ebf3dd5e45b1ae1f19b69885e, type: 3}
+  m_PrefabInstance: {fileID: 957671322}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &976987262
 PrefabInstance:
   m_ObjectHideFlags: 0
