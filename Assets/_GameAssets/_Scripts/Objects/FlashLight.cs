@@ -214,6 +214,7 @@ public class Flashlight : MonoBehaviour
             this.currentAngle += 360f;
             this.fullRotations--;
         }
+        
         while (this.currentAngle <= -360f)
         {
             this.currentAngle -= 360f;
