@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7065287357716026064}
   - component: {fileID: 5493819334016811749}
   - component: {fileID: 8979222186802900290}
+  - component: {fileID: 2467509824809940869}
   m_Layer: 0
   m_Name: Idle
   m_TagString: Untagged
@@ -67,6 +68,39 @@ MonoBehaviour:
   AnimationState: 1
   paramName: 
   boolValue: 1
+--- !u!114 &2467509824809940869
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1668705861020326842}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -559043428
+      Data2: 1328854212
+      Data3: 1757216690
+      Data4: -252676278
+    Path: event:/Lyubo/Stalker
+  Event: 
+  EventPlayTrigger: 11
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: Stalker
+    Value: 2
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &3259754150233931781
 GameObject:
   m_ObjectHideFlags: 0
@@ -78,6 +112,7 @@ GameObject:
   - component: {fileID: 5795693467914578306}
   - component: {fileID: 4910811012170373297}
   - component: {fileID: 3011965976767095937}
+  - component: {fileID: 7990636691646854680}
   m_Layer: 0
   m_Name: Patrol
   m_TagString: Untagged
@@ -151,6 +186,39 @@ MonoBehaviour:
   AnimationState: 2
   paramName: 
   boolValue: 1
+--- !u!114 &7990636691646854680
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3259754150233931781}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -559043428
+      Data2: 1328854212
+      Data3: 1757216690
+      Data4: -252676278
+    Path: event:/Lyubo/Stalker
+  Event: 
+  EventPlayTrigger: 11
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: Stalker
+    Value: 1
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &3438113671535779755
 GameObject:
   m_ObjectHideFlags: 0
@@ -161,8 +229,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1110177333996298887}
   - component: {fileID: 2609687031708666669}
-  - component: {fileID: 2158655959361425675}
   - component: {fileID: 1491841840754991035}
+  - component: {fileID: 3812595709249841634}
   m_Layer: 0
   m_Name: Flee
   m_TagString: Untagged
@@ -214,23 +282,6 @@ MonoBehaviour:
       type: {class: FleeStrategy, ns: MonsterSystem, asm: Assembly-CSharp}
       data:
         fleeDistance: 30
---- !u!114 &2158655959361425675
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3438113671535779755}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4702ac2b4be5cd141a1c9c87889c9abc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AudioAffordance
-  triggerMode: 2
-  stopOnExit: 1
-  clip: {fileID: 8300000, guid: fc323e27414aadf4095893d373c60c49, type: 3}
-  loop: 0
-  volume: 1
 --- !u!114 &1491841840754991035
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -249,6 +300,39 @@ MonoBehaviour:
   AnimationState: 6
   paramName: 
   boolValue: 1
+--- !u!114 &3812595709249841634
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3438113671535779755}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -559043428
+      Data2: 1328854212
+      Data3: 1757216690
+      Data4: -252676278
+    Path: event:/Lyubo/Stalker
+  Event: 
+  EventPlayTrigger: 11
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: Stalker
+    Value: 3
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &4489208184488109914
 GameObject:
   m_ObjectHideFlags: 0
@@ -423,6 +507,7 @@ GameObject:
   - component: {fileID: 8782225286382866475}
   - component: {fileID: 4377894048711055769}
   - component: {fileID: 7102720860972879059}
+  - component: {fileID: 7039819678103401332}
   m_Layer: 0
   m_Name: KillPlayer
   m_TagString: Untagged
@@ -496,6 +581,39 @@ MonoBehaviour:
   AnimationState: 4
   paramName: 
   boolValue: 1
+--- !u!114 &7039819678103401332
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5690330209603185741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -559043428
+      Data2: 1328854212
+      Data3: 1757216690
+      Data4: -252676278
+    Path: event:/Lyubo/Stalker
+  Event: 
+  EventPlayTrigger: 11
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: Stalker
+    Value: 4
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &6036961042488212710
 GameObject:
   m_ObjectHideFlags: 0
@@ -744,8 +862,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4814711508352412192}
   - component: {fileID: 3275094173940170067}
-  - component: {fileID: 4893929753904749785}
   - component: {fileID: 1197731052362962471}
+  - component: {fileID: 4014183676537758066}
   m_Layer: 0
   m_Name: Chase
   m_TagString: Untagged
@@ -796,23 +914,6 @@ MonoBehaviour:
     - rid: 1560563707155841127
       type: {class: FollowTargetStrategy, ns: MonsterSystem, asm: Assembly-CSharp}
       data: 
---- !u!114 &4893929753904749785
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8085184186486536723}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4702ac2b4be5cd141a1c9c87889c9abc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AudioAffordance
-  triggerMode: 2
-  stopOnExit: 1
-  clip: {fileID: 8300000, guid: a1e34015c147f0246848c0e9de812e99, type: 3}
-  loop: 1
-  volume: 1
 --- !u!114 &1197731052362962471
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -831,6 +932,39 @@ MonoBehaviour:
   AnimationState: 11
   paramName: 
   boolValue: 1
+--- !u!114 &4014183676537758066
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8085184186486536723}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -559043428
+      Data2: 1328854212
+      Data3: 1757216690
+      Data4: -252676278
+    Path: event:/Lyubo/Stalker
+  Event: 
+  EventPlayTrigger: 11
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: Stalker
+    Value: 0
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &8824685086368401993
 GameObject:
   m_ObjectHideFlags: 0
