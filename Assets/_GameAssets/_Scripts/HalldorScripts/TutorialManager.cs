@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using UnityEngine;
 using TMPro;
@@ -45,8 +46,9 @@ public class TutorialManager : MonoBehaviour
                 tutorialText.text = "Go inside the cabin and enter the living room";
                 this.tempertureManager.SetIsSimulatorEnabled(false);
                 this.hungerManager.Pause();
-                GameManager.Instance.PrepareNightTimerWithDuration(40f);
                 Debug.Log("Tutorial started");
+                
+                SceneTransition.OnTransitionComplete += LoadedIntoScene;
 
                 if (player != null)
                 {
@@ -81,6 +83,16 @@ public class TutorialManager : MonoBehaviour
         HungerSystem.HungerStateChangedEvent -= OnHungerStateChanged;
         this.radio.OnChannelChanged -= OnRadioChannelChanged;
         this.radio.OnBroadcastChanged -= OnRadioBroadcastChanged;
+    }
+
+    private void OnDestroy()
+    {
+        SceneTransition.OnTransitionComplete -= LoadedIntoScene;
+    }
+
+    private void LoadedIntoScene(int obj)
+    {
+        GameManager.Instance.PrepareNightTimerWithDuration(30f);
     }
 
     private void OnRadioChannelChanged(int channelIndex, bool isSafeChannel)

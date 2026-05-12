@@ -123,17 +123,17 @@ public static class TimerManager
     public static void Pause(TimerHandle handle)
     {
         if (!Validate(handle)) return;
-        var t = timers[handle.Index];
-        t.IsRunning = 0;
-        timers[handle.Index] = t;
+        var timer = timers[handle.Index];
+        timer.IsRunning = 0;
+        timers[handle.Index] = timer;
     }
 
     public static void Resume(TimerHandle handle)
     {
         if (!Validate(handle)) return;
-        var t = timers[handle.Index];
-        t.IsRunning = 1;
-        timers[handle.Index] = t;
+        var timer = timers[handle.Index];
+        timer.IsRunning = 1;
+        timers[handle.Index] = timer;
     }
 
     /// <summary>
@@ -159,29 +159,29 @@ public static class TimerManager
     {
         if (!initialized || timers.Length == 0) return;
 
-        float dt = Time.deltaTime;
+        float deltaTime = Time.deltaTime;
 
         new TickTimersJob
         {
             Timers = timers.AsArray(),
-            DeltaTime = dt
+            DeltaTime = deltaTime
         }.Schedule(timers.Length, 32).Complete();
 
         // Dispatch managed callbacks on main thread
         for (int i = 0; i < timers.Length; i++)
         {
-            ref var t = ref timers.ElementAt(i);
+            ref var timer = ref timers.ElementAt(i);
 
-            if (t.TickFired == 1)
+            if (timer.TickFired == 1)
             {
-                t.TickFired = 0;
+                timer.TickFired = 0;
                 onTick[i]?.Invoke();
             }
 
-            if (t.FinishedFired == 1)
+            if (timer.FinishedFired == 1)
             {
-                t.FinishedFired = 0;
-                t.IsRunning = 0;
+                timer.FinishedFired = 0;
+                timer.IsRunning = 0;
                 onFinished[i]?.Invoke();
             }
         }
@@ -238,30 +238,30 @@ public static class TimerManager
 
         public void Execute(int i)
         {
-            var t = Timers[i];
-            if (t.IsRunning == 0 || t.IsFinished == 1) return;
+            var timer = Timers[i];
+            if (timer.IsRunning == 0 || timer.IsFinished == 1) return;
 
-            t.Elapsed += DeltaTime;
-            t.TickFired = 0;
-            t.FinishedFired = 0;
+            timer.Elapsed += DeltaTime;
+            timer.TickFired = 0;
+            timer.FinishedFired = 0;
 
             // Check tick boundary
-            if (t.Elapsed >= t.NextInterval && t.NextInterval > 0)
+            if (timer.Elapsed >= timer.NextInterval && timer.NextInterval > 0)
             {
-                t.TickFired = 1;
+                timer.TickFired = 1;
                 // Advance interval (catch up to prevent backlog)
-                while (t.Elapsed >= t.NextInterval)
-                    t.NextInterval += t.Interval;
+                while (timer.Elapsed >= timer.NextInterval)
+                    timer.NextInterval += timer.Interval;
             }
 
             // Check duration
-            if (t.Duration > 0f && t.Elapsed >= t.Duration)
+            if (timer.Duration > 0f && timer.Elapsed >= timer.Duration)
             {
-                t.IsFinished = 1;
-                t.FinishedFired = 1;
+                timer.IsFinished = 1;
+                timer.FinishedFired = 1;
             }
 
-            Timers[i] = t;
+            Timers[i] = timer;
         }
     }
 }
