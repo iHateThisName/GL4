@@ -1,16 +1,11 @@
-using Assets.Scripts.Singleton;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets;
 
-public class SettingsScript : PersistenSingleton<SettingsScript>
+public class SettingsScript : MonoBehaviour
 {
-    //Bools for enabling certain settings. This is used by the ApplyPlayerSettings script
-    public bool snapEnabled = false;
-    public bool tunnelingEnabled = false;
-    public bool teleportEnabled = false;
-
-    [SerializeField] private int currentNight = 1;
+    //Refrence to the settings bools
+    [SerializeField] private SettingsBools settingsBool;
 
     //These cubes are just for visuals, they don't do anything, they turn off and on again depending on what the player wants
     [SerializeField] private GameObject enableSnapCube;
@@ -67,8 +62,23 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
         rightControllerRefrence.smoothTurnEnabled = true;
         leftControllerRefrence.smoothMotionEnabled = true;
 
+        settingsBool = GameObject.Find("SettingsBools").GetComponent<SettingsBools>();
+
         //Setting the default night to the current night
-        nightSettings.SetDebugStartNight(this.currentNight);
+        nightSettings.SetDebugStartNight(this.settingsBool.currentNight);
+
+        if(settingsBool.snapEnabled)
+        {
+            EnableSnapTurn();
+        }
+        if(settingsBool.tunnelingEnabled)
+        {
+            EnableTunneling();
+        }
+        if(settingsBool.teleportEnabled)
+        {
+            EnableTeleport();
+        }
     }
 
     //A method for enabling snap turning
@@ -76,7 +86,7 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
     {
         rightControllerRefrence.smoothTurnEnabled = false;
         leftControllerRefrence.smoothTurnEnabled = false;
-        snapEnabled = true;
+        settingsBool.snapEnabled = true;
         enableSnapCube.SetActive(false);
         tabledSnapCube.SetActive(true);
         enableSmoothCube.SetActive(true);
@@ -88,7 +98,7 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
     {
         rightControllerRefrence.smoothTurnEnabled = true;
         leftControllerRefrence.smoothTurnEnabled = true;
-        snapEnabled = false;
+        settingsBool.snapEnabled = false;
         enableSmoothCube.SetActive(false);
         tabledSmoothCube.SetActive(true);
         enableSnapCube.SetActive(true);
@@ -99,7 +109,7 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
     public void EnableTunneling()
     {
         tunnelingVignette.SetActive(true);
-        tunnelingEnabled = true;
+        settingsBool.tunnelingEnabled = true;
         enableTunnelingCube.SetActive(false);
         tabledTunnelingCube.SetActive(true);
         disableTunnelingCube.SetActive(true);
@@ -110,7 +120,7 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
     public void DisableTunneling()
     {
         tunnelingVignette.SetActive(false);
-        tunnelingEnabled = false;
+        settingsBool.tunnelingEnabled = false;
         disableTunnelingCube.SetActive(false);
         tabledNoTunnelCube.SetActive(true);
         enableTunnelingCube.SetActive(true);
@@ -121,7 +131,7 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
     public void EnableTeleport()
     {
         leftControllerRefrence.smoothMotionEnabled = false;
-        teleportEnabled = true;
+        settingsBool.teleportEnabled = true;
         SetTeleportEnabled(true);
         enableTelportCube.SetActive(false);
         tabledTeleportCube.SetActive(true);
@@ -133,7 +143,7 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
     public void DisableTeleport()
     {
         leftControllerRefrence.smoothMotionEnabled = true;
-        teleportEnabled = false;
+        settingsBool.teleportEnabled = false;
         SetTeleportEnabled(false);
         enabledLocomotionCube.SetActive(false);
         tabledLocomotionCube.SetActive(true);
@@ -174,6 +184,8 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
             tabledNightThreeCube.SetActive(false);
             tabledNightFourCube.SetActive(false);
             tabledNightFiveCube.SetActive(false);
+
+            Debug.Log("Night 2 selected");
         }
         else if (nightNum == 3)
         {
@@ -227,6 +239,8 @@ public class SettingsScript : PersistenSingleton<SettingsScript>
         {
             Debug.LogError("Invalid night number");
         }
+
+        settingsBool.currentNight = nightNum;
     }
 
     // This is the function your Main Menu Toggle will call

@@ -65,7 +65,7 @@ namespace MonsterSystem
             this.sensorCache = new Dictionary<System.Type, MonsterSensor>();
 
             if (this.animator == null) this.animator = GetComponentInChildren<Animator>();
-            if (this.audioSource == null) this.audioSource = GetComponentInChildren<AudioSource>();
+            //if (this.audioSource == null) this.audioSource = GetComponentInChildren<AudioSource>();
 
             // Auto-collect states from "States" child
             Transform statesRoot = this.initialState == null ? transform.root.Find("States") : this.initialState.transform.parent;

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> {
 
-    [field:SerializeField, Gaskellgames.ReadOnly] public float CurrentBodyTemperature { get; private set; } = 37.0f; // Normal human body temperature in Celsius
+    [field: SerializeField, Gaskellgames.ReadOnly] public float CurrentBodyTemperature { get; private set; } = 37.0f; // Normal human body temperature in Celsius
     private readonly float MIN_COMFORTABLE_TEMPERATURE = 35.2f; // Hypothermia threshold,
                                                                 // 32 - 35 C is mild hypothermia (shivering, confusion),
                                                                 // 28 - 32 C is moderate (slurred speech, drowsiness),
@@ -20,7 +20,7 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
     private readonly float WARM_RATE = 0.12f; // Rate of temperature change per second while next to fireplace
     private readonly float OPEN_WINDOW_RATE = -0.03f; // Rate of temperature change per second when a single window is open
 
-    [field:SerializeField, Gaskellgames.ReadOnly] public float CurrentHeatModifier { get; private set; } = 0f;
+    [field: SerializeField, Gaskellgames.ReadOnly] public float CurrentHeatModifier { get; private set; } = 0f;
 
     [SerializeField, Gaskellgames.ReadOnly] private int openWindowCount = 0;
 
@@ -34,6 +34,8 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
     // Event triggered when location type changes.
     public static Action<EnumLocationType> OnLocationTypeChanged;
     public static Action<float> OnHeatModifierChanged;
+
+    [SerializeField] private bool isSimulatingTemperature = true;
 
     // Temperature change rate based on location type, Normal slowly decreases, Cold rapidly decreases, Warm increases
     public enum EnumLocationType { Normal, Cold, Warm, Shack }
@@ -80,6 +82,11 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
     /// Simulates temperature changes and updates the body temperature state.
     /// </summary>
     private void FixedUpdate() {
+        if (!isSimulatingTemperature) { // If simulation is disabled, reset heat modifier and skip temperature changes
+            this.CurrentHeatModifier = 0f;
+            OnHeatModifierChanged?.Invoke(this.CurrentHeatModifier);
+            return;
+        }
         // Simulate temperature changes over time
         SimulateTemperatureChange();
         // Update temperature state based on current body temperature
@@ -215,6 +222,8 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
         int openWindows = GameManager.Instance.WindowsDictonary.Count - closedWindow;
         this.openWindowCount = openWindows;
     }
+
+    public void SetIsSimulatorEnabled(bool newValue) => this.isSimulatingTemperature = newValue;
 }
 
 public struct BodyTemperatureStateChange {

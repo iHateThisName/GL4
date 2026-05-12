@@ -8,7 +8,7 @@ public class Food : MonoBehaviour
     [SerializeField] private bool destroyOnEaten = false;
     
     private XRGrabInteractable grabInteractable;
-    private Rigidbody rigidbody;
+    private Rigidbody rb;
     private MeshFilter meshFilter;
     private int value;
 
@@ -19,7 +19,7 @@ public class Food : MonoBehaviour
         if (this.meshFilter != null && meshes.Length > 0)
             this.meshFilter.mesh = this.meshes[this.value];
         
-        this.rigidbody = GetComponent<Rigidbody>();
+        this.rb = GetComponent<Rigidbody>();
         this.grabInteractable = GetComponent<XRGrabInteractable>();
     }
 
@@ -38,7 +38,7 @@ public class Food : MonoBehaviour
     
     public int Value => this.value;
     
-    public Rigidbody Rigidbody => this.rigidbody;
+    public Rigidbody Rigidbody => this.rb;
     
     public XRGrabInteractable GrabInteractable => this.grabInteractable;
 }

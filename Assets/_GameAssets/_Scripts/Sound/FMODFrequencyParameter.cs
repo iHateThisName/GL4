@@ -42,8 +42,8 @@ public class FMODFrequencyParameter : MonoBehaviour {
     }
 
     private void ApplyValueChanges() {
-        this.TargetValue = Mathf.Clamp(this.TargetValue, this.minValue, this.maxValue);
-        if (this.TargetValue != this.currentValue && !this.isAnimating) {
+        this._targetValue = Mathf.Clamp(this._targetValue, this.minValue, this.maxValue);
+        if (this._targetValue != this.currentValue && !this.isAnimating) {
             StartCoroutine(AnimateParameterChange());
         }
     }
@@ -51,7 +51,7 @@ public class FMODFrequencyParameter : MonoBehaviour {
     private IEnumerator AnimateParameterChange() {
         this.isAnimating = true; // flag to prevent multiple coroutines from running simultaneously
 
-        while (this.TargetValue != this.currentValue) {
+        while (this._targetValue != this.currentValue) {
             yield return new WaitForSeconds(this.animationSpeed);
 
             if (this.currentValue == this.TargetValue) yield break;

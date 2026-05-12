@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6173900081967347051}
-  - component: {fileID: 7422845941497112071}
   m_Layer: 0
   m_Name: CuttingBoardPrefab
   m_TagString: Untagged
@@ -33,27 +32,6 @@ Transform:
   - {fileID: 5910419223115440561}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &7422845941497112071
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 423359315946025038}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.7167757, y: 0.042999715, z: 1}
-  m_Center: {x: 0.0014906228, y: -0.0014906079, z: 0}
 --- !u!1 &8436983777729068071
 GameObject:
   m_ObjectHideFlags: 0
@@ -65,6 +43,7 @@ GameObject:
   - component: {fileID: 5910419223115440561}
   - component: {fileID: 4592898388254323819}
   - component: {fileID: 1949887153994153200}
+  - component: {fileID: 1704956467498084694}
   m_Layer: 0
   m_Name: SM_Cuttingboard
   m_TagString: Untagged
@@ -144,3 +123,24 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &1704956467498084694
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8436983777729068071}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.68991834, y: 0.035681255, z: 0.52690554}
+  m_Center: {x: -0.000000029802322, y: -0.000000004656613, z: -0.00000071525574}

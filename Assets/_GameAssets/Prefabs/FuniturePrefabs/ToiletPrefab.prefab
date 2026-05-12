@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 82802145855900369}
   - component: {fileID: 3957737413226197087}
   - component: {fileID: 7343242597629512018}
+  - component: {fileID: 5570634428804204141}
   m_Layer: 0
   m_Name: SM_SeatCover_MO
   m_TagString: Untagged
@@ -66,7 +67,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -4246479402191905792, guid: 54258d255b5563e428787039cfd348ea, type: 3}
+  - {fileID: 2100000, guid: fcd3dace44f2c884f8141d505609277a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -90,6 +91,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &5570634428804204141
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 399460665833712245}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.61343324, y: 0.022067089, z: 0.48949832}
+  m_Center: {x: 0.30663872, y: 0.0075475317, z: 0.00032629818}
 --- !u!1 &738423420239922533
 GameObject:
   m_ObjectHideFlags: 0
@@ -101,6 +123,7 @@ GameObject:
   - component: {fileID: 80471702638677008}
   - component: {fileID: 2571643963619326065}
   - component: {fileID: 2493266010634378037}
+  - component: {fileID: 5380973848750859236}
   m_Layer: 0
   m_Name: SM_WaterHolder_MO
   m_TagString: Untagged
@@ -156,7 +179,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -4246479402191905792, guid: 54258d255b5563e428787039cfd348ea, type: 3}
+  - {fileID: 2100000, guid: fcd3dace44f2c884f8141d505609277a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -180,6 +203,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &5380973848750859236
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 738423420239922533}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.24407601, y: 0.51935315, z: 0.74475956}
+  m_Center: {x: -0.0000000037252903, y: 0.025993839, z: -0.000000044703484}
 --- !u!1 &3331351139834960698
 GameObject:
   m_ObjectHideFlags: 0
@@ -227,6 +271,7 @@ GameObject:
   - component: {fileID: 6705996975991207309}
   - component: {fileID: 6543036906074533218}
   - component: {fileID: 1476245251939832547}
+  - component: {fileID: 2350377908226182596}
   m_Layer: 0
   m_Name: SM_Flusher_MO
   m_TagString: Untagged
@@ -243,7 +288,7 @@ Transform:
   m_GameObject: {fileID: 3942291927929693496}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.31, y: 0.693, z: 0.186}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -282,7 +327,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -4246479402191905792, guid: 54258d255b5563e428787039cfd348ea, type: 3}
+  - {fileID: 2100000, guid: fcd3dace44f2c884f8141d505609277a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -306,6 +351,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &2350377908226182596
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3942291927929693496}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.052032024, y: 0.025736883, z: 0.1465145}
+  m_Center: {x: 0.025997862, y: 0.00009149546, z: 0.05978298}
 --- !u!1 &4536553041543786409
 GameObject:
   m_ObjectHideFlags: 0
@@ -317,6 +383,7 @@ GameObject:
   - component: {fileID: 6501151378354650510}
   - component: {fileID: 9199289378472647304}
   - component: {fileID: 4219962931992771068}
+  - component: {fileID: 3775039829442933774}
   m_Layer: 0
   m_Name: SM_ToiletSeat_MO
   m_TagString: Untagged
@@ -372,7 +439,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -4246479402191905792, guid: 54258d255b5563e428787039cfd348ea, type: 3}
+  - {fileID: 2100000, guid: fcd3dace44f2c884f8141d505609277a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -396,6 +463,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &3775039829442933774
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4536553041543786409}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.6134332, y: 0.04782514, z: 0.48949838}
+  m_Center: {x: 0.30654052, y: 0.009652158, z: 0.0006202087}
 --- !u!1 &5813866872085487455
 GameObject:
   m_ObjectHideFlags: 0
@@ -407,6 +495,7 @@ GameObject:
   - component: {fileID: 6079569988730243249}
   - component: {fileID: 3885223197489631212}
   - component: {fileID: 7837105312642105643}
+  - component: {fileID: 7870449799183793084}
   m_Layer: 0
   m_Name: SM_ToiletBase_MO
   m_TagString: Untagged
@@ -462,7 +551,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -4246479402191905792, guid: 54258d255b5563e428787039cfd348ea, type: 3}
+  - {fileID: 2100000, guid: fcd3dace44f2c884f8141d505609277a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -486,3 +575,24 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &7870449799183793084
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5813866872085487455}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.7531593, y: 0.45337778, z: 0.4896012}
+  m_Center: {x: -0.01724182, y: 0.16711038, z: -0.00003385544}

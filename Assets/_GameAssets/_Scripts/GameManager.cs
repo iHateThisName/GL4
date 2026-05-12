@@ -230,6 +230,55 @@ public class GameManager : PersistenSingleton<GameManager> {
             this.night = 1;
     }
 
+    public void PauseNightTimer()
+    {
+        TimerManager.Pause(this.nightTimerHandle);
+    }
+
+    public void ResumeNightTimer()
+    {
+        TimerManager.Resume(this.nightTimerHandle);
+    }
+
+    /// <summary>
+    /// Collapses the remaining night time to <paramref name="seconds"/> from now.
+    /// </summary>
+    public void SetNightTimerRemainingSeconds(float seconds)
+    {
+        if (!TimerManager.Validate(this.nightTimerHandle)) return;
+        ref var timer = ref TimerManager.GetRef(this.nightTimerHandle);
+        timer.Duration = timer.Elapsed + Mathf.Max(0f, seconds);
+    }
+
+    /// <summary>
+    /// Pauses the night timer and resets it to zero elapsed with the given duration,
+    /// but does NOT resume. Call ResumeNightTimer() when ready to start counting.
+    /// </summary>
+    public void PrepareNightTimerWithDuration(float durationSeconds)
+    {
+        if (!TimerManager.Validate(this.nightTimerHandle)) return;
+
+        TimerManager.Pause(this.nightTimerHandle);
+
+        ref var timer = ref TimerManager.GetRef(this.nightTimerHandle);
+        timer.Elapsed = 0f;
+        timer.IsFinished = 0;
+        timer.Duration = durationSeconds;
+        timer.NextInterval = durationSeconds + 1f; // park tick past duration
+
+        this.scheduleCursor = this.eventsSchedule?.Length ?? 0;
+    }
+
+    /// <summary>
+    /// Pauses the night timer, resets it to zero elapsed with the given duration,
+    /// skips all remaining scheduled events, then resumes.
+    /// </summary>
+    public void RestartNightTimerWithDuration(float durationSeconds)
+    {
+        PrepareNightTimerWithDuration(durationSeconds);
+        TimerManager.Resume(this.nightTimerHandle);
+    }
+
     public int GetCurrentNight() => this.night;
 
     /// <summary>

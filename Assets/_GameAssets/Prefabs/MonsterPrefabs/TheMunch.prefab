@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3127242976581909771}
   - component: {fileID: 7785466162933266917}
+  - component: {fileID: 5734947362532920971}
   m_Layer: 0
   m_Name: Idle
   m_TagString: Untagged
@@ -48,6 +49,39 @@ MonoBehaviour:
   interval: 0.1
   duration: 0
   nextState: {fileID: 0}
+--- !u!114 &5734947362532920971
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 53664872774097535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 31712184
+      Data2: 1175767579
+      Data3: -1178368604
+      Data4: 479734794
+    Path: event:/Lyubo/Munch
+  Event: 
+  EventPlayTrigger: 11
+  EventStopTrigger: 12
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: Munch
+    Value: 1
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &174915341243573053
 GameObject:
   m_ObjectHideFlags: 0
@@ -295,6 +329,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VfxAffordance
   triggerMode: 2
+  stopOnExit: 1
   vfxAsset: {fileID: 8926484042661614526, guid: 8e2007eb98486af48b243d17476c8047, type: 3}
   isChild: 0
   vfxInstance: {fileID: 0}
@@ -309,7 +344,7 @@ GameObject:
   - component: {fileID: 2769471391873279053}
   - component: {fileID: 8320310173790660493}
   - component: {fileID: 8570423118274860084}
-  - component: {fileID: 5573228474848699372}
+  - component: {fileID: 4413145196438961030}
   m_Layer: 0
   m_Name: AcceptFood
   m_TagString: Untagged
@@ -347,7 +382,6 @@ MonoBehaviour:
   blocksTransitions: 1
   nextState: {fileID: 5921275333700325378}
   exitOnComplete: 1
-  waitForAffordanceAnimation: 1
   satietyGain: 25
 --- !u!114 &8570423118274860084
 MonoBehaviour:
@@ -362,11 +396,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
   triggerMode: 0
-  paramType: 1
-  AnimationState: 0
+  stopOnExit: 1
+  paramType: 0
+  AnimationState: 12
   paramName: Extended
   boolValue: 0
---- !u!114 &5573228474848699372
+--- !u!114 &4413145196438961030
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -375,13 +410,30 @@ MonoBehaviour:
   m_GameObject: {fileID: 1114518511528949456}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4702ac2b4be5cd141a1c9c87889c9abc, type: 3}
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AudioAffordance
-  triggerMode: 2
-  clip: {fileID: 8300000, guid: b7524718948beb3418d5f11f0fe56417, type: 3}
-  loop: 0
-  volume: 1
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -1786756870
+      Data2: 1100179999
+      Data3: -1803146862
+      Data4: -1113004934
+    Path: event:/Lyubo/Munch
+  Event: 
+  EventPlayTrigger: 0
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: Munch
+    Value: 0
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &1984032222545375055
 GameObject:
   m_ObjectHideFlags: 0
@@ -393,7 +445,7 @@ GameObject:
   - component: {fileID: 8602206276880675889}
   - component: {fileID: 1502875521565788176}
   - component: {fileID: 8824923198175180198}
-  - component: {fileID: 2561062259736050535}
+  - component: {fileID: 2536023048314958128}
   m_Layer: 0
   m_Name: Angry
   m_TagString: Untagged
@@ -431,7 +483,6 @@ MonoBehaviour:
   blocksTransitions: 0
   nextState: {fileID: 8320310173790660493}
   exitOnComplete: 0
-  waitForAffordanceAnimation: 0
   feedZone: {fileID: 5090489322079261466}
   maxAcceptableVelocity: 10
   rejectState: {fileID: 6481478295283805775}
@@ -449,11 +500,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
   triggerMode: 0
+  stopOnExit: 1
   paramType: 1
   AnimationState: 0
   paramName: Extended
   boolValue: 1
---- !u!114 &2561062259736050535
+--- !u!114 &2536023048314958128
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -462,13 +514,30 @@ MonoBehaviour:
   m_GameObject: {fileID: 1984032222545375055}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4702ac2b4be5cd141a1c9c87889c9abc, type: 3}
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AudioAffordance
-  triggerMode: 2
-  clip: {fileID: 8300000, guid: 44627079fb43bdd408145cafd3660382, type: 3}
-  loop: 1
-  volume: 1
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -1786756870
+      Data2: 1100179999
+      Data3: -1803146862
+      Data4: -1113004934
+    Path: event:/Lyubo/Munch
+  Event: 
+  EventPlayTrigger: 11
+  EventStopTrigger: 12
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: Munch
+    Value: 4
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &2932562549756063749
 GameObject:
   m_ObjectHideFlags: 0
@@ -485,7 +554,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &251773573856062932
 Transform:
   m_ObjectHideFlags: 0
@@ -500,7 +569,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2768018977427514133}
-  - {fileID: 8772008329508492435}
   m_Father: {fileID: 1982426181614364841}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &5869048950688489980
@@ -711,7 +779,7 @@ GameObject:
   - component: {fileID: 1158935781199062213}
   - component: {fileID: 6248815390950015702}
   - component: {fileID: 2307541967858559125}
-  - component: {fileID: 3914169528563076209}
+  - component: {fileID: 2943195726878952764}
   m_Layer: 0
   m_Name: Hungry
   m_TagString: Untagged
@@ -749,7 +817,6 @@ MonoBehaviour:
   blocksTransitions: 0
   nextState: {fileID: 8320310173790660493}
   exitOnComplete: 0
-  waitForAffordanceAnimation: 0
   feedZone: {fileID: 5090489322079261466}
   maxAcceptableVelocity: 10
   rejectState: {fileID: 6481478295283805775}
@@ -767,11 +834,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
   triggerMode: 0
+  stopOnExit: 1
   paramType: 1
   AnimationState: 0
   paramName: Extended
   boolValue: 1
---- !u!114 &3914169528563076209
+--- !u!114 &2943195726878952764
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -780,13 +848,30 @@ MonoBehaviour:
   m_GameObject: {fileID: 5088638675457102743}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4702ac2b4be5cd141a1c9c87889c9abc, type: 3}
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AudioAffordance
-  triggerMode: 2
-  clip: {fileID: 8300000, guid: 2fe0804fafdc86140b8104dc9ee18ee8, type: 3}
-  loop: 1
-  volume: 1
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -1786756870
+      Data2: 1100179999
+      Data3: -1803146862
+      Data4: -1113004934
+    Path: event:/Lyubo/Munch
+  Event: 
+  EventPlayTrigger: 11
+  EventStopTrigger: 12
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: Munch
+    Value: 3
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &6091872223609227151
 GameObject:
   m_ObjectHideFlags: 0
@@ -968,6 +1053,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1982426181614364841}
   - component: {fileID: 6420786038646300334}
+  - component: {fileID: 8420058035401949911}
   m_Layer: 15
   m_Name: Model
   m_TagString: Untagged
@@ -989,6 +1075,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 251773573856062932}
+  - {fileID: 8193086215568600770}
   m_Father: {fileID: 6990434769242631820}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &6420786038646300334
@@ -1000,7 +1087,7 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7276741193934039350}
   m_Enabled: 1
-  m_Avatar: {fileID: 0}
+  m_Avatar: {fileID: 9000000, guid: 39efc5707d93ef04dbf1e6366b0ea913, type: 3}
   m_Controller: {fileID: 9100000, guid: f6373f17011b38a44ac39fd4b4439a5f, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
@@ -1013,6 +1100,39 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &8420058035401949911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7276741193934039350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 742d79411b7fcc64fb286d49a7ba327e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AnimationEventController
+  OnAnimationEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4413145196438961030}
+        m_TargetAssemblyTypeName: FMODUnity.StudioEventEmitter, FMODUnity
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnFootstepOutdoorEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnFootstepIndoorEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &7358779711094624904
 GameObject:
   m_ObjectHideFlags: 0
@@ -1023,8 +1143,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5916885804376865709}
   - component: {fileID: 6481478295283805775}
-  - component: {fileID: 7777412456953350127}
   - component: {fileID: 2264114644897410098}
+  - component: {fileID: 5078561687751876913}
   m_Layer: 0
   m_Name: RejectFood
   m_TagString: Untagged
@@ -1062,26 +1182,9 @@ MonoBehaviour:
   blocksTransitions: 1
   nextState: {fileID: 6248815390950015702}
   exitOnComplete: 1
-  waitForAffordanceAnimation: 0
   satietyLoss: 5
   throwForce: 5
   throwDirection: {x: 0, y: 1, z: 1}
---- !u!114 &7777412456953350127
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7358779711094624904}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4702ac2b4be5cd141a1c9c87889c9abc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AudioAffordance
-  triggerMode: 0
-  clip: {fileID: 0}
-  loop: 0
-  volume: 1
 --- !u!114 &2264114644897410098
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1094,11 +1197,45 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa4759459a2f6df4e8a3af805bf14913, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
-  triggerMode: 2
+  triggerMode: 0
+  stopOnExit: 1
   paramType: 0
   AnimationState: 0
   paramName: Rej
   boolValue: 1
+--- !u!114 &5078561687751876913
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7358779711094624904}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -1786756870
+      Data2: 1100179999
+      Data3: -1803146862
+      Data4: -1113004934
+    Path: event:/Lyubo/Munch
+  Event: 
+  EventPlayTrigger: 1
+  EventStopTrigger: 12
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: Munch
+    Value: 7
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &8315081370327711775
 GameObject:
   m_ObjectHideFlags: 0
@@ -1162,6 +1299,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AudioAffordance
   triggerMode: 2
+  stopOnExit: 1
   clip: {fileID: 8300000, guid: 502eb3c9c43bfe54a9c5cac70163ddfe, type: 3}
   loop: 0
   volume: 1
@@ -1192,12 +1330,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8764447899412136325}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.2, z: -0.45}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0.8867687, y: -0.14108665, z: -0.43355095, w: 0.075956784}
+  m_LocalPosition: {x: -0.0003996869, y: -0.002030714, z: 0.0017890439}
+  m_LocalScale: {x: 0.007859623, y: 0.007859621, z: 0.007859623}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 251773573856062932}
+  m_Father: {fileID: 3180555075044396420}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &4855100368168144753
 BoxCollider:
@@ -1401,6 +1539,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 15
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a640327f624eb5841a8a03504378c76f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1410,4 +1552,78 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a640327f624eb5841a8a03504378c76f, type: 3}
   m_PrefabInstance: {fileID: 2441870075262010622}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &2841656883589883681
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1982426181614364841}
+    m_Modifications:
+    - target: {fileID: 724015871957614929, guid: 508666dcd354c1d4fa0356424380a9c8, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6258920876129290723, guid: 508666dcd354c1d4fa0356424380a9c8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6258920876129290723, guid: 508666dcd354c1d4fa0356424380a9c8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6258920876129290723, guid: 508666dcd354c1d4fa0356424380a9c8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6258920876129290723, guid: 508666dcd354c1d4fa0356424380a9c8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6258920876129290723, guid: 508666dcd354c1d4fa0356424380a9c8, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6258920876129290723, guid: 508666dcd354c1d4fa0356424380a9c8, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6258920876129290723, guid: 508666dcd354c1d4fa0356424380a9c8, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6258920876129290723, guid: 508666dcd354c1d4fa0356424380a9c8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0.000002333742
+      objectReference: {fileID: 0}
+    - target: {fileID: 6258920876129290723, guid: 508666dcd354c1d4fa0356424380a9c8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6258920876129290723, guid: 508666dcd354c1d4fa0356424380a9c8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7963375110098439852, guid: 508666dcd354c1d4fa0356424380a9c8, type: 3}
+      propertyPath: m_Name
+      value: Munch
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 814041148006689445, guid: 508666dcd354c1d4fa0356424380a9c8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8772008329508492435}
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 508666dcd354c1d4fa0356424380a9c8, type: 3}
+--- !u!4 &3180555075044396420 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 814041148006689445, guid: 508666dcd354c1d4fa0356424380a9c8, type: 3}
+  m_PrefabInstance: {fileID: 2841656883589883681}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &8193086215568600770 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6258920876129290723, guid: 508666dcd354c1d4fa0356424380a9c8, type: 3}
+  m_PrefabInstance: {fileID: 2841656883589883681}
   m_PrefabAsset: {fileID: 0}

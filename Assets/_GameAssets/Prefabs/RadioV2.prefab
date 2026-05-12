@@ -289,7 +289,7 @@ Transform:
   m_GameObject: {fileID: 4577111692557757733}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.062, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -437,8 +437,8 @@ Transform:
   m_GameObject: {fileID: 5172728896665028156}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.046, z: -0.2}
-  m_LocalScale: {x: 1, y: 0.6, z: 0.425}
+  m_LocalPosition: {x: -0, y: 0.046, z: -0.15}
+  m_LocalScale: {x: 0.5, y: 0.4, z: 0.325}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2545940075947019343}
@@ -927,8 +927,8 @@ Transform:
   m_GameObject: {fileID: 8390987014762632597}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.2, z: 0}
-  m_LocalScale: {x: 0.43072423, y: 0.16219923, z: 0.052426003}
+  m_LocalPosition: {x: 0, y: 0.215, z: 0}
+  m_LocalScale: {x: 0.38, y: 0.14, z: 0.052}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5421674749008514131}
@@ -1022,7 +1022,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2545940075947019343}
   - component: {fileID: 412574812262976001}
-  - component: {fileID: 2061816206896111490}
+  - component: {fileID: 3088894835940338138}
   m_Layer: 0
   m_Name: RadioV2
   m_TagString: Untagged
@@ -1064,114 +1064,44 @@ MonoBehaviour:
   knob: {fileID: 1285011829392818217}
   radioRef: {fileID: 11400000, guid: b7444bc83e7e01742ad9851020aa5b6f, type: 2}
   channelText: {fileID: 4300980305355525604}
-  staticSound: {fileID: 8300000, guid: 5781cfc6337c6144dbd08256eed33240, type: 3}
-  tips:
-  - {fileID: 8300000, guid: 2750d8f1e9746416a82993326371d29f, type: 3}
-  - {fileID: 8300000, guid: a1e34015c147f0246848c0e9de812e99, type: 3}
-  audioSource: {fileID: 2061816206896111490}
   totalChannels: 9
   editorTestMode: 0
   safeChannel: 4
-  channelPrefix: 0
+  channelPrefix: 26
   startingChannel: 4
-  displayNumber: 0
---- !u!82 &2061816206896111490
-AudioSource:
+--- !u!114 &3088894835940338138
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9141646344603871652}
   m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 0}
-  m_PlayOnAwake: 0
-  m_Volume: 1
-  m_Pitch: 1
-  Loop: 0
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 1468631135
+      Data2: 1176464969
+      Data3: 746158506
+      Data4: 1654970551
+    Path: event:/MAIN/RadioDemon
+  Event: 
+  EventPlayTrigger: 1
+  EventStopTrigger: 2
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: RadioHost
+    Value: 0
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1001 &1098959187529819715
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1180,6 +1110,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2545940075947019343}
     m_Modifications:
+    - target: {fileID: 2099519734850519933, guid: 14f944f3f57b6ef4394a9fbf815aec71, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2203684075351287402, guid: 14f944f3f57b6ef4394a9fbf815aec71, type: 3}
       propertyPath: m_Value
       value: 0
@@ -1214,7 +1148,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7954031252265753577, guid: 14f944f3f57b6ef4394a9fbf815aec71, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.36505127
+      value: -0.13
       objectReference: {fileID: 0}
     - target: {fileID: 7954031252265753577, guid: 14f944f3f57b6ef4394a9fbf815aec71, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1222,7 +1156,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7954031252265753577, guid: 14f944f3f57b6ef4394a9fbf815aec71, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.012
+      value: 0.01
       objectReference: {fileID: 0}
     - target: {fileID: 7954031252265753577, guid: 14f944f3f57b6ef4394a9fbf815aec71, type: 3}
       propertyPath: m_LocalRotation.w

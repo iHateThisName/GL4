@@ -102,6 +102,9 @@ namespace MonsterSystem
             }
         }
 
+        [ContextMenu("Request Transition")]
+        public void PlayState() => RequestTransition(this);
+
         /// Helper: request an imperative transition from within a state.
         protected void RequestTransition(MonsterState targetState)
         {

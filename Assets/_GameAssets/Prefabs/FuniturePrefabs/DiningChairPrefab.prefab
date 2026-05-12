@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 3646535131180425411}
   - component: {fileID: 844210986986362472}
   - component: {fileID: 1224857329029714020}
+  - component: {fileID: 106200480704154778}
+  - component: {fileID: 7816665746442800208}
   m_Layer: 0
   m_Name: SM_DiningChair
   m_TagString: Untagged
@@ -66,7 +68,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -5728197680097314551, guid: 54258d255b5563e428787039cfd348ea, type: 3}
+  - {fileID: 2100000, guid: fcd3dace44f2c884f8141d505609277a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -90,6 +92,48 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &106200480704154778
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3995185793932153092}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.7637676, y: 0.67194533, z: 0.7263888}
+  m_Center: {x: -0.0202882, y: -0.59759927, z: -0.029155985}
+--- !u!65 &7816665746442800208
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3995185793932153092}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.7637676, y: 1.576269, z: 0.08654308}
+  m_Center: {x: -0.0202882, y: -0.14543742, z: 0.3051545}
 --- !u!1 &5218190335039424780
 GameObject:
   m_ObjectHideFlags: 0

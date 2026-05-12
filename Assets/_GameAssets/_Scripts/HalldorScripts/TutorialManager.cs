@@ -1,3 +1,4 @@
+using System.Threading;
 using UnityEngine;
 using TMPro;
 
@@ -10,9 +11,11 @@ public class TutorialManager : MonoBehaviour
 
     //A refrence to the night settings
     [SerializeField] private SO_NightSettings nightSettings;
+    [SerializeField] private Transform playerSpawnPosition;
+    [SerializeField] private Transform player;
 
     //A refrence to the temperture manager
-    [SerializeField] private GameObject tempertureManager;
+    [SerializeField] private PlayerTemperatureSimulator tempertureManager;
 
     //A refrence to the hunger manager
     [SerializeField] private HungerSystem hungerManager;
@@ -22,6 +25,9 @@ public class TutorialManager : MonoBehaviour
 
     //A refrence to the tutorial UI text
     [SerializeField] private TMP_Text tutorialText;
+
+    private CancellationTokenSource livingroomToken;
+    private TriggerArea triggerArea;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -36,48 +42,116 @@ public class TutorialManager : MonoBehaviour
             }
             else
             {
-                tutorialText.text = "Chop wood and turn on fire";
-                //Destroy(tempertureManager);
-                //this.hungerManager.Pause();
+                tutorialText.text = "Go inside the cabin and enter the living room";
+                this.tempertureManager.SetIsSimulatorEnabled(false);
+                this.hungerManager.Pause();
+                GameManager.Instance.PrepareNightTimerWithDuration(40f);
                 Debug.Log("Tutorial started");
+
+                if (player != null)
+                {
+                    this.player.position = playerSpawnPosition.position;
+                    this.player.rotation = playerSpawnPosition.rotation;
+                }
+
+                this.triggerArea = this.GetComponentInChildren<TriggerArea>();
+                if (this.triggerArea != null)
+                    this.triggerArea.OnTriggerEntered += EnteredLivingRoom;
             }
         }
     }
 
-    private void OnEnable() => HungerSystem.OnHungerChanged += OnHungerChanged;
-    
-    private void OnDisable() => HungerSystem.OnHungerChanged -= OnHungerChanged;
-
-    private void OnHungerChanged(float newHungerValue)
+    private void EnteredLivingRoom(Collider other)
     {
-        if (!this.hasLitFire || this.hasEatenFood) return;
-        
+        if (!other.CompareTag("Player")) return;
+        Debug.Log("Tutorial Entered Living room");
+        this.radio.SendBroadcast(Radio.RadioBroadcasts.IntroductionTutorial);
+        StartBroadcastWait(0f, StartTutorial); // 57 seconds
+    }
+
+    private void OnEnable()
+    {
+        HungerSystem.HungerStateChangedEvent += OnHungerStateChanged;
+        this.radio.OnChannelChanged += OnRadioChannelChanged;
+        this.radio.OnBroadcastChanged += OnRadioBroadcastChanged;
+    }
+
+    private void OnDisable()
+    {
+        HungerSystem.HungerStateChangedEvent -= OnHungerStateChanged;
+        this.radio.OnChannelChanged -= OnRadioChannelChanged;
+        this.radio.OnBroadcastChanged -= OnRadioBroadcastChanged;
+    }
+
+    private void OnRadioChannelChanged(int channelIndex, bool isSafeChannel)
+    {
+        if (!isSafeChannel)
+        {
+            this.livingroomToken?.Cancel();
+            return;
+        }
+        if (this.hasFixedRadio) return;
+        this.radio.SendBroadcast(Radio.RadioBroadcasts.RadioTutorialTip);
+        StartBroadcastWait(10f /* TODO: RadioTutorialTip duration */, () =>
+        {
+            hasFixedRadio = true;
+            this.tutorialText.text = "Survive the night";
+            GameManager.Instance.ResumeNightTimer();
+        });
+    }
+
+    private void OnRadioBroadcastChanged(Radio.RadioBroadcasts broadcast)
+    {
+        if (broadcast == Radio.RadioBroadcasts.IntroductionTutorial) return;
+        this.livingroomToken?.Cancel();
+    }
+
+    private void OnHungerStateChanged(HungerSystem.EnumHungerState oldState, HungerSystem.EnumHungerState newState)
+    {
+        if (this.hasEatenFood) return;
+        if (newState != HungerSystem.EnumHungerState.Full) return;
         this.hasEatenFood = true;
-        radio.SetChannel(8);
-        tutorialText.text = "Put the radio frequency back to Channel 30";
+        this.radio.SendBroadcast(Radio.RadioBroadcasts.FoodTutorialTip);
         Debug.Log("eaten food");
+        StartBroadcastWait(0f /* TODO: FoodTutorialTip duration */, () =>
+        {
+            this.tutorialText.text = "Light the fireplace";
+        });
     }
 
     [ContextMenu("Turn on fire")]
     public void TurnOnFire()
     {
-        if(hasLitFire)
+        if (hasLitFire) return;
+        this.hasLitFire = true;
+        this.radio.SendBroadcast(Radio.RadioBroadcasts.FireTutorialTip);
+        StartBroadcastWait(10f /* TODO: FireTutorialTip duration */, () =>
         {
-            return;
-        }
-        tutorialText.text = "Eat a can of food";
-        hungerManager.ModifyHunger(-21);
-        hasLitFire = true;
+            this.radio.SetChannel(8);
+            this.tutorialText.text = "Put the radio frequency back to Channel 30";
+        });
+    }
+    
+    private void StartBroadcastWait(float duration, System.Action onFinished)
+    {
+        this.livingroomToken?.Cancel();
+        this.livingroomToken?.Dispose();
+        this.livingroomToken = new CancellationTokenSource();
+        _ = WaitForBroadcastToFinish(duration, this.livingroomToken.Token, onFinished);
     }
 
-    public void FixRadio()
+    private async Awaitable WaitForBroadcastToFinish(float duration, CancellationToken ct, System.Action onFinished)
     {
-        if(!hasLitFire || !hasEatenFood || hasFixedRadio)
-        {
-            Debug.Log("Tutorial stopped 2");
-            return;
-        }
-        hasFixedRadio = true;
-        tutorialText.text = "Survive the night";
+        try { await Awaitable.WaitForSecondsAsync(duration, ct); }
+        catch (System.OperationCanceledException) { }
+        finally { onFinished?.Invoke(); }
+    }
+
+    private void StartTutorial()
+    {
+        if (this.triggerArea != null)
+            this.triggerArea.OnTriggerEntered -= EnteredLivingRoom;
+        tutorialText.text = "Eat a can of food";
+        hungerManager.ModifyHunger(-20);
     }
 }

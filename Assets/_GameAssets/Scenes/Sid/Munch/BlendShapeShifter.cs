@@ -43,18 +43,21 @@ public class BlendShapeShifter : MonoBehaviour
         // INPUT
         if (Keyboard.current.aKey.wasPressedThisFrame)
         {
+            // Angry
             targetTeethWeight = targetWeight;
             targetWideWeight = 0f;
         }
 
         if (Keyboard.current.dKey.wasPressedThisFrame)
         {
+            // Cracy
             targetTeethWeight = 0f;
             targetWideWeight = targetWeight;
         }
 
         if (Keyboard.current.sKey.wasPressedThisFrame)
         {
+            // Normal, smiling
             targetTeethWeight = 0f;
             targetWideWeight = 0f;
         }

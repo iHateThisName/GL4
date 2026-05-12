@@ -192,7 +192,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 163220789952355970}
-  - {fileID: 2802168573129993983}
   - {fileID: 8313404461506052405}
   - {fileID: 3050903971964825631}
   - {fileID: 6303827022862854503}
@@ -233,6 +232,7 @@ GameObject:
   - component: {fileID: 8581784409638178010}
   - component: {fileID: 4108226675085203310}
   - component: {fileID: 609149178255826414}
+  - component: {fileID: 2068958812421158357}
   m_Layer: 0
   m_Name: Flashed
   m_TagString: Untagged
@@ -270,7 +270,6 @@ MonoBehaviour:
   blocksTransitions: 0
   nextState: {fileID: 0}
   exitOnComplete: 1
-  waitForAffordanceAnimation: 0
   monsterNavigation: {fileID: 132277432202858881}
 --- !u!114 &4108226675085203310
 MonoBehaviour:
@@ -284,6 +283,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa4759459a2f6df4e8a3af805bf14913, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
+  triggerMode: 2
+  stopOnExit: 1
   paramType: 0
   AnimationState: 6
   paramName: 
@@ -300,138 +301,44 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aaa34404e3bf4c5ab65596ca06f5b25e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VfxAffordance
+  triggerMode: 2
+  stopOnExit: 1
   vfxAsset: {fileID: 8926484042661614526, guid: e13122ac1564f214a9d405243d14f72a, type: 3}
   isChild: 0
   vfxInstance: {fileID: 0}
---- !u!1 &771940631241205751
-GameObject:
+--- !u!114 &2068958812421158357
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2802168573129993983}
-  - component: {fileID: 3600620484907467236}
-  m_Layer: 0
-  m_Name: AudioSorce
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2802168573129993983
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 771940631241205751}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 8138255586992897016}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!82 &3600620484907467236
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 771940631241205751}
+  m_GameObject: {fileID: 738339366660153081}
   m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: a1e34015c147f0246848c0e9de812e99, type: 3}
-  m_PlayOnAwake: 0
-  m_Volume: 1
-  m_Pitch: 1
-  Loop: 1
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -940244506
+      Data2: 1308984905
+      Data3: 234751872
+      Data4: -1950771364
+    Path: event:/MAIN/Intruder
+  Event: 
+  EventPlayTrigger: 1
+  EventStopTrigger: 12
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: Intruder
+    Value: 1
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &988595376762428277
 GameObject:
   m_ObjectHideFlags: 0
@@ -442,6 +349,7 @@ GameObject:
   m_Component:
   - component: {fileID: 163220789952355970}
   - component: {fileID: 6482822105953925923}
+  - component: {fileID: 3786604208240005462}
   m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
@@ -488,6 +396,27 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &3786604208240005462
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 988595376762428277}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 742d79411b7fcc64fb286d49a7ba327e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AnimationEventController
+  OnAnimationEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnFootstepOutdoorEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnFootstepIndoorEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1821472748401317281
 GameObject:
   m_ObjectHideFlags: 0
@@ -499,6 +428,7 @@ GameObject:
   - component: {fileID: 4386152443229987308}
   - component: {fileID: 6075446766147847021}
   - component: {fileID: 2083614844334143239}
+  - component: {fileID: 6218077762427886339}
   m_Layer: 0
   m_Name: WindowIdle
   m_TagString: Untagged
@@ -536,7 +466,6 @@ MonoBehaviour:
   blocksTransitions: 0
   nextState: {fileID: 6234756195703914020}
   exitOnComplete: 1
-  waitForAffordanceAnimation: 0
   countdownDuration: 10
 --- !u!114 &2083614844334143239
 MonoBehaviour:
@@ -550,10 +479,45 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa4759459a2f6df4e8a3af805bf14913, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
+  triggerMode: 2
+  stopOnExit: 1
   paramType: 0
   AnimationState: 8
   paramName: 
   boolValue: 1
+--- !u!114 &6218077762427886339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1821472748401317281}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -940244506
+      Data2: 1308984905
+      Data3: 234751872
+      Data4: -1950771364
+    Path: event:/MAIN/Intruder
+  Event: 
+  EventPlayTrigger: 11
+  EventStopTrigger: 12
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: Intruder
+    Value: 2
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &3458592905161940793
 GameObject:
   m_ObjectHideFlags: 0
@@ -565,6 +529,7 @@ GameObject:
   - component: {fileID: 3793825480316588878}
   - component: {fileID: 6893837462578570359}
   - component: {fileID: 5087643316373690665}
+  - component: {fileID: 5816543229570705881}
   m_Layer: 0
   m_Name: Walk
   m_TagString: Untagged
@@ -602,7 +567,6 @@ MonoBehaviour:
   blocksTransitions: 0
   nextState: {fileID: 359053292061219951}
   exitOnComplete: 0
-  waitForAffordanceAnimation: 0
 --- !u!114 &5087643316373690665
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -615,10 +579,45 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa4759459a2f6df4e8a3af805bf14913, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
+  triggerMode: 2
+  stopOnExit: 1
   paramType: 0
   AnimationState: 2
   paramName: 
   boolValue: 1
+--- !u!114 &5816543229570705881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3458592905161940793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -940244506
+      Data2: 1308984905
+      Data3: 234751872
+      Data4: -1950771364
+    Path: event:/MAIN/Intruder
+  Event: 
+  EventPlayTrigger: 1
+  EventStopTrigger: 12
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: Intruder
+    Value: 0
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &3477245539894949678
 GameObject:
   m_ObjectHideFlags: 0
@@ -630,7 +629,7 @@ GameObject:
   - component: {fileID: 2812116567047694206}
   - component: {fileID: 2077415697182246400}
   - component: {fileID: 2524414419004177613}
-  - component: {fileID: 2333697144740099360}
+  - component: {fileID: 1847511430920985088}
   m_Layer: 0
   m_Name: KillPlayer
   m_TagString: Untagged
@@ -668,7 +667,6 @@ MonoBehaviour:
   blocksTransitions: 0
   nextState: {fileID: 0}
   exitOnComplete: 1
-  waitForAffordanceAnimation: 0
   useAnimation: 0
 --- !u!114 &2524414419004177613
 MonoBehaviour:
@@ -682,11 +680,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa4759459a2f6df4e8a3af805bf14913, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
+  triggerMode: 2
+  stopOnExit: 1
   paramType: 0
   AnimationState: 4
   paramName: 
   boolValue: 1
---- !u!114 &2333697144740099360
+--- !u!114 &1847511430920985088
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -695,12 +695,30 @@ MonoBehaviour:
   m_GameObject: {fileID: 3477245539894949678}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4702ac2b4be5cd141a1c9c87889c9abc, type: 3}
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AudioAffordance
-  clip: {fileID: 8300000, guid: 8c14c768f15dcfa439790ff6573869a4, type: 3}
-  loop: 0
-  volume: 1
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -940244506
+      Data2: 1308984905
+      Data3: 234751872
+      Data4: -1950771364
+    Path: event:/MAIN/Intruder
+  Event: 
+  EventPlayTrigger: 1
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: Intruder
+    Value: 4
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &3807162221386724574
 GameObject:
   m_ObjectHideFlags: 0
@@ -894,7 +912,6 @@ MonoBehaviour:
   blocksTransitions: 0
   nextState: {fileID: 1535485417224722708}
   exitOnComplete: 1
-  waitForAffordanceAnimation: 0
   monsterNavigation: {fileID: 132277432202858881}
   lightSensor: {fileID: 9136556400897258496}
   leftHandCollider: {fileID: 2060681122142682517}
@@ -911,6 +928,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa4759459a2f6df4e8a3af805bf14913, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
+  triggerMode: 2
+  stopOnExit: 1
   paramType: 0
   AnimationState: 9
   paramName: 
@@ -963,7 +982,7 @@ MonoBehaviour:
   spawnPoints: {fileID: 11400000, guid: 483723aedf8bf6e4faff13374251e4f6, type: 2}
   playerRef: {fileID: 11400000, guid: 8aa04a6520205384e9477b4745bd7d4b, type: 2}
   animator: {fileID: 6482822105953925923}
-  audioSource: {fileID: 3600620484907467236}
+  audioSource: {fileID: 0}
   sensorRoot: {fileID: 8218312588842223076}
   initialState: {fileID: 6893837462578570359}
 --- !u!1 &7133513761916476144
@@ -1015,6 +1034,7 @@ GameObject:
   - component: {fileID: 8332113718619956109}
   - component: {fileID: 1535485417224722708}
   - component: {fileID: 4036445607456370848}
+  - component: {fileID: 2338283531204621248}
   m_Layer: 0
   m_Name: ChasingPlayer
   m_TagString: Untagged
@@ -1052,7 +1072,6 @@ MonoBehaviour:
   blocksTransitions: 0
   nextState: {fileID: 0}
   exitOnComplete: 1
-  waitForAffordanceAnimation: 0
   monsterNavigation: {fileID: 132277432202858881}
   moveDistance: 1.55347
 --- !u!114 &4036445607456370848
@@ -1067,10 +1086,45 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa4759459a2f6df4e8a3af805bf14913, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
+  triggerMode: 2
+  stopOnExit: 1
   paramType: 0
   AnimationState: 3
   paramName: 
   boolValue: 1
+--- !u!114 &2338283531204621248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700209252231293374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -940244506
+      Data2: 1308984905
+      Data3: 234751872
+      Data4: -1950771364
+    Path: event:/MAIN/Intruder
+  Event: 
+  EventPlayTrigger: 1
+  EventStopTrigger: 12
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: Intruder
+    Value: 3
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &8082112033680108158
 GameObject:
   m_ObjectHideFlags: 0
@@ -1120,7 +1174,7 @@ MonoBehaviour:
   monsterController: {fileID: 832584143380676345}
   player: {fileID: 0}
   patrolPoints: []
-  MonsterAudioSource: {fileID: 3600620484907467236}
+  MonsterAudioSource: {fileID: 0}
   killAudio: {fileID: 8300000, guid: 8c14c768f15dcfa439790ff6573869a4, type: 3}
   flashedAudio: {fileID: 8300000, guid: fc323e27414aadf4095893d373c60c49, type: 3}
   monsterType: 3
@@ -1182,7 +1236,6 @@ MonoBehaviour:
   exposureDecaySpeed: 2
   stunThreshold: 1
   sensorCooldownDuration: 5
-  flashedSound: {fileID: 8300000, guid: fc323e27414aadf4095893d373c60c49, type: 3}
 --- !u!1 &8898604334208933820
 GameObject:
   m_ObjectHideFlags: 0
@@ -1231,7 +1284,6 @@ MonoBehaviour:
   blocksTransitions: 0
   nextState: {fileID: 6075446766147847021}
   exitOnComplete: 1
-  waitForAffordanceAnimation: 0
   agent: {fileID: 6856695336247606016}
   monsterNavigation: {fileID: 132277432202858881}
 --- !u!114 &792608987780827113
@@ -1246,6 +1298,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa4759459a2f6df4e8a3af805bf14913, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
+  triggerMode: 2
+  stopOnExit: 1
   paramType: 0
   AnimationState: 7
   paramName: 
@@ -1302,6 +1356,14 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 9
       objectReference: {fileID: 0}
+    - target: {fileID: -5526511972811979923, guid: 3f2ab1f342d1ba9498680e52fb1d5e76, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 203b73e687588874daf16b94175d2263, type: 2}
+    - target: {fileID: 807541153144536871, guid: 3f2ab1f342d1ba9498680e52fb1d5e76, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 203b73e687588874daf16b94175d2263, type: 2}
     - target: {fileID: 919132149155446097, guid: 3f2ab1f342d1ba9498680e52fb1d5e76, type: 3}
       propertyPath: m_Name
       value: MR_Intruder
@@ -1310,6 +1372,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 9
       objectReference: {fileID: 0}
+    - target: {fileID: 5072656018528810647, guid: 3f2ab1f342d1ba9498680e52fb1d5e76, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 203b73e687588874daf16b94175d2263, type: 2}
     - target: {fileID: 5113786861852947312, guid: 3f2ab1f342d1ba9498680e52fb1d5e76, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -1322,6 +1388,14 @@ PrefabInstance:
       propertyPath: m_ApplyRootMotion
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6559469909698712324, guid: 3f2ab1f342d1ba9498680e52fb1d5e76, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 203b73e687588874daf16b94175d2263, type: 2}
+    - target: {fileID: 8732745472928295705, guid: 3f2ab1f342d1ba9498680e52fb1d5e76, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 203b73e687588874daf16b94175d2263, type: 2}
     m_RemovedComponents:
     - {fileID: 5866666021909216657, guid: 3f2ab1f342d1ba9498680e52fb1d5e76, type: 3}
     m_RemovedGameObjects: []

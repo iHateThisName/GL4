@@ -110,7 +110,7 @@ public class HungerSystem : MonoBehaviour
             return;
         }
 
-        if (this.hunger + this.hungerSettings.GetFoodFillValue() >= this.MaxHunger)
+        if (this.hunger + this.hungerSettings.GetFoodFillValue() > this.MaxHunger)
         {
             Debug.LogError("You are already full!");
             return;

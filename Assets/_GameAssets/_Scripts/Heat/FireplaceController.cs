@@ -17,6 +17,8 @@ public class FireplaceController : MonoBehaviour {
     private bool hasNewFuel = false; // Flag to indicate if new fuel has been added since last burn.
     private float cachedFuelAmount; // Cached total fuel to avoid iterating the stack every frame.
 
+    [SerializeField] private FMODUnity.StudioEventEmitter fmodEmitter;
+
     /// <summary>
     /// Total remaining fuel across all firewood currently in the fireplace
     /// </summary>
@@ -82,6 +84,7 @@ public class FireplaceController : MonoBehaviour {
 
             if (this.fuelQueue.Count == 0) {
                 // No more fuel left, extinguish fire
+                this.fmodEmitter.Stop();
                 this.cachedFuelAmount = 0f;
                 this.HasFuel = false;
                 this.IsLit = false;
@@ -175,6 +178,7 @@ public class FireplaceController : MonoBehaviour {
     public void Ignite(FireMatchController match) {
         this.IsLit = true;
         this.fireVFX.SetActive(true);
+        this.fmodEmitter.Play();
         if (tutorialManager != null && tutorialManager.hasLitFire == false)
         {
             tutorialManager.TurnOnFire();

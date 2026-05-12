@@ -27,5 +27,20 @@ MonoBehaviour:
       time: 0.2
       timeMin: 0
       timeMax: 0
-  radioDisruptionEvents: []
-  radioBroadcastEvents: []
+  radioEvents:
+  - timing:
+      useRange: 0
+      time: 0.004166667
+      timeMin: 0
+      timeMax: 0
+    type: 1
+    radioBroadcast: 0
+    priority: 0
+  - timing:
+      useRange: 0
+      time: 0.010416667
+      timeMin: 0
+      timeMax: 0
+    type: 1
+    radioBroadcast: 6
+    priority: 0
