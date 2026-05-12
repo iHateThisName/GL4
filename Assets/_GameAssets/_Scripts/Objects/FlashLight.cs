@@ -211,13 +211,13 @@ public class Flashlight : MonoBehaviour
         // Count full rotations for tracking purposes
         while (this.currentAngle >= 360f)
         {
-            this.currentAngle += 360f;
+            this.currentAngle -= 360f;
             this.fullRotations--;
         }
-        
+
         while (this.currentAngle <= -360f)
         {
-            this.currentAngle -= 360f;
+            this.currentAngle += 360f;
             this.fullRotations++;
         }
 
