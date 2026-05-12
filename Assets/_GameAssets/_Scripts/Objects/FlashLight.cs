@@ -227,7 +227,6 @@ public class Flashlight : MonoBehaviour
             ToggleFlashLight(true);
             SetupActiveFlashlightTimer();
         }
-
     }
 
     // ==== Flashlight Helpers ====

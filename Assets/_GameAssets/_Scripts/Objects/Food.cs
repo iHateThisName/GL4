@@ -9,6 +9,7 @@ public class Food : MonoBehaviour
     
     private XRGrabInteractable grabInteractable;
     private Rigidbody rb;
+    private FMODUnity.StudioEventEmitter soundEmitter;
     private MeshFilter meshFilter;
     private int value;
 
@@ -21,20 +22,23 @@ public class Food : MonoBehaviour
         
         this.rb = GetComponent<Rigidbody>();
         this.grabInteractable = GetComponent<XRGrabInteractable>();
+        this.soundEmitter = GetComponentInChildren<FMODUnity.StudioEventEmitter>();
     }
 
+    [ContextMenu("Eat")]
     public void Eat()
     {
         this.value--;
         if (this.value < 0)
         {
-            if (destroyOnEaten) Destroy(this.gameObject, 0.1f);
+            if (this.destroyOnEaten) Destroy(this.gameObject, 0.1f);
             return;
         }
+        this.soundEmitter.Play();
         this.meshFilter.mesh = this.meshes[this.value];
     }
     
-    public float FillValue => overrideFoodValue;
+    public float FillValue => this.overrideFoodValue;
     
     public int Value => this.value;
     
