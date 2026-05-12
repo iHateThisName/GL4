@@ -16,6 +16,9 @@ namespace MonsterSystem
         private Rigidbody foodRb;            // Rigidbody of the food item being consumed
         private GameObject foodObject;       // Cached game object of the food for destruction after eating
 
+        [SerializeField] private FMODUnity.StudioEventEmitter munchSFX;
+        [SerializeField] private TheMunchHeadController headController;
+
         /// <summary>
         /// Initializes the state by caching a reference to the monster's satiety sensor.
         /// </summary>
@@ -61,12 +64,16 @@ namespace MonsterSystem
             }
 
             if (this.satietySensor != null) 
-                this.satietySensor.ModValue(this.satietyGain);
+                this.satietySensor.ModValue(incomingChange: this.satietyGain, isFeeding: true);
+
+
 
             // Stop the feedable state's audio at the exact bite frame
-            this.controller.PreviousState?.StopAffordances<AudioAffordance>();
+            //this.controller.PreviousState?.StopAffordances<AudioAffordance>();
 
-            TriggerAffordances<AudioAffordance>();
+            //TriggerAffordances<AudioAffordance>();
+            this.munchSFX.Play();
+            this.headController.OpenWide();
 
             if (this.foodObject != null) Destroy(this.foodObject);
         }

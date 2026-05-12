@@ -9,10 +9,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3127242976581909771}
-  - component: {fileID: 7785466162933266917}
+  - component: {fileID: 4361448747000237622}
+  - component: {fileID: 3126613229004934198}
   - component: {fileID: 5734947362532920971}
   m_Layer: 0
-  m_Name: Idle
+  m_Name: Idle/Sleeping
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -33,7 +34,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1112199111231962374}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7785466162933266917
+--- !u!114 &4361448747000237622
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -42,13 +43,30 @@ MonoBehaviour:
   m_GameObject: {fileID: 53664872774097535}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bbe65502d3a88a14ca92763eb6f4e9b7, type: 3}
+  m_Script: {fileID: 11500000, guid: 6f08c3cd27d143ca9e3451a050c9022e, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.IdleState
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimatedState
   blocksTransitions: 0
-  interval: 0.1
-  duration: 0
   nextState: {fileID: 0}
+  exitOnComplete: 0
+--- !u!114 &3126613229004934198
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 53664872774097535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa4759459a2f6df4e8a3af805bf14913, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
+  triggerMode: 0
+  stopOnExit: 1
+  paramType: 0
+  AnimationState: 1
+  paramName: 
+  boolValue: 1
 --- !u!114 &5734947362532920971
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -64,11 +82,11 @@ MonoBehaviour:
   CollisionTag: 
   EventReference:
     Guid:
-      Data1: 31712184
-      Data2: 1175767579
-      Data3: -1178368604
-      Data4: 479734794
-    Path: event:/Lyubo/Munch
+      Data1: -1786756870
+      Data2: 1100179999
+      Data3: -1803146862
+      Data4: -1113004934
+    Path: event:/MAIN/Munch
   Event: 
   EventPlayTrigger: 11
   EventStopTrigger: 12
@@ -78,7 +96,7 @@ MonoBehaviour:
   NonRigidbodyVelocity: 0
   Params:
   - Name: Munch
-    Value: 1
+    Value: 9
   OverrideAttenuation: 0
   OverrideMinDistance: 1
   OverrideMaxDistance: 20
@@ -273,9 +291,10 @@ GameObject:
   m_Component:
   - component: {fileID: 4475482418330515515}
   - component: {fileID: 5921275333700325378}
-  - component: {fileID: 7810136456590035309}
+  - component: {fileID: 5216332730923382308}
+  - component: {fileID: 7401957450090006707}
   m_Layer: 0
-  m_Name: Relocate
+  m_Name: Relocate/Exit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -309,14 +328,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.MunchRelocateState
   blocksTransitions: 1
-  nextState: {fileID: 7785466162933266917}
-  transitionDelay: 2
+  nextState: {fileID: 330797580354733104}
+  exitOnComplete: 1
   grabInteractable: {fileID: 0}
   transforms: {fileID: 11400000, guid: 76cdd536e2aa8bb45b0b4c19a2af3932, type: 2}
   useConfig: 1
   canKillMomentum: 1
   rb: {fileID: 0}
---- !u!114 &7810136456590035309
+--- !u!114 &5216332730923382308
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -328,11 +347,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aaa34404e3bf4c5ab65596ca06f5b25e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VfxAffordance
-  triggerMode: 2
-  stopOnExit: 1
+  triggerMode: 1
+  stopOnExit: 0
   vfxAsset: {fileID: 8926484042661614526, guid: 8e2007eb98486af48b243d17476c8047, type: 3}
   isChild: 0
   vfxInstance: {fileID: 0}
+--- !u!114 &7401957450090006707
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 425891470003588095}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa4759459a2f6df4e8a3af805bf14913, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
+  triggerMode: 0
+  stopOnExit: 1
+  paramType: 0
+  AnimationState: 14
+  paramName: 
+  boolValue: 1
 --- !u!1 &1114518511528949456
 GameObject:
   m_ObjectHideFlags: 0
@@ -345,6 +382,7 @@ GameObject:
   - component: {fileID: 8320310173790660493}
   - component: {fileID: 8570423118274860084}
   - component: {fileID: 4413145196438961030}
+  - component: {fileID: 6681623518235047225}
   m_Layer: 0
   m_Name: AcceptFood
   m_TagString: Untagged
@@ -380,9 +418,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.MunchAcceptFoodState
   blocksTransitions: 1
-  nextState: {fileID: 5921275333700325378}
+  nextState: {fileID: 4361448747000237622}
   exitOnComplete: 1
   satietyGain: 25
+  munchSFX: {fileID: 4413145196438961030}
+  headController: {fileID: 8204983584797268556}
 --- !u!114 &8570423118274860084
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -420,7 +460,7 @@ MonoBehaviour:
       Data2: 1100179999
       Data3: -1803146862
       Data4: -1113004934
-    Path: event:/Lyubo/Munch
+    Path: event:/MAIN/Munch
   Event: 
   EventPlayTrigger: 0
   EventStopTrigger: 0
@@ -430,7 +470,40 @@ MonoBehaviour:
   NonRigidbodyVelocity: 0
   Params:
   - Name: Munch
-    Value: 0
+    Value: 6
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
+--- !u!114 &6681623518235047225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1114518511528949456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -1786756870
+      Data2: 1100179999
+      Data3: -1803146862
+      Data4: -1113004934
+    Path: event:/MAIN/Munch
+  Event: 
+  EventPlayTrigger: 11
+  EventStopTrigger: 12
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: Munch
+    Value: 5
   OverrideAttenuation: 0
   OverrideMinDistance: 1
   OverrideMaxDistance: 20
@@ -487,6 +560,8 @@ MonoBehaviour:
   maxAcceptableVelocity: 10
   rejectState: {fileID: 6481478295283805775}
   acceptState: {fileID: 8320310173790660493}
+  headController: {fileID: 8204983584797268556}
+  expression: 1
 --- !u!114 &8824923198175180198
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -501,8 +576,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
   triggerMode: 0
   stopOnExit: 1
-  paramType: 1
-  AnimationState: 0
+  paramType: 0
+  AnimationState: 17
   paramName: Extended
   boolValue: 1
 --- !u!114 &2536023048314958128
@@ -524,7 +599,7 @@ MonoBehaviour:
       Data2: 1100179999
       Data3: -1803146862
       Data4: -1113004934
-    Path: event:/Lyubo/Munch
+    Path: event:/MAIN/Munch
   Event: 
   EventPlayTrigger: 11
   EventStopTrigger: 12
@@ -721,7 +796,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1d233ac31574899b3b9fd8f9c799ac0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.ResourceSensor
-  stateToTransitionTo: {fileID: 0}
+  stateToTransitionTo: {fileID: 5921275333700325378}
   maxResource: 60
   transitionValues:
   - 40
@@ -743,7 +818,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6990434769242631820}
   m_Layer: 15
-  m_Name: TheMunch
+  m_Name: TheMunchPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -821,6 +896,8 @@ MonoBehaviour:
   maxAcceptableVelocity: 10
   rejectState: {fileID: 6481478295283805775}
   acceptState: {fileID: 8320310173790660493}
+  headController: {fileID: 8204983584797268556}
+  expression: 0
 --- !u!114 &2307541967858559125
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -835,8 +912,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
   triggerMode: 0
   stopOnExit: 1
-  paramType: 1
-  AnimationState: 0
+  paramType: 0
+  AnimationState: 17
   paramName: Extended
   boolValue: 1
 --- !u!114 &2943195726878952764
@@ -858,7 +935,7 @@ MonoBehaviour:
       Data2: 1100179999
       Data3: -1803146862
       Data4: -1113004934
-    Path: event:/Lyubo/Munch
+    Path: event:/MAIN/Munch
   Event: 
   EventPlayTrigger: 11
   EventStopTrigger: 12
@@ -872,6 +949,124 @@ MonoBehaviour:
   OverrideAttenuation: 0
   OverrideMinDistance: 1
   OverrideMaxDistance: 20
+--- !u!1 &5224719803156221662
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2862991093516569574}
+  - component: {fileID: 330797580354733104}
+  - component: {fileID: 1650958818415329795}
+  - component: {fileID: 2610660672726973713}
+  - component: {fileID: 86963392637918503}
+  m_Layer: 0
+  m_Name: Enter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2862991093516569574
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5224719803156221662}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1112199111231962374}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &330797580354733104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5224719803156221662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f08c3cd27d143ca9e3451a050c9022e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimatedState
+  blocksTransitions: 0
+  nextState: {fileID: 4361448747000237622}
+  exitOnComplete: 1
+--- !u!114 &1650958818415329795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5224719803156221662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa4759459a2f6df4e8a3af805bf14913, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
+  triggerMode: 0
+  stopOnExit: 1
+  paramType: 0
+  AnimationState: 13
+  paramName: 
+  boolValue: 1
+--- !u!114 &2610660672726973713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5224719803156221662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -1786756870
+      Data2: 1100179999
+      Data3: -1803146862
+      Data4: -1113004934
+    Path: event:/MAIN/Munch
+  Event: 
+  EventPlayTrigger: 11
+  EventStopTrigger: 12
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: Munch
+    Value: 1
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
+--- !u!114 &86963392637918503
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5224719803156221662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aaa34404e3bf4c5ab65596ca06f5b25e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VfxAffordance
+  triggerMode: 0
+  stopOnExit: 1
+  vfxAsset: {fileID: 8926484042661614526, guid: 8e2007eb98486af48b243d17476c8047, type: 3}
+  isChild: 1
+  vfxInstance: {fileID: 0}
 --- !u!1 &6091872223609227151
 GameObject:
   m_ObjectHideFlags: 0
@@ -882,6 +1077,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1112199111231962374}
   - component: {fileID: 8186198554141403637}
+  - component: {fileID: 8778130749175353555}
   m_Layer: 0
   m_Name: States
   m_TagString: Untagged
@@ -909,6 +1105,8 @@ Transform:
   - {fileID: 5916885804376865709}
   - {fileID: 2769471391873279053}
   - {fileID: 8152012841161598007}
+  - {fileID: 2862991093516569574}
+  - {fileID: 2540390002939713331}
   m_Father: {fileID: 6990434769242631820}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8186198554141403637
@@ -927,9 +1125,42 @@ MonoBehaviour:
   spawnPoints: {fileID: 11400000, guid: 76cdd536e2aa8bb45b0b4c19a2af3932, type: 2}
   playerRef: {fileID: 11400000, guid: 8aa04a6520205384e9477b4745bd7d4b, type: 2}
   animator: {fileID: 6420786038646300334}
-  audioSource: {fileID: 508898174136536092}
+  audioSource: {fileID: 0}
   sensorRoot: {fileID: 5579034360510874413}
   initialState: {fileID: 5921275333700325378}
+--- !u!114 &8778130749175353555
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6091872223609227151}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -1786756870
+      Data2: 1100179999
+      Data3: -1803146862
+      Data4: -1113004934
+    Path: event:/MAIN/Munch
+  Event: 
+  EventPlayTrigger: 2
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: Munch
+    Value: 0
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &6567178864248848640
 GameObject:
   m_ObjectHideFlags: 0
@@ -1053,7 +1284,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1982426181614364841}
   - component: {fileID: 6420786038646300334}
-  - component: {fileID: 8420058035401949911}
   m_Layer: 15
   m_Name: Model
   m_TagString: Untagged
@@ -1100,39 +1330,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &8420058035401949911
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7276741193934039350}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 742d79411b7fcc64fb286d49a7ba327e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AnimationEventController
-  OnAnimationEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 4413145196438961030}
-        m_TargetAssemblyTypeName: FMODUnity.StudioEventEmitter, FMODUnity
-        m_MethodName: Play
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  OnFootstepOutdoorEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  OnFootstepIndoorEvent:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &7358779711094624904
 GameObject:
   m_ObjectHideFlags: 0
@@ -1200,7 +1397,7 @@ MonoBehaviour:
   triggerMode: 0
   stopOnExit: 1
   paramType: 0
-  AnimationState: 0
+  AnimationState: 15
   paramName: Rej
   boolValue: 1
 --- !u!114 &5078561687751876913
@@ -1222,10 +1419,10 @@ MonoBehaviour:
       Data2: 1100179999
       Data3: -1803146862
       Data4: -1113004934
-    Path: event:/Lyubo/Munch
+    Path: event:/MAIN/Munch
   Event: 
   EventPlayTrigger: 1
-  EventStopTrigger: 12
+  EventStopTrigger: 2
   AllowFadeout: 1
   TriggerOnce: 0
   Preload: 0
@@ -1236,6 +1433,90 @@ MonoBehaviour:
   OverrideAttenuation: 0
   OverrideMinDistance: 1
   OverrideMaxDistance: 20
+--- !u!1 &7603807157205563990
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2540390002939713331}
+  - component: {fileID: 7519790262597664834}
+  - component: {fileID: 4761980923497099200}
+  - component: {fileID: 6000417626673074406}
+  m_Layer: 0
+  m_Name: Exit
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2540390002939713331
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7603807157205563990}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1112199111231962374}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7519790262597664834
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7603807157205563990}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f08c3cd27d143ca9e3451a050c9022e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimatedState
+  blocksTransitions: 0
+  nextState: {fileID: 4361448747000237622}
+  exitOnComplete: 1
+--- !u!114 &4761980923497099200
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7603807157205563990}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa4759459a2f6df4e8a3af805bf14913, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
+  triggerMode: 0
+  stopOnExit: 1
+  paramType: 0
+  AnimationState: 13
+  paramName: 
+  boolValue: 1
+--- !u!114 &6000417626673074406
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7603807157205563990}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aaa34404e3bf4c5ab65596ca06f5b25e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VfxAffordance
+  triggerMode: 0
+  stopOnExit: 1
+  vfxAsset: {fileID: 8926484042661614526, guid: 8e2007eb98486af48b243d17476c8047, type: 3}
+  isChild: 1
+  vfxInstance: {fileID: 0}
 --- !u!1 &8315081370327711775
 GameObject:
   m_ObjectHideFlags: 0
@@ -1246,7 +1527,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8152012841161598007}
   - component: {fileID: 4229175808373500236}
-  - component: {fileID: 7618434485574918480}
+  - component: {fileID: 3837903250710132285}
   m_Layer: 0
   m_Name: KillPlayer
   m_TagString: Untagged
@@ -1285,8 +1566,8 @@ MonoBehaviour:
   interval: 3.1
   duration: 3
   behindDistance: 1.5
-  munchModel: {fileID: 0}
---- !u!114 &7618434485574918480
+  munchModel: {fileID: 5326633119446591885}
+--- !u!114 &3837903250710132285
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1295,14 +1576,30 @@ MonoBehaviour:
   m_GameObject: {fileID: 8315081370327711775}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4702ac2b4be5cd141a1c9c87889c9abc, type: 3}
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AudioAffordance
-  triggerMode: 2
-  stopOnExit: 1
-  clip: {fileID: 8300000, guid: 502eb3c9c43bfe54a9c5cac70163ddfe, type: 3}
-  loop: 0
-  volume: 1
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -1786756870
+      Data2: 1100179999
+      Data3: -1803146862
+      Data4: -1113004934
+    Path: event:/MAIN/Munch
+  Event: 
+  EventPlayTrigger: 11
+  EventStopTrigger: 12
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: Munch
+    Value: 10
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &8764447899412136325
 GameObject:
   m_ObjectHideFlags: 0
@@ -1313,7 +1610,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8772008329508492435}
   - component: {fileID: 4855100368168144753}
-  - component: {fileID: 508898174136536092}
   - component: {fileID: 5090489322079261466}
   m_Layer: 15
   m_Name: Trigger
@@ -1358,103 +1654,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.4, y: 0.3, z: 0.4}
   m_Center: {x: 0, y: 0, z: -0.06}
---- !u!82 &508898174136536092
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8764447899412136325}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 0}
-  m_PlayOnAwake: 0
-  m_Volume: 1
-  m_Pitch: 1
-  Loop: 1
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
 --- !u!114 &5090489322079261466
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1571,7 +1770,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6258920876129290723, guid: 508666dcd354c1d4fa0356424380a9c8, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 6258920876129290723, guid: 508666dcd354c1d4fa0356424380a9c8, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1595,7 +1794,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6258920876129290723, guid: 508666dcd354c1d4fa0356424380a9c8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 0.000002333742
+      value: 0.000003227431
       objectReference: {fileID: 0}
     - target: {fileID: 6258920876129290723, guid: 508666dcd354c1d4fa0356424380a9c8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
@@ -1622,8 +1821,24 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 814041148006689445, guid: 508666dcd354c1d4fa0356424380a9c8, type: 3}
   m_PrefabInstance: {fileID: 2841656883589883681}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &5326633119446591885 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7963375110098439852, guid: 508666dcd354c1d4fa0356424380a9c8, type: 3}
+  m_PrefabInstance: {fileID: 2841656883589883681}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8193086215568600770 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6258920876129290723, guid: 508666dcd354c1d4fa0356424380a9c8, type: 3}
   m_PrefabInstance: {fileID: 2841656883589883681}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8204983584797268556 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6247164450544794989, guid: 508666dcd354c1d4fa0356424380a9c8, type: 3}
+  m_PrefabInstance: {fileID: 2841656883589883681}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5326633119446591885}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48f3f0d66f9678f4d8ac7a1d48d5a697, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TheMunchHeadController
