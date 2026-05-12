@@ -1211,6 +1211,44 @@ MonoBehaviour:
   OnFootstepIndoorEvent:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &1166076014 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7358779711094624904, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
+  m_PrefabInstance: {fileID: 1674446211}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1166076019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1166076014}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -1786756870
+      Data2: 1100179999
+      Data3: -1803146862
+      Data4: -1113004934
+    Path: event:/MAIN/Munch
+  Event: 
+  EventPlayTrigger: 11
+  EventStopTrigger: 2
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: Munch
+    Value: 8
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1001 &1243043350
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1606,9 +1644,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2610660672726973713, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
+      propertyPath: EventStopTrigger
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3837903250710132285, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
+      propertyPath: EventStopTrigger
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4950517335717247463, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
       propertyPath: m_Name
       value: TheMunchPrefab
+      objectReference: {fileID: 0}
+    - target: {fileID: 5078561687751876913, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
+      propertyPath: EventPlayTrigger
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 6990434769242631820, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1657,6 +1707,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 174915341243573053, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 0}
+    - targetCorrespondingSourceObject: {fileID: 7358779711094624904, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1166076019}
   m_SourcePrefab: {fileID: 100100000, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
 --- !u!1 &1674700975
 GameObject:
