@@ -330,8 +330,8 @@ MonoBehaviour:
   Params:
   - Name: Stalker
     Value: 3
-  OverrideAttenuation: 0
-  OverrideMinDistance: 1
+  OverrideAttenuation: 1
+  OverrideMinDistance: 3
   OverrideMaxDistance: 20
 --- !u!1 &5295791413730489271
 GameObject:
@@ -930,7 +930,7 @@ MonoBehaviour:
   stateToTransitionTo: {fileID: 0}
   occlusionMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 4294967295
   flashlightSettings: {fileID: 11400000, guid: e1d80fbeeb3e27b498a6a95b85fa8a72, type: 2}
   fleeState: {fileID: 2609687031708666669}
   exposureBuildSpeed: 3
