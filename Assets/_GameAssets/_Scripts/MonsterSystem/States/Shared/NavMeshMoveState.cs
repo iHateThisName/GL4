@@ -98,7 +98,8 @@ namespace MonsterSystem
             // SetDestination has been issued (where remainingDistance is 0 with no path).
             this.hasArrived = this.hasDestination
                               && !this.agent.pathPending
-                              && this.agent.remainingDistance <= this.agent.stoppingDistance;
+                              && this.agent.remainingDistance <= this.agent.stoppingDistance
+                              && this.agent.velocity.sqrMagnitude < 0.01f;
 
             if (this.hasArrived)
             {
