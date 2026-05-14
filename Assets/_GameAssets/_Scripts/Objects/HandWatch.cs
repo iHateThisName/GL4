@@ -33,6 +33,7 @@ public class HandWatch : MonoBehaviour
     };
     
     private float totalDuration;
+    private float totalNightDuration;
 
     /// <summary>
     /// Computes and caches the total usable night duration for the clock display,
@@ -40,7 +41,8 @@ public class HandWatch : MonoBehaviour
     /// </summary>
     private void Start()
     {
-        this.totalDuration = this.nightSettings.GetNightTimeInSeconds() - this.timeAt8AM;
+        this.totalNightDuration = this.nightSettings.GetNightTimeInSeconds();
+        this.totalDuration = this.totalNightDuration - this.timeAt8AM;
     }
 
     /// <summary>
@@ -157,15 +159,17 @@ public class HandWatch : MonoBehaviour
     /// <returns>A string of the form "H AM" representing the current in-game hour.</returns>
     private string GetNightTime(float current)
     {
+        float elapsed = this.totalNightDuration - current;
+
         int hour;
-        if (current >= this.totalDuration)
+        if (elapsed >= this.totalDuration)
         {
             hour = 8;
         }
         else
         {
             float segment = totalDuration / 8f; // 12 through 7 = 8 segments
-            int index = Mathf.FloorToInt(current / segment);
+            int index = Mathf.FloorToInt(elapsed / segment);
 
             hour = index == 0 ? 12 : index;
         }
