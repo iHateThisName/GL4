@@ -64,6 +64,8 @@ namespace MonsterSystem {
 
             this.FixRigidBody(targetPos, targetRot); // for the doll
             this.controller.transform.root.SetPositionAndRotation(targetPos, targetRot);
+            
+            StartCoroutine(WaitAndTransitionRoutine());
         }
 
         public override void OnAnimationComplete() {
