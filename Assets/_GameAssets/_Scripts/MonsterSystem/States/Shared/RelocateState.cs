@@ -69,8 +69,8 @@ namespace MonsterSystem {
         }
 
         public override void OnAnimationComplete() {
-            base.OnAnimationComplete();
             Teleport();
+            base.OnAnimationComplete();
         }
 
         private void FixRigidBody(Vector3 targetPos, Quaternion targetRot) {
