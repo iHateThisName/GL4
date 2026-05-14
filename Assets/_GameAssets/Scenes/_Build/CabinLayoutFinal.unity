@@ -1123,7 +1123,7 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.13333334
+  m_VoxelSize: 0.1
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: f8acb30d295508148aadec621583f2a1, type: 2}
   m_BuildHeightMesh: 0
@@ -1155,7 +1155,7 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.1
+  m_VoxelSize: 0.13333334
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: a9cb9cf895b5a794a8a159c885826ea0, type: 2}
   m_BuildHeightMesh: 0
@@ -14053,6 +14053,10 @@ PrefabInstance:
     - target: {fileID: 1717954561962503725, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_Name
       value: Player, XR Origin (XR Rig)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1717954561962503725, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1717954561962503726, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -32460,8 +32464,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.7803165, y: 1, z: 0.5979993}
-  m_Center: {x: -0.053347904, y: 0, z: -0.042204764}
+  m_Size: {x: 1.1561145, y: 1, z: 0.48468068}
+  m_Center: {x: -0.037281033, y: 0, z: -0.098863795}
 --- !u!23 &2068519454
 MeshRenderer:
   m_ObjectHideFlags: 0
