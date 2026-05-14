@@ -4,7 +4,7 @@ namespace MonsterSystem
 {
     public abstract class MonsterSensor : MonoBehaviour
     {
-        [SerializeField] private MonsterState stateToTransitionTo;
+        [SerializeField] protected MonsterState stateToTransitionTo;
 
         protected MonsterController controller;
         private bool hasTriggeredTransition;

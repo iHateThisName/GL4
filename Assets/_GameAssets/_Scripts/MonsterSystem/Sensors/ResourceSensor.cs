@@ -68,7 +68,7 @@ namespace MonsterSystem
                 this.thresholdExhausted = false;
 
             if (isFeeding && this.resourceValue > this.transitionValues[0]) {
-                TriggerStateTransition();
+                    this.controller.TransitionTo(this.stateToTransitionTo);
             }
             return this.resourceValue;
         }
