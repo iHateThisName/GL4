@@ -12,6 +12,11 @@ public class IntruderIntrudingState : AnimatedState {
         if (this.lightSensor == null) this.lightSensor = this.transform.root.GetComponentInChildren<MonsterSystem.LightSensor>();
     }
 
+    protected override void RegisterAnimationEvents() {
+        base.RegisterAnimationEvents();          // index 0:
+        RegisterAnimationEvent(DisableColliders); // index 1:
+    }
+
     public override void OnStateEnter() {
         base.OnStateEnter();
 
@@ -29,6 +34,11 @@ public class IntruderIntrudingState : AnimatedState {
         this.lightSensor.gameObject.SetActive(false);
 
         // Disable the colliders since we dont need to interact with the window anymore.
+        //this.leftHandCollider.enabled = false;
+        //this.rightHandCollider.enabled = false;
+    }
+
+    public void DisableColliders() {
         this.leftHandCollider.enabled = false;
         this.rightHandCollider.enabled = false;
     }
