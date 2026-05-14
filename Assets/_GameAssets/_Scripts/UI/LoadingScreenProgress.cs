@@ -34,6 +34,10 @@ public class LoadingScreenProgress : MonoBehaviour
         SceneTransition.OnProgress -= SetTargetProgress;
     }
 
+    private void Start() {
+        GameManager.Instance.WindowsDictonary.Clear();
+    }
+
     private void FixedUpdate()
     {
         UpdateProgressBar();

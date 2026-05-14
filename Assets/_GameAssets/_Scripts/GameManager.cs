@@ -82,7 +82,7 @@ public class GameManager : PersistenSingleton<GameManager> {
             : this.nightSettings.BuildScheduleForNight(this.night);
         RefreshScheduleDebugView();
 
-        this.WindowsDictonary.Clear();
+        //this.WindowsDictonary.Clear();
         InstantiateTimer();
     }
 

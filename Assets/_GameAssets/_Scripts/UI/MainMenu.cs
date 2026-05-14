@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class MainMenu : MonoBehaviour
 {
+    [ContextMenu("Start Game")]
     public void StartGame()
     {
         GameManager.Instance.LoadScene("CabinLayoutFinal");
