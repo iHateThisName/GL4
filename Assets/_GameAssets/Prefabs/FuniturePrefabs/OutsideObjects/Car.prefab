@@ -209,6 +209,7 @@ GameObject:
   - component: {fileID: 8120062240750851319}
   - component: {fileID: 43337215220693322}
   - component: {fileID: 6408940850507041535}
+  - component: {fileID: 2514546269173972000}
   m_Layer: 0
   m_Name: TrunkCollider
   m_TagString: Untagged
@@ -291,7 +292,7 @@ HingeJoint:
   serializedVersion: 3
   m_ConnectedBody: {fileID: 0}
   m_ConnectedArticulationBody: {fileID: 0}
-  m_Anchor: {x: 0, y: 0, z: 0}
+  m_Anchor: {x: 0, y: 0, z: 0.6}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
   m_ConnectedAnchor: {x: 0, y: 0, z: 0}
@@ -309,8 +310,8 @@ HingeJoint:
   m_ExtendedLimits: 0
   m_UseAcceleration: 0
   m_Limits:
-    min: -90
-    max: 20
+    min: -363.78165
+    max: -252.49637
     bounciness: 0
     bounceMinVelocity: 0.2
     contactDistance: 0
@@ -453,6 +454,30 @@ MonoBehaviour:
   maxBreakDistance: 1
   useHapticWarning: 1
   hapticIntensity: 0.5
+--- !u!114 &2514546269173972000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3464269554582177412}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3d0407cf273fad4ab491425d6e5a2d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VRLever
+  joint: {fileID: 43337215220693322}
+  grabInteractable: {fileID: 6408940850507041535}
+  optimizeUpdate: 1
+  printDebug: 0
+  skipStartRotationInitialization: 0
+  SpringSnapForce: 100
+  startingPercentage: 0
+  leaningThresholdPercentage: 50
+  snapClosedPercentage: 20
+  snapOpenPercentage: 80
+  invertOpenClosedState: 0
+  <CurrentState>k__BackingField: 0
 --- !u!1 &4489775715888268980
 GameObject:
   m_ObjectHideFlags: 0
