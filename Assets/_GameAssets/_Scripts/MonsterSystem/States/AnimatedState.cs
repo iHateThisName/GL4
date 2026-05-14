@@ -95,7 +95,13 @@ namespace MonsterSystem {
         /// </summary>
         public override void OnStateEnter() 
         {
-            TriggerAffordances<AnimationAffordance>();
+            var animationAffordance = GetAffordances<AnimationAffordance>();
+            if (animationAffordance == null || animationAffordance.Length == 0)
+            {
+                this.IsAnimating = false;
+                OnAnimationComplete();
+                return;
+            }
             this.IsAnimating = true;
         }
 

@@ -5,9 +5,9 @@ using UnityEngine.XR.Interaction.Toolkit.Interactables;
 namespace MonsterSystem {
     // Inga loves the Intruder and Munch :3 - They should kiss ^o^
     public class RelocateState : AnimatedState {
-        //[Header("=== Transitions ===")]
+        [Header("=== Transitions ===")]
         //[SerializeField] private MonsterState nextState;
-        //[SerializeField] private float transitionDelay = 2.0f;
+        [SerializeField] private float transitionDelay = 2.0f;
 
         [Header("=== VR & Physics Components ===")]
         [SerializeField] private XRGrabInteractable grabInteractable;
@@ -67,8 +67,8 @@ namespace MonsterSystem {
         }
 
         public override void OnAnimationComplete() {
-            Teleport();
             base.OnAnimationComplete();
+            Teleport();
         }
 
         private void FixRigidBody(Vector3 targetPos, Quaternion targetRot) {
@@ -94,12 +94,12 @@ namespace MonsterSystem {
             }
         }
 
-        //private IEnumerator WaitAndTransitionRoutine() {
-        //    yield return new WaitForSeconds(this.transitionDelay);
+        private IEnumerator WaitAndTransitionRoutine() {
+            yield return new WaitForSeconds(this.transitionDelay);
 
-        //    if (this.nextState != null) {
-        //        this.RequestTransition(this.nextState);
-        //    }
-        //}
+            if (this.nextState != null) {
+                this.RequestTransition(this.nextState);
+            }
+        }
     }
 }

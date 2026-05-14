@@ -132,8 +132,8 @@ namespace MonsterSystem
             this.previousState = this.currentState;
             if (this.previousState != null)
             {
-                this.previousState.OnStateExit();
                 this.previousState.ProcessAffordancesOnExit();
+                this.previousState.OnStateExit();
                 this.previousState.gameObject.SetActive(false);
             }
 

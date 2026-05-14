@@ -4,12 +4,12 @@ namespace MonsterSystem
 {
     public abstract class MonsterState : MonoBehaviour
     {
-        [Header("Transition Blocking")]
-        [SerializeField] private bool blocksTransitions;
+        [Header("Transition Blocking")] [SerializeField]
+        private bool blocksTransitions;
 
         private StateAffordance[] affordances;
         protected MonsterController controller;
-        
+
         public virtual void Initialize(MonsterController owningController)
         {
             this.controller = owningController;
@@ -20,10 +20,10 @@ namespace MonsterSystem
         }
 
         /// Called when this state becomes active.
-        public virtual void OnStateEnter() { }
+        public virtual void OnStateEnter() {}
 
         /// Called when leaving this state for another.
-        public virtual void OnStateExit() { }
+        public virtual void OnStateExit() {}
 
         // Called by MonsterController before OnStateEnter.
         internal void ProcessAffordancesOnEnter()
@@ -51,7 +51,24 @@ namespace MonsterSystem
             }
         }
 
-        /// <summary>
+        public StateAffordance[] GetAffordances<T>() where T : StateAffordance
+        {
+            var foundAffordancesOfType = new System.Collections.Generic.List<StateAffordance>();
+            if (this.affordances == null) return null;
+            for (int i = 0; i < this.affordances.Length; i++)
+            {
+                var affordance = this.affordances[i];
+                if (affordance == null) continue;
+                
+                if (affordance is T)
+                    foundAffordancesOfType.Add(affordance);
+            }
+            
+            if (foundAffordancesOfType.Count == 0) foundAffordancesOfType.ToArray();
+            return foundAffordancesOfType.ToArray();
+        }
+
+    /// <summary>
         /// Triggers all Custom-mode affordances. Use for mid-state affordances not bound to enter/exit.
         /// </summary>
         public void TriggerAffordances()
