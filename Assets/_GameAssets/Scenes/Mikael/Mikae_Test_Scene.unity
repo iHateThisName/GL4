@@ -3747,6 +3747,8 @@ MonoBehaviour:
   hasEatenFood: 0
   hasFixedRadio: 0
   nightSettings: {fileID: 11400000, guid: 034fb29b749df934a9507784c8b52be7, type: 2}
+  playerSpawnPosition: {fileID: 0}
+  player: {fileID: 0}
   tempertureManager: {fileID: 1950451659}
   hungerManager: {fileID: 385919778}
   radio: {fileID: 0}
@@ -5602,7 +5604,7 @@ PrefabInstance:
   m_SourcePrefab: {fileID: 100100000, guid: 5fb50bbfc6c3fa54f9e3b890da5e58a2, type: 3}
 --- !u!4 &554657310 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 7631379987523408589, guid: 5fb50bbfc6c3fa54f9e3b890da5e58a2, type: 3}
+  m_CorrespondingSourceObject: {fileID: 5745056966010405398, guid: 5fb50bbfc6c3fa54f9e3b890da5e58a2, type: 3}
   m_PrefabInstance: {fileID: 554657309}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &569346256
@@ -12086,7 +12088,7 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.13333334
+  m_VoxelSize: 0.1
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: f8acb30d295508148aadec621583f2a1, type: 2}
   m_BuildHeightMesh: 0
@@ -12118,7 +12120,7 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.1
+  m_VoxelSize: 0.13333334
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: a9cb9cf895b5a794a8a159c885826ea0, type: 2}
   m_BuildHeightMesh: 0
@@ -21207,6 +21209,7 @@ MonoBehaviour:
   openWindowCount: 0
   currentLocationType: 0
   currentBodyTemperatureState: 0
+  isSimulatingTemperature: 1
 --- !u!114 &1950451661
 MonoBehaviour:
   m_ObjectHideFlags: 0
