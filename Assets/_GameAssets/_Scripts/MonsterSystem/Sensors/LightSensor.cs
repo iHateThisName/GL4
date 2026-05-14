@@ -116,10 +116,6 @@ namespace MonsterSystem
                 AdjustExposure(-this.exposureDecaySpeed);
                 return;
             }
-            else
-            {
-                Debug.Log("[LightSensor] Linecast CLEAR — sensor exposed to flashlight.");
-            }
 
             // Sensor is inside the cone — apply full exposure build rate
             AdjustExposure(this.exposureBuildSpeed);

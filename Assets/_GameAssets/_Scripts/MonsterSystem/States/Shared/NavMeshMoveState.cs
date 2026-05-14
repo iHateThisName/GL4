@@ -92,26 +92,24 @@ namespace MonsterSystem
                 }
             }
             
-            // Arrival: for FollowTarget we check direct world distance to the current target position
-            // so that continuous locomotion (e.g. XR CharacterController) can't cause the monster to
-            // "arrive" at a stale destination the player has already walked away from.
-            // For fixed-point strategies we use the NavMesh path distance as before.
-            bool reachedDestination;
-            if (this.strategy is FollowTargetStrategy && this.target != null)
+            // Arrival: path is computed, agent has stopped, and the path actually ended at the
+            // intended destination (XZ only). Mirrors the check in BaseNavAIMonster so that stale
+            // destinations (e.g. from VR locomotion moving the player mid-path) don't trigger arrival.
+            if (this.hasDestination && !this.agent.pathPending && this.agent.velocity.sqrMagnitude == 0f)
             {
-                reachedDestination = Vector3.Distance(this.controller.transform.position, this.target.position)
-                                     <= this.agent.stoppingDistance;
+                Vector3 intendedDestination = this.strategy is FollowTargetStrategy && this.target != null
+                    ? this.target.position
+                    : this.lastSetDestination;
+
+                Vector2 pathEnd2D = new Vector2(this.agent.pathEndPosition.x, this.agent.pathEndPosition.z);
+                Vector2 target2D  = new Vector2(intendedDestination.x, intendedDestination.z);
+
+                this.hasArrived = Vector2.Distance(pathEnd2D, target2D) <= this.targetThreshold;
             }
             else
             {
-                reachedDestination = !this.agent.pathPending
-                                     && this.agent.pathStatus == NavMeshPathStatus.PathComplete
-                                     && this.agent.remainingDistance <= this.agent.stoppingDistance;
+                this.hasArrived = false;
             }
-
-            this.hasArrived = this.hasDestination
-                              && reachedDestination
-                              && this.agent.velocity.sqrMagnitude < 0.01f;
 
             if (this.hasArrived)
             {
