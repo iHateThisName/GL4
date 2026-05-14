@@ -26,7 +26,7 @@ namespace MonsterSystem
         public override void Initialize(MonsterController owningMonster)
         {
             base.Initialize(owningMonster);
-            this.sensorTransform = owningMonster.transform;
+            this.sensorTransform = this.transform;
 
             if (this.flashlightSettings != null)
             {
@@ -109,10 +109,16 @@ namespace MonsterSystem
             }
 
             // Sensor is occluded by geometry (wall, obstacle, etc.)
-            if (Physics.Linecast(flashLightPos, sensorPos, this.occlusionMask))
+            bool occluded = Physics.Linecast(flashLightPos, sensorPos, out RaycastHit hitInfo, this.occlusionMask);
+            if (occluded)
             {
+                //Debug.Log($"[LightSensor] Linecast HIT: {hitInfo.collider.gameObject.name} at {hitInfo.point}", hitInfo.collider.gameObject);
                 AdjustExposure(-this.exposureDecaySpeed);
                 return;
+            }
+            else
+            {
+                Debug.Log("[LightSensor] Linecast CLEAR — sensor exposed to flashlight.");
             }
 
             // Sensor is inside the cone — apply full exposure build rate
