@@ -187,9 +187,9 @@ public class PlayerTemperatureSimulator : Singleton<PlayerTemperatureSimulator> 
         // The rate of temperature change in different environments
         return location switch {
             EnumLocationType.Cold => this.FREEZE_RATE, // Cold locations cause rapid cooling
-            EnumLocationType.Normal => this.NORMAL_RATE + (this.OPEN_WINDOW_RATE * this.openWindowCount), // Normal locations cause slight cooling
-            EnumLocationType.Warm => this.WARM_RATE + (this.OPEN_WINDOW_RATE * this.openWindowCount), // Warm locations cause warming
             EnumLocationType.Shack => this.FREEZE_RATE,
+            EnumLocationType.Normal => Mathf.Clamp(this.NORMAL_RATE + (this.OPEN_WINDOW_RATE * this.openWindowCount), 0f, this.FREEZE_RATE), // Normal locations cause slight cooling
+            EnumLocationType.Warm => Mathf.Clamp(this.WARM_RATE + (this.OPEN_WINDOW_RATE * this.openWindowCount), 0f, this.FREEZE_RATE), // Warm locations cause warming
             _ => this.NORMAL_RATE,
         };
     }
