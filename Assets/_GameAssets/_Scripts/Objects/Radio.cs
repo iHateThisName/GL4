@@ -17,6 +17,8 @@ public class Radio : MonoBehaviour
         LostConnectionWithOutside = 6,
         LastBroadcast = 7,
         Off = 8,
+        Kill = 9,
+        Length = 10,
     }
 
     [Header("References")] [SerializeField]
