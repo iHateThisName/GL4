@@ -92,13 +92,25 @@ namespace MonsterSystem
                 }
             }
             
-            // Arrival: agent.stoppingDistance is driven from targetThreshold on enter, so the
-            // agent's own "reached destination" condition is simply remainingDistance <= stoppingDistance
-            // once a path is computed. The hasDestination flag guards against the first tick before
-            // SetDestination has been issued (where remainingDistance is 0 with no path).
+            // Arrival: for FollowTarget we check direct world distance to the current target position
+            // so that continuous locomotion (e.g. XR CharacterController) can't cause the monster to
+            // "arrive" at a stale destination the player has already walked away from.
+            // For fixed-point strategies we use the NavMesh path distance as before.
+            bool reachedDestination;
+            if (this.strategy is FollowTargetStrategy && this.target != null)
+            {
+                reachedDestination = Vector3.Distance(this.controller.transform.position, this.target.position)
+                                     <= this.agent.stoppingDistance;
+            }
+            else
+            {
+                reachedDestination = !this.agent.pathPending
+                                     && this.agent.pathStatus == NavMeshPathStatus.PathComplete
+                                     && this.agent.remainingDistance <= this.agent.stoppingDistance;
+            }
+
             this.hasArrived = this.hasDestination
-                              && !this.agent.pathPending
-                              && this.agent.remainingDistance <= this.agent.stoppingDistance
+                              && reachedDestination
                               && this.agent.velocity.sqrMagnitude < 0.01f;
 
             if (this.hasArrived)
