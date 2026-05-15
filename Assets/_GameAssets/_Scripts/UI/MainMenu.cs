@@ -9,6 +9,12 @@ public class MainMenu : MonoBehaviour
         //SceneManager.LoadScene("CabinLayoutFinal");
     }
 
+    public void BackToMenu()
+    {
+        GameManager.Instance.LoadScene("MainMenu");
+        //SceneManager.LoadScene("CabinLayoutFinal");
+    }
+
     //A function for quitting the editor or the game
     public void QuitGame()
     {
