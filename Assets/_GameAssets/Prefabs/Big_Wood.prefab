@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 2004992166822225720}
   - component: {fileID: 8585247836188675976}
   - component: {fileID: 628094071630652277}
+  - component: {fileID: 5182269076615644233}
   m_Layer: 0
   m_Name: Big_Wood
   m_TagString: Untagged
@@ -239,7 +240,7 @@ MonoBehaviour:
   firewood1: {fileID: 368641606114421663, guid: b37eeffe45a670f42a6c370f0c2a0af8, type: 3}
   firewood2: {fileID: 4890623716885127271, guid: ff2ed4c54650f4441a2d296eca766bce, type: 3}
   tagInQuestion: Finish
-  chopSFX: {fileID: 8300000, guid: 5f4ccb9cf9445064ba52e8ef2c270c03, type: 3}
+  emitter: {fileID: 5182269076615644233}
   minChopVelocity: 2
   splitWidth: 0.04
 --- !u!114 &628094071630652277
@@ -262,6 +263,37 @@ MonoBehaviour:
   m_IgnoreFromBuild: 1
   m_ApplyToChildren: 1
   m_AffectedAgents: ffffffff
+--- !u!114 &5182269076615644233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1912862403879491615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 1583085851
+      Data2: 1179177481
+      Data3: 1812564623
+      Data4: -200175365
+    Path: event:/MAIN/Chopping Wood
+  Event: 
+  EventPlayTrigger: 0
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1001 &4540695279949213157
 PrefabInstance:
   m_ObjectHideFlags: 0
