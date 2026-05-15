@@ -1,34 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <objects serializationModel="Studio.02.03.00">
-	<object class="ParameterPreset" id="{c827d379-c350-4b1b-8ea8-cb7d80957825}">
+	<object class="ParameterPreset" id="{2265f1b8-8c52-490a-a9de-039af926b972}">
 		<property name="name">
-			<value>Hunger State</value>
+			<value>Grabbing</value>
 		</property>
 		<relationship name="folder">
-			<destination>{a4cc0901-2699-488f-9213-3de01ceb69da}</destination>
+			<destination>{3ade575e-a875-4927-b6ef-a28f51277fe9}</destination>
 		</relationship>
 		<relationship name="parameter">
-			<destination>{f9f65493-13e3-4b7f-a8ee-019cf3f7e305}</destination>
+			<destination>{d9ba140b-f853-4b4c-9f59-a2b05cbd934e}</destination>
 		</relationship>
 	</object>
-	<object class="GameParameter" id="{f9f65493-13e3-4b7f-a8ee-019cf3f7e305}">
+	<object class="GameParameter" id="{d9ba140b-f853-4b4c-9f59-a2b05cbd934e}">
 		<property name="parameterType">
 			<value>2</value>
 		</property>
 		<property name="maximum">
-			<value>4</value>
+			<value>5</value>
 		</property>
 		<property name="enumerationLabels">
-			<value>Full</value>
-			<value>Slightly Hungry</value>
-			<value>Hungry</value>
-			<value>Starving</value>
+			<value>Axe</value>
+			<value>Flashlight</value>
+			<value>Glass</value>
+			<value>Cans</value>
+			<value>Default</value>
 		</property>
 		<property name="isHeld">
 			<value>true</value>
 		</property>
 		<property name="initialValue">
-			<value>0</value>
+			<value>4</value>
 		</property>
 		<property name="isExposedRecursively">
 			<value>false</value>

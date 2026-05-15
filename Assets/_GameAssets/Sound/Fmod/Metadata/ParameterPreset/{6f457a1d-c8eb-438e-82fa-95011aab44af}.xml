@@ -1,27 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <objects serializationModel="Studio.02.03.00">
-	<object class="ParameterPreset" id="{99e989a9-985d-43b6-ad78-ca7d4ff54bef}">
+	<object class="ParameterPreset" id="{6f457a1d-c8eb-438e-82fa-95011aab44af}">
 		<property name="name">
-			<value>Action</value>
+			<value>FirePlace</value>
 		</property>
 		<relationship name="folder">
-			<destination>{3ade575e-a875-4927-b6ef-a28f51277fe9}</destination>
+			<destination>{2fd73bdc-998d-488a-8b32-51a8025016db}</destination>
 		</relationship>
 		<relationship name="parameter">
-			<destination>{8a254899-fdf9-4ee9-8304-dea237850708}</destination>
+			<destination>{4d31b0eb-b0fe-4427-ac8c-7a197451b00e}</destination>
 		</relationship>
 	</object>
-	<object class="GameParameter" id="{8a254899-fdf9-4ee9-8304-dea237850708}">
+	<object class="GameParameter" id="{4d31b0eb-b0fe-4427-ac8c-7a197451b00e}">
 		<property name="parameterType">
 			<value>2</value>
 		</property>
 		<property name="maximum">
-			<value>3</value>
+			<value>2</value>
 		</property>
 		<property name="enumerationLabels">
-			<value>Grab</value>
-			<value>Place</value>
-			<value>Drop</value>
+			<value>FireON</value>
+			<value>FireOFF</value>
 		</property>
 		<property name="initialValue">
 			<value>0</value>

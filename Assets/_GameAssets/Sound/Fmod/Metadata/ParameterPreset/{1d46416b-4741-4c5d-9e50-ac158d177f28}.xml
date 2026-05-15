@@ -1,37 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <objects serializationModel="Studio.02.03.00">
-	<object class="ParameterPreset" id="{505f5c93-2ae4-41bb-bd6e-6e06a73cfb06}">
+	<object class="ParameterPreset" id="{1d46416b-4741-4c5d-9e50-ac158d177f28}">
 		<property name="name">
-			<value>Grabbing</value>
+			<value>Action</value>
 		</property>
 		<relationship name="folder">
 			<destination>{3ade575e-a875-4927-b6ef-a28f51277fe9}</destination>
 		</relationship>
 		<relationship name="parameter">
-			<destination>{33d17c3f-781c-4f5b-b02a-f1b9564868a3}</destination>
+			<destination>{30bd3166-f33e-4007-9773-1dcca6810887}</destination>
 		</relationship>
 	</object>
-	<object class="GameParameter" id="{33d17c3f-781c-4f5b-b02a-f1b9564868a3}">
+	<object class="GameParameter" id="{30bd3166-f33e-4007-9773-1dcca6810887}">
 		<property name="parameterType">
 			<value>2</value>
 		</property>
 		<property name="maximum">
-			<value>4</value>
+			<value>3</value>
 		</property>
 		<property name="enumerationLabels">
-			<value>Axe</value>
-			<value>Flashlight</value>
-			<value>Glass</value>
-			<value>Cans</value>
-		</property>
-		<property name="isHeld">
-			<value>true</value>
+			<value>Grab</value>
+			<value>Place</value>
+			<value>Drop</value>
 		</property>
 		<property name="initialValue">
 			<value>0</value>
-		</property>
-		<property name="isExposedRecursively">
-			<value>false</value>
 		</property>
 	</object>
 </objects>

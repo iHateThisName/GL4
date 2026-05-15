@@ -152,7 +152,7 @@
 	</object>
 	<object class="GroupTrack" id="{e2d94cf6-2eb5-4330-8140-dd224ec5d450}">
 		<relationship name="modules">
-			<destination>{0109cbb7-3d81-4296-9d9d-901ced57961a}</destination>
+			<destination>{434e4daf-f3a1-47fd-81c8-2b8f5e0e1b00}</destination>
 		</relationship>
 		<relationship name="mixerGroup">
 			<destination>{56e59ba4-b9b8-462c-9831-7b753af75d14}</destination>
@@ -187,8 +187,8 @@
 			<destination>{b5c7679e-8765-4a78-bdff-5936dd353c13}</destination>
 			<destination>{7ed57f03-3b43-495d-a45f-e3a7e8fa5d6c}</destination>
 			<destination>{d0b4468d-2df9-446a-8427-8fcaafc02092}</destination>
-			<destination>{0109cbb7-3d81-4296-9d9d-901ced57961a}</destination>
 			<destination>{cf4af11e-587b-43ad-8520-8ffce98c03c4}</destination>
+			<destination>{434e4daf-f3a1-47fd-81c8-2b8f5e0e1b00}</destination>
 		</relationship>
 		<relationship name="preset">
 			<destination>{4e857e59-bb14-4d0e-bb61-9ba621df1b6e}</destination>
@@ -586,23 +586,20 @@
 			<destination>{28daebae-8324-43c3-b3a5-6e374c09c261}</destination>
 		</relationship>
 	</object>
-	<object class="SingleSound" id="{0109cbb7-3d81-4296-9d9d-901ced57961a}">
-		<property name="isCutoff">
-			<value>true</value>
-		</property>
+	<object class="SingleSound" id="{434e4daf-f3a1-47fd-81c8-2b8f5e0e1b00}">
 		<property name="start">
 			<value>9</value>
 		</property>
 		<property name="startOffset">
-			<value>10.5</value>
+			<value>40</value>
 		</property>
 		<relationship name="audioFile">
-			<destination>{32bc9468-ff92-4074-977e-d416b189c353}</destination>
+			<destination>{e98bfcab-fcb7-439d-8033-f6ee45c46db6}</destination>
 		</relationship>
 	</object>
 	<object class="EventMixerGroup" id="{56e59ba4-b9b8-462c-9831-7b753af75d14}">
 		<property name="volume">
-			<value>-36</value>
+			<value>10</value>
 		</property>
 		<property name="name">
 			<value>Audio 3</value>
@@ -782,6 +779,7 @@
 			<destination>{b6bc43f5-dbb8-48c1-b524-22f45583f740}</destination>
 			<destination>{9cd066b2-956b-49b0-aeba-0ef2840533d2}</destination>
 			<destination>{5c6e48a1-fcd8-4e1f-8a39-9b6eb6837e19}</destination>
+			<destination>{8851d0c7-d530-4257-8c47-12a48bb05532}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{5d66b3d1-0e8e-4103-abdc-05ad82f37e55}" />
@@ -1223,6 +1221,7 @@
 			<value>50.5</value>
 		</property>
 	</object>
+	<object class="SFXReverbEffect" id="{8851d0c7-d530-4257-8c47-12a48bb05532}" />
 	<object class="MixerBusFader" id="{783e517b-4418-4c8e-ae17-3fe1036df54a}" />
 	<object class="ChorusEffect" id="{4a2295df-745d-49fa-97b8-fbd2af462225}">
 		<property name="bypass">
