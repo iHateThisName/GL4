@@ -160,7 +160,7 @@ public class Flashlight : MonoBehaviour
         SetupActiveFlashlightTimer();
         TimerManager.Pause(this.batteryTimerHandle);
 
-        if (startEnabled)
+        if (this.startEnabled)
         {
             ToggleFlashLight(true);
             TimerManager.Resume(this.batteryTimerHandle);
@@ -172,19 +172,19 @@ public class Flashlight : MonoBehaviour
 
     private void Update()
     {
-        if (!isHeld && !isSecured && pickedUpOnce)
+        if (!this.isHeld && !this.isSecured && this.pickedUpOnce)
             TeleportToSocketIfTooFar();
 
-        if (!powered || lightSource == null) return;
-        if (lightSource.intensity == targetLightIntensity && lightSource.range == targetLightRange) return;
+        if (!this.powered || this.lightSource == null) return;
+        if (this.lightSource.intensity == this.targetLightIntensity && this.lightSource.range == this.targetLightRange) return;
 
-        lightSource.intensity = Mathf.MoveTowards(lightSource.intensity, targetLightIntensity, 5f * Time.deltaTime);
+        this.lightSource.intensity = Mathf.MoveTowards(this.lightSource.intensity, this.targetLightIntensity, 5f * Time.deltaTime);
 
-        float normalized = Mathf.InverseLerp(flashlightSettings.GetMinLightPower(), flashlightSettings.GetMaxLightPower(), lightSource.intensity);
-        targetLightRange = Mathf.Lerp(flashlightSettings.GetMinLightRange(), flashlightSettings.GetMaxLightRange(), normalized);
-        lightSource.range = Mathf.MoveTowards(lightSource.range, targetLightRange, 5f * Time.deltaTime);
+        float normalized = Mathf.InverseLerp(this.flashlightSettings.GetMinLightPower(), this.flashlightSettings.GetMaxLightPower(), this.lightSource.intensity);
+        this.targetLightRange = Mathf.Lerp(this.flashlightSettings.GetMinLightRange(), this.flashlightSettings.GetMaxLightRange(), normalized);
+        this.lightSource.range = Mathf.MoveTowards(this.lightSource.range, this.targetLightRange, 5f * Time.deltaTime);
 
-        flashlightSettings.CalculateDetectionCone(lightSource.range);
+        this.flashlightSettings.CalculateDetectionCone(this.lightSource.range);
     }
 
     private void OnDestroy()
@@ -223,6 +223,7 @@ public class Flashlight : MonoBehaviour
     /// </summary>
     void OnCrankRotated(float delta)
     {
+        Debug.Log($"Crank: delta={delta}, fullRotations={this.fullRotations}, maxRotations={this.flashlightSettings.GetMaxRotations()}, targetIntensity={this.targetLightIntensity}");
         // Prevent exceeding max allowed rotations
         if (this.fullRotations >= this.flashlightSettings.GetMaxRotations()) return;
 
@@ -313,7 +314,6 @@ public class Flashlight : MonoBehaviour
         if (args?.interactorObject is XRSocketInteractor) return;
 
         this.isHeld = true;
-        // HandCollisionHandler handles the layer swap to HeldItem.
         if (this.HasPower)
             ToggleOnFlashlight();
 
@@ -405,8 +405,6 @@ public class Flashlight : MonoBehaviour
 
         if (this.lightSource != null)
             this.lightSource.enabled = this.powered;
-        
-        Debug.Log("Hello toggle off + " + toggle + " + " + this.powered + " + " + this.lightSource.enabled + " + " + this.lightSource.intensity + " + " + this.lightSource.range);
     }
 
     #region Getters
