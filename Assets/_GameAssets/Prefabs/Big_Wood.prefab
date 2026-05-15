@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6571480937194930367}
   - component: {fileID: 2004992166822225720}
   - component: {fileID: 8585247836188675976}
+  - component: {fileID: 628094071630652277}
   m_Layer: 0
   m_Name: Big_Wood
   m_TagString: Untagged
@@ -241,6 +242,26 @@ MonoBehaviour:
   chopSFX: {fileID: 8300000, guid: 5f4ccb9cf9445064ba52e8ef2c270c03, type: 3}
   minChopVelocity: 2
   splitWidth: 0.04
+--- !u!114 &628094071630652277
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1912862403879491615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshModifier
+  m_SerializedVersion: 0
+  m_OverrideArea: 0
+  m_Area: 0
+  m_OverrideGenerateLinks: 0
+  m_GenerateLinks: 0
+  m_IgnoreFromBuild: 1
+  m_ApplyToChildren: 1
+  m_AffectedAgents: ffffffff
 --- !u!1001 &4540695279949213157
 PrefabInstance:
   m_ObjectHideFlags: 0
