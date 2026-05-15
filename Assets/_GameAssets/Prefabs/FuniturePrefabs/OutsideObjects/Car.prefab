@@ -208,7 +208,6 @@ GameObject:
   - component: {fileID: 4637005836294728916}
   - component: {fileID: 8120062240750851319}
   - component: {fileID: 43337215220693322}
-  - component: {fileID: 2514546269173972000}
   m_Layer: 0
   m_Name: TrunkCollider
   m_TagString: Untagged
@@ -320,30 +319,6 @@ HingeJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
---- !u!114 &2514546269173972000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3464269554582177412}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a3d0407cf273fad4ab491425d6e5a2d2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VRLever
-  joint: {fileID: 43337215220693322}
-  grabInteractable: {fileID: 0}
-  optimizeUpdate: 1
-  printDebug: 0
-  skipStartRotationInitialization: 0
-  SpringSnapForce: 100
-  startingPercentage: 0
-  leaningThresholdPercentage: 50
-  snapClosedPercentage: 20
-  snapOpenPercentage: 80
-  invertOpenClosedState: 0
-  <CurrentState>k__BackingField: 0
 --- !u!1 &4489775715888268980
 GameObject:
   m_ObjectHideFlags: 0
@@ -810,7 +785,7 @@ MonoBehaviour:
   m_LimitAngularVelocity: 0
   m_MaxLinearVelocityDelta: 10
   m_MaxAngularVelocityDelta: 20
-  maxBreakDistance: 0.5
+  maxBreakDistance: 2
   useHapticWarning: 1
   hapticIntensity: 0.5
 --- !u!138 &2891491283094658951
