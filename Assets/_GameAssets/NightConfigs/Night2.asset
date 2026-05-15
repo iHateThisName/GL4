@@ -20,6 +20,13 @@ MonoBehaviour:
       time: 0.0050000004
       timeMin: 0
       timeMax: 0
+  - monster: {fileID: 4181545296685392125, guid: d030a9afe7227df4dbe4bedc9aaa748d, type: 3}
+    monsterCount: 1
+    timing:
+      useRange: 0
+      time: 0.020833334
+      timeMin: 0
+      timeMax: 0
   radioEvents:
   - timing:
       useRange: 0
@@ -35,5 +42,13 @@ MonoBehaviour:
       timeMin: 0
       timeMax: 0
     type: 1
+    radioBroadcast: 5
+    priority: 0
+  - timing:
+      useRange: 0
+      time: 0.079166666
+      timeMin: 0
+      timeMax: 0
+    type: 0
     radioBroadcast: 5
     priority: 0
