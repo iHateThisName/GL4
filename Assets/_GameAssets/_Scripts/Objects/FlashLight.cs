@@ -34,6 +34,8 @@ public class Flashlight : MonoBehaviour
 
     // Socket on the player where the flashlight snaps if dropped too far
     [SerializeField] private Transform flashlightSocket;
+    
+    [SerializeField] private LayerMask holsteredLayerMask;
 
     // Max distance from player before the flashlight teleports to the socket on drop
     [SerializeField] private float maxDropDistance = 3f;
@@ -43,6 +45,8 @@ public class Flashlight : MonoBehaviour
     [SerializeField] private bool startEnabled = false;
 
     private TimerHandle batteryTimerHandle;
+    
+    private LayerMask defaultLayerMask;
 
     // Target intensity we smoothly move toward
     private float targetLightIntensity;
@@ -83,6 +87,8 @@ public class Flashlight : MonoBehaviour
     {
         if (this.lightSource == null)
             this.lightSource = GetComponentInChildren<Light>();
+        
+        this.defaultLayerMask = this.gameObject.layer;
     }
 
     /// <summary>
@@ -263,6 +269,7 @@ public class Flashlight : MonoBehaviour
         this.isSecured = true;
         ToggleOffFlashlight();
         this.transform.SetPositionAndRotation(this.flashlightSocket.position, this.flashlightSocket.rotation);
+        this.gameObject.layer = this.holsteredLayerMask.value;
         return true;
     }
 
