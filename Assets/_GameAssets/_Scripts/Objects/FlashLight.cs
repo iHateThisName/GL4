@@ -29,9 +29,6 @@ public class Flashlight : MonoBehaviour
     [SerializeField] private SO_FlashlightSettings flashlightSettings;
 
     [Header("=== Drop / Socket Settings ===")]
-    // Player transform used to measure drop distance
-    [SerializeField] private Transform playerTransform;
-
     // Socket on the player where the flashlight snaps if dropped too far
     [SerializeField] private Transform flashlightSocket;
     
@@ -43,7 +40,9 @@ public class Flashlight : MonoBehaviour
     // Debug/testing: start flashlight enabled
     [System.Obsolete("Only for testing purposes.")]
     [SerializeField] private bool startEnabled = false;
-
+    
+    private Transform playerTransform;
+    
     private TimerHandle batteryTimerHandle;
     
     private LayerMask defaultLayerMask;
@@ -150,6 +149,8 @@ public class Flashlight : MonoBehaviour
             ToggleFlashLight(true);
             TimerManager.Resume(this.batteryTimerHandle);
         }
+
+        this.playerTransform = Camera.main?.transform;
     }
 
     private void Update()
