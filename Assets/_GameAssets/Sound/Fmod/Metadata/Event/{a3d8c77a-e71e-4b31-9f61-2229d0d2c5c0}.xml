@@ -587,8 +587,14 @@
 		</relationship>
 	</object>
 	<object class="SingleSound" id="{0109cbb7-3d81-4296-9d9d-901ced57961a}">
+		<property name="isCutoff">
+			<value>true</value>
+		</property>
 		<property name="start">
 			<value>9</value>
+		</property>
+		<property name="startOffset">
+			<value>10.5</value>
 		</property>
 		<relationship name="audioFile">
 			<destination>{32bc9468-ff92-4074-977e-d416b189c353}</destination>
