@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="ParameterPreset" id="{f0e6a4d9-20c6-4713-8a08-473911714f2d}">
+		<property name="name">
+			<value>Hunger State</value>
+		</property>
+		<relationship name="folder">
+			<destination>{a4cc0901-2699-488f-9213-3de01ceb69da}</destination>
+		</relationship>
+		<relationship name="parameter">
+			<destination>{de122dd1-5a58-4b53-8233-cd076fee1cef}</destination>
+		</relationship>
+	</object>
+	<object class="GameParameter" id="{de122dd1-5a58-4b53-8233-cd076fee1cef}">
+		<property name="parameterType">
+			<value>2</value>
+		</property>
+		<property name="maximum">
+			<value>4</value>
+		</property>
+		<property name="enumerationLabels">
+			<value>Full</value>
+			<value>Slightly Hungry</value>
+			<value>Hungry</value>
+			<value>Starving</value>
+		</property>
+		<property name="initialValue">
+			<value>0</value>
+		</property>
+	</object>
+</objects>
