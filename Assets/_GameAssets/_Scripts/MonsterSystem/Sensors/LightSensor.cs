@@ -17,6 +17,7 @@ namespace MonsterSystem
         [SerializeField] private float stunThreshold = 1f;
         [SerializeField] private float sensorCooldownDuration = 5f;
 
+        private Flashlight flashlight;
         private DetectionConeData cachedCone;
         private Transform sensorTransform;
         private float remainingCooldownTime;
@@ -32,6 +33,7 @@ namespace MonsterSystem
             {
                 this.flashlightSettings.OnRuntimeDataChanged += RefreshCachedData;
                 RefreshCachedData();
+                this.flashlight = this.flashlightSettings.Value.GetComponent<Flashlight>();
             }
         }
 
@@ -58,7 +60,7 @@ namespace MonsterSystem
             }
 
             // No valid flashlight or flashlight is off
-            if (FlashlightTransform == null)
+            if (FlashlightTransform == null || (this.flashlight != null && !this.flashlight.PoweredOn))
             {
                 AdjustExposure(-this.exposureDecaySpeed);
                 return;

@@ -224,19 +224,17 @@ public class Flashlight : MonoBehaviour
         this.currentAngle += delta;
 
         // Apply partial power based on rotation (gives immediate feedback while cranking)
-        float partialPower = (delta / 360f) * LIGHT_MAGNITUDE;
+        float partialPower = (-delta / 360f) * LIGHT_MAGNITUDE;
         UpdateLightIntensity(partialPower);
 
         // Keep currentAngle within 0–360 range
         while (this.currentAngle >= 360f)
         {
-            Debug.Log("Cranked >= 360");
             this.currentAngle -= 360f;
         }
 
         while (this.currentAngle <= -360f)
         {
-            Debug.Log("Cranked <= -360");
             this.currentAngle += 360f;
         }
 
