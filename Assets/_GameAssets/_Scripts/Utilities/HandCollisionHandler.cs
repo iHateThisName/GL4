@@ -16,6 +16,10 @@ public class HandCollisionHandler : MonoBehaviour
     private Dictionary<GameObject, int> originalLayers = new Dictionary<GameObject, int>();
     private int heldItemLayerIndex;
 
+    public event System.Action<EnumGrabItems> OnGrabItem;
+    public event System.Action<EnumGrabItems> OnReleaseItem;
+    private EnumGrabItems currentGrabedItem;
+
     private void Awake()
     {
         if (this.targetInteractor == null)
@@ -63,6 +67,11 @@ public class HandCollisionHandler : MonoBehaviour
         this.SetLayerRecursively(item, this.heldItemLayerIndex);
 
         Debug.Log($"<color=green>[Layer Swap]</color> Changed {item.name} to {this.heldItemLayerName} layer.");
+
+        // You can pass an enum or any identifier to specify which item was grabbed
+        this.currentGrabedItem = GetItemType(item);
+        this.OnGrabItem?.Invoke(this.currentGrabedItem);
+
     }
 
     public void OnDropRevertLayer(SelectExitEventArgs args)
@@ -76,6 +85,8 @@ public class HandCollisionHandler : MonoBehaviour
             this.originalLayers.Remove(item);
 
             Debug.Log($"<color=orange>[Layer Swap]</color> Restored {item.name} to layer index {originalLayer}.");
+
+            this.OnReleaseItem?.Invoke(this.currentGrabedItem);
         }
     }
 
@@ -97,4 +108,18 @@ public class HandCollisionHandler : MonoBehaviour
             }
         }
     }
+
+    private EnumGrabItems GetItemType(GameObject item) {
+        if (item.CompareTag("Axe")) {
+            return EnumGrabItems.Axe;
+        } else if (item.CompareTag("Flashlight")) {
+            return EnumGrabItems.Flashlight;
+        } else if (item.CompareTag("Glass")) {
+            return EnumGrabItems.Glass;
+        } else if (item.CompareTag("Food")) {
+            return EnumGrabItems.Cans;
+        }
+        return EnumGrabItems.Default;
+    }
+    public enum EnumGrabItems { Default = 4, Axe = 0, Flashlight = 1, Glass = 2, Cans = 3 }
 }
