@@ -67,6 +67,7 @@ public class TutorialManager : MonoBehaviour
     {
         if (!other.CompareTag("Player")) return;
         Debug.Log("Tutorial Entered Living room");
+        tutorialText.text = "Listen to the radio broadcast";
         this.radio.SendBroadcast(Radio.RadioBroadcasts.IntroductionTutorial);
         StartBroadcastWait(57f, StartTutorial); // 57 seconds
     }
@@ -156,7 +157,7 @@ public class TutorialManager : MonoBehaviour
     {
         try { await Awaitable.WaitForSecondsAsync(duration, ct); }
         catch (System.OperationCanceledException) { }
-        finally { onFinished?.Invoke(); }
+        //finally { onFinished?.Invoke(); }
     }
 
     private void StartTutorial()
