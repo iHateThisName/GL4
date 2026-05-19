@@ -105,7 +105,7 @@ public class TutorialManager : MonoBehaviour
         }
         if (this.hasFixedRadio) return;
         this.radio.SendBroadcast(Radio.RadioBroadcasts.RadioTutorialTip);
-        StartBroadcastWait(10f /* TODO: RadioTutorialTip duration */, () =>
+        StartBroadcastWait(11f, () =>
         {
             hasFixedRadio = true;
             this.tutorialText.text = "Survive the night";
@@ -126,6 +126,7 @@ public class TutorialManager : MonoBehaviour
         this.hasEatenFood = true;
         this.radio.SendBroadcast(Radio.RadioBroadcasts.FoodTutorialTip);
         Debug.Log("eaten food");
+        this.tutorialText.text = "Continue listening to the radio";
         StartBroadcastWait(36.5f, () =>
         {
             this.tutorialText.text = "Light the fireplace";
@@ -140,7 +141,7 @@ public class TutorialManager : MonoBehaviour
         this.tutorialText.text = "Continue listening to the radio";
         this.hasLitFire = true;
         this.radio.SendBroadcast(Radio.RadioBroadcasts.FireTutorialTip);
-        StartBroadcastWait(10f /* TODO: FireTutorialTip duration */, () =>
+        StartBroadcastWait(26f, () =>
         {
             this.radio.SetChannel(8);
             Debug.Log("Testing for tutorial 4");
