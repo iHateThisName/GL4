@@ -44,24 +44,25 @@ public class GameManager : PersistenSingleton<GameManager> {
     {
         DeathSystem.OnPlayerDied += HandleNightEarlyEnd;
         SceneTransition.OnTransitionComplete += OnSceneTransitionComplete;
-        if (this.nightSettings != null)
-            this.nightSettings.OnRuntimeDataChanged += OnNightSettingsChanged;
+        /*if (this.nightSettings != null)
+            this.nightSettings.OnRuntimeDataChanged += OnNightSettingsChanged;*/
     }
 
     private void OnDisable()
     {
         DeathSystem.OnPlayerDied -= HandleNightEarlyEnd;
         SceneTransition.OnTransitionComplete -= OnSceneTransitionComplete;
-        if (this.nightSettings != null)
-            this.nightSettings.OnRuntimeDataChanged -= OnNightSettingsChanged;
+        /*if (this.nightSettings != null)
+            this.nightSettings.OnRuntimeDataChanged -= OnNightSettingsChanged;*/
+    }
+    
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+        TimerManager.Release(ref this.nightTimerHandle);
     }
 
     private void OnNightSettingsChanged()
-    {
-        InitializeNight();
-    }
-
-    private void Start() 
     {
         InitializeNight();
     }
@@ -84,12 +85,6 @@ public class GameManager : PersistenSingleton<GameManager> {
 
         //this.WindowsDictonary.Clear();
         InstantiateTimer();
-    }
-
-    protected override void OnDestroy()
-    {
-        base.OnDestroy();
-        TimerManager.Release(ref this.nightTimerHandle);
     }
 
     [ContextMenu("Continue Game")]
