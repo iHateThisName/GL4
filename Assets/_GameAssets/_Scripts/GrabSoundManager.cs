@@ -1,6 +1,9 @@
 using System;
 using UnityEngine;
 
+/// <summary>
+/// Manages playing FMOD sounds when hands grab or release items, updating FMOD parameters based on the item type and action.
+/// </summary>
 public class GrabSoundManager : MonoBehaviour {
     [Header("References")]
     [SerializeField] private HandCollisionHandler leftHandHandler;
@@ -19,6 +22,9 @@ public class GrabSoundManager : MonoBehaviour {
     private const string PARAMETER_GRAB = "Grabbing";
     private const string PARAMETER_ACTION = "Action";
 
+    /// <summary>
+    /// Subscribes to the grab and release events of both left and right hand handlers.
+    /// </summary>
     private void OnEnable() {
         this.leftHandHandler.OnGrabItem += HandleLeftGrabSound;
         this.leftHandHandler.OnReleaseItem += HandleLeftReleaseSound;
@@ -26,6 +32,9 @@ public class GrabSoundManager : MonoBehaviour {
         this.rightHandHandler.OnReleaseItem += HandleRightReleaseSound;
     }
 
+    /// <summary>
+    /// Unsubscribes from the grab and release events of both left and right hand handlers.
+    /// </summary>
     private void OnDisable() {
         this.leftHandHandler.OnGrabItem -= HandleLeftGrabSound;
         this.leftHandHandler.OnReleaseItem -= HandleLeftReleaseSound;
@@ -33,6 +42,9 @@ public class GrabSoundManager : MonoBehaviour {
         this.rightHandHandler.OnReleaseItem -= HandleRightReleaseSound;
     }
 
+    /// <summary>
+    /// Initializes the default FMOD parameters for both left and right audio emitters.
+    /// </summary>
     private void Start() {
         this.rightEmitter.SetParameter(PARAMETER_GRAB, (int)HandCollisionHandler.EnumGrabItems.Default);
         this.rightEmitter.SetParameter(PARAMETER_ACTION, (int)EnumGrabActions.Grab);
@@ -46,6 +58,10 @@ public class GrabSoundManager : MonoBehaviour {
     }
 
 
+    /// <summary>
+    /// Updates the right emitter parameters and plays the grab sound when the right hand grabs an item.
+    /// </summary>
+    /// <param name="itemType">The type of item grabbed.</param>
     private void HandleRightGrabSound(HandCollisionHandler.EnumGrabItems itemType) {
         if (this.currentRightParameter != itemType) {
             this.rightEmitter.SetParameter(PARAMETER_GRAB, (int)itemType);
@@ -59,6 +75,10 @@ public class GrabSoundManager : MonoBehaviour {
 
         this.rightEmitter.Play();
     }
+    /// <summary>
+    /// Updates the right emitter parameters and plays the drop sound when the right hand releases an item.
+    /// </summary>
+    /// <param name="itemType">The type of item released.</param>
     private void HandleRightReleaseSound(HandCollisionHandler.EnumGrabItems itemType) {
         if (this.currentRightParameter != itemType) {
             this.rightEmitter.SetParameter(PARAMETER_GRAB, (int)itemType);
@@ -73,6 +93,10 @@ public class GrabSoundManager : MonoBehaviour {
         this.rightEmitter.Play();
     }
 
+    /// <summary>
+    /// Updates the left emitter parameters and plays the drop sound when the left hand releases an item.
+    /// </summary>
+    /// <param name="itemType">The type of item released.</param>
     private void HandleLeftReleaseSound(HandCollisionHandler.EnumGrabItems itemType) {
         if (this.currentLeftParameter != itemType) {
             this.leftEmitter.SetParameter(PARAMETER_GRAB, (int)itemType);
@@ -88,6 +112,10 @@ public class GrabSoundManager : MonoBehaviour {
 
     }
 
+    /// <summary>
+    /// Updates the left emitter parameters and plays the grab sound when the left hand grabs an item.
+    /// </summary>
+    /// <param name="itemType">The type of item grabbed.</param>
     private void HandleLeftGrabSound(HandCollisionHandler.EnumGrabItems itemType) {
         if (this.currentLeftParameter != itemType) {
             this.leftEmitter.SetParameter(PARAMETER_GRAB, (int)itemType);
@@ -102,5 +130,8 @@ public class GrabSoundManager : MonoBehaviour {
         this.leftEmitter.Play();
     }
 
+    /// <summary>
+    /// Defines the possible grab actions mapped to FMOD sound parameters.
+    /// </summary>
     public enum EnumGrabActions { Grab = 0, Place = 1, Drop = 2 }
 }
