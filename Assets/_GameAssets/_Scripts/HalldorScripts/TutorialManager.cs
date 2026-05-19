@@ -68,7 +68,7 @@ public class TutorialManager : MonoBehaviour
         if (!other.CompareTag("Player")) return;
         Debug.Log("Tutorial Entered Living room");
         this.radio.SendBroadcast(Radio.RadioBroadcasts.IntroductionTutorial);
-        StartBroadcastWait(0f, StartTutorial); // 57 seconds
+        StartBroadcastWait(57f, StartTutorial); // 57 seconds
     }
 
     private void OnEnable()
