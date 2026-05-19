@@ -1,3 +1,4 @@
+using System;
 using Assets.Scripts.Singleton;
 using System.Collections.Generic;
 using UnityEngine;
@@ -55,7 +56,7 @@ public class GameManager : PersistenSingleton<GameManager> {
         /*if (this.nightSettings != null)
             this.nightSettings.OnRuntimeDataChanged -= OnNightSettingsChanged;*/
     }
-    
+
     protected override void OnDestroy()
     {
         base.OnDestroy();
@@ -71,6 +72,12 @@ public class GameManager : PersistenSingleton<GameManager> {
     {
         Debug.Log($"[GameManager] loaded into: {sceneIndex}");
         if (sceneIndex == 1)
+            InitializeNight();
+    }
+
+    public void InitNightIfNotStarted()
+    {
+        if (!TimerManager.Validate(this.nightTimerHandle))
             InitializeNight();
     }
 
