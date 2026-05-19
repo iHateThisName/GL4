@@ -30,7 +30,7 @@ public class GameManager : PersistenSingleton<GameManager> {
     }
     [SerializeField] private NightEventDebugView[] scheduleDebugView;
 
-    public Dictionary<WindowController, VRLever.EnumLeverState> WindowsDictonary { get; private set; } = new Dictionary<WindowController, VRLever.EnumLeverState>();
+    public Dictionary<WindowController, VRHingeJoint.EnumLeverState> WindowsDictonary { get; private set; } = new Dictionary<WindowController, VRHingeJoint.EnumLeverState>();
     
     // Event invoked whenever a scheduled night event becomes available.
     // Other systems can subscribe to react (e.g., spawning enemies, triggering sounds).
@@ -333,7 +333,7 @@ public class GameManager : PersistenSingleton<GameManager> {
         timer.NextInterval = timer.Elapsed + delta;
     }
 
-    public void UpdateWindowState(WindowController windowController, VRLever.EnumLeverState newSate) {
+    public void UpdateWindowState(WindowController windowController, VRHingeJoint.EnumLeverState newSate) {
         // update the dictionary with the new state and remove the old refrence
         this.WindowsDictonary.Remove(windowController);
         this.WindowsDictonary.Add(windowController, newSate);
@@ -343,8 +343,8 @@ public class GameManager : PersistenSingleton<GameManager> {
 
     public List<WindowController> GetClosedWindows() {
         List<WindowController> closedWindows = new List<WindowController>();
-        foreach (KeyValuePair<WindowController, VRLever.EnumLeverState> kvp in this.WindowsDictonary) {
-            if (kvp.Value == VRLever.EnumLeverState.Closed) {
+        foreach (KeyValuePair<WindowController, VRHingeJoint.EnumLeverState> kvp in this.WindowsDictonary) {
+            if (kvp.Value == VRHingeJoint.EnumLeverState.Closed) {
                 closedWindows.Add(kvp.Key);
             }
         }
@@ -357,9 +357,9 @@ public class GameManager : PersistenSingleton<GameManager> {
         int closedCount = 0;
         int smartUpdateEnabledCount = 0;
         string logMessage = "Current Window States:\n";
-        foreach (KeyValuePair<WindowController, VRLever.EnumLeverState> kvp in this.WindowsDictonary) {
-            if (kvp.Value == VRLever.EnumLeverState.Open) openCount++;
-            else if (kvp.Value == VRLever.EnumLeverState.Closed) closedCount++;
+        foreach (KeyValuePair<WindowController, VRHingeJoint.EnumLeverState> kvp in this.WindowsDictonary) {
+            if (kvp.Value == VRHingeJoint.EnumLeverState.Open) openCount++;
+            else if (kvp.Value == VRHingeJoint.EnumLeverState.Closed) closedCount++;
 
             if (kvp.Key.IsVRLeverSmartUpdateEnabled()) smartUpdateEnabledCount++;
         }

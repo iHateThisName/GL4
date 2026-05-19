@@ -167,7 +167,7 @@ public class BaseNavAIMonster : MonoBehaviour {
         }
 
         // Select a window to target if we don't have one or if the current target window is already open
-        if (this.targetWindow == null || this.targetWindow.GetCurrentWindowState() == VRLever.EnumLeverState.Open) {
+        if (this.targetWindow == null || this.targetWindow.GetCurrentWindowState() == VRHingeJoint.EnumLeverState.Open) {
             this.targetWindow = IntruderSelectWindow();
             if (this.targetWindow == null) {
                 this.DebugInformation = "Intruder cannot find a valid window to target.";

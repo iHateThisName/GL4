@@ -18,7 +18,7 @@ public class SO_WindowRegistryRef : SO_RuntimeCollection<WindowController>
             for (int i = 0; i < windows.Count; i++)
             {
                 var w = windows[i];
-                if (w != null && w.GetCurrentWindowState() == VRLever.EnumLeverState.Closed)
+                if (w != null && w.GetCurrentWindowState() == VRHingeJoint.EnumLeverState.Closed)
                     closedCache.Add(w);
             }
             return closedCache.Count > 0
