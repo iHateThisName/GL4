@@ -68,7 +68,7 @@ public class SO_NightSettings : SO_RuntimeScriptableObject
 #endif
     }
 
-    public int GetFinalNight() => this.nightEvents.Length;
+    public int GetFinalNight() => this.nightEvents.Length + 1;
 
     public float GetNightTimeInSeconds() => this.nightTimeMinutes * 60;
 

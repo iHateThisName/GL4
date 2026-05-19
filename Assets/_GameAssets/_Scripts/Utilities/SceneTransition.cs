@@ -4,9 +4,13 @@ using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Static scene transition system. No MonoBehaviour, no singleton, no DontDestroyOnLoad.
-/// Callers provide the target scene and an SO_ScreenFadeRef.
+/// Callers provide the target scene (by build index) and an SO_ScreenFadeRef.
 /// The SO_ScreenFadeRef acts as a mailbox — each scene's ScreenFade writes to it on Awake,
 /// SceneTransition reads from it at each phase.
+///
+/// Primary API uses build indices (int). String-name helpers are provided for convenience.
+/// Night-aware overloads accept SO_NightSettings and automatically redirect to a
+/// different scene when the current night is the final night.
 /// </summary>
 public static class SceneTransition
 {
@@ -29,17 +33,7 @@ public static class SceneTransition
     /// </summary>
     public static event Action OnBeforeFadeIn;
 
-    public static void LoadScene(string sceneName, SO_ScreenFadeRef fadeRef, SO_TransformRef xrOriginRef = null)
-    {
-        LoadScene(sceneName, FadeConfig.FadeToBlack(2), fadeRef, xrOriginRef);
-    }
-
-    public static void LoadScene(string sceneName, FadeConfig fadeOutConfig, SO_ScreenFadeRef fadeRef, SO_TransformRef xrOriginRef = null)
-    {
-        if (isTransitioning) return;
-        _ = TransitionAsync(sceneName, fadeOutConfig, fadeRef, xrOriginRef);
-    }
-
+    #region Public methods/API
     public static void LoadScene(int buildIndex, SO_ScreenFadeRef fadeRef, SO_TransformRef xrOriginRef = null)
     {
         LoadScene(buildIndex, FadeConfig.FadeToBlack(2), fadeRef, xrOriginRef);
@@ -48,18 +42,30 @@ public static class SceneTransition
     public static void LoadScene(int buildIndex, FadeConfig fadeOutConfig, SO_ScreenFadeRef fadeRef, SO_TransformRef xrOriginRef = null)
     {
         if (isTransitioning) return;
-        string scenePath = SceneUtility.GetScenePathByBuildIndex(buildIndex);
-        string sceneName = System.IO.Path.GetFileNameWithoutExtension(scenePath);
-        _ = TransitionAsync(sceneName, fadeOutConfig, fadeRef, xrOriginRef);
+        _ = TransitionAsync(buildIndex, fadeOutConfig, fadeRef, xrOriginRef);
     }
 
-    // --- Core transition ---
-    private static async Awaitable TransitionAsync(string targetSceneName, FadeConfig fadeOutConfig, SO_ScreenFadeRef fadeRef, SO_TransformRef xrOriginRef = null)
+    public static void LoadScene(string sceneName, SO_ScreenFadeRef fadeRef, SO_TransformRef xrOriginRef = null)
+    {
+        LoadScene(SceneNameToIndex(sceneName), FadeConfig.FadeToBlack(2), fadeRef, xrOriginRef);
+    }
+
+    public static void LoadScene(string sceneName, FadeConfig fadeOutConfig, SO_ScreenFadeRef fadeRef, SO_TransformRef xrOriginRef = null)
+    {
+        LoadScene(SceneNameToIndex(sceneName), fadeOutConfig, fadeRef, xrOriginRef);
+    }
+    #endregion
+
+    /// <summary>
+    /// Handles the actual loading of scenes/scene transition asynchronously
+    /// </summary>
+    private static async Awaitable TransitionAsync(int targetBuildIndex, FadeConfig fadeOutConfig, SO_ScreenFadeRef fadeRef, SO_TransformRef xrOriginRef = null)
     {
         isTransitioning = true;
         var ct = Application.exitCancellationToken;
         Scene sceneToUnload = SceneManager.GetActiveScene();
         Scene targetScene = default;
+        string targetSceneName = IndexToSceneName(targetBuildIndex);
 
         try
         {
@@ -115,10 +121,10 @@ public static class SceneTransition
             Debug.Log($"[SceneTransition] Phase 3: Loading '{targetSceneName}', OnProgress subscribers: {OnProgress?.GetInvocationList()?.Length ?? 0}");
             float loadStartTime = Time.unscaledTime;
 
-            var targetOp = SceneManager.LoadSceneAsync(targetSceneName, LoadSceneMode.Additive);
+            var targetOp = SceneManager.LoadSceneAsync(targetBuildIndex, LoadSceneMode.Additive);
             if (targetOp == null)
             {
-                Debug.LogError($"[SceneTransition] Failed to load '{targetSceneName}'. Is it in Build Settings?");
+                Debug.LogError($"[SceneTransition] Failed to load '{targetSceneName}' (index {targetBuildIndex}). Is it in Build Settings?");
                 return;
             }
             targetOp.priority = (int)asyncLoadPriority;
@@ -172,7 +178,7 @@ public static class SceneTransition
             targetOp.allowSceneActivation = true;
             await targetOp;
 
-            targetScene = SceneManager.GetSceneByName(targetSceneName);
+            targetScene = SceneManager.GetSceneByBuildIndex(targetBuildIndex);
             if (targetScene.IsValid()) SceneManager.SetActiveScene(targetScene);
 
             // Wait for new scene's Start() to run (timers, UI setup, etc.)
@@ -213,14 +219,15 @@ public static class SceneTransition
             isTransitioning = false;
         }
 
-        Debug.Log("[SceneTransition] Complete");
+        Debug.Log($"[SceneTransition] Complete");
         if (targetScene.IsValid())
         {
             OnTransitionComplete?.Invoke(targetScene.buildIndex);
-            Debug.Log($"[SceneTransition] Transition complete: {targetScene.buildIndex}");
+            Debug.Log($"[SceneTransition] Transition complete: '{targetScene.name}' (index {targetScene.buildIndex})");
         }
     }
 
+    #region Helpers
     private static void CacheLoadingScreenRefs(int loadingIndex, ref ScreenFade fade)
     {
         Scene loadingScene = SceneManager.GetSceneByBuildIndex(loadingIndex);
@@ -233,4 +240,24 @@ public static class SceneTransition
             if (fade != null) break;
         }
     }
+    
+    private static int SceneNameToIndex(string sceneName)
+    {
+        int count = SceneManager.sceneCountInBuildSettings;
+        for (int i = 0; i < count; i++)
+        {
+            string path = SceneUtility.GetScenePathByBuildIndex(i);
+            if (System.IO.Path.GetFileNameWithoutExtension(path) == sceneName)
+                return i;
+        }
+        Debug.LogError($"[SceneTransition] Scene '{sceneName}' not found in Build Settings. Returning -1.");
+        return -1;
+    }
+
+    private static string IndexToSceneName(int buildIndex)
+    {
+        string path = SceneUtility.GetScenePathByBuildIndex(buildIndex);
+        return string.IsNullOrEmpty(path) ? $"<unknown:{buildIndex}>" : System.IO.Path.GetFileNameWithoutExtension(path);
+    }
+    #endregion
 }
