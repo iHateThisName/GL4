@@ -155,7 +155,7 @@ public class TutorialManager : MonoBehaviour
 
     private async Awaitable WaitForBroadcastToFinish(float duration, CancellationToken ct, System.Action onFinished)
     {
-        try { await Awaitable.WaitForSecondsAsync(duration, ct); }
+        try { await Awaitable.WaitForSecondsAsync(duration, ct); onFinished?.Invoke(); }
         catch (System.OperationCanceledException) { }
         //finally { onFinished?.Invoke(); }
     }
