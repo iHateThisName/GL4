@@ -41,7 +41,6 @@ public class SO_FlashlightSettings : SO_TransformRef
 
     [Header("=== Power Settings ===")]
     [SerializeField] private float lowPowerThreshold = 5f;
-    [SerializeField] private int maxRotations = 10;
 
     [System.NonSerialized] private DetectionConeData detectionConeData;
 
@@ -59,7 +58,6 @@ public class SO_FlashlightSettings : SO_TransformRef
     public float GetFlickerTime() => this.flickerTime;
     public float GetFlickerInterval() => this.flickerInterval;
     public float GetLowPowerThreshold() => this.lowPowerThreshold;
-    public int GetMaxRotations() => this.maxRotations;
 
     /// <summary>
     /// Calculates and caches detection cone data based on the current runtime range.

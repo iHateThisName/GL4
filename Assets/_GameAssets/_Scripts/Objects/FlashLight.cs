@@ -55,8 +55,6 @@ public class Flashlight : MonoBehaviour
     // Current partial crank angle (0–360 range)
     private float currentAngle;
 
-    // Total number of full crank rotations completed
-    private int fullRotations;
     private int holsteredLayer;
     private int defaultLayer;
 
@@ -223,27 +221,23 @@ public class Flashlight : MonoBehaviour
     /// </summary>
     void OnCrankRotated(float delta)
     {
-        Debug.Log($"Crank: delta={delta}, fullRotations={this.fullRotations}, maxRotations={this.flashlightSettings.GetMaxRotations()}, targetIntensity={this.targetLightIntensity}");
-        // Prevent exceeding max allowed rotations
-        if (this.fullRotations >= this.flashlightSettings.GetMaxRotations()) return;
-
         this.currentAngle += delta;
 
         // Apply partial power based on rotation (gives immediate feedback while cranking)
         float partialPower = (delta / 360f) * LIGHT_MAGNITUDE;
         UpdateLightIntensity(partialPower);
 
-        // Count full rotations for tracking purposes
+        // Keep currentAngle within 0–360 range
         while (this.currentAngle >= 360f)
         {
+            Debug.Log("Cranked >= 360");
             this.currentAngle -= 360f;
-            this.fullRotations--;
         }
 
         while (this.currentAngle <= -360f)
         {
+            Debug.Log("Cranked <= -360");
             this.currentAngle += 360f;
-            this.fullRotations++;
         }
 
         // Cranking restored power while the light was off — turn it on and start decay
