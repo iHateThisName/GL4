@@ -5,12 +5,14 @@ public class Food : MonoBehaviour
 {
     [SerializeField] private float overrideFoodValue = -1;
     [SerializeField] private Mesh[] meshes;
+    [SerializeField] private Material[] materials;
     [SerializeField] private bool destroyOnEaten = false;
     
     private XRGrabInteractable grabInteractable;
     private Rigidbody rb;
     private FMODUnity.StudioEventEmitter soundEmitter;
     private MeshFilter meshFilter;
+    private MeshRenderer meshRenderer;
     private int value;
 
     private void Awake()
@@ -19,6 +21,7 @@ public class Food : MonoBehaviour
         this.value = meshes.Length - 1;
         if (this.meshFilter != null && meshes.Length > 0)
             this.meshFilter.mesh = this.meshes[this.value];
+        this.meshRenderer = GetComponentInChildren<MeshRenderer>();
         
         this.rb = GetComponent<Rigidbody>();
         this.grabInteractable = GetComponent<XRGrabInteractable>();
@@ -36,6 +39,7 @@ public class Food : MonoBehaviour
         }
         this.soundEmitter.Play();
         this.meshFilter.mesh = this.meshes[this.value];
+        this.meshRenderer.material = this.materials[this.value];
     }
     
     public float FillValue => this.overrideFoodValue;
