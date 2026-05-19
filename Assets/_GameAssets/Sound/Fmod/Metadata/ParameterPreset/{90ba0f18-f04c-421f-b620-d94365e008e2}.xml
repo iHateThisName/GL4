@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="ParameterPreset" id="{90ba0f18-f04c-421f-b620-d94365e008e2}">
+		<property name="name">
+			<value>ClockTick</value>
+		</property>
+		<relationship name="folder">
+			<destination>{2fd73bdc-998d-488a-8b32-51a8025016db}</destination>
+		</relationship>
+		<relationship name="parameter">
+			<destination>{a4c412a1-b127-48df-97dd-3befa79785af}</destination>
+		</relationship>
+	</object>
+	<object class="GameParameter" id="{a4c412a1-b127-48df-97dd-3befa79785af}">
+		<property name="parameterType">
+			<value>2</value>
+		</property>
+		<property name="maximum">
+			<value>2</value>
+		</property>
+		<property name="enumerationLabels">
+			<value>On</value>
+			<value>Off</value>
+		</property>
+		<property name="initialValue">
+			<value>0</value>
+		</property>
+	</object>
+</objects>
