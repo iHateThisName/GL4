@@ -179,8 +179,10 @@ public class FireplaceController : MonoBehaviour {
         this.IsLit = true;
         this.fireVFX.SetActive(true);
         this.fmodEmitter.Play();
+        Debug.Log("Testing for tutorial 1");
         if (tutorialManager != null && tutorialManager.hasLitFire == false)
         {
+            Debug.Log("Testing for tutorial 2");
             tutorialManager.TurnOnFire();
         }
     }

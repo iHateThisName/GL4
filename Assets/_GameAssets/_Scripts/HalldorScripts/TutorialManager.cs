@@ -136,11 +136,14 @@ public class TutorialManager : MonoBehaviour
     public void TurnOnFire()
     {
         if (hasLitFire) return;
+        Debug.Log("Testing for tutorial 3");
+        this.tutorialText.text = "";
         this.hasLitFire = true;
         this.radio.SendBroadcast(Radio.RadioBroadcasts.FireTutorialTip);
         StartBroadcastWait(10f /* TODO: FireTutorialTip duration */, () =>
         {
             this.radio.SetChannel(8);
+            Debug.Log("Testing for tutorial 4");
             this.tutorialText.text = "Put the radio frequency back to Channel 30";
         });
     }
