@@ -11,7 +11,7 @@ public class ChoppableWood : MonoBehaviour
     [SerializeField] private string tagInQuestion;
 
     [Header("SoundEffects")]
-    [SerializeField] private AudioClip chopSFX;
+    [SerializeField] private FMODUnity.StudioEventEmitter emitter;
 
     [Tooltip("The minimum speed (m/s) the axe must be moving to split the wood.")]
     [SerializeField] private float minChopVelocity = 2.0f;
@@ -69,8 +69,7 @@ public class ChoppableWood : MonoBehaviour
     private void SpawnPieces(Transform axeTransform)
     {
         //Audio
-        if (chopSFX == null) return;
-        SoundEffectManager.Instance.PlaySoundFXClip(this.chopSFX, transform, 1f);
+        this.emitter.Play();
 
         // 1. Position Logic: Spread pieces based on axe's forward vector
         Vector3 splitDirection = axeTransform.forward;

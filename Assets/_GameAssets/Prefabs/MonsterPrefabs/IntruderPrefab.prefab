@@ -267,10 +267,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b51e6dc2430dad54b9d1f511a98bc9ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::IntruderFlashedState
-  blocksTransitions: 0
-  nextState: {fileID: 0}
-  exitOnComplete: 1
+  blocksTransitions: 1
+  nextState: {fileID: 6893837462578570359}
+  exitOnComplete: 0
   monsterNavigation: {fileID: 132277432202858881}
+  intruderModel: {fileID: 6651598423100631727}
+  respawnDelay: 30
 --- !u!114 &4108226675085203310
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -283,7 +285,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa4759459a2f6df4e8a3af805bf14913, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
-  triggerMode: 2
+  triggerMode: 0
   stopOnExit: 1
   paramType: 0
   AnimationState: 6
@@ -479,7 +481,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa4759459a2f6df4e8a3af805bf14913, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
-  triggerMode: 2
+  triggerMode: 0
   stopOnExit: 1
   paramType: 0
   AnimationState: 8
@@ -579,7 +581,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa4759459a2f6df4e8a3af805bf14913, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
-  triggerMode: 2
+  triggerMode: 0
   stopOnExit: 1
   paramType: 0
   AnimationState: 2
@@ -680,7 +682,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa4759459a2f6df4e8a3af805bf14913, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
-  triggerMode: 2
+  triggerMode: 0
   stopOnExit: 1
   paramType: 0
   AnimationState: 4
@@ -856,7 +858,7 @@ Transform:
   m_GameObject: {fileID: 4733781242043992812}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -928,7 +930,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa4759459a2f6df4e8a3af805bf14913, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
-  triggerMode: 2
+  triggerMode: 0
   stopOnExit: 1
   paramType: 0
   AnimationState: 9
@@ -1086,7 +1088,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa4759459a2f6df4e8a3af805bf14913, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
-  triggerMode: 2
+  triggerMode: 0
   stopOnExit: 1
   paramType: 0
   AnimationState: 3
@@ -1229,7 +1231,7 @@ MonoBehaviour:
   stateToTransitionTo: {fileID: 0}
   occlusionMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64961
   flashlightSettings: {fileID: 11400000, guid: e1d80fbeeb3e27b498a6a95b85fa8a72, type: 2}
   fleeState: {fileID: 8581784409638178010}
   exposureBuildSpeed: 3
@@ -1298,7 +1300,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa4759459a2f6df4e8a3af805bf14913, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AnimationAffordance
-  triggerMode: 2
+  triggerMode: 0
   stopOnExit: 1
   paramType: 0
   AnimationState: 7
@@ -1357,9 +1359,17 @@ PrefabInstance:
       value: 9
       objectReference: {fileID: 0}
     - target: {fileID: -5526511972811979923, guid: 3f2ab1f342d1ba9498680e52fb1d5e76, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -5526511972811979923, guid: 3f2ab1f342d1ba9498680e52fb1d5e76, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 203b73e687588874daf16b94175d2263, type: 2}
+    - target: {fileID: -3477420101703471683, guid: 3f2ab1f342d1ba9498680e52fb1d5e76, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 807541153144536871, guid: 3f2ab1f342d1ba9498680e52fb1d5e76, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -1371,6 +1381,10 @@ PrefabInstance:
     - target: {fileID: 1633615728320759017, guid: 3f2ab1f342d1ba9498680e52fb1d5e76, type: 3}
       propertyPath: m_Layer
       value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2018554964053042163, guid: 3f2ab1f342d1ba9498680e52fb1d5e76, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5072656018528810647, guid: 3f2ab1f342d1ba9498680e52fb1d5e76, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -1470,6 +1484,11 @@ Rigidbody:
 --- !u!4 &6270392950887706645 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 3f2ab1f342d1ba9498680e52fb1d5e76, type: 3}
+  m_PrefabInstance: {fileID: 5804665307699812350}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &6651598423100631727 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 3f2ab1f342d1ba9498680e52fb1d5e76, type: 3}
   m_PrefabInstance: {fileID: 5804665307699812350}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &8433891898049802001 stripped

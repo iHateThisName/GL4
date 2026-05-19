@@ -79,26 +79,32 @@ namespace MonsterSystem
             // Apply night scaling
             var nightOverride = this.controller.GetOverrideForNight(this.controller.CurrentNight);
             this.agent.speed = this.baseSpeed * nightOverride.speedMultiplier;
-
             // Only re-resolve destination for FollowTarget (tracks a moving target).
             // Other strategies resolve once on enter — their destination is fixed.
             if (this.strategy is FollowTargetStrategy && this.target != null)
             {
-                Vector3 targetPos = this.target.position;
-                if (Vector3.Distance(this.lastSetDestination, targetPos) > this.targetThreshold)
-                {
-                    this.agent.SetDestination(targetPos);
-                    this.lastSetDestination = targetPos;
-                }
+                this.agent.SetDestination(target.position);
+                this.lastSetDestination = target.position;
             }
             
-            // Arrival: agent.stoppingDistance is driven from targetThreshold on enter, so the
-            // agent's own "reached destination" condition is simply remainingDistance <= stoppingDistance
-            // once a path is computed. The hasDestination flag guards against the first tick before
-            // SetDestination has been issued (where remainingDistance is 0 with no path).
-            this.hasArrived = this.hasDestination
-                              && !this.agent.pathPending
-                              && this.agent.remainingDistance <= this.agent.stoppingDistance;
+            // Arrival: path is computed, agent has stopped, and the path actually ended at the
+            // intended destination (XZ only). Mirrors the check in BaseNavAIMonster so that stale
+            // destinations (e.g. from VR locomotion moving the player mid-path) don't trigger arrival.
+            if (this.hasDestination && !this.agent.pathPending && this.agent.velocity.sqrMagnitude == 0f)
+            {
+                Vector3 intendedDestination = this.strategy is FollowTargetStrategy && this.target != null
+                    ? this.target.position
+                    : this.lastSetDestination;
+
+                Vector2 pathEnd2D = new Vector2(this.agent.pathEndPosition.x, this.agent.pathEndPosition.z);
+                Vector2 target2D  = new Vector2(intendedDestination.x, intendedDestination.z);
+
+                this.hasArrived = Vector2.Distance(pathEnd2D, target2D) <= this.targetThreshold;
+            }
+            else
+            {
+                this.hasArrived = false;
+            }
 
             if (this.hasArrived)
             {

@@ -160,7 +160,7 @@ MonoBehaviour:
     Path: event:/MAIN/FirePlace
   Event: 
   EventPlayTrigger: 0
-  EventStopTrigger: 0
+  EventStopTrigger: 2
   AllowFadeout: 1
   TriggerOnce: 0
   Preload: 0
@@ -478,7 +478,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FireplaceFuelTrigger
   fireplaceController: {fileID: 6478574032641028484}
-  fmodEmitter: {fileID: 0}
 --- !u!1 &8272146743498276001
 GameObject:
   m_ObjectHideFlags: 0
@@ -958,7 +957,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3208870060254853081, guid: 88b9e5bdafbb69547b80d55fde3eeee7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.23
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3208870060254853081, guid: 88b9e5bdafbb69547b80d55fde3eeee7, type: 3}
       propertyPath: m_LocalPosition.y

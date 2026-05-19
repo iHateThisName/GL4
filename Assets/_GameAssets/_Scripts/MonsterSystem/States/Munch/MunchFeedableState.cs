@@ -1,15 +1,12 @@
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit;
 
-namespace MonsterSystem
-{
+namespace MonsterSystem {
     /// <summary>
     /// Base state for Hungry/Angry feeding phases. Plays an animation on enter,
     /// listens for food entering the feed zone via TriggerArea, and transitions
     /// to accept or reject states based on the food's velocity.
     /// </summary>
-    public class MunchFeedableState : AnimatedState
-    {
+    public class MunchFeedableState : AnimatedState {
         [Header("Feed Zone")]
         [SerializeField] private TriggerArea feedZone;                  // Trigger area where food must enter to be detected
         [SerializeField] private float maxAcceptableVelocity = 2f;      // Maximum food speed to be accepted (above this, food is rejected)
@@ -18,11 +15,13 @@ namespace MonsterSystem
         [SerializeField] private MonsterState rejectState; // State to transition to when food is thrown too fast
         [SerializeField] private MonsterState acceptState; // State to transition to when food is gently placed
 
+        [SerializeField] private TheMunchHeadController headController; // Reference to the monster's head controller for blendshape animations
+        [SerializeField] private TheMunchHeadController.EnumExpression expression = TheMunchHeadController.EnumExpression.Normal; // Initial expression for the monster's head
+
         /// <summary>
         /// Subscribes to the feed zone trigger event and starts looping audio on state entry.
         /// </summary>
-        public override void OnStateEnter()
-        {
+        public override void OnStateEnter() {
             base.OnStateEnter();
 
             // Subscribe to the feed zone trigger so we are notified when food enters
@@ -33,13 +32,15 @@ namespace MonsterSystem
             // Audio is Custom mode so it won't auto-stop on exit — it persists into AcceptFoodState
             // until HandleEatMoment stops it.
             TriggerAffordances<AudioAffordance>();
+
+
+            this.headController.PlayExpression(this.expression);
         }
 
         /// <summary>
         /// Unsubscribes from the feed zone trigger event and stops audio on state exit.
         /// </summary>
-        public override void OnStateExit()
-        {
+        public override void OnStateExit() {
             // Unsubscribe from the feed zone trigger to prevent stale callbacks
             if (this.feedZone != null)
                 this.feedZone.OnTriggerEntered -= HandleFeedTrigger;
@@ -49,24 +50,22 @@ namespace MonsterSystem
         /// Handles a collider entering the feed zone. Checks if it is tagged as food,
         /// then transitions to accept or reject based on the food's velocity.
         /// </summary>
-        private void HandleFeedTrigger(Collider other)
-        {
+        private void HandleFeedTrigger(Collider other) {
             Debug.Log("Triggered Feed trigger");
             // Ignore non-food objects and guard against missing controller
             var food = HungerSystem.TryGetFood(other);
-            if (food == null || food.Value <= 0)
-            {
+            if (food == null || food.Value <= 0) {
                 Debug.Log("Did not get food from: " + other.name + " or food is empty");
                 RequestTransition(this.rejectState, other.attachedRigidbody);
                 return;
             }
 
             // Retrieve the food's rigidbody; bail out if none is attached
-            Rigidbody foodRb = food.Rigidbody? food.Rigidbody : other.attachedRigidbody;
+            Rigidbody foodRb = food.Rigidbody ? food.Rigidbody : other.attachedRigidbody;
             if (foodRb == null) return;
-            
+
             AttachFood(food, foodRb);
-            
+
             Debug.Log("Food was found");
             RequestTransition(this.acceptState, foodRb);
 
@@ -86,18 +85,17 @@ namespace MonsterSystem
         /// </summary>
         /// <param name="food">The food component being attached.</param>
         /// <param name="foodRb">The rigidbody of the food to freeze in place.</param>
-        private void AttachFood(Food food, Rigidbody foodRb)
-        {
+        private void AttachFood(Food food, Rigidbody foodRb) {
             foodRb.useGravity = false;
             foodRb.isKinematic = true;
             foodRb.constraints = RigidbodyConstraints.FreezeRotation;
-            
+
             food.transform.SetParent(null);
             food.transform.SetParent(this.feedZone.transform, false);
-            
+
             food.transform.localPosition = Vector3.zero;
             food.transform.localRotation = Quaternion.Euler(Vector3.zero);
-            
+
             if (food.GrabInteractable != null)
                 food.GrabInteractable.enabled = false;
         }

@@ -2,9 +2,16 @@ using UnityEngine;
 
 public class MainMenu : MonoBehaviour
 {
+    [ContextMenu("Start Game")]
     public void StartGame()
     {
         GameManager.Instance.LoadScene("CabinLayoutFinal");
+        //SceneManager.LoadScene("CabinLayoutFinal");
+    }
+
+    public void BackToMenu()
+    {
+        GameManager.Instance.LoadScene("MainMenu");
         //SceneManager.LoadScene("CabinLayoutFinal");
     }
 

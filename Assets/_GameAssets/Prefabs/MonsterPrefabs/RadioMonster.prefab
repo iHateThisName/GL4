@@ -50,7 +50,7 @@ MonoBehaviour:
   radioRef: {fileID: 11400000, guid: b7444bc83e7e01742ad9851020aa5b6f, type: 2}
   exitState: {fileID: 3004101101291162495}
   disruptionInterval: 10
-  resourceDepletionValue: 2.5
+  resourceDepletionValue: 6
   resourceDepletionInterval: 2
 --- !u!1 &2810850428064555372
 GameObject:
@@ -229,8 +229,9 @@ MonoBehaviour:
   transitionValues:
   - 20
   statesToTransitionTo:
-  - {fileID: 6782068129171829247}
+  - {fileID: 3734598870474493737}
   baseDepletionValue: -1
+  resourceValue: 0
 --- !u!1 &4493433350775686819
 GameObject:
   m_ObjectHideFlags: 0
@@ -374,8 +375,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2977724708001973254}
-  - component: {fileID: 6782068129171829247}
-  - component: {fileID: 8090784810470898618}
+  - component: {fileID: 3734598870474493737}
+  - component: {fileID: 4252777120741165081}
   m_Layer: 0
   m_Name: Kill
   m_TagString: Untagged
@@ -398,7 +399,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2229044646736428301}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6782068129171829247
+--- !u!114 &3734598870474493737
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -407,15 +408,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 9181115424053318874}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e3111c0346f2701498e03949fc1fe156, type: 3}
+  m_Script: {fileID: 11500000, guid: 6818a517756c45e0932566694918b613, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.KillPlayerState
-  blocksTransitions: 1
-  nextState: {fileID: 0}
-  exitOnComplete: 1
-  waitForAffordanceAnimation: 0
-  useAnimation: 0
---- !u!114 &8090784810470898618
+  m_EditorClassIdentifier: Assembly-CSharp::TimedKillPlayer
+  blocksTransitions: 0
+  interval: 0.1
+  duration: 2
+--- !u!114 &4252777120741165081
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -424,9 +423,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 9181115424053318874}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4702ac2b4be5cd141a1c9c87889c9abc, type: 3}
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AudioAffordance
-  clip: {fileID: 0}
-  loop: 0
-  volume: 1
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -1546074246
+      Data2: 1261561630
+      Data3: 690119071
+      Data4: -1060777264
+    Path: event:/MAIN/RadioDemon 2
+  Event: 
+  EventPlayTrigger: 11
+  EventStopTrigger: 2
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: RadioHost
+    Value: 9
+  OverrideAttenuation: 1
+  OverrideMinDistance: 5
+  OverrideMaxDistance: 40

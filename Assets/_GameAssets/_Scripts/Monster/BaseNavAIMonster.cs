@@ -43,7 +43,7 @@ public class BaseNavAIMonster : MonoBehaviour {
 
     // Flags
     private bool isPlayerKilled = false;
-    private bool isFleeing = false;
+    public bool IsFleeing { get; set; } = false;
     private bool isNavigationDisabled = false;
 
     // Flee
@@ -120,7 +120,7 @@ public class BaseNavAIMonster : MonoBehaviour {
     /// </summary>
     private IEnumerator MonsterLogicCoroutine() {
         while (true) {
-            if (!this.isFleeing) CheckAttackRange();
+            if (!this.IsFleeing) CheckAttackRange();
 
             if (!this.isNavigationDisabled) this.monsterNavigationLogic?.Invoke();
 
@@ -232,9 +232,9 @@ public class BaseNavAIMonster : MonoBehaviour {
     /// and retreat to its spawn point when the player enters warm/indoor areas.
     /// </summary>
     private void StalkerNavigationLogic() {
-        if (this.isFleeing) {
+        if (this.IsFleeing) {
             this.fleeTimer -= this.tickRate;
-            if (this.fleeTimer <= 0f) this.isFleeing = false;
+            if (this.fleeTimer <= 0f) this.IsFleeing = false;
             return;
         }
 
@@ -318,7 +318,7 @@ public class BaseNavAIMonster : MonoBehaviour {
         this.fleeDestination = this.transform.position + (fleeDirection * this.fleeDistance);
 
         // Set fleeing state
-        this.isFleeing = true;
+        this.IsFleeing = true;
         this.fleeTimer = this.fleeDuration;
 
         // Immediately set destination to flee
@@ -353,5 +353,15 @@ public class BaseNavAIMonster : MonoBehaviour {
         this.Agent.updateRotation = true;
 
         this.isNavigationDisabled = false;
+    }
+
+    [ContextMenu("Reset Monster")]
+    public void ResetMonster() {
+        this.isPlayerKilled = false;
+        this.IsFleeing = false;
+        this.fleeTimer = 0f;
+        this.targetWindow = null;
+        EnableNavigation();
+        this.Agent.Warp(this.spawnPoint);
     }
 }

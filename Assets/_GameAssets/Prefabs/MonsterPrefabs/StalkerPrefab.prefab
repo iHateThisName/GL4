@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7065287357716026064}
   - component: {fileID: 5493819334016811749}
   - component: {fileID: 8979222186802900290}
+  - component: {fileID: 2467509824809940869}
   m_Layer: 0
   m_Name: Idle
   m_TagString: Untagged
@@ -67,6 +68,39 @@ MonoBehaviour:
   AnimationState: 1
   paramName: 
   boolValue: 1
+--- !u!114 &2467509824809940869
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1668705861020326842}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -1257814909
+      Data2: 1327912024
+      Data3: -1597427825
+      Data4: -909749516
+    Path: event:/MAIN/Stalker
+  Event: 
+  EventPlayTrigger: 11
+  EventStopTrigger: 12
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: Stalker
+    Value: 2
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &3259754150233931781
 GameObject:
   m_ObjectHideFlags: 0
@@ -78,6 +112,7 @@ GameObject:
   - component: {fileID: 5795693467914578306}
   - component: {fileID: 4910811012170373297}
   - component: {fileID: 3011965976767095937}
+  - component: {fileID: 7990636691646854680}
   m_Layer: 0
   m_Name: Patrol
   m_TagString: Untagged
@@ -120,7 +155,7 @@ MonoBehaviour:
   strategy:
     rid: 1560563707155841125
   moveConfig: {fileID: 11400000, guid: 15b4e26f9ed107b47a5e0c1dbf577210, type: 2}
-  targetThreshold: 0.5
+  targetThreshold: 2
   arrivalState: {fileID: 4910811012170373297}
   references:
     version: 2
@@ -151,6 +186,39 @@ MonoBehaviour:
   AnimationState: 2
   paramName: 
   boolValue: 1
+--- !u!114 &7990636691646854680
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3259754150233931781}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -1257814909
+      Data2: 1327912024
+      Data3: -1597427825
+      Data4: -909749516
+    Path: event:/MAIN/Stalker
+  Event: 
+  EventPlayTrigger: 11
+  EventStopTrigger: 12
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: Stalker
+    Value: 1
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &3438113671535779755
 GameObject:
   m_ObjectHideFlags: 0
@@ -161,8 +229,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1110177333996298887}
   - component: {fileID: 2609687031708666669}
-  - component: {fileID: 2158655959361425675}
   - component: {fileID: 1491841840754991035}
+  - component: {fileID: 3812595709249841634}
   m_Layer: 0
   m_Name: Flee
   m_TagString: Untagged
@@ -205,7 +273,7 @@ MonoBehaviour:
   strategy:
     rid: 1560563707155841128
   moveConfig: {fileID: 0}
-  targetThreshold: 0.5
+  targetThreshold: 1
   arrivalState: {fileID: 8330429003478050197}
   references:
     version: 2
@@ -214,23 +282,6 @@ MonoBehaviour:
       type: {class: FleeStrategy, ns: MonsterSystem, asm: Assembly-CSharp}
       data:
         fleeDistance: 30
---- !u!114 &2158655959361425675
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3438113671535779755}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4702ac2b4be5cd141a1c9c87889c9abc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AudioAffordance
-  triggerMode: 2
-  stopOnExit: 1
-  clip: {fileID: 8300000, guid: fc323e27414aadf4095893d373c60c49, type: 3}
-  loop: 0
-  volume: 1
 --- !u!114 &1491841840754991035
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -249,135 +300,39 @@ MonoBehaviour:
   AnimationState: 6
   paramName: 
   boolValue: 1
---- !u!1 &4489208184488109914
-GameObject:
+--- !u!114 &3812595709249841634
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7430952119360415433}
-  - component: {fileID: 3568513693465281361}
-  m_Layer: 0
-  m_Name: AudioSource
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &7430952119360415433
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4489208184488109914}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 325820956463124110}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!82 &3568513693465281361
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4489208184488109914}
+  m_GameObject: {fileID: 3438113671535779755}
   m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 0}
-  m_PlayOnAwake: 1
-  m_Volume: 1
-  m_Pitch: 1
-  Loop: 0
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -1257814909
+      Data2: 1327912024
+      Data3: -1597427825
+      Data4: -909749516
+    Path: event:/MAIN/Stalker
+  Event: 
+  EventPlayTrigger: 11
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: Stalker
+    Value: 3
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &5295791413730489271
 GameObject:
   m_ObjectHideFlags: 0
@@ -423,6 +378,7 @@ GameObject:
   - component: {fileID: 8782225286382866475}
   - component: {fileID: 4377894048711055769}
   - component: {fileID: 7102720860972879059}
+  - component: {fileID: 7039819678103401332}
   m_Layer: 0
   m_Name: KillPlayer
   m_TagString: Untagged
@@ -496,6 +452,39 @@ MonoBehaviour:
   AnimationState: 4
   paramName: 
   boolValue: 1
+--- !u!114 &7039819678103401332
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5690330209603185741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -1257814909
+      Data2: 1327912024
+      Data3: -1597427825
+      Data4: -909749516
+    Path: event:/MAIN/Stalker
+  Event: 
+  EventPlayTrigger: 11
+  EventStopTrigger: 2
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: Stalker
+    Value: 4
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &6036961042488212710
 GameObject:
   m_ObjectHideFlags: 0
@@ -529,7 +518,6 @@ Transform:
   - {fileID: 8380608638720507806}
   - {fileID: 4429331762747550511}
   - {fileID: 3798001606993417608}
-  - {fileID: 7430952119360415433}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!195 &1687273280417510100
@@ -546,7 +534,7 @@ NavMeshAgent:
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
-  m_StoppingDistance: 2.5
+  m_StoppingDistance: 0.5
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -564,6 +552,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4429331762747550511}
   - component: {fileID: 7036426224691980683}
+  - component: {fileID: 738220006273779076}
   m_Layer: 0
   m_Name: States
   m_TagString: Untagged
@@ -608,9 +597,42 @@ MonoBehaviour:
   spawnPoints: {fileID: 11400000, guid: 3da829e3696bcda44b21a85c1ae7376a, type: 2}
   playerRef: {fileID: 11400000, guid: 8aa04a6520205384e9477b4745bd7d4b, type: 2}
   animator: {fileID: 4046319106632995743}
-  audioSource: {fileID: 3568513693465281361}
+  audioSource: {fileID: 0}
   sensorRoot: {fileID: 3798001606993417608}
   initialState: {fileID: 5493819334016811749}
+--- !u!114 &738220006273779076
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7843430561551119234}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -1257814909
+      Data2: 1327912024
+      Data3: -1597427825
+      Data4: -909749516
+    Path: event:/MAIN/Stalker
+  Event: 
+  EventPlayTrigger: 2
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: Stalker
+    Value: 5
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &7869189190943243820
 GameObject:
   m_ObjectHideFlags: 0
@@ -744,8 +766,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4814711508352412192}
   - component: {fileID: 3275094173940170067}
-  - component: {fileID: 4893929753904749785}
   - component: {fileID: 1197731052362962471}
+  - component: {fileID: 4014183676537758066}
   m_Layer: 0
   m_Name: Chase
   m_TagString: Untagged
@@ -796,23 +818,6 @@ MonoBehaviour:
     - rid: 1560563707155841127
       type: {class: FollowTargetStrategy, ns: MonsterSystem, asm: Assembly-CSharp}
       data: 
---- !u!114 &4893929753904749785
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8085184186486536723}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4702ac2b4be5cd141a1c9c87889c9abc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MonsterSystem.AudioAffordance
-  triggerMode: 2
-  stopOnExit: 1
-  clip: {fileID: 8300000, guid: a1e34015c147f0246848c0e9de812e99, type: 3}
-  loop: 1
-  volume: 1
 --- !u!114 &1197731052362962471
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -831,6 +836,39 @@ MonoBehaviour:
   AnimationState: 11
   paramName: 
   boolValue: 1
+--- !u!114 &4014183676537758066
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8085184186486536723}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -1257814909
+      Data2: 1327912024
+      Data3: -1597427825
+      Data4: -909749516
+    Path: event:/MAIN/Stalker
+  Event: 
+  EventPlayTrigger: 11
+  EventStopTrigger: 12
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: Stalker
+    Value: 0
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &8824685086368401993
 GameObject:
   m_ObjectHideFlags: 0
@@ -926,7 +964,7 @@ MonoBehaviour:
   stateToTransitionTo: {fileID: 0}
   occlusionMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 4294967295
   flashlightSettings: {fileID: 11400000, guid: e1d80fbeeb3e27b498a6a95b85fa8a72, type: 2}
   fleeState: {fileID: 2609687031708666669}
   exposureBuildSpeed: 3
@@ -1053,6 +1091,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -7201013360374297894, guid: 9faaa682ddf660a4785348f3134ccda7, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 0c2ab9f09b2c517478da54df3bf8d802, type: 2}
     - target: {fileID: -7175206037014516758, guid: 9faaa682ddf660a4785348f3134ccda7, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -1329,6 +1371,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2127994900261715893, guid: 9faaa682ddf660a4785348f3134ccda7, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 0c2ab9f09b2c517478da54df3bf8d802, type: 2}
     - target: {fileID: 2150933578553711358, guid: 9faaa682ddf660a4785348f3134ccda7, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -1569,6 +1615,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9187126337646807261, guid: 9faaa682ddf660a4785348f3134ccda7, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 0c2ab9f09b2c517478da54df3bf8d802, type: 2}
     m_RemovedComponents:
     - {fileID: 5866666021909216657, guid: 9faaa682ddf660a4785348f3134ccda7, type: 3}
     m_RemovedGameObjects: []

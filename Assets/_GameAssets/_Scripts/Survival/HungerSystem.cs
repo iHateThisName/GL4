@@ -37,7 +37,7 @@ public class HungerSystem : MonoBehaviour
     private EnumHungerState hungerState = EnumHungerState.Full;
     
     // Internal current hunger value. Higher means the player is well-fed, lower means starving.
-    [SerializeField] private float hunger;
+    [Gaskellgames.ReadOnly] private float hunger;
 
     private const float SLIGHTY_HUNGRY_THRESHOLD = 0.8f;
     private const float HUNGER_THRESHOLD = 0.5f;
@@ -212,5 +212,11 @@ public class HungerSystem : MonoBehaviour
     {
         if (!this.timerHandle.IsValid) return;
         TimerManager.Pause(this.timerHandle);
+    }
+    
+    [ContextMenu("Reduce Hunger")]
+    public void ReduceHunger()
+    {
+        ClampHunger(-10f);
     }
 }

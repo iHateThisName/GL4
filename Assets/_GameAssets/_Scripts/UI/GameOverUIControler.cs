@@ -9,6 +9,7 @@ public class GameOverUIControler : MonoBehaviour
 {
     [Header("=== UI References ===")]
     [SerializeField] private TextMeshProUGUI gameOverText; // Displays death reason message
+    [SerializeField] private TextMeshProUGUI bigGameOverText;
 
     /// <summary>
     /// Initializes the UI with death information and starts the auto-restart countdown.
@@ -48,11 +49,17 @@ public class GameOverUIControler : MonoBehaviour
             DeathSystem.DeathEvent.DeathReason.Temperature => "You froze to death!",
             DeathSystem.DeathEvent.DeathReason.Hunger => "You starved to death!",
             DeathSystem.DeathEvent.DeathReason.Monster => "The " + deathEvent.AdditionalInfo + " got you!",
-            DeathSystem.DeathEvent.DeathReason.Survived => "Congratulations You survived the Night!",
+            DeathSystem.DeathEvent.DeathReason.Survived => "You survived the Night!",
             _ => "Game Over"
         };
 
         this.gameOverText.text = message;
+
+        if (deathEvent.Reason == DeathSystem.DeathEvent.DeathReason.Survived) {
+            this.bigGameOverText.text = "Congratulations";
+        } else {
+            this.bigGameOverText.text = "Game Over";
+        }
         Debug.Log($"GameOverUI: Death reason - {deathEvent.Reason}");
     }
 }

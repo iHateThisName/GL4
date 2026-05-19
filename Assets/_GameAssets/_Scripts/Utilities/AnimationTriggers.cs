@@ -19,6 +19,7 @@ public static class AnimationTriggers {
         public static readonly int Exit = Animator.StringToHash("ExitTrigger");
         public static readonly int RejectFood = Animator.StringToHash("RejectFoodTrigger");
         public static readonly int AcceptFood = Animator.StringToHash("AcceptFoodTrigger");
+        public static readonly int Hungry = Animator.StringToHash("HungryTrigger");
 
     }
 
@@ -33,6 +34,7 @@ public static class AnimationTriggers {
             EnumAnimationStates.Chasing => AnimationTriggers.Chasing,
             EnumAnimationStates.Flashed => AnimationTriggers.Flashed,
             EnumAnimationStates.Attack => AnimationTriggers.Attack,
+            EnumAnimationStates.Idle => AnimationTriggers.Idle,
 
             EnumAnimationStates.IntruderApproachWindow => Intruder.ApproachWindow,
             EnumAnimationStates.IntruderIdleWindow => Intruder.IdleWindow,
@@ -47,6 +49,7 @@ public static class AnimationTriggers {
             EnumAnimationStates.MunchExit => Munch.Exit,
             EnumAnimationStates.MunchRejectFood => Munch.RejectFood,
             EnumAnimationStates.MunchAcceptFood => Munch.AcceptFood,
+            EnumAnimationStates.MunchHungry => Munch.Hungry,
             _ => 0
         };
 
@@ -76,5 +79,6 @@ public enum EnumAnimationStates {
     MunchExit,
     MunchRejectFood,
     MunchAcceptFood,
+    MunchHungry,
 
 }

@@ -82,7 +82,7 @@ public class GameManager : PersistenSingleton<GameManager> {
             : this.nightSettings.BuildScheduleForNight(this.night);
         RefreshScheduleDebugView();
 
-        this.WindowsDictonary.Clear();
+        //this.WindowsDictonary.Clear();
         InstantiateTimer();
     }
 
@@ -258,14 +258,10 @@ public class GameManager : PersistenSingleton<GameManager> {
     {
         if (!TimerManager.Validate(this.nightTimerHandle)) return;
 
+        TimerManager.Reconfigure(this.nightTimerHandle, durationSeconds + 1, durationSeconds);
+        TimerManager.SetCallbacks(this.nightTimerHandle, HandleNightTick, HandleNightEnd);
         TimerManager.Pause(this.nightTimerHandle);
-
-        ref var timer = ref TimerManager.GetRef(this.nightTimerHandle);
-        timer.Elapsed = 0f;
-        timer.IsFinished = 0;
-        timer.Duration = durationSeconds;
-        timer.NextInterval = durationSeconds + 1f; // park tick past duration
-
+        
         this.scheduleCursor = this.eventsSchedule?.Length ?? 0;
     }
 
@@ -290,9 +286,16 @@ public class GameManager : PersistenSingleton<GameManager> {
         OnEventAvailable.Invoke(evt);
     }
     
-    public float NightTime => TimerManager.Validate(this.nightTimerHandle) && TimerManager.GetRef(this.nightTimerHandle).IsRunning == 1
-        ? TimerManager.GetRef(this.nightTimerHandle).Elapsed
-        : this.nightSettings.GetNightTimeInSeconds();
+    public float NightTime
+    {
+        get
+        {
+            if (!TimerManager.Validate(this.nightTimerHandle))
+                return this.nightSettings.GetNightTimeInSeconds();
+            ref var timer = ref TimerManager.GetRef(this.nightTimerHandle);
+            return Mathf.Max(0f, timer.Duration - timer.Elapsed);
+        }
+    }
 
     /// <summary>
     /// Injects a night event into the live schedule to fire after

@@ -61,11 +61,15 @@ namespace MonsterSystem
 
         public float Value => this.resourceValue;
 
-        public float ModValue(float incomingChange)
+        public float ModValue(float incomingChange, bool isFeeding = false)
         {
             this.resourceValue += incomingChange;
             if (this.thresholdExhausted && this.resourceValue > this.minTransitionValue)
                 this.thresholdExhausted = false;
+
+            if (isFeeding && this.resourceValue > this.transitionValues[0]) {
+                    this.controller.TransitionTo(this.stateToTransitionTo);
+            }
             return this.resourceValue;
         }
     }

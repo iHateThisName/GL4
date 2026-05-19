@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7416886736424901526}
   - component: {fileID: 1764980568366531594}
   - component: {fileID: 6859591370143061935}
+  - component: {fileID: 3607598493362976353}
   m_Layer: 0
   m_Name: BreakableGlassController
   m_TagString: Untagged
@@ -146,7 +147,19 @@ MonoBehaviour:
       m_Calls: []
   m_SelectEntered:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3607598493362976353}
+        m_TargetAssemblyTypeName: FMODUnity.StudioEventEmitter, FMODUnity
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_SelectExited:
     m_PersistentCalls:
       m_Calls: []
@@ -228,6 +241,41 @@ MonoBehaviour:
   m_LimitAngularVelocity: 0
   m_MaxLinearVelocityDelta: 10
   m_MaxAngularVelocityDelta: 20
+--- !u!114 &3607598493362976353
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5716513312937959285}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -2144251132
+      Data2: 1136894770
+      Data3: 1233727415
+      Data4: -1236544255
+    Path: event:/MAIN/Grab
+  Event: 
+  EventPlayTrigger: 0
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: Action
+    Value: 0
+  - Name: Grabbing
+    Value: 2
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &7269948335624307684
 GameObject:
   m_ObjectHideFlags: 0
@@ -1862,7 +1910,7 @@ MonoBehaviour:
       Data2: 1089232994
       Data3: 787285633
       Data4: -96575930
-    Path: event:/Lyubo/Glass Shatter
+    Path: event:/MAIN/Glass Shatter
   Event: 
   EventPlayTrigger: 11
   EventStopTrigger: 0

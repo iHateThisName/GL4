@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
 /// <summary>
 /// Simulates a crank-powered flashlight.
@@ -29,11 +30,10 @@ public class Flashlight : MonoBehaviour
     [SerializeField] private SO_FlashlightSettings flashlightSettings;
 
     [Header("=== Drop / Socket Settings ===")]
-    // Player transform used to measure drop distance
-    [SerializeField] private Transform playerTransform;
-
     // Socket on the player where the flashlight snaps if dropped too far
-    [SerializeField] private Transform flashlightSocket;
+    [SerializeField] private XRSocketInteractor flashlightSocket;
+    
+    [SerializeField] private string holsteredLayerName = "HolsteredItem";
 
     // Max distance from player before the flashlight teleports to the socket on drop
     [SerializeField] private float maxDropDistance = 3f;
@@ -41,7 +41,9 @@ public class Flashlight : MonoBehaviour
     // Debug/testing: start flashlight enabled
     [System.Obsolete("Only for testing purposes.")]
     [SerializeField] private bool startEnabled = false;
-
+    
+    private Transform playerTransform;
+    
     private TimerHandle batteryTimerHandle;
 
     // Target intensity we smoothly move toward
@@ -55,6 +57,8 @@ public class Flashlight : MonoBehaviour
 
     // Total number of full crank rotations completed
     private int fullRotations;
+    private int holsteredLayer;
+    private int defaultLayer;
 
     // Whether flashlight is currently turned on
     private bool powered;
@@ -71,6 +75,8 @@ public class Flashlight : MonoBehaviour
     // True only while physically held by the player
     private bool isHeld;
 
+    private bool pickedUpOnce;
+
     // How much intensity one full crank rotation adds
     private const float LIGHT_MAGNITUDE = 10;
 
@@ -83,6 +89,9 @@ public class Flashlight : MonoBehaviour
     {
         if (this.lightSource == null)
             this.lightSource = GetComponentInChildren<Light>();
+        
+        this.defaultLayer = this.gameObject.layer;
+        this.holsteredLayer = LayerMask.NameToLayer(holsteredLayerName);
     }
 
     /// <summary>
@@ -100,6 +109,12 @@ public class Flashlight : MonoBehaviour
             this.grabInteractable.selectEntered.AddListener(OnFlashlightPickedup);
             this.grabInteractable.selectExited.AddListener(OnFlashlightDropped);
         }
+
+        if (this.flashlightSocket != null)
+        {
+            this.flashlightSocket.selectEntered.AddListener(OnFlashlightSocketed);
+            this.flashlightSocket.selectExited.AddListener(OnFlashlightUnsocketed);
+        }
     }
 
     /// <summary>
@@ -114,6 +129,12 @@ public class Flashlight : MonoBehaviour
         {
             this.grabInteractable.selectEntered.RemoveListener(OnFlashlightPickedup);
             this.grabInteractable.selectExited.RemoveListener(OnFlashlightDropped);
+        }
+
+        if (this.flashlightSocket != null)
+        {
+            this.flashlightSocket.selectEntered.RemoveListener(OnFlashlightSocketed);
+            this.flashlightSocket.selectExited.RemoveListener(OnFlashlightUnsocketed);
         }
     }
 
@@ -139,28 +160,31 @@ public class Flashlight : MonoBehaviour
         SetupActiveFlashlightTimer();
         TimerManager.Pause(this.batteryTimerHandle);
 
-        if (startEnabled)
+        if (this.startEnabled)
         {
             ToggleFlashLight(true);
             TimerManager.Resume(this.batteryTimerHandle);
         }
+
+        this.playerTransform = Camera.main?.transform;
+        this.pickedUpOnce = false;
     }
 
     private void Update()
     {
-        if (!isSecured)
+        if (!this.isHeld && !this.isSecured && this.pickedUpOnce)
             TeleportToSocketIfTooFar();
 
-        if (!powered || lightSource == null) return;
-        if (lightSource.intensity == targetLightIntensity && lightSource.range == targetLightRange) return;
+        if (!this.powered || this.lightSource == null) return;
+        if (this.lightSource.intensity == this.targetLightIntensity && this.lightSource.range == this.targetLightRange) return;
 
-        lightSource.intensity = Mathf.MoveTowards(lightSource.intensity, targetLightIntensity, 5f * Time.deltaTime);
+        this.lightSource.intensity = Mathf.MoveTowards(this.lightSource.intensity, this.targetLightIntensity, 5f * Time.deltaTime);
 
-        float normalized = Mathf.InverseLerp(flashlightSettings.GetMinLightPower(), flashlightSettings.GetMaxLightPower(), lightSource.intensity);
-        targetLightRange = Mathf.Lerp(flashlightSettings.GetMinLightRange(), flashlightSettings.GetMaxLightRange(), normalized);
-        lightSource.range = Mathf.MoveTowards(lightSource.range, targetLightRange, 5f * Time.deltaTime);
+        float normalized = Mathf.InverseLerp(this.flashlightSettings.GetMinLightPower(), this.flashlightSettings.GetMaxLightPower(), this.lightSource.intensity);
+        this.targetLightRange = Mathf.Lerp(this.flashlightSettings.GetMinLightRange(), this.flashlightSettings.GetMaxLightRange(), normalized);
+        this.lightSource.range = Mathf.MoveTowards(this.lightSource.range, this.targetLightRange, 5f * Time.deltaTime);
 
-        flashlightSettings.CalculateDetectionCone(lightSource.range);
+        this.flashlightSettings.CalculateDetectionCone(this.lightSource.range);
     }
 
     private void OnDestroy()
@@ -199,6 +223,7 @@ public class Flashlight : MonoBehaviour
     /// </summary>
     void OnCrankRotated(float delta)
     {
+        Debug.Log($"Crank: delta={delta}, fullRotations={this.fullRotations}, maxRotations={this.flashlightSettings.GetMaxRotations()}, targetIntensity={this.targetLightIntensity}");
         // Prevent exceeding max allowed rotations
         if (this.fullRotations >= this.flashlightSettings.GetMaxRotations()) return;
 
@@ -212,13 +237,13 @@ public class Flashlight : MonoBehaviour
         while (this.currentAngle >= 360f)
         {
             this.currentAngle -= 360f;
-            this.fullRotations++;
+            this.fullRotations--;
         }
 
         while (this.currentAngle <= -360f)
         {
             this.currentAngle += 360f;
-            this.fullRotations--;
+            this.fullRotations++;
         }
 
         // Cranking restored power while the light was off — turn it on and start decay
@@ -227,15 +252,16 @@ public class Flashlight : MonoBehaviour
             ToggleFlashLight(true);
             SetupActiveFlashlightTimer();
         }
-
     }
 
     // ==== Flashlight Helpers ====
     private void OnFlashlightDropped(SelectExitEventArgs args)
     {
         isHeld = false;
-        if (TeleportToSocketIfTooFar()) return; // isSecured stays true — now socketed
-        isSecured = false;
+        // Override whatever layer HandCollisionHandler restored (it may have saved the holstered layer).
+        this.gameObject.layer = this.defaultLayer;
+
+        if (TeleportToSocketIfTooFar()) return;
 
         if (startEnabled) return;
 
@@ -250,9 +276,24 @@ public class Flashlight : MonoBehaviour
         }
     }
 
+    private void OnFlashlightSocketed(SelectEnterEventArgs args)
+    {
+        this.isSecured = true;
+        this.isHeld = false;
+        this.gameObject.layer = this.holsteredLayer;
+        ToggleOffFlashlight();
+    }
+
+    // Fires when the socket releases the flashlight (player is picking it up).
+    // Reset the layer to default now so HandCollisionHandler saves the right value.
+    private void OnFlashlightUnsocketed(SelectExitEventArgs args)
+    {
+        this.isSecured = false;
+    }
+
     /// <summary>
     /// If the flashlight was dropped beyond maxDropDistance from the player,
-    /// turns it off and snaps it to the player socket. Returns true if teleported.
+    /// turns it off and snaps it into the player socket via XR interaction. Returns true if teleported.
     /// </summary>
     private bool TeleportToSocketIfTooFar()
     {
@@ -260,28 +301,29 @@ public class Flashlight : MonoBehaviour
 
         float dist = Vector3.Distance(this.transform.position, this.playerTransform.position);
         if (dist <= this.maxDropDistance) return false;
-
-        this.isSecured = true;
-        ToggleOffFlashlight();
-        this.transform.SetPositionAndRotation(this.flashlightSocket.position, this.flashlightSocket.rotation);
+        
+        this.grabInteractable.interactionManager.SelectEnter((IXRSelectInteractor)this.flashlightSocket, this.grabInteractable);
         return true;
     }
 
     /// <summary>
-    /// Called when flashlight is grabbed. Only turns on if there is remaining power.
+    /// Called when the flashlight is grabbed by the player's hand.
     /// </summary>
     private void OnFlashlightPickedup(SelectEnterEventArgs args)
     {
-        isSecured = true;
-        isHeld = true;
-        if (HasPower)
+        if (args?.interactorObject is XRSocketInteractor) return;
+
+        this.isHeld = true;
+        if (this.HasPower)
             ToggleOnFlashlight();
+
+        if (!this.pickedUpOnce) this.pickedUpOnce = true;
     }
 
     private void OnFlashlightFlicker()
     {
-        flickeredLastFrame = !flickeredLastFrame;
-        ToggleFlashLight(flickeredLastFrame);
+        this.flickeredLastFrame = !this.flickeredLastFrame;
+        ToggleFlashLight(this.flickeredLastFrame);
     }
     
     /// <summary>
@@ -322,7 +364,7 @@ public class Flashlight : MonoBehaviour
     {
         this.flickeredLastFrame = false;
 
-        bool shouldTurnOn = HasPower && !this.forceOffAfterFlicker && this.isHeld;
+        bool shouldTurnOn = this.HasPower && !this.forceOffAfterFlicker && this.isHeld;
         this.forceOffAfterFlicker = false;
 
         if (shouldTurnOn)
@@ -348,8 +390,10 @@ public class Flashlight : MonoBehaviour
 
     private void ToggleOffFlashlight()
     {
-        ToggleFlashLight(false);
         TimerManager.Pause(this.batteryTimerHandle);
+        this.flickeredLastFrame = false;
+        this.forceOffAfterFlicker = false;
+        ToggleFlashLight(false);
     }
     
     /// <summary>
@@ -399,7 +443,7 @@ public class Flashlight : MonoBehaviour
     [ContextMenu("Test Pickup")]
     private void TestPickup()
     {
-        ToggleOnFlashlight();
+        OnFlashlightPickedup(null);
     }
     
     [ContextMenu("Test Crank")]
