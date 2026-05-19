@@ -17,16 +17,23 @@ MonoBehaviour:
     monsterCount: 1
     timing:
       useRange: 0
-      time: 0.0050000004
-      timeMin: 0
+      time: 0.025641026
+      timeMin: 0.033333335
       timeMax: 0
   - monster: {fileID: 4181545296685392125, guid: d030a9afe7227df4dbe4bedc9aaa748d, type: 3}
     monsterCount: 1
     timing:
       useRange: 0
-      time: 0.020833334
+      time: 0.083333336
       timeMin: 0
       timeMax: 0
+  - monster: {fileID: 4950517335717247463, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
+    monsterCount: 1
+    timing:
+      useRange: 1
+      time: 0.2
+      timeMin: 0.15
+      timeMax: 0.3
   radioEvents:
   - timing:
       useRange: 0
@@ -45,10 +52,10 @@ MonoBehaviour:
     radioBroadcast: 5
     priority: 0
   - timing:
-      useRange: 0
-      time: 0.079166666
-      timeMin: 0
-      timeMax: 0
+      useRange: 1
+      time: 0.13333334
+      timeMin: 0.09
+      timeMax: 0.2
     type: 0
     radioBroadcast: 5
     priority: 0

@@ -13,6 +13,13 @@ MonoBehaviour:
   m_Name: Night4
   m_EditorClassIdentifier: Assembly-CSharp::SO_NightEvent
   monsterSpawnEvents:
+  - monster: {fileID: 6036961042488212710, guid: ae8a4adaccbb7324aa4aa03bb566d6f0, type: 3}
+    monsterCount: 1
+    timing:
+      useRange: 0
+      time: 0.025641026
+      timeMin: 0.033333335
+      timeMax: 0
   - monster: {fileID: 4181545296685392125, guid: d030a9afe7227df4dbe4bedc9aaa748d, type: 3}
     monsterCount: 1
     timing:
@@ -20,13 +27,27 @@ MonoBehaviour:
       time: 0.0625
       timeMin: 0
       timeMax: 0
+  - monster: {fileID: 187740070976333615, guid: 870cddaf024873949b5a9c910b920081, type: 3}
+    monsterCount: 1
+    timing:
+      useRange: 1
+      time: 0.2
+      timeMin: 0.33333334
+      timeMax: 0.46666667
   - monster: {fileID: 4950517335717247463, guid: e8fc7201af0aaf241a673ec86d292bf2, type: 3}
     monsterCount: 1
     timing:
-      useRange: 0
+      useRange: 1
       time: 0.020833334
-      timeMin: 0
-      timeMax: 0
+      timeMin: 0.46666667
+      timeMax: 0.6666667
+  - monster: {fileID: 6880271366201179141, guid: 5d8d1f55062cfae4da25a4fbf006f6c9, type: 3}
+    monsterCount: 1
+    timing:
+      useRange: 1
+      time: 0.06666667
+      timeMin: 0.6666667
+      timeMax: 0.7692308
   radioEvents:
   - timing:
       useRange: 0
