@@ -4,6 +4,7 @@ public class FollowXRRotationAndPosition : MonoBehaviour
 {
     [SerializeField] private bool followCameraY = true;
     [SerializeField] private Transform followPosition;
+    [SerializeField] private Vector3 offset = new Vector3(-0.2f, 0.9f, 0.25f);
     
     private Transform parentTransform;
 
@@ -15,7 +16,7 @@ public class FollowXRRotationAndPosition : MonoBehaviour
     private void LateUpdate()
     {
         if (this.followPosition != null)
-            this.transform.position = this.followPosition.position;
+            this.transform.position = this.followPosition.position + this.offset;
 
         if (this.followCameraY)
         {
