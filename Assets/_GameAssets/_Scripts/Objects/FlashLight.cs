@@ -151,7 +151,7 @@ public class Flashlight : MonoBehaviour
             this.lightSource.range = this.targetLightRange;
         }
         this.flashlightSettings.Value = this.transform;
-        this.flashlightSettings.CalculateDetectionCone(this.targetLightRange);
+        this.flashlightSettings.CalculateDetectionCone(this.flashlightSettings.GetDetectionRangeForIntensity(this.targetLightIntensity));
 
         // Ensure flashlight starts off, timer created but immediately paused
         ToggleFlashLight(false);
@@ -182,7 +182,7 @@ public class Flashlight : MonoBehaviour
         this.targetLightRange = Mathf.Lerp(this.flashlightSettings.GetMinLightRange(), this.flashlightSettings.GetMaxLightRange(), normalized);
         this.lightSource.range = Mathf.MoveTowards(this.lightSource.range, this.targetLightRange, 5f * Time.deltaTime);
 
-        this.flashlightSettings.CalculateDetectionCone(this.lightSource.range);
+        this.flashlightSettings.CalculateDetectionCone(this.flashlightSettings.GetDetectionRangeForIntensity(this.lightSource.intensity));
     }
 
     private void OnDestroy()
