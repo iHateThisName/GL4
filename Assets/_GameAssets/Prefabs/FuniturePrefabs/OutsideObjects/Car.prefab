@@ -586,6 +586,7 @@ GameObject:
   - component: {fileID: 3963354966319166035}
   - component: {fileID: 6589777390323812655}
   - component: {fileID: 2891491283094658951}
+  - component: {fileID: 3906601717102925517}
   m_Layer: 0
   m_Name: HandleCollider
   m_TagString: Untagged
@@ -804,6 +805,30 @@ FixedJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
+--- !u!114 &3906601717102925517
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6839047941475411974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3d0407cf273fad4ab491425d6e5a2d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VRHingeJoint
+  joint: {fileID: 43337215220693322}
+  grabInteractable: {fileID: 6589777390323812655}
+  optimizeUpdate: 1
+  printDebug: 0
+  skipStartRotationInitialization: 0
+  SpringSnapForce: 100
+  startingPercentage: 0
+  leaningThresholdPercentage: 50
+  snapClosedPercentage: 20
+  snapOpenPercentage: 80
+  invertOpenClosedState: 0
+  <CurrentState>k__BackingField: 0
 --- !u!1 &7940542943930626107
 GameObject:
   m_ObjectHideFlags: 0
