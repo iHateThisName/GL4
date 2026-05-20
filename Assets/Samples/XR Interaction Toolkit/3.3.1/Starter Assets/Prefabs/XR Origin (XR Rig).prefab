@@ -1063,6 +1063,7 @@ MonoBehaviour:
   ignoreX: 1
   ignoreY: 0
   ignoreZ: 1
+  typeOfUpdate: 0
 --- !u!114 &4207921592373127298
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1713,8 +1714,8 @@ MonoBehaviour:
   m_Camera: {fileID: 1767192439}
   m_OriginBaseGameObject: {fileID: 1717954561962503725}
   m_CameraFloorOffsetObject: {fileID: 1680501586}
-  m_RequestedTrackingOriginMode: 3
-  m_CameraYOffset: 1.8
+  m_RequestedTrackingOriginMode: 1
+  m_CameraYOffset: 1.6
 --- !u!143 &6232745470614056090
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1733,7 +1734,7 @@ CharacterController:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Height: 1.8
+  m_Height: 1.6
   m_Radius: 0.1
   m_SlopeLimit: 20
   m_StepOffset: 0.3
@@ -7681,7 +7682,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4808866746549998793, guid: b200f6587d118224eba8467281481800, type: 3}
       propertyPath: m_InteractionLayers.m_Bits
-      value: 149
+      value: 213
       objectReference: {fileID: 0}
     - target: {fileID: 8229381180640938747, guid: b200f6587d118224eba8467281481800, type: 3}
       propertyPath: m_CastDistance
