@@ -8,6 +8,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 967200181426844701, guid: 5c0760084e2abba4090815a74ac8c828, type: 3}
+      propertyPath: m_Shadows.m_Type
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 967200181426844701, guid: 5c0760084e2abba4090815a74ac8c828, type: 3}
+      propertyPath: m_Shadows.m_NearPlane
+      value: 0.06
+      objectReference: {fileID: 0}
+    - target: {fileID: 967200181426844701, guid: 5c0760084e2abba4090815a74ac8c828, type: 3}
+      propertyPath: m_Shadows.m_Resolution
+      value: 128
+      objectReference: {fileID: 0}
     - target: {fileID: 1076869733704836286, guid: 5c0760084e2abba4090815a74ac8c828, type: 3}
       propertyPath: m_Name
       value: Flashlight Variant
@@ -61,6 +73,10 @@ PrefabInstance:
       value: HolsteredItem
       objectReference: {fileID: 0}
     - target: {fileID: 4913482026377833737, guid: 5c0760084e2abba4090815a74ac8c828, type: 3}
+      propertyPath: crankInteractionLayer
+      value: FlashlightHandle
+      objectReference: {fileID: 0}
+    - target: {fileID: 4913482026377833737, guid: 5c0760084e2abba4090815a74ac8c828, type: 3}
       propertyPath: holsteredLayerMask.m_Bits
       value: 131072
       objectReference: {fileID: 0}
@@ -76,6 +92,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: e4a4a00ec7212734799d590f34f15081, type: 2}
+    - target: {fileID: 7801427639006093882, guid: 5c0760084e2abba4090815a74ac8c828, type: 3}
+      propertyPath: m_InteractionLayers.m_Bits
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

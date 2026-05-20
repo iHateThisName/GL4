@@ -34,6 +34,7 @@ public class Flashlight : MonoBehaviour
     [SerializeField] private XRSocketInteractor flashlightSocket;
     
     [SerializeField] private string holsteredLayerName = "HolsteredItem";
+    [SerializeField] private string crankInteractionLayer = "FlashlightHandle";
 
     // Max distance from player before the flashlight teleports to the socket on drop
     [SerializeField] private float maxDropDistance = 3f;
@@ -41,7 +42,8 @@ public class Flashlight : MonoBehaviour
     // Debug/testing: start flashlight enabled
     [System.Obsolete("Only for testing purposes.")]
     [SerializeField] private bool startEnabled = false;
-    
+
+    private XRSimpleInteractable crankXRInteractable;
     private Transform playerTransform;
     
     private TimerHandle batteryTimerHandle;
@@ -54,6 +56,7 @@ public class Flashlight : MonoBehaviour
     
     private int holsteredLayer;
     private int defaultLayer;
+    private int crankLayerMask;
 
     // Whether flashlight is currently turned on
     private bool powered;
@@ -87,6 +90,9 @@ public class Flashlight : MonoBehaviour
         
         this.defaultLayer = this.gameObject.layer;
         this.holsteredLayer = LayerMask.NameToLayer(holsteredLayerName);
+        
+        this.crankXRInteractable = this.crankInteractable.GetComponent<XRSimpleInteractable>();
+        this.crankLayerMask = InteractionLayerMask.GetMask(this.crankInteractionLayer);
     }
 
     /// <summary>
@@ -228,6 +234,21 @@ public class Flashlight : MonoBehaviour
             SetupActiveFlashlightTimer();
         }
     }
+    
+    /// <summary>
+    /// If the flashlight was dropped beyond maxDropDistance from the player,
+    /// turns it off and snaps it into the player socket via XR interaction. Returns true if teleported.
+    /// </summary>
+    private bool TeleportToSocketIfTooFar()
+    {
+        if (this.playerTransform == null || this.flashlightSocket == null) return false;
+
+        float dist = Vector3.Distance(this.transform.position, this.playerTransform.position);
+        if (dist <= this.maxDropDistance) return false;
+        
+        this.grabInteractable.interactionManager.SelectEnter((IXRSelectInteractor)this.flashlightSocket, this.grabInteractable);
+        return true;
+    }
 
     // ==== Flashlight Helpers ====
     private void OnFlashlightDropped(SelectExitEventArgs args)
@@ -235,6 +256,9 @@ public class Flashlight : MonoBehaviour
         isHeld = false;
         // Override whatever layer HandCollisionHandler restored (it may have saved the holstered layer).
         this.gameObject.layer = this.defaultLayer;
+        
+        if (this.crankXRInteractable != null)
+            this.crankXRInteractable.interactionLayers &= ~crankLayerMask;
 
         if (TeleportToSocketIfTooFar()) return;
 
@@ -251,6 +275,29 @@ public class Flashlight : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Called when the flashlight is grabbed by the player's hand.
+    /// </summary>
+    private void OnFlashlightPickedup(SelectEnterEventArgs args)
+    {
+        if (args?.interactorObject is XRSocketInteractor) return;
+
+        if (this.crankXRInteractable != null)
+        {
+            bool isLeftNearFar = args?.interactorObject is NearFarInteractor && args.interactorObject.handedness == InteractorHandedness.Left;
+            if (isLeftNearFar)
+                this.crankXRInteractable.interactionLayers |= crankLayerMask;
+            else
+                this.crankXRInteractable.interactionLayers &= ~crankLayerMask;
+        }
+
+        this.isHeld = true;
+        if (this.HasPower)
+            ToggleOnFlashlight();
+
+        if (!this.pickedUpOnce) this.pickedUpOnce = true;
+    }
+    
     private void OnFlashlightSocketed(SelectEnterEventArgs args)
     {
         this.isSecured = true;
@@ -264,35 +311,6 @@ public class Flashlight : MonoBehaviour
     private void OnFlashlightUnsocketed(SelectExitEventArgs args)
     {
         this.isSecured = false;
-    }
-
-    /// <summary>
-    /// If the flashlight was dropped beyond maxDropDistance from the player,
-    /// turns it off and snaps it into the player socket via XR interaction. Returns true if teleported.
-    /// </summary>
-    private bool TeleportToSocketIfTooFar()
-    {
-        if (this.playerTransform == null || this.flashlightSocket == null) return false;
-
-        float dist = Vector3.Distance(this.transform.position, this.playerTransform.position);
-        if (dist <= this.maxDropDistance) return false;
-        
-        this.grabInteractable.interactionManager.SelectEnter((IXRSelectInteractor)this.flashlightSocket, this.grabInteractable);
-        return true;
-    }
-
-    /// <summary>
-    /// Called when the flashlight is grabbed by the player's hand.
-    /// </summary>
-    private void OnFlashlightPickedup(SelectEnterEventArgs args)
-    {
-        if (args?.interactorObject is XRSocketInteractor) return;
-
-        this.isHeld = true;
-        if (this.HasPower)
-            ToggleOnFlashlight();
-
-        if (!this.pickedUpOnce) this.pickedUpOnce = true;
     }
 
     private void OnFlashlightFlicker()
