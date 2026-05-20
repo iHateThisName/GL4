@@ -52,9 +52,6 @@ public class Flashlight : MonoBehaviour
     // Target range (derived from intensity)
     private float targetLightRange;
     
-    // Current partial crank angle (0–360 range)
-    private float currentAngle;
-
     private int holsteredLayer;
     private int defaultLayer;
 
@@ -212,7 +209,6 @@ public class Flashlight : MonoBehaviour
         float clampedLightIntensity = Mathf.Clamp(this.targetLightIntensity + delta, this.flashlightSettings.GetMinLightPower(), this.flashlightSettings.GetMaxLightPower());
         this.targetLightIntensity = clampedLightIntensity;
     }
-
     
     // ==== Crank Logic ====
     /// <summary>
@@ -221,22 +217,9 @@ public class Flashlight : MonoBehaviour
     /// </summary>
     void OnCrankRotated(float delta)
     {
-        this.currentAngle += delta;
-
         // Apply partial power based on rotation (gives immediate feedback while cranking)
-        float partialPower = (-delta / 360f) * LIGHT_MAGNITUDE;
+        float partialPower = (Mathf.Abs(delta) / 360f) * LIGHT_MAGNITUDE;
         UpdateLightIntensity(partialPower);
-
-        // Keep currentAngle within 0–360 range
-        while (this.currentAngle >= 360f)
-        {
-            this.currentAngle -= 360f;
-        }
-
-        while (this.currentAngle <= -360f)
-        {
-            this.currentAngle += 360f;
-        }
 
         // Cranking restored power while the light was off — turn it on and start decay
         if (HasPower && !this.powered)
