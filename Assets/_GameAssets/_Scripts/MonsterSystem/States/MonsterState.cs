@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace MonsterSystem
@@ -137,10 +138,20 @@ namespace MonsterSystem
             MonsterStateManager.RequestTransition(controller, targetState, context);
         }
         
+        /// <summary>
+        /// Method for any MonsterState to be able to kill the player
+        /// </summary>
         protected void KillPlayer()
         {
             string monsterName = this.controller.transform.parent.name;
-            monsterName = monsterName.Replace("(Clone)", "").Replace("Prefab", "");
+            
+            // Removes the unwanted suffixes and prefixes and just extracts the name of the monster
+            monsterName = Regex.Replace(monsterName, @"\(Clone\)", "");
+            monsterName = Regex.Replace(monsterName, @"Night\d+", "");
+            monsterName = monsterName.Replace("Prefab", "");
+            monsterName = Regex.Replace(monsterName, @"^The", "");
+            monsterName = Regex.Replace(monsterName, @"(?<=[a-z])(?=[A-Z])", " ");
+            monsterName = monsterName.Trim();
 
             // Notify the death system that the player was killed by a monster
             DeathSystem.KillPlayer(DeathSystem.DeathEvent.DeathReason.Monster, monsterName);
