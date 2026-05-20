@@ -474,7 +474,6 @@ Transform:
   - {fileID: 176491800250263426}
   - {fileID: 2030808829283437600}
   - {fileID: 5825525374429729435}
-  - {fileID: 4093714219514099599}
   m_Father: {fileID: 1680501587}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &1767192439
@@ -1041,12 +1040,12 @@ Transform:
   m_GameObject: {fileID: 221379722011708932}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.275, y: -0.74143994, z: -0.186}
+  m_LocalPosition: {x: -0.275, y: 0.62, z: -0.186}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3495516634485714642}
-  m_Father: {fileID: 1767192434}
+  m_Father: {fileID: 1717954561962503726}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &319859904775596735
 MonoBehaviour:
@@ -1060,10 +1059,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1712dd5f886d486fbbc80db7669bfb77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::IgnoreParentRotation
-  ignoreX: 1
-  ignoreY: 0
-  ignoreZ: 1
-  typeOfUpdate: 0
+  followCameraY: 1
+  followPosition: {fileID: 1767192434}
+  offset: {x: -0.2, y: -1, z: -0.25}
 --- !u!114 &4207921592373127298
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1697,6 +1695,7 @@ Transform:
   - {fileID: 1374274079547617434}
   - {fileID: 2164201973510774101}
   - {fileID: 5496615519628397258}
+  - {fileID: 4093714219514099599}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1178791450436251564
