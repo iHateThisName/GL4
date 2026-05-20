@@ -111,11 +111,7 @@ public class HandWatch : MonoBehaviour
     /// Called when the player's raw hunger value changes. Refreshes the hunger display.
     /// </summary>
     /// <param name="hunger">The new hunger value.</param>
-    private void OnHungerChanged(float hunger)
-    {
-        Debug.Log("Hunger Changed: " + hunger);
-        UpdateHungerUI();
-    }
+    private void OnHungerChanged(float hunger) => UpdateHungerUI();
 
     /// <summary>
     /// Called when the player's hunger state changes (e.g., from Full to Hungry).
@@ -123,11 +119,7 @@ public class HandWatch : MonoBehaviour
     /// </summary>
     /// <param name="previous">The hunger state before the change.</param>
     /// <param name="current">The hunger state after the change.</param>
-    private void OnHungerStateChanged(HungerSystem.EnumHungerState previous, HungerSystem.EnumHungerState current)
-    {
-        Debug.Log("Hunger State Changed: " + previous + " -> " + current);
-        UpdateHungerUI();
-    }
+    private void OnHungerStateChanged(HungerSystem.EnumHungerState previous, HungerSystem.EnumHungerState current) => UpdateHungerUI();
 
     /// <summary>
     /// Writes the current hunger state and percentage to the hunger text label.
