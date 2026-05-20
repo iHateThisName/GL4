@@ -111,8 +111,8 @@ MonoBehaviour:
   - Name: DollState
     Value: 2
   OverrideAttenuation: 1
-  OverrideMinDistance: 10
-  OverrideMaxDistance: 50
+  OverrideMinDistance: 5
+  OverrideMaxDistance: 10
 --- !u!114 &8527885637705106033
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -142,6 +142,7 @@ GameObject:
   - component: {fileID: 3662960028798784414}
   - component: {fileID: 210468888850545089}
   - component: {fileID: 7887814185130519505}
+  - component: {fileID: 6361052415984159697}
   m_Layer: 0
   m_Name: DollRelocate
   m_TagString: Untagged
@@ -201,6 +202,39 @@ MonoBehaviour:
   useConfig: 0
   canKillMomentum: 1
   rb: {fileID: 0}
+--- !u!114 &6361052415984159697
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1666760154419829998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -449000756
+      Data2: 1093045465
+      Data3: 260626329
+      Data4: 801819821
+    Path: event:/MAIN/Doll
+  Event: 
+  EventPlayTrigger: 11
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: DollState
+    Value: 0
+  OverrideAttenuation: 1
+  OverrideMinDistance: 5
+  OverrideMaxDistance: 10
 --- !u!1 &2215229423872836330
 GameObject:
   m_ObjectHideFlags: 0
@@ -746,8 +780,8 @@ MonoBehaviour:
   - Name: DollState
     Value: 1
   OverrideAttenuation: 1
-  OverrideMinDistance: 10
-  OverrideMaxDistance: 50
+  OverrideMinDistance: 5
+  OverrideMaxDistance: 10
 --- !u!114 &7963504078059114783
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -778,9 +812,9 @@ MonoBehaviour:
   Params:
   - Name: DollState
     Value: 4
-  OverrideAttenuation: 0
-  OverrideMinDistance: 1
-  OverrideMaxDistance: 20
+  OverrideAttenuation: 1
+  OverrideMinDistance: 5
+  OverrideMaxDistance: 10
 --- !u!1 &7097070077748286372
 GameObject:
   m_ObjectHideFlags: 0
@@ -792,6 +826,7 @@ GameObject:
   - component: {fileID: 6266036368524755492}
   - component: {fileID: 5591425356144439866}
   - component: {fileID: 1432845645145338972}
+  - component: {fileID: 6657108513658264975}
   m_Layer: 0
   m_Name: DollRelocateToNav
   m_TagString: Untagged
@@ -852,6 +887,39 @@ MonoBehaviour:
   vfxAsset: {fileID: 8926484042661614526, guid: 016c7835102272642b7079cd81f6d2ef, type: 3}
   isChild: 0
   vfxInstance: {fileID: 0}
+--- !u!114 &6657108513658264975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7097070077748286372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioEventEmitter
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -449000756
+      Data2: 1093045465
+      Data3: 260626329
+      Data4: 801819821
+    Path: event:/MAIN/Doll
+  Event: 
+  EventPlayTrigger: 11
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params:
+  - Name: DollState
+    Value: 0
+  OverrideAttenuation: 1
+  OverrideMinDistance: 5
+  OverrideMaxDistance: 10
 --- !u!1 &7629443495240033469
 GameObject:
   m_ObjectHideFlags: 0
@@ -982,8 +1050,8 @@ MonoBehaviour:
   - Name: DollState
     Value: 3
   OverrideAttenuation: 1
-  OverrideMinDistance: 10
-  OverrideMaxDistance: 30
+  OverrideMinDistance: 5
+  OverrideMaxDistance: 10
 --- !u!114 &359204407735993361
 MonoBehaviour:
   m_ObjectHideFlags: 0
