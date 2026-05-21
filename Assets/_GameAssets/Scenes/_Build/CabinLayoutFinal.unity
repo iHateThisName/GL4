@@ -7925,6 +7925,7 @@ GameObject:
   m_Component:
   - component: {fileID: 509945179}
   - component: {fileID: 509945178}
+  - component: {fileID: 509945180}
   m_Layer: 0
   m_Name: AxeBorder
   m_TagString: Untagged
@@ -7968,6 +7969,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &509945180
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 509945177}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5f6ca685a782d74db113e6d5e337166, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ItemOutOfAreaScript
+  startPosition: {fileID: 1677984214}
 --- !u!1001 &510625106
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -24451,34 +24465,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 3577282280466937115, guid: a7d18a61ee4804c4a8220ba972bbb10a, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1458542360}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a7d18a61ee4804c4a8220ba972bbb10a, type: 3}
 --- !u!4 &1458542358 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1127463243679316778, guid: a7d18a61ee4804c4a8220ba972bbb10a, type: 3}
   m_PrefabInstance: {fileID: 1458542357}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1458542359 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3577282280466937115, guid: a7d18a61ee4804c4a8220ba972bbb10a, type: 3}
-  m_PrefabInstance: {fileID: 1458542357}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1458542360
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1458542359}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a5f6ca685a782d74db113e6d5e337166, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ItemOutOfAreaScript
-  areaRange: {fileID: 509945177}
 --- !u!1001 &1458718378
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -28526,6 +28519,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5945703978389532107, guid: 017a2bc9fbc295341a77d2cbf7033e40, type: 3}
   m_PrefabInstance: {fileID: 1677659970}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1677984213
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1677984214}
+  m_Layer: 0
+  m_Name: AxeRespawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1677984214
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1677984213}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1.1294674, y: 0.24859023, z: 17.763958}
+  m_LocalScale: {x: 0.6499999, y: 0.65, z: 0.6499999}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1681070151
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -36809,4 +36833,5 @@ SceneRoots:
   - {fileID: 1268722292}
   - {fileID: 1394483111}
   - {fileID: 105098056}
+  - {fileID: 1677984214}
   - {fileID: 509945179}
