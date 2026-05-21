@@ -1059,8 +1059,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1712dd5f886d486fbbc80db7669bfb77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::IgnoreParentRotation
-  followCameraY: 1
-  followPosition: {fileID: 1767192434}
+  followYRotation: 1
+  followPositionObj: {fileID: 1717954561962503726}
+  followRotationObj: {fileID: 1717954561962503726}
   offset: {x: -0.2, y: -1, z: -0.25}
 --- !u!114 &4207921592373127298
 MonoBehaviour:
@@ -1735,8 +1736,8 @@ CharacterController:
   serializedVersion: 3
   m_Height: 1.7
   m_Radius: 0.1
-  m_SlopeLimit: 20
-  m_StepOffset: 0.3
+  m_SlopeLimit: 10
+  m_StepOffset: 0.1
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.58, z: 0}
