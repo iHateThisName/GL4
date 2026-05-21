@@ -96,6 +96,8 @@ public class GrabSoundManager : MonoBehaviour {
     [ContextMenu("Play Drop Axe Sound")] public void PlayAxeDropSound() => this.PlayGrabSound(HandCollisionHandler.EnumGrabItems.Axe, EnumGrabActions.Drop);
 
     private void PlayGrabSound(HandCollisionHandler.EnumGrabItems itemType, EnumGrabActions action, bool isRightHand = true) {
+        if (itemType == HandCollisionHandler.EnumGrabItems.Glass && action == EnumGrabActions.Drop) return; // Skip playing sound for dropping glass to avoid playing over breaking glass sound.
+        
         if (isRightHand) {
             this.rightEmitter.Play();
             this.rightEmitter.SetParameter(PARAMETER_GRAB, (int)itemType);
