@@ -9,7 +9,7 @@ public class ItemOutOfAreaScript : MonoBehaviour
         if (other.CompareTag("Axe"))
         {
             Debug.Log("Axe should respawn");
-            other.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+            other.GetComponentInParent<Rigidbody>().angularVelocity = Vector3.zero;
             other.GetComponentInParent<Rigidbody>().isKinematic = true;
             other.transform.position = startPosition.position;
             other.transform.rotation = startPosition.rotation;
