@@ -16,13 +16,13 @@ public class FollowXRRotationAndPosition : MonoBehaviour
 
     private void LateUpdate()
     {
+        float cameraY = this.parentTransform.eulerAngles.y;
+        Quaternion bodyRotation = Quaternion.Euler(0f, cameraY, 0f);
+
         if (this.followPositionObj != null)
-            this.transform.position = this.followPositionObj.position + this.offset;
+            this.transform.position = this.followPositionObj.position + bodyRotation * this.offset;
 
         if (this.followYRotation)
-        {
-            float cameraY = this.parentTransform.eulerAngles.y;
-            this.transform.rotation = Quaternion.Euler(0f, cameraY, 0f);
-        }
+            this.transform.rotation = bodyRotation;
     }
 }
