@@ -4,16 +4,18 @@ public class ItemOutOfAreaScript : MonoBehaviour
 {
     public Transform startPosition;
 
+    public Rigidbody rb;
+
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Axe"))
         {
             Debug.Log("Axe should respawn");
-            other.GetComponentInParent<Rigidbody>().angularVelocity = Vector3.zero;
-            other.GetComponentInParent<Rigidbody>().isKinematic = true;
+            rb.angularVelocity = Vector3.zero;
+            rb.isKinematic = true;
             other.transform.position = startPosition.position;
             other.transform.rotation = startPosition.rotation;
-            other.GetComponentInParent<Rigidbody>().isKinematic = false;
+            rb.isKinematic = false;
             Debug.Log("Axe should move");
         }
     }

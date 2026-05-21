@@ -7982,6 +7982,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemOutOfAreaScript
   startPosition: {fileID: 1677984214}
+  rb: {fileID: 1458542359}
 --- !u!1001 &510625106
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -24454,10 +24455,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Axe
       objectReference: {fileID: 0}
-    - target: {fileID: 4358614257749380747, guid: a7d18a61ee4804c4a8220ba972bbb10a, type: 3}
-      propertyPath: m_TagString
-      value: Axe
-      objectReference: {fileID: 0}
     - target: {fileID: 5699450347568837033, guid: a7d18a61ee4804c4a8220ba972bbb10a, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -24474,6 +24471,11 @@ PrefabInstance:
 --- !u!4 &1458542358 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1127463243679316778, guid: a7d18a61ee4804c4a8220ba972bbb10a, type: 3}
+  m_PrefabInstance: {fileID: 1458542357}
+  m_PrefabAsset: {fileID: 0}
+--- !u!54 &1458542359 stripped
+Rigidbody:
+  m_CorrespondingSourceObject: {fileID: 1213760736508006729, guid: a7d18a61ee4804c4a8220ba972bbb10a, type: 3}
   m_PrefabInstance: {fileID: 1458542357}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1458718378
