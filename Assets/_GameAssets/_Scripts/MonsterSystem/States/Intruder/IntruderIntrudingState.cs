@@ -29,6 +29,7 @@ public class IntruderIntrudingState : AnimatedState {
     }
     public override void OnAnimationComplete() {
         // Disable because the monster should not react anymore to the light.
+        this.lightSensor.IsSkippingTick = true;
         this.lightSensor.gameObject.SetActive(false);
         base.OnAnimationComplete();
     }

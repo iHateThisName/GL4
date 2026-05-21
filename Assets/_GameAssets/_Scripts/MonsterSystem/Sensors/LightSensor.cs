@@ -22,6 +22,8 @@ namespace MonsterSystem
         private Transform sensorTransform;
         private float remainingCooldownTime;
         private float exposure;
+
+        public bool IsSkippingTick { get; set; } = false;
         private Transform FlashlightTransform => this.flashlightSettings != null ? this.flashlightSettings.Value : null;
 
         public override void Initialize(MonsterController owningMonster)
@@ -51,6 +53,7 @@ namespace MonsterSystem
         public override void OnTick(float tickDelta)
         {
             base.OnTick(tickDelta);
+            if (this.IsSkippingTick) return;
 
             // Handle cooldown - skip all processing during stun immunity
             if (this.remainingCooldownTime > 0)
