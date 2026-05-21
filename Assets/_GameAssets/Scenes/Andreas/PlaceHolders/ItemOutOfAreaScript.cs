@@ -12,10 +12,8 @@ public class ItemOutOfAreaScript : MonoBehaviour
         {
             Debug.Log("Axe should respawn");
             rb.angularVelocity = Vector3.zero;
-            rb.isKinematic = true;
             other.transform.position = startPosition.position;
             other.transform.rotation = startPosition.rotation;
-            rb.isKinematic = false;
             Debug.Log("Axe should move");
         }
     }
