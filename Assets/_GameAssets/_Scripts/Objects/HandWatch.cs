@@ -54,6 +54,8 @@ public class HandWatch : MonoBehaviour
 
         HungerSystem.OnHungerChanged += OnHungerChanged;
         HungerSystem.HungerStateChangedEvent += OnHungerStateChanged;
+        
+        GameManager.OnNightTimerReconfigured += HandleNightTimerReconfigured;
     }
 
     /// <summary>
@@ -65,6 +67,19 @@ public class HandWatch : MonoBehaviour
 
         HungerSystem.OnHungerChanged -= OnHungerChanged;
         HungerSystem.HungerStateChangedEvent -= OnHungerStateChanged;
+
+        GameManager.OnNightTimerReconfigured -= HandleNightTimerReconfigured;
+    }
+
+    /// <summary>
+    /// Called when the night timer is reconfigured to a custom duration (e.g., tutorial).
+    /// Recalculates the cached duration values so the clock display stays accurate.
+    /// </summary>
+    private void HandleNightTimerReconfigured(float newDuration)
+    {
+        Debug.Log("Night timer reconfigured to " + newDuration);
+        this.totalNightDuration = newDuration;
+        this.totalDuration = newDuration - this.timeAt8AM;
     }
 
     /// <summary>

@@ -94,8 +94,9 @@ public class TutorialManager : MonoBehaviour
         SceneTransition.OnTransitionComplete -= LoadedIntoScene;
     }
 
-    private void LoadedIntoScene(int obj)
+    private void LoadedIntoScene(int loadedSceneIndex)
     {
+        if (loadedSceneIndex != 1) return;
         GameManager.Instance.PrepareNightTimerWithDuration(30f);
     }
 

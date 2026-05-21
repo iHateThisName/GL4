@@ -37,6 +37,10 @@ public class GameManager : PersistenSingleton<GameManager> {
     // Other systems can subscribe to react (e.g., spawning enemies, triggering sounds).
     public static event System.Action<NightEvent> OnEventAvailable = delegate { };
 
+    // Fired when the night timer is reconfigured to a custom duration (e.g., tutorial).
+    // Passes the new total duration in seconds.
+    public static event System.Action<float> OnNightTimerReconfigured = delegate { };
+
     /// <summary>
     /// Unity callback invoked when the object becomes enabled.
     /// Subscribes a debug method to the event for testing purposes.
@@ -256,15 +260,18 @@ public class GameManager : PersistenSingleton<GameManager> {
     /// Pauses the night timer and resets it to zero elapsed with the given duration,
     /// but does NOT resume. Call ResumeNightTimer() when ready to start counting.
     /// </summary>
-    public void PrepareNightTimerWithDuration(float durationSeconds)
+    public void PrepareNightTimerWithDuration(float durationSeconds, bool pause = true)
     {
         if (!TimerManager.Validate(this.nightTimerHandle)) return;
 
         TimerManager.Reconfigure(this.nightTimerHandle, durationSeconds + 1, durationSeconds);
         TimerManager.SetCallbacks(this.nightTimerHandle, HandleNightTick, HandleNightEnd);
-        TimerManager.Pause(this.nightTimerHandle);
-        
+
         this.scheduleCursor = this.eventsSchedule?.Length ?? 0;
+
+        OnNightTimerReconfigured.Invoke(durationSeconds);
+        
+        if (pause) TimerManager.Pause(this.nightTimerHandle);
     }
 
     /// <summary>
