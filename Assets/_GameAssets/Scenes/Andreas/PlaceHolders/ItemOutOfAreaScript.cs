@@ -4,12 +4,12 @@ public class ItemOutOfAreaScript : MonoBehaviour
 {
     public Transform startPosition;
 
-    private void OnTriggerExit(Collider areaRange)
+    private void OnTriggerExit(Collider other)
     {
-        if(areaRange.CompareTag("Axe"))
+        if (other.CompareTag("Axe"))
         {
-            areaRange.transform.position = startPosition.position;
-            areaRange.transform.rotation = startPosition.rotation;
+            other.transform.position = startPosition.position;
+            other.transform.rotation = startPosition.rotation;
         }
     }
 }
