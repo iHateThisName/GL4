@@ -15,6 +15,12 @@ public class MainMenu : MonoBehaviour
         //SceneManager.LoadScene("CabinLayoutFinal");
     }
 
+    public void GoToCredits()
+    {
+        GameManager.Instance.LoadScene("CreditsScene");
+        //SceneManager.LoadScene("CabinLayoutFinal");
+    }
+
     //A function for quitting the editor or the game
     public void QuitGame()
     {
