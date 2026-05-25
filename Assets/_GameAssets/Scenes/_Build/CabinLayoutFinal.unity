@@ -16,7 +16,7 @@ RenderSettings:
   serializedVersion: 10
   m_Fog: 1
   m_FogColor: {r: 0.33873263, g: 0.33873263, b: 0.41509432, a: 1}
-  m_FogMode: 2
+  m_FogMode: 1
   m_FogDensity: 0.084
   m_LinearFogStart: 0
   m_LinearFogEnd: 20
@@ -1044,7 +1044,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.1
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: f8acb30d295508148aadec621583f2a1, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: a9cb9cf895b5a794a8a159c885826ea0, type: 2}
   m_BuildHeightMesh: 0
 --- !u!114 &84357908
 MonoBehaviour:
@@ -1076,7 +1076,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.13333334
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: a9cb9cf895b5a794a8a159c885826ea0, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: f8acb30d295508148aadec621583f2a1, type: 2}
   m_BuildHeightMesh: 0
 --- !u!114 &84357909
 MonoBehaviour:
@@ -15683,6 +15683,31 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 3
+--- !u!1 &839586346 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 172398, guid: e2402d4ef4fe747ae9ad59bdccad4556, type: 3}
+  m_PrefabInstance: {fileID: 1036031518}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &839586350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 839586346}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshModifier
+  m_SerializedVersion: 0
+  m_OverrideArea: 0
+  m_Area: 0
+  m_OverrideGenerateLinks: 0
+  m_GenerateLinks: 0
+  m_IgnoreFromBuild: 1
+  m_ApplyToChildren: 1
+  m_AffectedAgents: ffffffff
 --- !u!1001 &843429931
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -20447,7 +20472,10 @@ PrefabInstance:
     - {fileID: 172400, guid: e2402d4ef4fe747ae9ad59bdccad4556, type: 3}
     - {fileID: 129746, guid: e2402d4ef4fe747ae9ad59bdccad4556, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 172398, guid: e2402d4ef4fe747ae9ad59bdccad4556, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 839586350}
   m_SourcePrefab: {fileID: 100100000, guid: e2402d4ef4fe747ae9ad59bdccad4556, type: 3}
 --- !u!4 &1036031519 stripped
 Transform:
