@@ -3,10 +3,6 @@ using UnityEngine.AI;
 
 public class MonsterAIController : MonoBehaviour
 {
-    /* =======================
-     * Serialized Fields
-     * ======================= */
-
     [Header("References")]
     [SerializeField] private NavMeshAgent agent;
     [SerializeField] private Transform playerTransform;
@@ -29,22 +25,12 @@ public class MonsterAIController : MonoBehaviour
     [SerializeField] private float sightRange = 15f;
     [SerializeField] private float attackRange = 2f;
 
-
-    /* =======================
-     * Private Fields
-     * ======================= */
-
     private Vector3 walkPoint;
 
     private bool isWalkPointSet;
     private bool hasAlreadyAttacked;
     private bool isPlayerInSightRange;
     private bool isPlayerInAttackRange;
-
-
-    /* =======================
-     * Unity Lifecycle
-     * ======================= */
 
     private void Awake()
     {
@@ -60,10 +46,6 @@ public class MonsterAIController : MonoBehaviour
         UpdateAIState();
     }
 
-
-    /* =======================
-     * State Handling
-     * ======================= */
 
     private void UpdatePlayerDetection()
     {
@@ -96,11 +78,6 @@ public class MonsterAIController : MonoBehaviour
 
         PatrolArea();
     }
-
-
-    /* =======================
-     * AI Behaviors
-     * ======================= */
 
     private void PatrolArea()
     {
@@ -164,14 +141,9 @@ public class MonsterAIController : MonoBehaviour
         Invoke(nameof(ResetAttackCooldown), this.timeBetweenAttacks);
     }
 
-
-    /* =======================
-     * Combat
-     * ======================= */
-
     private void PerformAttack()
     {
-        // Attack logic here (damage, animation trigger, hitbox, etc.)
+        
     }
 
     private void ResetAttackCooldown()
