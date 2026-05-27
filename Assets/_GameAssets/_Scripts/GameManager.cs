@@ -1,3 +1,4 @@
+using System;
 using Assets.Scripts.Singleton;
 using System.Collections.Generic;
 using UnityEngine;
@@ -30,11 +31,15 @@ public class GameManager : PersistenSingleton<GameManager> {
     }
     [SerializeField] private NightEventDebugView[] scheduleDebugView;
 
-    public Dictionary<WindowController, VRLever.EnumLeverState> WindowsDictonary { get; private set; } = new Dictionary<WindowController, VRLever.EnumLeverState>();
+    public Dictionary<WindowController, VRHingeJoint.EnumLeverState> WindowsDictonary { get; private set; } = new Dictionary<WindowController, VRHingeJoint.EnumLeverState>();
     
     // Event invoked whenever a scheduled night event becomes available.
     // Other systems can subscribe to react (e.g., spawning enemies, triggering sounds).
     public static event System.Action<NightEvent> OnEventAvailable = delegate { };
+
+    // Fired when the night timer is reconfigured to a custom duration (e.g., tutorial).
+    // Passes the new total duration in seconds.
+    public static event System.Action<float> OnNightTimerReconfigured = delegate { };
 
     /// <summary>
     /// Unity callback invoked when the object becomes enabled.
@@ -44,24 +49,25 @@ public class GameManager : PersistenSingleton<GameManager> {
     {
         DeathSystem.OnPlayerDied += HandleNightEarlyEnd;
         SceneTransition.OnTransitionComplete += OnSceneTransitionComplete;
-        if (this.nightSettings != null)
-            this.nightSettings.OnRuntimeDataChanged += OnNightSettingsChanged;
+        /*if (this.nightSettings != null)
+            this.nightSettings.OnRuntimeDataChanged += OnNightSettingsChanged;*/
     }
 
     private void OnDisable()
     {
         DeathSystem.OnPlayerDied -= HandleNightEarlyEnd;
         SceneTransition.OnTransitionComplete -= OnSceneTransitionComplete;
-        if (this.nightSettings != null)
-            this.nightSettings.OnRuntimeDataChanged -= OnNightSettingsChanged;
+        /*if (this.nightSettings != null)
+            this.nightSettings.OnRuntimeDataChanged -= OnNightSettingsChanged;*/
+    }
+
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+        TimerManager.Release(ref this.nightTimerHandle);
     }
 
     private void OnNightSettingsChanged()
-    {
-        InitializeNight();
-    }
-
-    private void Start() 
     {
         InitializeNight();
     }
@@ -70,6 +76,12 @@ public class GameManager : PersistenSingleton<GameManager> {
     {
         Debug.Log($"[GameManager] loaded into: {sceneIndex}");
         if (sceneIndex == 1)
+            InitializeNight();
+    }
+
+    public void InitNightIfNotStarted()
+    {
+        if (!TimerManager.Validate(this.nightTimerHandle))
             InitializeNight();
     }
 
@@ -84,12 +96,6 @@ public class GameManager : PersistenSingleton<GameManager> {
 
         //this.WindowsDictonary.Clear();
         InstantiateTimer();
-    }
-
-    protected override void OnDestroy()
-    {
-        base.OnDestroy();
-        TimerManager.Release(ref this.nightTimerHandle);
     }
 
     [ContextMenu("Continue Game")]
@@ -254,15 +260,18 @@ public class GameManager : PersistenSingleton<GameManager> {
     /// Pauses the night timer and resets it to zero elapsed with the given duration,
     /// but does NOT resume. Call ResumeNightTimer() when ready to start counting.
     /// </summary>
-    public void PrepareNightTimerWithDuration(float durationSeconds)
+    public void PrepareNightTimerWithDuration(float durationSeconds, bool pause = true)
     {
         if (!TimerManager.Validate(this.nightTimerHandle)) return;
 
         TimerManager.Reconfigure(this.nightTimerHandle, durationSeconds + 1, durationSeconds);
         TimerManager.SetCallbacks(this.nightTimerHandle, HandleNightTick, HandleNightEnd);
-        TimerManager.Pause(this.nightTimerHandle);
-        
+
         this.scheduleCursor = this.eventsSchedule?.Length ?? 0;
+
+        OnNightTimerReconfigured.Invoke(durationSeconds);
+        
+        if (pause) TimerManager.Pause(this.nightTimerHandle);
     }
 
     /// <summary>
@@ -333,7 +342,7 @@ public class GameManager : PersistenSingleton<GameManager> {
         timer.NextInterval = timer.Elapsed + delta;
     }
 
-    public void UpdateWindowState(WindowController windowController, VRLever.EnumLeverState newSate) {
+    public void UpdateWindowState(WindowController windowController, VRHingeJoint.EnumLeverState newSate) {
         // update the dictionary with the new state and remove the old refrence
         this.WindowsDictonary.Remove(windowController);
         this.WindowsDictonary.Add(windowController, newSate);
@@ -343,8 +352,8 @@ public class GameManager : PersistenSingleton<GameManager> {
 
     public List<WindowController> GetClosedWindows() {
         List<WindowController> closedWindows = new List<WindowController>();
-        foreach (KeyValuePair<WindowController, VRLever.EnumLeverState> kvp in this.WindowsDictonary) {
-            if (kvp.Value == VRLever.EnumLeverState.Closed) {
+        foreach (KeyValuePair<WindowController, VRHingeJoint.EnumLeverState> kvp in this.WindowsDictonary) {
+            if (kvp.Value == VRHingeJoint.EnumLeverState.Closed) {
                 closedWindows.Add(kvp.Key);
             }
         }
@@ -357,9 +366,9 @@ public class GameManager : PersistenSingleton<GameManager> {
         int closedCount = 0;
         int smartUpdateEnabledCount = 0;
         string logMessage = "Current Window States:\n";
-        foreach (KeyValuePair<WindowController, VRLever.EnumLeverState> kvp in this.WindowsDictonary) {
-            if (kvp.Value == VRLever.EnumLeverState.Open) openCount++;
-            else if (kvp.Value == VRLever.EnumLeverState.Closed) closedCount++;
+        foreach (KeyValuePair<WindowController, VRHingeJoint.EnumLeverState> kvp in this.WindowsDictonary) {
+            if (kvp.Value == VRHingeJoint.EnumLeverState.Open) openCount++;
+            else if (kvp.Value == VRHingeJoint.EnumLeverState.Closed) closedCount++;
 
             if (kvp.Key.IsVRLeverSmartUpdateEnabled()) smartUpdateEnabledCount++;
         }

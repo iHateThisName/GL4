@@ -33,6 +33,9 @@ public class TutorialManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        #if UNITY_EDITOR
+        GameManager.Instance.InitNightIfNotStarted();
+        #endif
         if (nightSettings != null)
         {
             if (nightSettings.DebugStartNight > 1)
@@ -67,8 +70,9 @@ public class TutorialManager : MonoBehaviour
     {
         if (!other.CompareTag("Player")) return;
         Debug.Log("Tutorial Entered Living room");
+        tutorialText.text = "Listen to the radio broadcast";
         this.radio.SendBroadcast(Radio.RadioBroadcasts.IntroductionTutorial);
-        StartBroadcastWait(0f, StartTutorial); // 57 seconds
+        StartBroadcastWait(57f, StartTutorial); // 57 seconds
     }
 
     private void OnEnable()
@@ -90,8 +94,9 @@ public class TutorialManager : MonoBehaviour
         SceneTransition.OnTransitionComplete -= LoadedIntoScene;
     }
 
-    private void LoadedIntoScene(int obj)
+    private void LoadedIntoScene(int loadedSceneIndex)
     {
+        if (loadedSceneIndex != 1) return;
         GameManager.Instance.PrepareNightTimerWithDuration(30f);
     }
 
@@ -104,7 +109,7 @@ public class TutorialManager : MonoBehaviour
         }
         if (this.hasFixedRadio) return;
         this.radio.SendBroadcast(Radio.RadioBroadcasts.RadioTutorialTip);
-        StartBroadcastWait(10f /* TODO: RadioTutorialTip duration */, () =>
+        StartBroadcastWait(11f, () =>
         {
             hasFixedRadio = true;
             this.tutorialText.text = "Survive the night";
@@ -125,7 +130,8 @@ public class TutorialManager : MonoBehaviour
         this.hasEatenFood = true;
         this.radio.SendBroadcast(Radio.RadioBroadcasts.FoodTutorialTip);
         Debug.Log("eaten food");
-        StartBroadcastWait(0f /* TODO: FoodTutorialTip duration */, () =>
+        this.tutorialText.text = "Continue listening to the radio";
+        StartBroadcastWait(36.5f, () =>
         {
             this.tutorialText.text = "Light the fireplace";
         });
@@ -135,11 +141,14 @@ public class TutorialManager : MonoBehaviour
     public void TurnOnFire()
     {
         if (hasLitFire) return;
+        Debug.Log("Testing for tutorial 3");
+        this.tutorialText.text = "Continue listening to the radio";
         this.hasLitFire = true;
         this.radio.SendBroadcast(Radio.RadioBroadcasts.FireTutorialTip);
-        StartBroadcastWait(10f /* TODO: FireTutorialTip duration */, () =>
+        StartBroadcastWait(26f, () =>
         {
             this.radio.SetChannel(8);
+            Debug.Log("Testing for tutorial 4");
             this.tutorialText.text = "Put the radio frequency back to Channel 30";
         });
     }
@@ -154,9 +163,9 @@ public class TutorialManager : MonoBehaviour
 
     private async Awaitable WaitForBroadcastToFinish(float duration, CancellationToken ct, System.Action onFinished)
     {
-        try { await Awaitable.WaitForSecondsAsync(duration, ct); }
+        try { await Awaitable.WaitForSecondsAsync(duration, ct); onFinished?.Invoke(); }
         catch (System.OperationCanceledException) { }
-        finally { onFinished?.Invoke(); }
+        //finally { onFinished?.Invoke(); }
     }
 
     private void StartTutorial()

@@ -17,10 +17,13 @@ namespace MonsterSystem
         [SerializeField] private float stunThreshold = 1f;
         [SerializeField] private float sensorCooldownDuration = 5f;
 
+        private Flashlight flashlight;
         private DetectionConeData cachedCone;
         private Transform sensorTransform;
         private float remainingCooldownTime;
         private float exposure;
+
+        public bool IsSkippingTick { get; set; } = false;
         private Transform FlashlightTransform => this.flashlightSettings != null ? this.flashlightSettings.Value : null;
 
         public override void Initialize(MonsterController owningMonster)
@@ -32,6 +35,7 @@ namespace MonsterSystem
             {
                 this.flashlightSettings.OnRuntimeDataChanged += RefreshCachedData;
                 RefreshCachedData();
+                this.flashlight = this.flashlightSettings.Value.GetComponent<Flashlight>();
             }
         }
 
@@ -49,6 +53,7 @@ namespace MonsterSystem
         public override void OnTick(float tickDelta)
         {
             base.OnTick(tickDelta);
+            if (this.IsSkippingTick) return;
 
             // Handle cooldown - skip all processing during stun immunity
             if (this.remainingCooldownTime > 0)
@@ -58,7 +63,7 @@ namespace MonsterSystem
             }
 
             // No valid flashlight or flashlight is off
-            if (FlashlightTransform == null)
+            if (FlashlightTransform == null || (this.flashlight != null && !this.flashlight.PoweredOn))
             {
                 AdjustExposure(-this.exposureDecaySpeed);
                 return;

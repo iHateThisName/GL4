@@ -222,7 +222,7 @@ GameObject:
   - component: {fileID: 4712964756034556281}
   m_Layer: 0
   m_Name: Flashlight
-  m_TagString: Untagged
+  m_TagString: Flashlight
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -262,10 +262,11 @@ MonoBehaviour:
   crankInteractable: {fileID: 5369562668230421072}
   lightSource: {fileID: 967200181426844701}
   flashlightSettings: {fileID: 11400000, guid: e1d80fbeeb3e27b498a6a95b85fa8a72, type: 2}
-  playerTransform: {fileID: 0}
   flashlightSocket: {fileID: 0}
+  holsteredLayerName: HolsteredItem
+  crankInteractionLayer: FlashlightHandle
   maxDropDistance: 3
-  startEnabled: 1
+  startEnabled: 0
 --- !u!54 &4425987807472562165
 Rigidbody:
   m_ObjectHideFlags: 0

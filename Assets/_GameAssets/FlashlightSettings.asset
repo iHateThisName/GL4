@@ -12,16 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f90ace7a71ac4ba6a98737758ec421ff, type: 3}
   m_Name: FlashlightSettings
   m_EditorClassIdentifier: Assembly-CSharp::SO_FlashlightSettings
-  startingLightPower: 40
-  minLightPower: 3
-  maxLightPower: 140
-  startingLightRange: 6
+  startingLightPower: 4
+  minLightPower: 1
+  maxLightPower: 20
+  startingLightRange: 8
   maxLightRange: 12
   minLightRange: 4
   detectionAngle: 40
-  lightDecayRate: 1.5
-  lightDecayTick: 6
+  minDetectionRange: 3
+  maxDetectionRange: 6
+  lightDecayRate: 0.75
+  lightDecayTick: 12
   flickerTime: 2
-  flickerInterval: 0.33
-  lowPowerThreshold: 5
-  maxRotations: 10
+  flickerInterval: 0.3
+  lowPowerThreshold: 3

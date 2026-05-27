@@ -87,16 +87,24 @@ public static class DeathSystem
         }
 
         /// <summary>
-        /// Loads the GameOver scene.
+        /// Loads the appropriate scene based on death reason and night progression.
         /// Called by listeners after handling death effects, or automatically if no listeners exist.
         /// </summary>
-        public void LoadScene(SO_ScreenFadeRef fadeRef = null)
+        public void LoadScene(SO_ScreenFadeRef fadeRef = null, SO_NightSettings nightSettings = null, int gameOverSceneIndex = 2, int victorySceneIndex = 3)
         {
             var config = reason == DeathReason.Survived
                 ? FadeConfig.FadeToWhite()
                 : FadeConfig.FadeToBlack();
-            
-            SceneTransition.LoadScene(2, config, fadeRef);
+
+            int targetScene = gameOverSceneIndex;
+            if (reason == DeathReason.Survived && nightSettings != null)
+            {
+                int currentNight = GameManager.Instance != null ? GameManager.Instance.GetCurrentNight() : 1;
+                if (currentNight >= nightSettings.GetFinalNight())
+                    targetScene = victorySceneIndex;
+            }
+
+            SceneTransition.LoadScene(targetScene, config, fadeRef);
         }
         
         /// <summary>The cause of this death event.</summary>

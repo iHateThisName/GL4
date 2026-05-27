@@ -28,14 +28,10 @@ public class IntruderIntrudingState : AnimatedState {
         this.monsterNavigation.GetCurrentTargetWindow().DisableSmartUpdate();
     }
     public override void OnAnimationComplete() {
-        base.OnAnimationComplete();
-
         // Disable because the monster should not react anymore to the light.
+        this.lightSensor.IsSkippingTick = true;
         this.lightSensor.gameObject.SetActive(false);
-
-        // Disable the colliders since we dont need to interact with the window anymore.
-        //this.leftHandCollider.enabled = false;
-        //this.rightHandCollider.enabled = false;
+        base.OnAnimationComplete();
     }
 
     public void DisableColliders() {

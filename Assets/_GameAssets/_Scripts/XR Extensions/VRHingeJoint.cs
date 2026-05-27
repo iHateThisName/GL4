@@ -4,7 +4,11 @@ using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
-public class VRLever : MonoBehaviour {
+/// <summary>
+/// A VR-friendly lever component based on a HingeJoint. 
+/// Handles interaction, snapping to Open/Closed states, and optimising the physics updates.
+/// </summary>
+public class VRHingeJoint : MonoBehaviour {
 
     [Header("Refrences")]
     [SerializeField] private HingeJoint joint;
@@ -45,21 +49,40 @@ public class VRLever : MonoBehaviour {
 
     private JointSpring originalSpring;
     public bool IsGrabbed { get; private set; } = false; // Flag to track if the lever is currently grabbed by the player.
+    /// <summary>
+    /// Represents the different states the lever can transition through.
+    /// </summary>
     public enum EnumLeverState { None, Closed, LeaningClosed, LeaningOpen, Open }
 
     #region Grab Event Listeners
+    /// <summary>
+    /// Subscribes to the grab interactable's select and deselect events.
+    /// </summary>
     private void OnEnable() {
         grabInteractable.selectEntered.AddListener(OnGrabbed);
         grabInteractable.selectExited.AddListener(OnReleased);
     }
+    /// <summary>
+    /// Unsubscribes from the grab interactable's select and deselect events.
+    /// </summary>
     private void OnDisable() {
         grabInteractable.selectEntered.RemoveListener(OnGrabbed);
         grabInteractable.selectExited.RemoveListener(OnReleased);
     }
+    /// <summary>
+    /// Called when the player grabs the lever. 
+    /// Reduces snapping force to make moving the lever easier.
+    /// </summary>
+    /// <param name="args">Event arguments from the XR interactable.</param>
     private void OnGrabbed(SelectEnterEventArgs args) {
         IsGrabbed = true;
         this.SpringSnapForce /= 2; // Decrease by 50% when grabbed to make it easier to move the lever.
     }
+    /// <summary>
+    /// Called when the player releases the lever. 
+    /// Restores snapping force to its original value.
+    /// </summary>
+    /// <param name="args">Event arguments from the XR interactable.</param>
     private void OnReleased(SelectExitEventArgs args) {
         IsGrabbed = false;
         this.SpringSnapForce *= 2; // Restore to original (increase by 100%)
@@ -67,6 +90,9 @@ public class VRLever : MonoBehaviour {
 
     #endregion
 
+    /// <summary>
+    /// Initializes lever rotation, sets up spring logic, and manages optimization settings.
+    /// </summary>
     private IEnumerator Start() {
         this.originalSpring = this.joint.spring;
 
@@ -84,6 +110,9 @@ public class VRLever : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Teleports the hinge to its configured starting rotation percentage using its Rigidbody.
+    /// </summary>
     private void InitializeStartRotation() {
         // Get the Rigidbody component attached to the hinge joint to change the angle of the lever.
         Rigidbody rb = this.joint.GetComponent<Rigidbody>();
@@ -96,6 +125,10 @@ public class VRLever : MonoBehaviour {
         rb.MoveRotation(this.joint.transform.rotation * startRot);
     }
 
+    /// <summary>
+    /// Ensures physics-based updates to the lever run consistently. 
+    /// Can skip updates for optimization when un-grabbed and at a stable limit.
+    /// </summary>
     private void FixedUpdate() {
         if (this.optimizeUpdate) { //If true, skips updates when lever is in stable state(Open/ Closed) and not grabbed.
             if (!IsGrabbed && (this.CurrentState == EnumLeverState.Open || this.CurrentState == EnumLeverState.Closed)) return;
@@ -104,6 +137,9 @@ public class VRLever : MonoBehaviour {
     }
 
 
+    /// <summary>
+    /// Checks the current hinge angle and adjusts the joint spring's target parameters and state appropriately.
+    /// </summary>
     private void UpdateSpringBehaviour() {
         float normalizedAngle = (this.joint.angle - this.joint.limits.min) / (this.joint.limits.max - this.joint.limits.min);
         if (this.printDebug) Debug.Log($"Normalized Angle: {normalizedAngle * 100f:F1}%");
@@ -117,6 +153,11 @@ public class VRLever : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Determines the lever's logical state based on its current structural tilt compared to configured thresholds.
+    /// </summary>
+    /// <param name="normalizedAngle">The calculated rotation angle from 0 to 1.</param>
+    /// <returns>The calculated current state enum representation.</returns>
     private EnumLeverState CheckCurrentLeverState(float normalizedAngle) {
         EnumLeverState state;
         if (normalizedAngle <= (this.leaningThresholdPercentage / 100)) {
@@ -135,6 +176,11 @@ public class VRLever : MonoBehaviour {
         return state;
     }
 
+    /// <summary>
+    /// Assembles the new physics spring configuration properties based on the lever's new state.
+    /// </summary>
+    /// <param name="currentState">The new state the lever is transitioning to.</param>
+    /// <returns>The new desired target spring.</returns>
     private JointSpring GetSpring(EnumLeverState currentState) {
         this.previousState = this.CurrentState; // Update the previous state before returning the new spring settings.
 
@@ -149,7 +195,15 @@ public class VRLever : MonoBehaviour {
         };
     }
 
+    /// <summary>
+    /// Checks if the lever's optimisation is currently active.
+    /// </summary>
+    /// <returns>True if optimization is fully enabled</returns>
     public bool GetSmartUpdateEnabled() => this.optimizeUpdate;
+    /// <summary>
+    /// Suspends physics update optimization for a set time (10 seconds), ensuring it forcefully behaves physically 
+    /// whenever this might normally get unexpectedly slept.
+    /// </summary>
     public IEnumerator DisableSmartUpdateCorutine() {
         this.optimizeUpdate = false;
         yield return new WaitForSeconds(10f);

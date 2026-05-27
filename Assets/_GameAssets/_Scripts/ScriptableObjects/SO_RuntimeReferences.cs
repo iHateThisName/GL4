@@ -66,7 +66,7 @@ public class SO_RuntimeReferences : SO_RuntimeScriptableObject
             for (int i = 0; i < this.windows.Count; i++)
             {
                 var w = this.windows[i];
-                if (w != null && w.GetCurrentWindowState() == VRLever.EnumLeverState.Closed)
+                if (w != null && w.GetCurrentWindowState() == VRHingeJoint.EnumLeverState.Closed)
                     closedWindowsCache.Add(w);
             }
             return closedWindowsCache.Count > 0

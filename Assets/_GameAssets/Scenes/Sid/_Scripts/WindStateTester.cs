@@ -41,7 +41,7 @@ public class WindStateTest : MonoBehaviour
     [ContextMenu("Play Door Leaning Open, Value 2")] public void PlayDoorLeaningOpen() => SetParamAndLog(parameterName, (int)EnumDoorMixer.LeaningOpen);
     [ContextMenu("Play Door Hold Open, Value 3")] public void PlayDoorHoldOpen() => SetParamAndLog(parameterName, (int)EnumDoorMixer.HoldOpen);
 
-    private void HandleWindowStateChanged(VRLever.EnumLeverState state)
+    private void HandleWindowStateChanged(VRHingeJoint.EnumLeverState state)
     {
         if (emitter == null)
         {
@@ -53,13 +53,13 @@ public class WindStateTest : MonoBehaviour
 
         switch (state)
         {
-            case VRLever.EnumLeverState.Open:
+            case VRHingeJoint.EnumLeverState.Open:
                 SetParamAndLog(parameterName, (int)EnumDoorMixer.Open);
                 break;
-            case VRLever.EnumLeverState.Closed:
+            case VRHingeJoint.EnumLeverState.Closed:
                 SetParamAndLog(parameterName, (int)EnumDoorMixer.Closed);
                 break;
-            case VRLever.EnumLeverState.LeaningOpen:
+            case VRHingeJoint.EnumLeverState.LeaningOpen:
 
                 if (this.windowController != null && this.windowController.IsGrabbed)
                 {

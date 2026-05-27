@@ -54,6 +54,8 @@ public class HandWatch : MonoBehaviour
 
         HungerSystem.OnHungerChanged += OnHungerChanged;
         HungerSystem.HungerStateChangedEvent += OnHungerStateChanged;
+        
+        GameManager.OnNightTimerReconfigured += HandleNightTimerReconfigured;
     }
 
     /// <summary>
@@ -65,6 +67,19 @@ public class HandWatch : MonoBehaviour
 
         HungerSystem.OnHungerChanged -= OnHungerChanged;
         HungerSystem.HungerStateChangedEvent -= OnHungerStateChanged;
+
+        GameManager.OnNightTimerReconfigured -= HandleNightTimerReconfigured;
+    }
+
+    /// <summary>
+    /// Called when the night timer is reconfigured to a custom duration (e.g., tutorial).
+    /// Recalculates the cached duration values so the clock display stays accurate.
+    /// </summary>
+    private void HandleNightTimerReconfigured(float newDuration)
+    {
+        Debug.Log("Night timer reconfigured to " + newDuration);
+        this.totalNightDuration = newDuration;
+        this.totalDuration = newDuration - this.timeAt8AM;
     }
 
     /// <summary>
@@ -111,11 +126,7 @@ public class HandWatch : MonoBehaviour
     /// Called when the player's raw hunger value changes. Refreshes the hunger display.
     /// </summary>
     /// <param name="hunger">The new hunger value.</param>
-    private void OnHungerChanged(float hunger)
-    {
-        Debug.Log("Hunger Changed: " + hunger);
-        UpdateHungerUI();
-    }
+    private void OnHungerChanged(float hunger) => UpdateHungerUI();
 
     /// <summary>
     /// Called when the player's hunger state changes (e.g., from Full to Hungry).
@@ -123,11 +134,7 @@ public class HandWatch : MonoBehaviour
     /// </summary>
     /// <param name="previous">The hunger state before the change.</param>
     /// <param name="current">The hunger state after the change.</param>
-    private void OnHungerStateChanged(HungerSystem.EnumHungerState previous, HungerSystem.EnumHungerState current)
-    {
-        Debug.Log("Hunger State Changed: " + previous + " -> " + current);
-        UpdateHungerUI();
-    }
+    private void OnHungerStateChanged(HungerSystem.EnumHungerState previous, HungerSystem.EnumHungerState current) => UpdateHungerUI();
 
     /// <summary>
     /// Writes the current hunger state and percentage to the hunger text label.

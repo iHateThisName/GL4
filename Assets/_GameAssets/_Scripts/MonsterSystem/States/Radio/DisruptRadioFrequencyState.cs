@@ -22,7 +22,7 @@ namespace MonsterSystem
         private Radio radio;
         private ResourceSensor resourceSensor;
         private float disruptInternalInterval;
-        private float disruptResourceInterntal;
+        private float disruptResourceInternal;
 
         /// <summary>
         /// Caches references to the <see cref="Radio"/> (via the runtime SO reference) and
@@ -58,7 +58,7 @@ namespace MonsterSystem
             DisruptChannel();
             
             this.disruptInternalInterval = this.disruptionInterval;
-            this.disruptResourceInterntal = this.resourceDepletionInterval;
+            this.disruptResourceInternal = this.resourceDepletionInterval;
         }
 
         /// <summary>
@@ -84,9 +84,9 @@ namespace MonsterSystem
                 DisruptChannel();
             }
 
-            if (this.GetTime() >= this.disruptResourceInterntal)
+            if (this.GetTime() >= this.disruptResourceInternal)
             {
-                this.disruptResourceInterntal += this.resourceDepletionInterval;
+                this.disruptResourceInternal += this.resourceDepletionInterval;
                 ReduceResource(this.resourceDepletionValue);
             }
         }

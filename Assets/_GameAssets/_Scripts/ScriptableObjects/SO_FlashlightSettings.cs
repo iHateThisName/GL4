@@ -31,6 +31,10 @@ public class SO_FlashlightSettings : SO_TransformRef
     [SerializeField] private float minLightRange = 4f;
     [SerializeField] private float detectionAngle = 40;
 
+    [Header("=== Detection Range Settings ===")]
+    [SerializeField] private float minDetectionRange = 3f;
+    [SerializeField] private float maxDetectionRange = 5.25f;
+
     [Header("=== Decay Settings ===")]
     [SerializeField] private float lightDecayRate = 1.5f;
     [SerializeField] private float lightDecayTick = 6f;
@@ -41,7 +45,6 @@ public class SO_FlashlightSettings : SO_TransformRef
 
     [Header("=== Power Settings ===")]
     [SerializeField] private float lowPowerThreshold = 5f;
-    [SerializeField] private int maxRotations = 10;
 
     [System.NonSerialized] private DetectionConeData detectionConeData;
 
@@ -54,12 +57,19 @@ public class SO_FlashlightSettings : SO_TransformRef
     public float GetMaxLightRange() => this.maxLightRange;
     public float GetMinLightRange() => this.minLightRange;
     public float GetDetectionAngle() => this.detectionAngle;
+    public float GetMinDetectionRange() => this.minDetectionRange;
+    public float GetMaxDetectionRange() => this.maxDetectionRange;
+
+    public float GetDetectionRangeForIntensity(float intensity)
+    {
+        float normalized = Mathf.InverseLerp(this.minLightPower, this.maxLightPower, intensity);
+        return Mathf.Lerp(this.minDetectionRange, this.maxDetectionRange, normalized);
+    }
     public float GetLightDecayRate() => this.lightDecayRate;
     public float GetLightDecayTick() => this.lightDecayTick;
     public float GetFlickerTime() => this.flickerTime;
     public float GetFlickerInterval() => this.flickerInterval;
     public float GetLowPowerThreshold() => this.lowPowerThreshold;
-    public int GetMaxRotations() => this.maxRotations;
 
     /// <summary>
     /// Calculates and caches detection cone data based on the current runtime range.
