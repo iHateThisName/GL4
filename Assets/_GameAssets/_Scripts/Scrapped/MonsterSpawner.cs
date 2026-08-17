@@ -2,24 +2,12 @@ using UnityEngine;
 
 public class MonsterSpawner : MonoBehaviour
 {
-    /* =======================
-     * Serialized Fields
-     * ======================= */
-
     [Header("Spawn Settings")]
     [SerializeField] private GameObject[] monsterPrefabs;
     [SerializeField] private Transform[] spawnPoints;
     [SerializeField] private float spawnInterval = 3f;
 
-    /* =======================
-     * Private Fields
-     * ======================= */
-
     private GameObject currentMonster;
-
-    /* =======================
-     * Unity Lifecycle
-     * ======================= */
 
     private void OnEnable()
     {
@@ -31,13 +19,9 @@ public class MonsterSpawner : MonoBehaviour
         GameManager.OnEventAvailable -= SpawnMonster;
     }
 
-    /* =======================
-     * Spawning Logic
-     * ======================= */
-
+    
     private void SpawnMonster(NightEvent eventData)
     {
-        // ✅ Only allow one monster at a time
         if (currentMonster != null)
             return;
 
@@ -57,9 +41,7 @@ public class MonsterSpawner : MonoBehaviour
         );
     }
 
-    /* =======================
-     * Helpers
-     * ======================= */
+    
 
     private bool IsSpawnerConfiguredCorrectly()
     {

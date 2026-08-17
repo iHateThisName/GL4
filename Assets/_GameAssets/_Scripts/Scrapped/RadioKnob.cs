@@ -3,26 +3,14 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class RadioKnob : MonoBehaviour
 {
-    /* =======================
-     * Serialized Fields
-     * ======================= */
-
     [Header("Knob Settings")]
     [SerializeField] private Transform knobTransform;
     [SerializeField] private int totalChannels = 5;
-
-    /* =======================
-     * Private Fields
-     * ======================= */
 
     private UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable grabInteractable;
     private float accumulatedAngle;
     private float lastInteractorAngle;
     private int currentChannel = -1;
-
-    /* =======================
-     * Unity Lifecycle
-     * ======================= */
 
     private void Awake()
     {
@@ -43,9 +31,6 @@ public class RadioKnob : MonoBehaviour
         UpdateChannel();
     }
 
-    /* =======================
-     * Knob Logic
-     * ======================= */
 
     private void OnGrab(SelectEnterEventArgs args)
     {
@@ -81,18 +66,13 @@ public class RadioKnob : MonoBehaviour
         OnChannelChanged(currentChannel);
     }
 
-    /* =======================
-     * Channel Events
-     * ======================= */
-
+ 
     private void OnChannelChanged(int channel)
     {
         Debug.Log($"Radio channel: {channel}");
     }
 
-    /* =======================
-     * Helpers
-     * ======================= */
+ 
 
     private float GetInteractorAngle(Transform interactor)
     {

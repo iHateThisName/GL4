@@ -54,6 +54,7 @@ public class Flashlight : MonoBehaviour
     // Target range (derived from intensity)
     private float targetLightRange;
     
+    // Layer indexes
     private int holsteredLayer;
     private int defaultLayer;
     private int crankLayerMask;
@@ -262,7 +263,7 @@ public class Flashlight : MonoBehaviour
 
         if (TeleportToSocketIfTooFar()) return;
 
-        if (startEnabled) return;
+        if (pickedUpOnce) return;
 
         if (HasLowPower && HasPower)
         {
